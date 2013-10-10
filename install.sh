@@ -65,15 +65,12 @@ register_env_var SQLITE3_LIBS " "
 # * commented out glade, as it is not needed to run gnucash
 add_step inst_prepare
 if [ "$CROSS_COMPILE" != "yes" ]; then
- add_step inst_wget
- add_step inst_dtk
- add_step inst_unzip
+ add_step inst_msys
 fi
 add_step inst_mingw
 add_step inst_regex
 add_step inst_readline
 if [ "$CROSS_COMPILE" != "yes" ]; then
- add_step inst_active_perl
  add_step inst_mingwutils
 fi
 add_step inst_autotools

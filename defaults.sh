@@ -68,17 +68,17 @@ set_default MSYS_DIR $GLOBAL_DIR\\msys
 
 # tools here means binaries runnable without other DLLs or data files
 set_default TOOLS_DIR $GLOBAL_DIR\\tools
-set_default WGET_DIR $TOOLS_DIR
-#WGET=
+set_default MSYS_WGET_VERSION  "1.12-1"
+set_default MSYS_M4_VERSION    "1.4.16-2"
+set_default MSYS_PATCH_VERSION "2.6.1-1"
+set_default MSYS_PERL_VERSION  "5.8.8-1"
+set_default MSYS_UNZIP_VERSION "6.0-1"
 
 set_default SF_MIRROR "http://heanet.dl.sourceforge.net/sourceforge"
 set_default GTK_MIRROR "ftp.gtk.org/pub"
 set_default GNOME_MIRROR "ftp.gnome.org/pub/gnome"
 set_default GNOME_WIN32_URL "$GNOME_MIRROR/binaries/win32"
 set_default GNOME_WIN32_DEPS_URL "$GNOME_WIN32_URL/dependencies"
-
-set_default DTK_URL "$SF_MIRROR/mingw/msysDTK-1.0.1.exe"
-set_default M4_URL "$SF_MIRROR/mingw/m4-1.4.7-MSYS.tar.bz2"
 
 set_default MINGW_RT_URL "$SF_MIRROR/mingw/mingwrt-3.18-mingw32-dev.tar.gz"
 set_default MINGW_RT_DLL_URL "$SF_MIRROR/mingw/mingwrt-3.18-mingw32-dll.tar.gz"
@@ -166,9 +166,6 @@ set_default CROSS_GCC_SRC2_URL "$SF_MIRROR/mingw/gcc-4.4.0-mingw32-src-2.tar.gz"
 #set_default CROSS_GCC_SRC_URL "$SF_MIRROR/mingw/gcc-4.5.0-1-mingw32-src.tar.lzma"
 set_default CROSS_BINUTILS_SRC_URL "$SF_MIRROR/mingw/binutils-2.20.1-src.tar.gz"
 
-set_default UNZIP_URL "$SF_MIRROR/gnuwin32/unzip-5.51-1.exe"
-set_default UNZIP_DIR $TOOLS_DIR
-
 # do not use regex-gnu or regex-spencer v3.8.g3, see bug #382852
 set_default REGEX_URL "$GNOME_WIN32_DEPS_URL/libgnurx-2.5.zip"
 set_default REGEX_DEV_URL "$GNOME_WIN32_DEPS_URL/libgnurx-dev-2.5.zip"
@@ -177,9 +174,6 @@ set_default REGEX_DIR $GLOBAL_DIR\\regex
 set_default READLINE_BIN_URL "$SF_MIRROR/gnuwin32/readline-5.0-1-bin.zip"
 set_default READLINE_LIB_URL "$SF_MIRROR/gnuwin32/readline-5.0-1-lib.zip"
 set_default READLINE_DIR $GLOBAL_DIR\\readline
-
-set_default ACTIVE_PERL_URL "http://downloads.activestate.com/ActivePerl/releases/5.16.3.1603/ActivePerl-5.16.3.1603-MSWin32-x86-296746.zip"
-set_default ACTIVE_PERL_DIR $GLOBAL_DIR\\active-perl
 
 set_default AUTOCONF_URL "http://ftp.gnu.org/gnu/autoconf/autoconf-2.63.tar.bz2"
 set_default AUTOMAKE_URL "http://ftp.gnu.org/gnu/automake/automake-1.11.1.tar.bz2"

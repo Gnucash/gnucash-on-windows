@@ -207,6 +207,7 @@ function configure_msys() {
     SUFFIX=$1
     _MINGW_WFSDIR=$2
     echo "configuring msys to use $_MINGW_WFSDIR."
+    touch /etc/fstab
     cp /etc/fstab /etc/fstab.$SUFFIX
     sed '\,/mingw$, d' /etc/fstab > tmp
     echo "$_MINGW_WFSDIR /mingw" >> tmp

@@ -50,29 +50,38 @@ function inst_prepare() {
   _PID=$$
 }
 
-function check_m4_version_ok() {
-    v=`m4 --version | grep -e '[0-9]*\.[0-9]*\.[0-9]*' | sed -e 's/[mM]4//g' -e 's/[^\.0-9]//g'`
-    if [ "$v" = "1.4.7" -o "$v" = "1.4.11" -o "$v" = "1.4.13" ];
-	then
-	    return 1
-    else
-	    return 0
-    fi
-}
+function inst_msys() {
+    setup MSys
+    _MINGW_UDIR=`unix_path $MINGW_DIR`
+    _MSYS_UDIR=`unix_path $MSYS_DIR`
+    add_to_env $_MINGW_UDIR/bin PATH
+    add_to_env $_MSYS_UDIR/bin PATH
 
-function inst_wget() {
-    setup Wget
-    _WGET_UDIR=`unix_path $WGET_DIR`
-    add_to_env $_WGET_UDIR/bin PATH
-    if quiet $_WGET_UDIR/wget --version || quiet wget --version
-    then
-        echo "already installed in $_WGET_UDIR/bin.  skipping."
-    else
-        mkdir -p $_WGET_UDIR/bin
-        tar -xjpf $DOWNLOAD_UDIR/wget*.tar.bz2 -C $_WGET_UDIR
-        cp $_WGET_UDIR/*/*/wget.exe $_WGET_UDIR/bin
-        quiet wget --version || die "wget unavailable"
-    fi
+    # The bootstrap script already set some of this up
+    # It will be set up again here to catch version updates of any of these packages
+    mingw-get update
+    mingw-get upgrade mingw-get
+
+    # Note: msys-base can't be upgraded by this script
+    #       it potentially will want to upgrade bash
+    #       which will fail because bash is running
+    #       If you want to install a newer version
+    #       of msys-base anyway, then
+    #       - open a traditional windows command shell
+    #       - cd into your MINGW's bin directory
+    #         (Default: c:\soft\mingw\bin)
+    #       - run mingw-get upgrade msys-base
+    #       - or mingw-get upgrade msys-base=<new-version>
+    #mingw_smart_get upgrade msys-base
+    mingw_smart_get msys-wget ${MSYS_WGET_VERSION}
+    mingw_smart_get msys-m4 ${MSYS_M4_VERSION}
+    mingw_smart_get msys-patch ${MSYS_PATCH_VERSION}
+    mingw_smart_get msys-perl ${MSYS_PERL_VERSION}
+    mingw_smart_get msys-unzip ${MSYS_UNZIP_VERSION}
+
+    quiet perl --help || die "perl not installed correctly"
+    quiet wget --version || die "wget unavailable"
+    quiet unzip --help || die "unzip unavailable"
 }
 
 function inst_cmake() {
@@ -90,32 +99,6 @@ function inst_cmake() {
         rm -rf ${_CMAKE_UDIR}/cmake-2*
 
         [ -f ${_CMAKE_UDIR}/bin/cmake.exe ] || die "cmake not installed correctly"
-    fi
-}
-
-function inst_dtk() {
-    setup MSYS DTK
-    _MSYS_UDIR=`unix_path $MSYS_DIR`
-    if quiet ${_MSYS_UDIR}/bin/perl --help && [ check_m4_version_ok ]
-    then
-    echo "msys dtk already installed in ${_MSYS_UDIR}.  skipping."
-    else
-        smart_wget $DTK_URL $DOWNLOAD_DIR
-        $LAST_FILE //SP- //SILENT //DIR="$MSYS_DIR"
-        for file in \
-            /bin/{aclocal*,auto*,ifnames,libtool*,guile*} \
-            /share/{aclocal,aclocal-1.7,autoconf,autogen,automake-1.7,guile,libtool}
-        do
-			[ -f $file ] || continue
-            [ "${file##*.bak}" ] || continue
-            _dst_file=$file.bak
-            while [ -e $_dst_file ]; do _dst_file=$_dst_file.bak; done
-            mv $file $_dst_file
-        done
-        wget_unpacked $M4_URL $DOWNLOAD_DIR $TMP_DIR
-        mv $TMP_UDIR/usr/bin/m4.exe /bin
-        quiet ${_MSYS_UDIR}/bin/perl --help &&
-        [ check_m4_version_ok ] || die "msys dtk not installed correctly"
     fi
 }
 
@@ -237,20 +220,6 @@ function inst_swig() {
     fi
 }
 
-function inst_unzip() {
-    setup Unzip
-    _UNZIP_UDIR=`unix_path $UNZIP_DIR`
-    add_to_env $_UNZIP_UDIR/bin PATH
-    if quiet $_UNZIP_UDIR/bin/unzip --help || quiet unzip --help
-    then
-        echo "unzip already installed in $_UNZIP_UDIR.  skipping."
-    else
-        smart_wget $UNZIP_URL $DOWNLOAD_DIR
-        $LAST_FILE //SP- //SILENT //DIR="$UNZIP_DIR"
-        quiet unzip --help || die "unzip unavailable"
-    fi
-}
-
 function inst_git() {
     setup Git
     _GIT_UDIR=`unix_path $GIT_DIR`
@@ -273,29 +242,6 @@ function inst_git() {
     fi
     # Make sure GIT_CMD is available to subshells if it is set
     [ -n "$GIT_CMD" ] && export GIT_CMD
-}
-
-# Functions before this point are basic build infrastructure functions or else they get pieces needed to build
-# gnucash but which are not part of the final product.  Functions after this point are for components of the
-# final build.  Please leave in alphabetical order so they are easier to find.
-
-function inst_active_perl() {
-    setup ActivePerl \(intltool\)
-    _ACTIVE_PERL_UDIR=`unix_path $ACTIVE_PERL_DIR`
-    _ACTIVE_PERL_BASE_DIR=$_ACTIVE_PERL_UDIR/ActivePerl/Perl
-    _ACTIVE_PERL_WFSDIR=`win_fs_path $ACTIVE_PERL_DIR`
-    set_env_or_die $_ACTIVE_PERL_WFSDIR/ActivePerl/Perl/bin/perl INTLTOOL_PERL
-    if quiet $INTLTOOL_PERL --help
-    then
-        echo "ActivePerl already installed IN $_ACTIVE_PERL_UDIR.  skipping."
-    else
-        wget_unpacked $ACTIVE_PERL_URL $DOWNLOAD_DIR $ACTIVE_PERL_DIR
-        qpushd $_ACTIVE_PERL_UDIR
-            assert_one_dir ActivePerl-*
-            mv ActivePerl-* ActivePerl
-        qpopd
-        quiet $INTLTOOL_PERL --help || die "ActivePerl not installed correctly"
-    fi
 }
 
 function inst_aqbanking() {
