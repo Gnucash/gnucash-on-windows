@@ -84,11 +84,26 @@ set_default MINGW_DIR $GLOBAL_DIR\\mingw
 
 # Mingw toolchain
 
+set_default MINGW_AUTOCONF_VERSION    "10-1"
+set_default MINGW_AUTOCONF21_VERSION  "2.13-4"
+set_default MINGW_AUTOCONF25_VERSION  "2.68-1"
+set_default MINGW_AUTOMAKE111_VERSION "1.11.1-1"
+set_default MINGW_AUTOMAKE110_VERSION "1.10.2-1"
+set_default MINGW_AUTOMAKE19_VERSION  "1.9.6-3"
+set_default MINGW_AUTOMAKE18_VERSION  "1.8.5-1"
+set_default MINGW_AUTOMAKE17_VERSION  "1.7.9-1"
+set_default MINGW_AUTOMAKE16_VERSION  "1.6.3-1"
+set_default MINGW_AUTOMAKE15_VERSION  "1.5-1"
+set_default MINGW_AUTOMAKE14_VERSION  "1.4p6-1"
+set_default MINGW_AUTOMAKE_VERSION    "4-1"
+set_default MINGW_BINUTILS_VERSION    "2.23.1-1"
 set_default MINGW_BINUTILS_VERSION    "2.23.1-1"
 set_default MINGW_GCC_VERSION         "4.8.1-3"
 set_default MINGW_GMP_VERSION         "5.1.2-1"
 set_default MINGW_MPC_VERSION         "1.0.1-2"
 set_default MINGW_MPFR_VERSION        "3.1.2-2"
+set_default MINGW_LIBLTDL_VERSION     "2.4-1"
+set_default MINGW_LIBTOOL_VERSION     "2.4-1"
 set_default MINGW_PTHREAD_W32_VERSION "2.9.1-1"
 set_default MINGW_RT_VERSION          "4.0.3-1"
 set_default MINGW_ZLIB_VERSION        "1.2.8-1"
@@ -170,11 +185,6 @@ set_default REGEX_DIR $GLOBAL_DIR\\regex
 set_default READLINE_BIN_URL "$SF_MIRROR/gnuwin32/readline-5.0-1-bin.zip"
 set_default READLINE_LIB_URL "$SF_MIRROR/gnuwin32/readline-5.0-1-lib.zip"
 set_default READLINE_DIR $GLOBAL_DIR\\readline
-
-set_default AUTOCONF_URL "http://ftp.gnu.org/gnu/autoconf/autoconf-2.63.tar.bz2"
-set_default AUTOMAKE_URL "http://ftp.gnu.org/gnu/automake/automake-1.11.1.tar.bz2"
-set_default LIBTOOL_URL "http://ftp.gnu.org/gnu/libtool/libtool-2.2.6a.tar.gz"
-set_default AUTOTOOLS_DIR $GLOBAL_DIR\\autotools
 
 set_default GMP_URL "ftp://ftp.gnu.org/gnu/gmp/gmp-4.3.1.tar.bz2"
 set_default GMP_ABI 32

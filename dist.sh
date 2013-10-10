@@ -26,7 +26,6 @@ register_env_var PATH ":"
 # steps
 add_step dist_prepare
 add_step dist_regex
-add_step dist_autotools
 add_step dist_guile
 add_step dist_gnome
 add_step dist_isocodes

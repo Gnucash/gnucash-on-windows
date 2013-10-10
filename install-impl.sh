@@ -160,6 +160,21 @@ function inst_mingw() {
     mingw_smart_get mingw32-binutils-bin ${MINGW_BINUTILS_VERSION}
     mingw_smart_get mingw32-gcc ${MINGW_GCC_VERSION}
     mingw_smart_get mingw32-gcc-g++ ${MINGW_GCC_VERSION}
+    # Autotools
+    mingw_smart_get mingw32-autoconf2.1 ${MINGW_AUTOCONF21_VERSION}
+    mingw_smart_get mingw32-autoconf2.5 ${MINGW_AUTOCONF25_VERSION}
+    mingw_smart_get mingw32-autoconf ${MINGW_AUTOCONF_VERSION}
+    mingw_smart_get mingw32-automake1.11 ${MINGW_AUTOMAKE111_VERSION}
+    mingw_smart_get mingw32-automake1.10 ${MINGW_AUTOMAKE110_VERSION}
+    mingw_smart_get mingw32-automake1.9 ${MINGW_AUTOMAKE19_VERSION}
+    mingw_smart_get mingw32-automake1.8 ${MINGW_AUTOMAKE18_VERSION}
+    mingw_smart_get mingw32-automake1.7 ${MINGW_AUTOMAKE17_VERSION}
+    mingw_smart_get mingw32-automake1.6 ${MINGW_AUTOMAKE16_VERSION}
+    mingw_smart_get mingw32-automake1.5 ${MINGW_AUTOMAKE15_VERSION}
+    mingw_smart_get mingw32-automake1.4 ${MINGW_AUTOMAKE14_VERSION}
+    mingw_smart_get mingw32-automake ${MINGW_AUTOMAKE_VERSION}
+    mingw_smart_get mingw32-libtool ${MINGW_LIBTOOL_VERSION}
+    mingw_smart_get mingw32-libltdl ${MINGW_LIBLTDL_VERSION}
 
     if [ "$CROSS_COMPILE" != "yes" ]; then
         # Some additional steps, only for native (non-cross-compile)
@@ -173,6 +188,13 @@ function inst_mingw() {
 
     # Test if everything worked out correctly
     quiet test_for_mingw || die "mingw not installed correctly"
+    quiet autoconf --help || die "autoconf not installed correctly"
+    quiet automake --help || die "automake not installed correctly"
+    quiet libtoolize --help && \
+    quiet ${LD} -lltdl -o $TMP_UDIR/ofile || die "libtool/libtoolize not installed correctly"
+
+    # Still needed ?
+    #[ ! -d $_AUTOTOOLS_UDIR/share/aclocal ] || add_to_env "-I $_AUTOTOOLS_UDIR/share/aclocal" ACLOCAL_FLAGS
 }
 
 function inst_mingwutils() {
@@ -297,56 +319,6 @@ function inst_aqbanking() {
         rm -rf ${TMP_UDIR}/aqbanking-*
     fi
     [ ! -d $_AQBANKING_UDIR/share/aclocal ] || add_to_env "-I $_AQBANKING_UDIR/share/aclocal" ACLOCAL_FLAGS
-}
-
-function inst_autotools() {
-    setup Autotools
-    _AUTOTOOLS_UDIR=`unix_path $AUTOTOOLS_DIR`
-    add_to_env $_AUTOTOOLS_UDIR/bin PATH
-    add_to_env -I$_AUTOTOOLS_UDIR/include AUTOTOOLS_CPPFLAGS
-    add_to_env -L$_AUTOTOOLS_UDIR/lib AUTOTOOLS_LDFLAGS
-    if quiet $_AUTOTOOLS_UDIR/bin/autoconf --help && quiet $_AUTOTOOLS_UDIR/bin/automake --help
-    then
-        echo "autoconf/automake already installed in $_AUTOTOOLS_UDIR.  skipping."
-    else
-        wget_unpacked $AUTOCONF_URL $DOWNLOAD_DIR $TMP_DIR
-        wget_unpacked $AUTOMAKE_URL $DOWNLOAD_DIR $TMP_DIR
-        assert_one_dir $TMP_UDIR/autoconf-*
-        qpushd $TMP_UDIR/autoconf-*
-            echo "building autoconf..."
-            ./configure --prefix=$_AUTOTOOLS_UDIR
-            make
-            make install
-        qpopd
-        assert_one_dir $TMP_UDIR/automake-*
-        qpushd $TMP_UDIR/automake-*
-            echo "building automake..."
-            ./configure --prefix=$_AUTOTOOLS_UDIR
-            make
-            make install
-        qpopd
-        quiet autoconf --help || die "autoconf not installed correctly"
-        quiet automake --help || die "automake not installed correctly"
-        rm -rf ${TMP_UDIR}/autoconf-* ${TMP_UDIR}/automake-*
-    fi
-    if quiet libtoolize --help && \
-       quiet ${LD} $AUTOTOOLS_LDFLAGS -lltdl -o $TMP_UDIR/ofile
-    then
-        echo "libtool/libtoolize already installed.  skipping."
-    else
-        wget_unpacked $LIBTOOL_URL $DOWNLOAD_DIR $TMP_DIR
-        assert_one_dir $TMP_UDIR/libtool-*
-        qpushd $TMP_UDIR/libtool-*
-            echo "building libtool..."
-            ./configure ${HOST_XCOMPILE} --prefix=$_AUTOTOOLS_UDIR --disable-static
-            make
-            make install
-        qpopd
-        quiet libtoolize --help && \
-        quiet ${LD} $AUTOTOOLS_LDFLAGS -lltdl -o $TMP_UDIR/ofile || die "libtool/libtoolize not installed correctly"
-        rm -rf ${TMP_UDIR}/libtool-*
-    fi
-    [ ! -d $_AUTOTOOLS_UDIR/share/aclocal ] || add_to_env "-I $_AUTOTOOLS_UDIR/share/aclocal" ACLOCAL_FLAGS
 }
 
 function inst_enchant() {
@@ -621,9 +593,9 @@ function inst_guile() {
                 -C --prefix=$_GUILE_WFSDIR \
                 ac_cv_func_regcomp_rx=yes \
                 CFLAGS="-D__MINGW32__" \
-                CPPFLAGS="${READLINE_CPPFLAGS} ${REGEX_CPPFLAGS} ${AUTOTOOLS_CPPFLAGS} ${GMP_CPPFLAGS} -D__MINGW32__" \
-                LDFLAGS="${READLINE_LDFLAGS} ${REGEX_LDFLAGS} ${AUTOTOOLS_LDFLAGS} ${GMP_LDFLAGS} -Wl,--enable-auto-import"
-            make LDFLAGS="${READLINE_LDFLAGS} ${REGEX_LDFLAGS} ${AUTOTOOLS_LDFLAGS} ${GMP_LDFLAGS} -Wl,--enable-auto-import -no-undefined -avoid-version"
+                CPPFLAGS="${READLINE_CPPFLAGS} ${REGEX_CPPFLAGS} ${GMP_CPPFLAGS} -D__MINGW32__" \
+                LDFLAGS="${READLINE_LDFLAGS} ${REGEX_LDFLAGS} ${GMP_LDFLAGS} -Wl,--enable-auto-import"
+            make LDFLAGS="${READLINE_LDFLAGS} ${REGEX_LDFLAGS} ${GMP_LDFLAGS} -Wl,--enable-auto-import -no-undefined -avoid-version"
             make install
         qpopd
         guile -c '(use-modules (srfi srfi-39))' || die "guile not installed correctly"
@@ -823,7 +795,7 @@ function inst_libdbi() {
             if [ "$CROSS_COMPILE" = "yes" ]; then
                 rm ltmain.sh aclocal.m4
                 libtoolize --force
-                aclocal -I ${_AUTOTOOLS_UDIR}/share/aclocal
+                aclocal
                 autoheader
                 automake --add-missing
                 autoconf
@@ -929,7 +901,7 @@ function inst_libofx() {
 #                aclocal ${ACLOCAL_FLAGS}
 #                automake
 #                autoconf
-#                ACLOCAL="aclocal $ACLOCAL_FLAGS" autoreconf -fvi $ACLOCAL_FLAGS -B $_AUTOTOOLS_UDIR/share/autoconf/autoconf
+#                ACLOCAL="aclocal $ACLOCAL_FLAGS" autoreconf -fvi $ACLOCAL_FLAGS
             fi
             ./configure ${HOST_XCOMPILE} \
                 --prefix=${_LIBOFX_UDIR} \
@@ -1310,8 +1282,8 @@ function inst_gnucash() {
             ${AQBANKING_OPTIONS} \
             --enable-binreloc \
             --enable-locale-specific-tax \
-            CPPFLAGS="${AUTOTOOLS_CPPFLAGS} ${REGEX_CPPFLAGS} ${GNOME_CPPFLAGS} ${GMP_CPPFLAGS} ${GUILE_CPPFLAGS} ${LIBDBI_CPPFLAGS} ${KTOBLZCHECK_CPPFLAGS} ${HH_CPPFLAGS} ${LIBSOUP_CPPFLAGS} -D_WIN32 ${EXTRA_CFLAGS}" \
-            LDFLAGS="${AUTOTOOLS_LDFLAGS} ${REGEX_LDFLAGS} ${GNOME_LDFLAGS} ${GMP_LDFLAGS} ${GUILE_LDFLAGS} ${LIBDBI_LDFLAGS} ${KTOBLZCHECK_LDFLAGS} ${HH_LDFLAGS} -L${_SQLITE3_UDIR}/lib -L${_ENCHANT_UDIR}/lib -L${_LIBXSLT_UDIR}/lib -L${_MINGW_UDIR}/lib" \
+            CPPFLAGS="${REGEX_CPPFLAGS} ${GNOME_CPPFLAGS} ${GMP_CPPFLAGS} ${GUILE_CPPFLAGS} ${LIBDBI_CPPFLAGS} ${KTOBLZCHECK_CPPFLAGS} ${HH_CPPFLAGS} ${LIBSOUP_CPPFLAGS} -D_WIN32 ${EXTRA_CFLAGS}" \
+            LDFLAGS="${REGEX_LDFLAGS} ${GNOME_LDFLAGS} ${GMP_LDFLAGS} ${GUILE_LDFLAGS} ${LIBDBI_LDFLAGS} ${KTOBLZCHECK_LDFLAGS} ${HH_LDFLAGS} -L${_SQLITE3_UDIR}/lib -L${_ENCHANT_UDIR}/lib -L${_LIBXSLT_UDIR}/lib -L${_MINGW_UDIR}/lib" \
             PKG_CONFIG_PATH="${PKG_CONFIG_PATH}"
 
         make
@@ -1332,7 +1304,6 @@ function make_install() {
     _GNOME_UDIR=`unix_path $GNOME_DIR`
     _GUILE_UDIR=`unix_path $GUILE_DIR`
     _REGEX_UDIR=`unix_path $REGEX_DIR`
-    _AUTOTOOLS_UDIR=`unix_path $AUTOTOOLS_DIR`
     _OPENSSL_UDIR=`unix_path $OPENSSL_DIR`
     _GWENHYWFAR_UDIR=`unix_path ${GWENHYWFAR_DIR}`
     _AQBANKING_UDIR=`unix_path ${AQBANKING_DIR}`
@@ -1396,7 +1367,6 @@ set PATH=$GNOME_DIR\\bin;%PATH%
 set PATH=$GUILE_DIR\\bin;%PATH%
 set PATH=$WEBKIT_DIR\\bin;%PATH%
 set PATH=$REGEX_DIR\\bin;%PATH%
-set PATH=$AUTOTOOLS_DIR\\bin;%PATH%
 set PATH=$AQBANKING_PATH;%PATH%
 set PATH=$LIBOFX_DIR\\bin;%PATH%
 set PATH=$OPENSP_DIR\\bin;%PATH%

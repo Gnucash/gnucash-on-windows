@@ -30,8 +30,6 @@ qpushd "$(dirname $(unix_path "$0"))"
 
 # variables
 register_env_var ACLOCAL_FLAGS " "
-register_env_var AUTOTOOLS_CPPFLAGS " "
-register_env_var AUTOTOOLS_LDFLAGS " "
 register_env_var GMP_CPPFLAGS " "
 register_env_var GMP_LDFLAGS " "
 register_env_var GNOME_CPPFLAGS " "
@@ -73,7 +71,6 @@ add_step inst_readline
 if [ "$CROSS_COMPILE" != "yes" ]; then
  add_step inst_mingwutils
 fi
-add_step inst_autotools
 add_step inst_gmp
 add_step inst_exetype
 add_step inst_gnome

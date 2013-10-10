@@ -13,7 +13,6 @@ function dist_prepare() {
         die "Please remove ${DIST_DIR} first"
     fi
     _UNZIP_UDIR=`unix_path $UNZIP_DIR`
-    _AUTOTOOLS_UDIR=`unix_path $AUTOTOOLS_DIR`
     _GUILE_UDIR=`unix_path $GUILE_DIR`
     _WIN_UDIR=`unix_path $WINDIR`
     _EXETYPE_UDIR=`unix_path $EXETYPE_DIR`
@@ -59,12 +58,6 @@ function dist_aqbanking() {
     cp -a ${_AQBANKING_UDIR}/lib/aqbanking ${DIST_UDIR}/lib
     cp -a ${_AQBANKING_UDIR}/share/aqbanking ${DIST_UDIR}/share
     cp -a ${_AQBANKING_UDIR}/share/locale ${DIST_UDIR}/share
-}
-
-function dist_autotools() {
-    setup Autotools
-    mkdir -p $DIST_UDIR/bin
-    cp -a $_AUTOTOOLS_UDIR/bin/*.dll $DIST_UDIR/bin
 }
 
 function dist_gmp() {
