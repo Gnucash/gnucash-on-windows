@@ -157,6 +157,10 @@ function inst_mingw() {
     mingw_smart_get mingw32-libpthread-dll ${MINGW_PTHREAD_W32_VERSION}
     mingw_smart_get mingw32-libz-dll ${MINGW_ZLIB_VERSION}
     mingw_smart_get mingw32-libgcc-dll ${MINGW_GCC_VERSION}
+    # Gettext and friends - should come before binutils
+    mingw_smart_get mingw32-libiconv-dev ${MINGW_LIBICONV_VERSION}
+    mingw_smart_get mingw32-libexpat-dev ${MINGW_LIBEXPAT_VERSION}
+    mingw_smart_get mingw32-gettext-dev ${MINGW_GETTEXT_VERSION}
     # Binutils and GCC/G++ binaries
     mingw_smart_get mingw32-binutils-bin ${MINGW_BINUTILS_VERSION}
     mingw_smart_get mingw32-gcc ${MINGW_GCC_VERSION}
@@ -176,10 +180,6 @@ function inst_mingw() {
     mingw_smart_get mingw32-automake ${MINGW_AUTOMAKE_VERSION}
     mingw_smart_get mingw32-libtool ${MINGW_LIBTOOL_VERSION}
     mingw_smart_get mingw32-libltdl ${MINGW_LIBLTDL_VERSION}
-    # Gettext and friends
-    mingw_smart_get mingw32-libiconv-dev ${MINGW_LIBICONV_VERSION}
-    mingw_smart_get mingw32-libexpat-dev ${MINGW_LIBEXPAT_VERSION}
-    mingw_smart_get mingw32-gettext-dev ${MINGW_GETTEXT_VERSION}
 
     if [ "$CROSS_COMPILE" != "yes" ]; then
         # Some additional steps, only for native (non-cross-compile)
