@@ -222,6 +222,72 @@ function restore_msys() {
     fi
 }
 
+function mingw_smart_get () {
+    PACKAGE=$1
+    VERSION=$2
+
+    # Check if a sensible package name has been given
+    [ "$PACKAGE" ] || return
+
+    _MINGW_UDIR=`unix_path $MINGW_DIR`
+
+    # Check if a package has already been installed or not. This is
+    # a workaround for mingw-get's unfortunate refusal to upgrade a
+    # package when calling mingw-get install on an already installed one
+    # or mingw-get upgrade on a package that's not installed
+
+    # Note: awk is used below instead of grep, because the tests
+    #       can return without a result. Grep exists with a non-zero
+    #       exit value in that case, which will cause the script to
+    #       abort (due to set -e being set). Awk does not.
+
+    COMPONENTS="$(mingw-get show "$PACKAGE" | awk '/Components:/')"
+    if [ -n "$COMPONENTS" ]
+    then
+        # This package has subcomponents, we need to test
+        # the install status of the subcomponents instead
+        # Since we call mingw-get on the general package name
+        # all subcomponents normally get installed together
+        # so testing for only one subcomponent should be sufficient
+        # This assumption may lead to a situation where manulal
+        # intervention is needed in case of errors during mingw-get calls
+        # Let's hope that such errors are the exception
+        COMPONENT="${COMPONENTS#Components: }"
+        COMPONENT="${COMPONENT%%,*}"
+        SUBPACKAGE="$PACKAGE-$COMPONENT"
+    else
+        SUBPACKAGE="$PACKAGE"
+    fi
+
+    INSTVERSION="$(mingw-get show "$SUBPACKAGE" | awk '/Installed Version:/')"
+    INSTVERSION="${INSTVERSION#Installed Version:  }"
+    REPOVERSION="$(mingw-get show "$SUBPACKAGE" | awk '/Repository Version:/')"
+    REPOVERSION="${REPOVERSION#Repository Version: }"
+
+    # If a version string is given add add it to the package name
+    [ -n "$VERSION" ] && PACKAGE="${PACKAGE}=${VERSION}"
+
+    if [ -z "$INSTVERSION" ]
+    then
+        # Unknown package
+        die "Package $PACKAGE is unknown by mingw."
+    elif [ "$INSTVERSION" == "none" ]
+    then
+        # Package not yet installed
+        $_MINGW_UDIR/bin/mingw-get install ${PACKAGE}
+    elif [ -n "$VERSION" ] && [ -z "$(echo "$INSTVERSION" | awk "/$VERSION/")" ]
+    then
+        # Requested version differs from installed version
+        $_MINGW_UDIR/bin/mingw-get upgrade ${PACKAGE}
+    elif [ -z "$VERSION" ] && [ "$INSTVERSION" != "$REPOVERSION" ]
+    then
+        # No version requested, but installed version differs from version in repo
+        $_MINGW_UDIR/bin/mingw-get upgrade ${PACKAGE}
+    else
+        echo "Package $PACKAGE is up to date"
+    fi
+}
+
 ### Local Variables: ***
 ### mode: shell-script ***
 ### sh-basic-offset: 4 ***
