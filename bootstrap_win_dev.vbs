@@ -107,9 +107,11 @@ Else
     If objFso.FolderExists(strMingwTmpDir) Then
         objFso.DeleteFolder strMingwTmpDir , True
     End If
-    ExtractAll objFso.GetAbsolutePathName(".")& "\mingw-get.zip", strMingwTmpDir
+    ExtractAll DOWNLOAD_DIR & "\mingw-get.zip", strMingwTmpDir
     objFso.CopyFolder strMingwTmpDir & "\*", MINGW_DIR, True
     objFso.DeleteFolder strMingwTmpDir , True
+    ' Create a default profile for mingw-get to avoid constant warnings
+    objFso.CopyFile MINGW_DIR & "\var\lib\mingw-get\data\defaults.xml", MINGW_DIR & "\var\lib\mingw-get\data\profile.xml"
     stdout.WriteLine "Success"
 
 End If
@@ -122,7 +124,7 @@ End If
 stdout.Write "Installing msys and wget... "
 strMingwGet = MINGW_DIR & "\bin\mingw-get.exe"
 
-objWsh.Run strMingwGet & " install msys-base msys-wget", 1, True
+objWsh.Run strMingwGet & " install mingw-get msys-base msys-wget", 1, True
 'Set objExec = objWsh.Exec (strMingwGet & " install msys-base msys-wget")
 
 strWget = MINGW_DIR & "\msys\1.0\bin\wget.exe"
