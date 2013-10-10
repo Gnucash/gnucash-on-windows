@@ -80,23 +80,19 @@ set_default GNOME_MIRROR "ftp.gnome.org/pub/gnome"
 set_default GNOME_WIN32_URL "$GNOME_MIRROR/binaries/win32"
 set_default GNOME_WIN32_DEPS_URL "$GNOME_WIN32_URL/dependencies"
 
-set_default MINGW_RT_URL "$SF_MIRROR/mingw/mingwrt-3.18-mingw32-dev.tar.gz"
-set_default MINGW_RT_DLL_URL "$SF_MIRROR/mingw/mingwrt-3.18-mingw32-dll.tar.gz"
-set_default W32API_URL "$SF_MIRROR/mingw/w32api-3.15-1-mingw32-dev.tar.lzma"
-set_default MINGW_MAKE_URL "$SF_MIRROR/mingw/mingw32-make-3.81-20080326-3.tar.gz"
 set_default MINGW_DIR $GLOBAL_DIR\\mingw
 
-# The URLs for precompiled gcc/mingw binaries
-set_default BINUTILS_URL "$SF_MIRROR/mingw/binutils-2.21-2-mingw32-bin.tar.lzma"
-set_default GCC_CORE_URL "$SF_MIRROR/mingw/gcc-core-4.5.2-1-mingw32-bin.tar.lzma"
-set_default GCC_CORE_DLL_URL "$SF_MIRROR/mingw/libgcc-4.5.2-1-mingw32-dll-1.tar.lzma"
-set_default GCC_GPP_URL "$SF_MIRROR/mingw/gcc-c++-4.5.2-1-mingw32-bin.tar.lzma"
-set_default GCC_GPP_DLL_URL "$SF_MIRROR/mingw/libstdc++-4.5.2-1-mingw32-dll-6.tar.lzma"
-set_default GCC_GPP_PATCH "`pwd`/gcc-c++-4.4.0.patch"
-set_default GCC_MPC_URL "$SF_MIRROR/mingw/libmpc-0.8.1-1-mingw32-dll-2.tar.lzma"
-set_default GCC_MPFR_URL "$SF_MIRROR/mingw/libmpfr-2.4.1-1-mingw32-dll-1.tar.lzma"
-set_default GCC_GMP_URL "$SF_MIRROR/mingw/libgmp-5.0.1-1-mingw32-dll-10.tar.lzma"
-set_default GCC_PTHREADS_URL "$SF_MIRROR/mingw/libpthread-2.8.0-3-mingw32-dll-2.tar.lzma"
+# Mingw toolchain
+
+set_default MINGW_BINUTILS_VERSION    "2.23.1-1"
+set_default MINGW_GCC_VERSION         "4.8.1-3"
+set_default MINGW_GMP_VERSION         "5.1.2-1"
+set_default MINGW_MPC_VERSION         "1.0.1-2"
+set_default MINGW_MPFR_VERSION        "3.1.2-2"
+set_default MINGW_PTHREAD_W32_VERSION "2.9.1-1"
+set_default MINGW_RT_VERSION          "4.0.3-1"
+set_default MINGW_ZLIB_VERSION        "1.2.8-1"
+set_default MINGW_MAKE_VERSION        "3.82-5"
 
 if [ "$CROSS_COMPILE" != yes ]; then
     # Use native toolchain

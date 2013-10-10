@@ -121,7 +121,8 @@ function test_for_mingw() {
     if [ "$CROSS_COMPILE" == "yes" ]; then
         ${CC} --version && ${LD} --help
     else
-        g++ --version && mingw32-make --help
+#        g++ --version && mingw32-make --help
+        g++ --version
     fi
 }
 
@@ -133,39 +134,45 @@ function inst_mingw() {
     configure_msys "$_PID" "$_MINGW_WFSDIR"
     add_to_env $_MINGW_UDIR/bin PATH
 
-    if quiet test_for_mingw
-    then
-        echo "mingw already installed in $_MINGW_UDIR.  skipping."
-    else
-        mkdir -p $_MINGW_UDIR
+    mkdir -p $_MINGW_UDIR
 
-        # Download the precompiled packages in any case to get their DLLs
-        wget_unpacked $BINUTILS_URL $DOWNLOAD_DIR $MINGW_DIR
-        wget_unpacked $GCC_CORE_URL $DOWNLOAD_DIR $MINGW_DIR
-        wget_unpacked $GCC_CORE_DLL_URL $DOWNLOAD_DIR $MINGW_DIR
-        wget_unpacked $GCC_GPP_URL $DOWNLOAD_DIR $MINGW_DIR
-        wget_unpacked $GCC_GPP_DLL_URL $DOWNLOAD_DIR $MINGW_DIR
-        wget_unpacked $GCC_GMP_URL $DOWNLOAD_DIR $MINGW_DIR
-        wget_unpacked $GCC_MPC_URL $DOWNLOAD_DIR $MINGW_DIR
-        wget_unpacked $GCC_MPFR_URL $DOWNLOAD_DIR $MINGW_DIR
-        wget_unpacked $GCC_PTHREADS_URL $DOWNLOAD_DIR $MINGW_DIR
-        wget_unpacked $MINGW_RT_URL $DOWNLOAD_DIR $MINGW_DIR
-        wget_unpacked $MINGW_RT_DLL_URL $DOWNLOAD_DIR $MINGW_DIR
-        wget_unpacked $W32API_URL $DOWNLOAD_DIR $MINGW_DIR
+    # Download the precompiled packages in any case to get their DLLs
+    # NOTE: installation order matters here - care should be taken
+    #       that each call to mingw_smart_get really installs one package
+    #       or group of packages that embody one entity such as gcc's subpackages)
+    #       This is due to the very limited package management features
+    #       of mingw-get (which is called by mingw_smart_get.
+    #       If multiple packages are automatically installed in
+    #       one command, it becomes virtually impossible to guarantee
+    #       the predetermined versions of all packages will be installed
+    #       (instead of the most recent one)
 
-        if [ "$CROSS_COMPILE" != "yes" ]; then
-            wget_unpacked $MINGW_MAKE_URL $DOWNLOAD_DIR $MINGW_DIR
-            (echo "y"; echo "y"; echo "$_MINGW_WFSDIR"; echo "y") | sh pi.sh
-        else
-            ./create_cross_mingw.sh
-        fi
-        quiet test_for_mingw || die "mingw not installed correctly"
-    fi
+    # Win32 runtime and api
+    mingw_smart_get mingw32-mingwrt-dev ${MINGW_RT_VERSION}
+    mingw_smart_get mingw32-w32api-dev ${MINGW_RT_VERSION}
+    # GCC/G++ dependencies
+    mingw_smart_get mingw32-libgmp-dll ${MINGW_GMP_VERSION}
+    mingw_smart_get mingw32-libmpfr-dll ${MINGW_MPFR_VERSION}
+    mingw_smart_get mingw32-libmpc-dll ${MINGW_MPC_VERSION}
+    mingw_smart_get mingw32-libpthread-dll ${MINGW_PTHREAD_W32_VERSION}
+    mingw_smart_get mingw32-libz-dll ${MINGW_ZLIB_VERSION}
+    mingw_smart_get mingw32-libgcc-dll ${MINGW_GCC_VERSION}
+    mingw_smart_get mingw32-binutils-bin ${MINGW_BINUTILS_VERSION}
+    mingw_smart_get mingw32-gcc ${MINGW_GCC_VERSION}
+    mingw_smart_get mingw32-gcc-g++ ${MINGW_GCC_VERSION}
 
     if [ "$CROSS_COMPILE" != "yes" ]; then
-        # Some preparation steps, only for native (non-cross-compile)
-        cp ${_MINGW_UDIR}/bin/libpthread-2.dll ${_MINGW_UDIR}/bin/pthreadGC2.dll
+        # Some additional steps, only for native (non-cross-compile)
+        #cp ${_MINGW_UDIR}/bin/libpthread-2.dll ${_MINGW_UDIR}/bin/pthreadGC2.dll
+        echo "Skipping lpthread copying for now, let's see if this is still needed..."
+        #mingw_smart_get mingw32-make ${MINGW_MAKE_VERSION}
+        echo "Skipping mingw32-make installation for now, let's see if this is still needed..."
+    else
+        ./create_cross_mingw.sh
     fi
+
+    # Test if everything worked out correctly
+    quiet test_for_mingw || die "mingw not installed correctly"
 }
 
 function inst_mingwutils() {
