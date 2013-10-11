@@ -66,9 +66,6 @@ fi
 add_step inst_mingw
 add_step inst_regex
 add_step inst_readline
-if [ "$CROSS_COMPILE" != "yes" ]; then
- add_step inst_mingwutils
-fi
 add_step inst_exetype
 add_step inst_gnome
 add_step inst_guile

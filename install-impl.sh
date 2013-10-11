@@ -184,11 +184,15 @@ function inst_mingw() {
     mingw_smart_get mingw32-gmp-dev ${MINGW_GMP_VERSION}
 
     if [ "$CROSS_COMPILE" != "yes" ]; then
+        mingw_smart_get mingw32-pexports ${MINGW_PEXPORTS_VERSION}
         # Some additional steps, only for native (non-cross-compile)
         #cp ${_MINGW_UDIR}/bin/libpthread-2.dll ${_MINGW_UDIR}/bin/pthreadGC2.dll
         echo "Skipping lpthread copying for now, let's see if this is still needed..."
         #mingw_smart_get mingw32-make ${MINGW_MAKE_VERSION}
         echo "Skipping mingw32-make installation for now, let's see if this is still needed..."
+        quiet which pexports || die "mingw-utils not installed correctly (pexports)"
+        # FIXME which library uses reimp ?
+        # quiet which reimp || die "mingw-utils not installed correctly (reimp)"
     else
         ./create_cross_mingw.sh
     fi
@@ -202,20 +206,6 @@ function inst_mingw() {
 
     # Still needed ?
     #[ ! -d $_AUTOTOOLS_UDIR/share/aclocal ] || add_to_env "-I $_AUTOTOOLS_UDIR/share/aclocal" ACLOCAL_FLAGS
-}
-
-function inst_mingwutils() {
-    setup MinGW-Utils
-    _MINGW_UTILS_UDIR=`unix_path $MINGW_UTILS_DIR`
-    add_to_env $_MINGW_UTILS_UDIR/bin PATH
-    if quiet which pexports && quiet which reimp
-    then
-        echo "mingw-utils already installed in $_MINGW_UTILS_UDIR.  skipping."
-    else
-        wget_unpacked $MINGW_UTILS_URL $DOWNLOAD_DIR $MINGW_UTILS_DIR
-        quiet which pexports || die "mingw-utils not installed correctly (pexports)"
-        quiet which reimp || die "mingw-utils not installed correctly (reimp)"
-    fi
 }
 
 function inst_svn() {
