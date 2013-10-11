@@ -180,6 +180,8 @@ function inst_mingw() {
     mingw_smart_get mingw32-automake ${MINGW_AUTOMAKE_VERSION}
     mingw_smart_get mingw32-libtool ${MINGW_LIBTOOL_VERSION}
     mingw_smart_get mingw32-libltdl ${MINGW_LIBLTDL_VERSION}
+    # Build dependencies for gnucash and other self-built libraries
+    mingw_smart_get mingw32-gmp-dev ${MINGW_GMP_VERSION}
 
     if [ "$CROSS_COMPILE" != "yes" ]; then
         # Some additional steps, only for native (non-cross-compile)
@@ -309,8 +311,8 @@ function inst_aqbanking() {
                 --with-xmlmerge=${XMLMERGE} \
                 --with-frontends="cbanking" \
                 --with-backends="${_AQ_BACKENDS}" \
-                CPPFLAGS="${_AQ_CPPFLAGS} ${GMP_CPPFLAGS}" \
-                LDFLAGS="${_AQ_LDFLAGS} ${GMP_LDFLAGS}" \
+                CPPFLAGS="${_AQ_CPPFLAGS}" \
+                LDFLAGS="${_AQ_LDFLAGS}" \
                 --prefix=${_AQBANKING_UDIR}
             make
             rm -rf ${_AQBANKING_UDIR}
@@ -359,32 +361,6 @@ function inst_glade() {
         qpopd
         quiet glade-3 --version || die "glade not installed correctly"
         rm -rf ${TMP_UDIR}/glade3-*
-    fi
-}
-
-function inst_gmp() {
-    setup Gmp
-    _GMP_UDIR=`unix_path ${GMP_DIR}`
-    add_to_env -I$_GMP_UDIR/include GMP_CPPFLAGS
-    add_to_env -L$_GMP_UDIR/lib GMP_LDFLAGS
-    add_to_env ${_GMP_UDIR}/bin PATH
-    if quiet ${LD} $GMP_LDFLAGS -lgmp -o $TMP_UDIR/ofile
-    then
-        echo "Gmp already installed in ${_GMP_UDIR}. skipping."
-    else
-        wget_unpacked $GMP_URL $DOWNLOAD_DIR $TMP_DIR
-        assert_one_dir $TMP_UDIR/gmp-*
-        qpushd $TMP_UDIR/gmp-*
-            ./configure ${HOST_XCOMPILE} \
-                ABI=$GMP_ABI \
-                --prefix=${_GMP_UDIR} \
-                --disable-static --enable-shared 
-            make
-#            [ "$CROSS_COMPILE" != "yes" ] && make check
-            make install
-        qpopd
-        quiet ${LD} $GMP_LDFLAGS -lgmp -o $TMP_UDIR/ofile || die "Gmp not installed correctly"
-        rm -rf ${TMP_UDIR}/gmp-*
     fi
 }
 
@@ -598,9 +574,9 @@ function inst_guile() {
                 -C --prefix=$_GUILE_WFSDIR \
                 ac_cv_func_regcomp_rx=yes \
                 CFLAGS="-D__MINGW32__" \
-                CPPFLAGS="${READLINE_CPPFLAGS} ${REGEX_CPPFLAGS} ${GMP_CPPFLAGS} -D__MINGW32__" \
-                LDFLAGS="${READLINE_LDFLAGS} ${REGEX_LDFLAGS} ${GMP_LDFLAGS} -Wl,--enable-auto-import"
-            make LDFLAGS="${READLINE_LDFLAGS} ${REGEX_LDFLAGS} ${GMP_LDFLAGS} -Wl,--enable-auto-import -no-undefined -avoid-version"
+                CPPFLAGS="${READLINE_CPPFLAGS} ${REGEX_CPPFLAGS} -D__MINGW32__" \
+                LDFLAGS="${READLINE_LDFLAGS} ${REGEX_LDFLAGS} -Wl,--enable-auto-import"
+            make LDFLAGS="${READLINE_LDFLAGS} ${REGEX_LDFLAGS} -Wl,--enable-auto-import -no-undefined -avoid-version"
             make install
         qpopd
         guile -c '(use-modules (srfi srfi-39))' || die "guile not installed correctly"
@@ -1287,8 +1263,8 @@ function inst_gnucash() {
             ${AQBANKING_OPTIONS} \
             --enable-binreloc \
             --enable-locale-specific-tax \
-            CPPFLAGS="${REGEX_CPPFLAGS} ${GNOME_CPPFLAGS} ${GMP_CPPFLAGS} ${GUILE_CPPFLAGS} ${LIBDBI_CPPFLAGS} ${KTOBLZCHECK_CPPFLAGS} ${HH_CPPFLAGS} ${LIBSOUP_CPPFLAGS} -D_WIN32 ${EXTRA_CFLAGS}" \
-            LDFLAGS="${REGEX_LDFLAGS} ${GNOME_LDFLAGS} ${GMP_LDFLAGS} ${GUILE_LDFLAGS} ${LIBDBI_LDFLAGS} ${KTOBLZCHECK_LDFLAGS} ${HH_LDFLAGS} -L${_SQLITE3_UDIR}/lib -L${_ENCHANT_UDIR}/lib -L${_LIBXSLT_UDIR}/lib -L${_MINGW_UDIR}/lib" \
+            CPPFLAGS="${REGEX_CPPFLAGS} ${GNOME_CPPFLAGS} ${GUILE_CPPFLAGS} ${LIBDBI_CPPFLAGS} ${KTOBLZCHECK_CPPFLAGS} ${HH_CPPFLAGS} ${LIBSOUP_CPPFLAGS} -D_WIN32 ${EXTRA_CFLAGS}" \
+            LDFLAGS="${REGEX_LDFLAGS} ${GNOME_LDFLAGS} ${GUILE_LDFLAGS} ${LIBDBI_LDFLAGS} ${KTOBLZCHECK_LDFLAGS} ${HH_LDFLAGS} -L${_SQLITE3_UDIR}/lib -L${_ENCHANT_UDIR}/lib -L${_LIBXSLT_UDIR}/lib -L${_MINGW_UDIR}/lib" \
             PKG_CONFIG_PATH="${PKG_CONFIG_PATH}"
 
         make
@@ -1364,7 +1340,6 @@ set PATH=$INSTALL_DIR\\lib;%PATH%
 set PATH=$INSTALL_DIR\\lib\\gnucash;%PATH%
 set PATH=$GNUTLS_DIR\\bin;%PATH%
 set PATH=$MINGW_DIR\\bin;%PATH%
-set PATH=$GMP_DIR\\bin;%PATH%
 set PATH=$GOFFICE_DIR\\bin;%PATH%
 set PATH=$LIBGSF_DIR\\bin;%PATH%
 set PATH=$PCRE_DIR\\bin;%PATH%

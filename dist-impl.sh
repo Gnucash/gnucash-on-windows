@@ -25,7 +25,6 @@ function dist_prepare() {
     _OPENSP_UDIR=`unix_path $OPENSP_DIR`
     _LIBOFX_UDIR=`unix_path $LIBOFX_DIR`
     _LIBXSLT_UDIR=`unix_path $LIBXSLT_DIR`
-    _GMP_UDIR=`unix_path $GMP_DIR`
     _GNUTLS_UDIR=`unix_path $GNUTLS_DIR`
     _GWENHYWFAR_UDIR=`unix_path $GWENHYWFAR_DIR`
     _AQBANKING_UDIR=`unix_path $AQBANKING_DIR`
@@ -58,11 +57,6 @@ function dist_aqbanking() {
     cp -a ${_AQBANKING_UDIR}/lib/aqbanking ${DIST_UDIR}/lib
     cp -a ${_AQBANKING_UDIR}/share/aqbanking ${DIST_UDIR}/share
     cp -a ${_AQBANKING_UDIR}/share/locale ${DIST_UDIR}/share
-}
-
-function dist_gmp() {
-    setup gmp
-    cp -a ${_GMP_UDIR}/bin/*.dll ${DIST_UDIR}/bin
 }
 
 function dist_gnome() {
