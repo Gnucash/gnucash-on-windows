@@ -183,6 +183,7 @@ function inst_mingw() {
     mingw_smart_get mingw32-libiconv-bin ${MINGW_LIBICONV_VERSION}
     # Build dependencies for gnucash and other self-built libraries
     mingw_smart_get mingw32-gmp-dev ${MINGW_GMP_VERSION}
+    mingw_smart_get mingw32-pthreads-w32-dev ${MINGW_PTHREAD_W32_VERSION}
 
     if [ "$CROSS_COMPILE" != "yes" ]; then
         mingw_smart_get mingw32-pexports ${MINGW_PEXPORTS_VERSION}
@@ -536,20 +537,15 @@ function inst_guile() {
         tar -xzpf $_GUILE_BALL -C $TMP_UDIR
         assert_one_dir $TMP_UDIR/guile-*
         qpushd $TMP_UDIR/guile-*
-            if [ -n "$GUILE_PATCH" -a -f "$GUILE_PATCH" ]; then
-                patch -p1 < $GUILE_PATCH
-            fi
-            ACLOCAL="aclocal $ACLOCAL_FLAGS" autoreconf -fvi $ACLOCAL_FLAGS
-            ./configure ${HOST_XCOMPILE} \
-                --disable-static \
+            autoreconf -fvi
+            ./configure ${HOST_XCOMPILE} -C \
                 --disable-elisp \
+                --disable-error-on-warning \
                 --disable-dependency-tracking \
-                -C --prefix=$_GUILE_WFSDIR \
-                ac_cv_func_regcomp_rx=yes \
-                CFLAGS="-D__MINGW32__" \
-                CPPFLAGS="${READLINE_CPPFLAGS} ${REGEX_CPPFLAGS} -D__MINGW32__" \
+                --prefix=$_GUILE_WFSDIR \
+                CPPFLAGS="${READLINE_CPPFLAGS} ${REGEX_CPPFLAGS}" \
                 LDFLAGS="${READLINE_LDFLAGS} ${REGEX_LDFLAGS} -Wl,--enable-auto-import"
-            make LDFLAGS="${READLINE_LDFLAGS} ${REGEX_LDFLAGS} -Wl,--enable-auto-import -no-undefined -avoid-version"
+            make
             make install
         qpopd
         guile -c '(use-modules (srfi srfi-39))' || die "guile not installed correctly"
