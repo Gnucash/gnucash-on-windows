@@ -180,6 +180,7 @@ function inst_mingw() {
     mingw_smart_get mingw32-automake ${MINGW_AUTOMAKE_VERSION}
     mingw_smart_get mingw32-libtool ${MINGW_LIBTOOL_VERSION}
     mingw_smart_get mingw32-libltdl ${MINGW_LIBLTDL_VERSION}
+    mingw_smart_get mingw32-libiconv-bin ${MINGW_LIBICONV_VERSION}
     # Build dependencies for gnucash and other self-built libraries
     mingw_smart_get mingw32-gmp-dev ${MINGW_GMP_VERSION}
 
@@ -193,6 +194,8 @@ function inst_mingw() {
         quiet which pexports || die "mingw-utils not installed correctly (pexports)"
         # FIXME which library uses reimp ?
         # quiet which reimp || die "mingw-utils not installed correctly (reimp)"
+        # Hack to make Gnome's pkg-config happy (without having to rebuild it)
+        cp "${_MINGW_UDIR}"/bin/libintl*.dll "${_MINGW_UDIR}/bin/intl.dll"
     else
         ./create_cross_mingw.sh
     fi
@@ -361,11 +364,7 @@ function inst_gnome() {
     add_to_env -L$_GNOME_UDIR/lib GNOME_LDFLAGS
     add_to_env $_GNOME_UDIR/bin PATH
     add_to_env $_GNOME_UDIR/lib/pkgconfig PKG_CONFIG_PATH
-    if [ "$CROSS_COMPILE" != "yes" ]; then
-        add_to_env $_GNOME_UDIR/bin/pkg-config-msys.sh PKG_CONFIG
-    else
-        add_to_env pkg-config PKG_CONFIG
-    fi
+    add_to_env pkg-config PKG_CONFIG
     if quiet ${PKG_CONFIG} --atleast-version=${GTK_VERSION} gtk+-2.0 &&
         quiet ${PKG_CONFIG} --atleast-version=${CAIRO_VERSION} cairo &&
         quiet ${PKG_CONFIG} --exact-version=${LIBXML2_VERSION} libxml-2.0 &&
@@ -388,9 +387,6 @@ function inst_gnome() {
         wget_unpacked $GAIL_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $GDK_PIXBUF_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $GDK_PIXBUF_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
-        wget_unpacked $GETTEXT_RUNTIME_URL $DOWNLOAD_DIR $GNOME_DIR
-        wget_unpacked $GETTEXT_RUNTIME_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
-        wget_unpacked $GETTEXT_TOOLS_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $GLIB_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $GLIB_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $GTK_URL $DOWNLOAD_DIR $GNOME_DIR
@@ -400,15 +396,12 @@ function inst_gnome() {
         wget_unpacked $LIBART_LGPL_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $LIBGNOMECANVAS_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $LIBGNOMECANVAS_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
-        wget_unpacked $LIBICONV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $LIBJPEG_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $LIBJPEG_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $LIBPNG_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $LIBPNG_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $LIBTIFF_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $LIBTIFF_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
-#        wget_unpacked $LIBXML2_URL $DOWNLOAD_DIR $GNOME_DIR
-#        wget_unpacked $LIBXML2_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $PANGO_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $PANGO_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $PKG_CONFIG_URL $DOWNLOAD_DIR $GNOME_DIR
@@ -429,26 +422,16 @@ function inst_gnome() {
         rm -rf $TMP_UDIR/gtk2_prefs-*
 
         wget_unpacked $GTK_DOC_URL $DOWNLOAD_DIR $TMP_DIR
+        assert_one_dir $TMP_UDIR/gtk-doc-*
+        mv $TMP_UDIR/gtk-doc-*/gtk-doc.m4 $_GNOME_UDIR/share/aclocal
+        rm -rf $TMP_UDIR/gtk-doc-*
+
+        # Fix paths to tools used by gnome provided intltool scripts
         qpushd $_GNOME_UDIR
-            assert_one_dir $TMP_UDIR/gtk-doc-*
-            mv $TMP_UDIR/gtk-doc-*/gtk-doc.m4 $_GNOME_UDIR/share/aclocal
             for file in bin/intltool-*; do
-                sed '1s,!.*perl,!'"$INTLTOOL_PERL"',;s,/opt/gnu/bin/iconv,iconv,' $file > tmp
+                sed '1s,!.*perl,!'"perl"',;s,/opt/gnu/bin/iconv,iconv,' $file > tmp
                 mv tmp $file
             done
-            # work around a bug in msys bash, adding 0x01 smilies
-            cat > bin/pkg-config-msys.sh <<EOF
-#!/bin/sh
-PKG_CONFIG="\$(dirname \$0)/pkg-config"
-if \${PKG_CONFIG} "\$@" > /dev/null 2>&1 ; then
-    res=true
-else
-    res=false
-fi
-\${PKG_CONFIG} "\$@" | tr -d \\\\r && \$res
-EOF
-            chmod +x bin/pkg-config{.exe,-msys.sh}
-            rm -rf $TMP_UDIR/gtk-doc-*
         qpopd
 
         if quiet ${PKG_CONFIG} --exact-version=${LIBXML2_VERSION} libxml-2.0 ; then
