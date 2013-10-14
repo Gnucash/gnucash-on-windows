@@ -344,7 +344,7 @@ set_default OPENSP_PATCH `pwd`/opensp-1.5.2.patch
 LIBOFX_VERSION="0.9.9"
 set_default LIBOFX_URL "$SF_MIRROR/libofx/libofx-${LIBOFX_VERSION}.tar.gz"
 set_default LIBOFX_DIR $GLOBAL_DIR\\libofx
-#set_default LIBOFX_PATCH `pwd`/libofx-x.x.x.patch
+set_default LIBOFX_PATCH `pwd`/libofx-0.9.8.patch
 
 ## online banking: gwenhywfar+aqbanking
 GWENHYWFAR_VERSION="4.11.1beta"

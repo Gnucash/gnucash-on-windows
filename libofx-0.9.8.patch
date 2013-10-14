@@ -1,0 +1,11 @@
+--- a/lib/ofx_preproc.cpp	2013-04-17 20:09:11 +0000
++++ b/lib/ofx_preproc.cpp	2013-10-14 09:00:31 +0000
+@@ -310,7 +310,7 @@
+             size_t outbytesleft = inbytesleft * 2 - 1;
+             iconv_buffer = (char*) malloc (inbytesleft * 2);
+             memset(iconv_buffer, 0, inbytesleft * 2);
+-#if defined(OS_WIN32) || defined(__sun)
++#if defined(__sun)
+             const char * inchar = (const char *)s_buffer.c_str();
+ #else
+             char * inchar = (char *)s_buffer.c_str();
