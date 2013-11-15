@@ -366,16 +366,12 @@ set_default MYSQL_LIB_DIR $GLOBAL_DIR\\mysql
 set_default LIBMYSQL_DEF `pwd`/libmysql.def
 set_default PGSQL_LIB_URL "$SF_MIRROR/gnucash/pgsql-win32-2.tar.gz"
 set_default PGSQL_DIR $GLOBAL_DIR\\pgsql
-set_default LIBDBI_URL "$SF_MIRROR/libdbi/libdbi-0.8.3.tar.gz"
+set_default LIBDBI_URL "$SF_MIRROR/libdbi/libdbi-0.8.4.tar.gz"
 set_default LIBDBI_DIR $GLOBAL_DIR\\libdbi
 set_default LIBDBI_PATCH `pwd`/libdbi-0.8.3.patch
-set_default LIBDBI_PATCH2 `pwd`/libdbi-dbd_helper.c.patch
 set_default LIBDBI_DRIVERS_URL "$SF_MIRROR/libdbi-drivers/libdbi-drivers-0.8.3-1.tar.gz"
 set_default LIBDBI_DRIVERS_DIR $GLOBAL_DIR\\libdbi-drivers
-set_default LIBDBI_DRIVERS_PATCH `pwd`/libdbi-drivers-dbd_sqlite3.c.patch
-set_default LIBDBI_DRIVERS_PATCH2 `pwd`/libdbi-drivers-Makefile.in.patch
-set_default LIBDBI_DRIVERS_PATCH3 `pwd`/libdbi-drivers-dbd_mysql.c.patch
-set_default LIBDBI_DRIVERS_PATCH4 `pwd`/libdbi-drivers-dbd_pgsql.c.patch
+set_default LIBDBI_DRIVERS_PATCH `pwd`/libdbi-drivers-errno.patch
 
 set_default CMAKE_URL "http://www.cmake.org/files/v2.8/cmake-2.8.0-win32-x86.zip"
 set_default CMAKE_DIR $GLOBAL_DIR\\cmake

@@ -700,6 +700,7 @@ function inst_libdbi() {
         wget_unpacked $SQLITE3_URL $DOWNLOAD_DIR $TMP_DIR
         assert_one_dir $TMP_UDIR/sqlite-*
         qpushd $TMP_UDIR/sqlite-*
+            autoreconf -if
             ./configure ${HOST_XCOMPILE} \
                 --prefix=${_SQLITE3_UDIR}
             make
@@ -734,7 +735,7 @@ function inst_libdbi() {
         rm -rf ${TMP_UDIR}/pgsql*
         test -f ${_PGSQL_UDIR}/lib/libpq.dll || die "libpq not installed correctly"
     fi
-    if test -f ${_LIBDBI_UDIR}/bin/libdbi-0.dll
+    if test -f ${_LIBDBI_UDIR}/bin/libdbi-1.dll
     then
         echo "libdbi already installed in $_LIBDBI_UDIR.  skipping."
     else
@@ -743,10 +744,6 @@ function inst_libdbi() {
         qpushd $TMP_UDIR/libdbi-0*
             if [ -n "$LIBDBI_PATCH" -a -f "$LIBDBI_PATCH" ]; then
                 patch -p1 < $LIBDBI_PATCH
-                ./autogen.sh
-            fi
-            if [ -n "$LIBDBI_PATCH2" -a -f "$LIBDBI_PATCH2" ]; then
-                patch -p1 < $LIBDBI_PATCH2
             fi
             if [ "$CROSS_COMPILE" = "yes" ]; then
                 rm ltmain.sh aclocal.m4
@@ -765,11 +762,11 @@ function inst_libdbi() {
         qpushd ${_LIBDBI_UDIR}
         if [ x"$(which pexports.exe > /dev/null 2>&1)" != x ]
         then
-            pexports bin/libdbi-0.dll > lib/libdbi.def
-            ${DLLTOOL} -d lib/libdbi.def -D bin/libdbi-0.dll -l lib/libdbi.lib
+            pexports bin/libdbi-1.dll > lib/libdbi.def
+            ${DLLTOOL} -d lib/libdbi.def -D bin/libdbi-1.dll -l lib/libdbi.lib
         fi
         qpopd
-        test -f ${_LIBDBI_UDIR}/bin/libdbi-0.dll || die "libdbi not installed correctly"
+        test -f ${_LIBDBI_UDIR}/bin/libdbi-1.dll || die "libdbi not installed correctly"
         rm -rf ${TMP_UDIR}/libdbi-0*
     fi
     if test -f ${_LIBDBI_DRIVERS_UDIR}/lib/dbd/libdbdsqlite3.dll -a \
@@ -782,14 +779,8 @@ function inst_libdbi() {
         assert_one_dir $TMP_UDIR/libdbi-drivers-*
         qpushd $TMP_UDIR/libdbi-drivers*
             [ -n "$LIBDBI_DRIVERS_PATCH" -a -f "$LIBDBI_DRIVERS_PATCH" ] && \
-                patch -p0 < $LIBDBI_DRIVERS_PATCH
-            [ -n "$LIBDBI_DRIVERS_PATCH2" -a -f "$LIBDBI_DRIVERS_PATCH2" ] && \
-                patch -p0 < $LIBDBI_DRIVERS_PATCH2
-            [ -n "$LIBDBI_DRIVERS_PATCH3" -a -f "$LIBDBI_DRIVERS_PATCH3" ] && \
-                patch -p0 < $LIBDBI_DRIVERS_PATCH3
-            [ -n "$LIBDBI_DRIVERS_PATCH4" -a -f "$LIBDBI_DRIVERS_PATCH4" ] && \
-                patch -p0 < $LIBDBI_DRIVERS_PATCH4
-            LDFLAGS=-no-undefined ./configure ${HOST_XCOMPILE} \
+                patch -p1 < $LIBDBI_DRIVERS_PATCH
+            ./configure ${HOST_XCOMPILE} \
                 --disable-docs \
                 --with-dbi-incdir=${_LIBDBI_UDIR}/include \
                 --with-dbi-libdir=${_LIBDBI_UDIR}/lib \
@@ -800,7 +791,7 @@ function inst_libdbi() {
                 --with-pgsql \
                 --with-pgsql-dir=${_PGSQL_UDIR} \
                 --prefix=${_LIBDBI_DRIVERS_UDIR}
-            make
+            make LDFLAGS="$LDFLAGS -no-undefined"
             make install
         qpopd
         test -f ${_LIBDBI_DRIVERS_UDIR}/lib/dbd/libdbdsqlite3.dll || die "libdbi sqlite3 driver not installed correctly"

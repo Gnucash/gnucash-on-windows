@@ -1,0 +1,167 @@
+diff --git a/drivers/firebird/dbd_firebird.c b/drivers/firebird/dbd_firebird.c
+index 4a1f30d..035479e 100755
+--- a/drivers/firebird/dbd_firebird.c
++++ b/drivers/firebird/dbd_firebird.c
+@@ -524,10 +524,10 @@ const char *dbd_select_db(dbi_conn_t *conn, const char *db)
+	return db;
+ }
+
+-int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr)
++int dbd_geterror(dbi_conn_t *conn, int *err_no, char **errstr)
+ {
+	/* error_message and error_number were already set by calls to _dbd_internal_error_handler */
+-	*errno = conn->error_number;
++	*err_no = conn->error_number;
+	*errstr = (conn->error_message) ? strdup(conn->error_message):NULL;
+	return 1;
+ }
+diff --git a/drivers/freetds/dbd_freetds.c b/drivers/freetds/dbd_freetds.c
+index 2a24764..9f57d85 100644
+--- a/drivers/freetds/dbd_freetds.c
++++ b/drivers/freetds/dbd_freetds.c
+@@ -733,10 +733,10 @@ const char *dbd_select_db(dbi_conn_t * conn, const char *db)
+     return (char *) db;
+ }
+
+-int dbd_geterror(dbi_conn_t * conn, int *errno, char **errstr)
++int dbd_geterror(dbi_conn_t * conn, int *err_no, char **errstr)
+ {
+     /* put error number into errno, error string into errstr
+-     * return 0 if error, 1 if errno filled, 2 if errstr filled, 3 if both errno and errstr filled */
++     * return 0 if error, 1 if err_no filled, 2 if errstr filled, 3 if both err_no and errstr filled */
+
+     /* We havn't functions for read error types in freetds */
+     return -1;
+diff --git a/drivers/msql/dbd_msql.c b/drivers/msql/dbd_msql.c
+index bdf270e..cef20a8 100644
+--- a/drivers/msql/dbd_msql.c
++++ b/drivers/msql/dbd_msql.c
+@@ -277,12 +277,12 @@ const char *dbd_select_db(dbi_conn_t *conn, const char *db)
+	return db;
+ }
+
+-int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr)
++int dbd_geterror(dbi_conn_t *conn, int *err_no, char **errstr)
+ {
+	if(!msqlErrMsg)
+		return -1;
+
+-	*errno = 0;
++	*err_no = 0;
+	*errstr = strdup(msqlErrMsg);
+	return 2;
+ }
+diff --git a/drivers/mysql/dbd_mysql.c b/drivers/mysql/dbd_mysql.c
+index 7d06f62..237506c 100644
+--- a/drivers/mysql/dbd_mysql.c
++++ b/drivers/mysql/dbd_mysql.c
+@@ -553,15 +553,15 @@ const char *dbd_select_db(dbi_conn_t *conn, const char *db) {
+	return db;
+ }
+
+-int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr) {
+-	/* put error number into errno, error string into errstr
+-	 * return 0 if error, 1 if errno filled, 2 if errstr filled, 3 if both errno and errstr filled */
++int dbd_geterror(dbi_conn_t *conn, int *err_no, char **errstr) {
++	/* put error number into err_no, error string into errstr
++	 * return 0 if error, 1 if err_no filled, 2 if errstr filled, 3 if both err_no and errstr filled */
+
+	if (strcmp("",mysql_error((MYSQL *)conn->connection)) == 0) {
+		return -1;
+	}
+
+-	*errno = mysql_errno((MYSQL *)conn->connection);
++	*err_no = mysql_errno((MYSQL *)conn->connection);
+	*errstr = strdup(mysql_error((MYSQL *)conn->connection));
+	return 3;
+ }
+diff --git a/drivers/oracle/dbd_oracle.c b/drivers/oracle/dbd_oracle.c
+index 1f38094..d220a9e 100755
+--- a/drivers/oracle/dbd_oracle.c
++++ b/drivers/oracle/dbd_oracle.c
+@@ -400,12 +400,12 @@ const char *dbd_select_db(dbi_conn_t *conn, const char *db)
+	return NULL; /* Oracle can't do that .... */
+ }
+
+-int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr)
++int dbd_geterror(dbi_conn_t *conn, int *err_no, char **errstr)
+ {
+	char errbuf[1024];
+	int  errcode = 0;
+	Oraconn *Oconn = conn->connection;
+-	*errno = 0;
++	*err_no = 0;
+
+	if (!conn->connection) {
+		*errstr = strdup("Unable to connect to database.");
+@@ -414,7 +414,7 @@ int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr)
+		OCIErrorGet((dvoid *)Oconn->err, (ub4) 1, (text *) NULL, &errcode, errbuf,
+			    (ub4) sizeof(errbuf), OCI_HTYPE_ERROR);
+		*errstr = strdup(errbuf);
+-		*errno = errcode;
++		*err_no = errcode;
+   }
+
+	return 3;
+diff --git a/drivers/pgsql/dbd_pgsql.c b/drivers/pgsql/dbd_pgsql.c
+index 0433550..c097dac 100644
+--- a/drivers/pgsql/dbd_pgsql.c
++++ b/drivers/pgsql/dbd_pgsql.c
+@@ -520,11 +520,11 @@ const char *dbd_select_db(dbi_conn_t *conn, const char *db) {
+   return db;
+ }
+
+-int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr) {
+-	/* put error number into errno, error string into errstr
+-	 * return 0 if error, 1 if errno filled, 2 if errstr filled, 3 if both errno and errstr filled */
++int dbd_geterror(dbi_conn_t *conn, int *err_no, char **errstr) {
++	/* put error number into err_no, error string into errstr
++	 * return 0 if error, 1 if err_no filled, 2 if errstr filled, 3 if both err_no and errstr filled */
+
+-	*errno = 0;
++	*err_no = 0;
+	*errstr = strdup(PQerrorMessage((PGconn *)conn->connection));
+
+	return 2;
+diff --git a/drivers/sqlite/dbd_sqlite.c b/drivers/sqlite/dbd_sqlite.c
+index 94dacc0..aeadfa5 100644
+--- a/drivers/sqlite/dbd_sqlite.c
++++ b/drivers/sqlite/dbd_sqlite.c
+@@ -913,13 +913,13 @@ const char *dbd_select_db(dbi_conn_t *conn, const char *db) {
+   return db;
+ }
+
+-int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr) {
+-  /* put error number into errno, error string into errstr
+-   * return 0 if error, 1 if errno filled, 2 if errstr filled, 3 if both errno and errstr filled */
++int dbd_geterror(dbi_conn_t *conn, int *err_no, char **errstr) {
++  /* put error number into err_no, error string into errstr
++   * return 0 if error, 1 if err_no filled, 2 if errstr filled, 3 if both err_no and errstr filled */
+   int result = 0;
+
+   if (conn->error_number) {
+-    *errno = conn->error_number;
++    *err_no = conn->error_number;
+     result++;
+   }
+   if (conn->error_message) {
+diff --git a/drivers/sqlite3/dbd_sqlite3.c b/drivers/sqlite3/dbd_sqlite3.c
+index dc85465..3360c27 100644
+--- a/drivers/sqlite3/dbd_sqlite3.c
++++ b/drivers/sqlite3/dbd_sqlite3.c
+@@ -880,11 +880,11 @@ const char *dbd_select_db(dbi_conn_t *conn, const char *db) {
+   return db;
+ }
+
+-int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr) {
+-  /* put error number into errno, error string into errstr
+-   * return 0 if error, 1 if errno filled, 2 if errstr filled, 3 if both errno and errstr filled */
++int dbd_geterror(dbi_conn_t *conn, int *err_no, char **errstr) {
++  /* put error number into err_no, error string into errstr
++   * return 0 if error, 1 if err_no filled, 2 if errstr filled, 3 if both err_no and errstr filled */
+
+-  *errno = sqlite3_errcode((sqlite3 *)conn->connection);
++  *err_no = sqlite3_errcode((sqlite3 *)conn->connection);
+   *errstr = strdup((char*)sqlite3_errmsg((sqlite3 *)conn->connection));
+   return 3;
+ }
