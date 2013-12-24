@@ -89,6 +89,10 @@ function wget_unpacked() {
             tar -xjpf $LAST_FILE -C $_EXTRACT_UDIR
             _PACK_DIR=$(tar -jtf $LAST_FILE 2>/dev/null | head -1)
             ;;
+         *.tar.xz)
+             tar -xJpf $LAST_FILE -C $_EXTRACT_UDIR
+             _PACK_DIR=$(tar -Jtf $LAST_FILE 2>/dev/null | head -1)
+             ;;
         *.tar.lzma)
             lzma -dc $LAST_FILE |tar xpf - -C $_EXTRACT_UDIR
             _PACK_DIR=$(lzma -dc $LAST_FILE |tar -tf - 2>/dev/null | head -1)
