@@ -390,7 +390,7 @@ set_default UPDATE_DOCS yes
 set_default DOCS_DIR $GLOBAL_DIR\\gnucash-docs
 set_default XSLTPROCFLAGS ""
 
-set_default ISOCODES_URL "http://pkg-isocodes.alioth.debian.org/downloads/iso-codes-3.34.tar.bz2"
+set_default ISOCODES_URL "http://pkg-isocodes.alioth.debian.org/downloads/iso-codes-3.49.tar.xz"
 set_default ISOCODES_DIR $GLOBAL_DIR\\isocodes
 
 ### Local Variables: ***
