@@ -124,7 +124,7 @@ End If
 stdout.Write "Installing msys and wget... "
 strMingwGet = MINGW_DIR & "\bin\mingw-get.exe"
 
-objWsh.Run strMingwGet & " install mingw-get msys-base msys-wget", 1, True
+objWsh.Run strMingwGet & " install mingw-get msys-base msys-wget msys-patch", 1, True
 'Set objExec = objWsh.Exec (strMingwGet & " install msys-base msys-wget")
 
 strWget = MINGW_DIR & "\msys\1.0\bin\wget.exe"
