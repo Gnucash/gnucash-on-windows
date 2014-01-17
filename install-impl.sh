@@ -1321,7 +1321,13 @@ set PATH=$SQLITE3_DIR\\bin;%PATH%
 set PATH=$MYSQL_LIB_DIR\\lib;%PATH%
 set PATH=$PGSQL_DIR\\bin;%PATH%
 set PATH=$PGSQL_DIR\\lib;%PATH%
-
+set PATH=$ENCHANT_DIR\\bin;%PATH%
+set PATH=$ENCHANT_DIR\\lib;%PATH%
+set PATH=$LIBSOUP_DIR\\bin;%PATH%
+set PATH=$LIBSOUP_DIR\\lib;%PATH%
+set PATH=$LIBXSLT_DIR\\bin;%PATH%
+set PATH=$LIBXSLT_DIR\\lib;%PATH%
+  
 set LTDL_LIBRARY_PATH=${INSTALL_DIR}\\lib
 
 start gnucash %*
