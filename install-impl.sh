@@ -543,6 +543,7 @@ function inst_guile() {
                 --disable-error-on-warning \
                 --disable-dependency-tracking \
                 --prefix=$_GUILE_WFSDIR \
+                ac_cv_func_regcomp_rx=yes \
                 CPPFLAGS="${READLINE_CPPFLAGS} ${REGEX_CPPFLAGS}" \
                 LDFLAGS="${READLINE_LDFLAGS} ${REGEX_LDFLAGS} -Wl,--enable-auto-import"
             make
