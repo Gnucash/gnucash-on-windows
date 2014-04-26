@@ -60,6 +60,7 @@ function dist_mingw() {
     cp -a $_MINGW_UDIR/libexec/mingw-get/ $MINGWGET_DIST_UDIR/libexec/
     cp -a $_MINGW_UDIR/var/lib/mingw-get/data/defaults.xml $MINGWGET_DIST_UDIR/var/lib/mingw-get/data/profile.xml
     perl -pi.bak -e 's!.*subsystem="mingw32".*!    <sysroot subsystem="mingw32" path="%R/../dist" />!' $MINGWGET_DIST_UDIR/var/lib/mingw-get/data/profile.xml
+    rm -f $MINGWGET_DIST_UDIR/var/lib/mingw-get/data/{manifest,sysroot}*
 
     configure_msys "$_PID" "$_MINGW_WFSDIR"
 
