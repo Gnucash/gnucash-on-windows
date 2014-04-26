@@ -245,6 +245,10 @@ function mingw_smart_get () {
     #       can return without a result. Grep exists with a non-zero
     #       exit value in that case, which will cause the script to
     #       abort (due to set -e being set). Awk does not.
+    # Note: mingw-get is deliberately called without a fixed path
+    #       this allows the install and dist scripts to use
+    #       different versions of the tool (or more precisely different
+    #       configurations for the tool).
 
     COMPONENTS="$(mingw-get show "$PACKAGE" | awk '/Components:/')"
     if [ -n "$COMPONENTS" ]
@@ -279,15 +283,15 @@ function mingw_smart_get () {
     elif [ "$INSTVERSION" == "none" ]
     then
         # Package not yet installed
-        $_MINGW_UDIR/bin/mingw-get install ${PACKAGE}
+        mingw-get install ${PACKAGE}
     elif [ -n "$VERSION" ] && [ -z "$(echo "$INSTVERSION" | awk "/$VERSION/")" ]
     then
         # Requested version differs from installed version
-        $_MINGW_UDIR/bin/mingw-get upgrade ${PACKAGE}
+        mingw-get upgrade ${PACKAGE}
     elif [ -z "$VERSION" ] && [ "$INSTVERSION" != "$REPOVERSION" ]
     then
         # No version requested, but installed version differs from version in repo
-        $_MINGW_UDIR/bin/mingw-get upgrade ${PACKAGE}
+        mingw-get upgrade ${PACKAGE}
     else
         echo "Package $PACKAGE is up to date"
     fi

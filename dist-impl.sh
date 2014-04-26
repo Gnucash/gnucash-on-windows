@@ -47,7 +47,32 @@ function dist_prepare() {
     add_to_env $_EXETYPE_UDIR/bin PATH # exetype
 
     _PID=$$
+}
+
+function dist_mingw() {
+    setup mingw
+
+    # Prepare mingw-get to install to alternative location
+    MINGWGET_DIST_DIR=${INSTALL_DIR}\\..\\mingw-get-dist
+    MINGWGET_DIST_UDIR=`unix_path $MINGWGET_DIST_DIR`
+    mkdir -p $MINGWGET_DIST_UDIR/{bin,libexec,var/lib/mingw-get/data}
+    cp $_MINGW_UDIR/bin/mingw-get.exe $MINGWGET_DIST_UDIR/bin/
+    cp -a $_MINGW_UDIR/libexec/mingw-get/ $MINGWGET_DIST_UDIR/libexec/
+    cp -a $_MINGW_UDIR/var/lib/mingw-get/data/defaults.xml $MINGWGET_DIST_UDIR/var/lib/mingw-get/data/profile.xml
+    perl -pi.bak -e 's!.*subsystem="mingw32".*!    <sysroot subsystem="mingw32" path="%R/../dist" />!' $MINGWGET_DIST_UDIR/var/lib/mingw-get/data/profile.xml
+
     configure_msys "$_PID" "$_MINGW_WFSDIR"
+
+    add_to_env $_MINGW_UDIR/bin PATH
+    add_to_env $MINGWGET_DIST_UDIR/bin/ PATH
+
+    mingw_smart_get mingw32-libgmp-dll ${MINGW_GMP_VERSION}
+    mingw_smart_get mingw32-libpthread-dll ${MINGW_PTHREAD_W32_VERSION}
+    mingw_smart_get mingw32-libz-dll ${MINGW_ZLIB_VERSION}
+    mingw_smart_get mingw32-libgcc-dll ${MINGW_GCC_VERSION}
+    mingw_smart_get mingw32-libiconv-dll ${MINGW_LIBICONV_VERSION}
+    mingw_smart_get mingw32-libintl-dll ${MINGW_GETTEXT_VERSION}
+    mingw_smart_get mingw32-libltdl-dll ${MINGW_LIBLTDL_VERSION}
 }
 
 function dist_aqbanking() {
