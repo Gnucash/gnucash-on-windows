@@ -537,6 +537,10 @@ function inst_guile() {
         tar -xzpf $_GUILE_BALL -C $TMP_UDIR
         assert_one_dir $TMP_UDIR/guile-*
         qpushd $TMP_UDIR/guile-*
+            if [ -n "$GUILE_PATCH" -a -f "$GUILE_PATCH" ]; then
+                patch -p1 < $GUILE_PATCH
+            fi
+
             autoreconf -fvi
             ./configure ${HOST_XCOMPILE} -C \
                 --disable-elisp \

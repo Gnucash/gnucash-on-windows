@@ -199,6 +199,7 @@ set_default GMP5_DEV_URL "$SF_MIRROR/mingw/gmp-5.0.1-1-mingw32-dev.tar.lzma"
 GUILE_VERSION="1.8.8"
 set_default GUILE_URL "http://ftp.gnu.org/pub/gnu/guile/guile-${GUILE_VERSION}.tar.gz"
 set_default GUILE_DIR $GLOBAL_DIR\\guile
+set_default GUILE_PATCH `pwd`/guile-1.8.patch
 
 set_default OPENSSL_URL "http://www.openssl.org/source/openssl-0.9.8j.tar.gz"
 set_default OPENSSL_DIR $GLOBAL_DIR\\openssl
