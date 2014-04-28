@@ -33,7 +33,7 @@ CheckStartMode
 ' running this bootstrap script.
 ' Note: avoid paths with spaces or other special characters (like &).
 '       these can confuse msys/mingw or some of the tools depending on them.
-GLOBAL_DIR = "c:\soft"
+GLOBAL_DIR = "c:\gcdev"
 MINGW_DIR  = GLOBAL_DIR & "\mingw"
 TMP_DIR= GLOBAL_DIR & "\tmp"
 DOWNLOAD_DIR= GLOBAL_DIR & "\downloads"
@@ -41,6 +41,8 @@ GIT_PKG = "Git-1.7.10-preview20120409.exe"
 strGitBaseUrl = "http://msysgit.googlecode.com/files/"
 GIT_URL = strGitBaseUrl & GIT_PKG
 GIT_DIR = GLOBAL_DIR & "\git-1.7.10"
+GC_WIN_REPOS_URL = "git://github.com/gjanssens/gnucash-on-windows.git"
+GC_WIN_REPOS_DIR = GLOBAL_DIR & "\gnucash-on-windows.git"
 REPOS_URL = "git://github.com/Gnucash/gnucash.git"
 REPOS_DIR = GLOBAL_DIR & "\gnucash.git"
 
@@ -178,19 +180,44 @@ Else
 End If
 
 
-' Set up git repository
-' ---------------------
-strInstall = REPOS_DIR & "\packaging\win32\install.sh"
+' Set up gnucash-on-windows git repository
+' ----------------------------------------
+strBootstrap = GC_WIN_REPOS_DIR & "\bootstrap_win_dev.vbs"
+stdout.WriteLine "Checking if " & GC_WIN_REPOS_DIR
+stdout.Write "         is a gnucash-on-windows git repository... "
+If objFso.FolderExists(GC_WIN_REPOS_DIR & "\.git") And objFso.FileExists(strBootstrap) Then
+    stdout.WriteLine "Most likely ok, won't clone"
+Else
+    stdout.WriteLine "Not found"
+    stdout.WriteLine "Set up gnucash-on-windows git repository... "
+    objWsh.Run strGit & " clone " & GC_WIN_REPOS_URL & " " & GC_WIN_REPOS_DIR, 1, true
+
+    If Not objFso.FileExists(strBootstrap) Then
+        stdout.WriteLine "Failed"
+        stdout.WriteBlankLines (1)
+        stdout.WriteLine "*** ERROR ***"
+        stdout.WriteLine "Failed to set up gnucash-on-windows git repository."
+        stdout.WriteBlankLines (1)
+        stdout.WriteLine "Cannot continue until this has been resolved."
+        AbortScript
+    End If
+    stdout.WriteLine "Ok"
+End If
+
+
+' Set up gnucash git repository
+' -----------------------------
+strGCbin = REPOS_DIR & "\src\bin\gnucash-bin.c"
 stdout.WriteLine "Checking if " & REPOS_DIR
 stdout.Write "         is a GnuCash git repository... "
-If objFso.FolderExists(REPOS_DIR & "\.git") And objFso.FileExists(strInstall) Then
+If objFso.FolderExists(REPOS_DIR & "\.git") And objFso.FileExists(strGCbin) Then
     stdout.WriteLine "Most likely ok, won't clone"
 Else
     stdout.WriteLine "Not found"
     stdout.WriteLine "Set up GnuCash git repository... "
     objWsh.Run strGit & " clone " & REPOS_URL & " " & REPOS_DIR, 1, true
 
-    If Not objFso.FileExists(strInstall) Then
+    If Not objFso.FileExists(strGCbin) Then
         stdout.WriteLine "Failed"
         stdout.WriteBlankLines (1)
         stdout.WriteLine "*** ERROR ***"
@@ -204,7 +231,7 @@ End If
 
 ' Create custom.sh
 ' ----------------
-strCustomSh = REPOS_DIR & "\packaging\win32\custom.sh"
+strCustomSh = GC_WIN_REPOS_DIR & "\custom.sh"
 bExistingCustomSh = False
 If objFso.FileExists(strCustomSh) Then
     stdout.WriteLine "Found existing custom.sh file"
@@ -219,13 +246,14 @@ Else
     myRegExp.Global = True
     myRegExp.Pattern = "\\"
 
-    strGlobalDir   = myRegExp.Replace (GLOBAL_DIR, "\\")
-    strMingwDir    = myRegExp.Replace (MINGW_DIR, "\\")
-    strMsysDir    = myRegExp.Replace (MINGW_DIR & "\msys\1.0", "\\")
-    strTmpDir      = myRegExp.Replace (TMP_DIR, "\\")
-    strDownloadDir = myRegExp.Replace (DOWNLOAD_DIR, "\\")
-    strGitDir      = myRegExp.Replace (GIT_DIR, "\\")
-    strReposDir    = myRegExp.Replace (REPOS_DIR, "\\")
+    strGlobalDir     = myRegExp.Replace (GLOBAL_DIR, "\\")
+    strMingwDir      = myRegExp.Replace (MINGW_DIR, "\\")
+    strMsysDir       = myRegExp.Replace (MINGW_DIR & "\msys\1.0", "\\")
+    strTmpDir        = myRegExp.Replace (TMP_DIR, "\\")
+    strDownloadDir   = myRegExp.Replace (DOWNLOAD_DIR, "\\")
+    strGitDir        = myRegExp.Replace (GIT_DIR, "\\")
+    strGCWinReposDir = myRegExp.Replace (REPOS_DIR, "\\")
+    strReposDir      = myRegExp.Replace (REPOS_DIR, "\\")
 
     Set objCustomSh = objFso.OpenTextFile( strCustomSh, ForWriting, True )
     objCustomSh.WriteLine "# custom.sh, automatically created by bootstrap_win_dev.vbs"
@@ -247,6 +275,8 @@ Else
     objCustomSh.WriteLine "DOWNLOAD_DIR=" & strDownloadDir
     objCustomSh.WriteLine "GIT_DIR=" & strGitDir
     objCustomSh.WriteLine "REPOS_TYPE=git" ' Bootstrap only works with a git repo
+    objCustomSh.WriteLine "GC_WIN_REPOS_URL=" & GC_WIN_REPOS_URL
+    objCustomSh.WriteLine "GC_WIN_REPOS_DIR=" & strReposDir
     objCustomSh.WriteLine "REPOS_URL=" & REPOS_URL
     objCustomSh.WriteLine "REPOS_DIR=" & strReposDir
     objCustomSh.Close
@@ -260,8 +290,9 @@ stdout.WriteBlankLines 1
 stdout.WriteLine "Bootstrap completed successfully !"
 stdout.WriteBlankLines 1
 stdout.WriteLine "You can now continue as follows"
+stdout.WriteLine "- Use git to checkout the desired branch/tag in " & REPOS_DIR
 stdout.WriteLine "- Open the msys shell"
-stdout.WriteLine "- cd " & REPOS_DIR & "\packaging\win32"
+stdout.WriteLine "- cd " & GC_WIN_REPOS_DIR
 stdout.WriteLine "- Properly configure a custom.sh"
 stdout.WriteLine "  (if you changed any default path in the bootstrap script)"
 stdout.WriteLine "- Run install.sh"
@@ -283,6 +314,9 @@ Sub Welcome
     stdout.WriteLine "It will install"
     stdout.WriteLine "- mingw-get, an msys shell and wget in " & MINGW_DIR
     stdout.WriteLine "- git in " & GIT_DIR
+    stdout.WriteLine "- a gnucash-on-windows git repository cloned from"
+    stdout.WriteLine "  " & GC_WIN_REPOS_URL
+    stdout.WriteLine "  into " & GC_WIN_REPOS_DIR
     stdout.WriteLine "- a GnuCash git repository cloned from"
     stdout.WriteLine "  " & REPOS_URL
     stdout.WriteLine "  into " & REPOS_DIR
