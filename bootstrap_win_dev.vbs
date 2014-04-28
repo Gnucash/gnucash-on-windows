@@ -254,7 +254,7 @@ Else
     strTmpDir        = myRegExp.Replace (TMP_DIR, "\\")
     strDownloadDir   = myRegExp.Replace (DOWNLOAD_DIR, "\\")
     strGitDir        = myRegExp.Replace (GIT_DIR, "\\")
-    strGCWinReposDir = myRegExp.Replace (REPOS_DIR, "\\")
+    strGCWinReposDir = myRegExp.Replace (GC_WIN_REPOS_DIR, "\\")
     strReposDir      = myRegExp.Replace (REPOS_DIR, "\\")
 
     Set objCustomSh = objFso.OpenTextFile( strCustomSh, ForWriting, True )

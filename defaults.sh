@@ -29,16 +29,16 @@ if [ -z "$BUILD_FROM_TARBALL" ]; then
     fi
 fi
 
+set_default GC_WIN_REPOS_DIR $GLOBAL_DIR\\gnucash-on-windows.git
+set_default REPOS_DIR $GLOBAL_DIR\\gnucash.git
 if [ "$BUILD_FROM_TARBALL" = "yes" ]; then
-    set_default GNUCASH_DIR "$(wpwd ..\\..)"
-    set_default REPOS_DIR $GNUCASH_DIR
+    set_default GNUCASH_DIR $REPOS_DIR
     # keep this pointing from BUILD_DIR to REPOS_DIR
     set_default REL_REPOS_DIR ..
 else
     set_default GNUCASH_DIR $GLOBAL_DIR\\gnucash
-    set_default REPOS_DIR $GNUCASH_DIR\\repos
     # keep this pointing from BUILD_DIR to REPOS_DIR
-    set_default REL_REPOS_DIR ..\\repos
+    set_default REL_REPOS_DIR ..\\..\\gnucash.git
 
     set_default REPOS_TYPE "git"
     if [ "$REPOS_TYPE" = "git" ]; then
@@ -64,7 +64,8 @@ set_default CROSS_COMPILE "no"
 # If "yes", build without optimizations (-O0) and ease debugging
 set_default DISABLE_OPTIMIZATIONS no
 
-set_default MSYS_DIR $GLOBAL_DIR\\msys
+set_default MINGW_DIR $GLOBAL_DIR\\mingw
+set_default MSYS_DIR $MINGW_DIR\\msys
 
 # tools here means binaries runnable without other DLLs or data files
 set_default TOOLS_DIR $GLOBAL_DIR\\tools
@@ -80,7 +81,6 @@ set_default GNOME_MIRROR "ftp.gnome.org/pub/gnome"
 set_default GNOME_WIN32_URL "$GNOME_MIRROR/binaries/win32"
 set_default GNOME_WIN32_DEPS_URL "$GNOME_WIN32_URL/dependencies"
 
-set_default MINGW_DIR $GLOBAL_DIR\\mingw
 
 # Mingw toolchain
 
