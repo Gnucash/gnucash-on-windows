@@ -3,10 +3,10 @@ index 4a1f30d..035479e 100755
 --- a/drivers/firebird/dbd_firebird.c
 +++ b/drivers/firebird/dbd_firebird.c
 @@ -524,10 +524,10 @@ const char *dbd_select_db(dbi_conn_t *conn, const char *db)
-	return db;
+	return db; 
  }
 
--int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr)
+-int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr) 
 +int dbd_geterror(dbi_conn_t *conn, int *err_no, char **errstr)
  {
 	/* error_message and error_number were already set by calls to _dbd_internal_error_handler */
@@ -23,7 +23,7 @@ index 2a24764..9f57d85 100644
      return (char *) db;
  }
 
--int dbd_geterror(dbi_conn_t * conn, int *errno, char **errstr)
+-int dbd_geterror(dbi_conn_t * conn, int *errno, char **errstr) 
 +int dbd_geterror(dbi_conn_t * conn, int *err_no, char **errstr)
  {
      /* put error number into errno, error string into errstr
@@ -69,7 +69,7 @@ index 7d06f62..237506c 100644
 	if (strcmp("",mysql_error((MYSQL *)conn->connection)) == 0) {
 		return -1;
 	}
-
+ 	
 -	*errno = mysql_errno((MYSQL *)conn->connection);
 +	*err_no = mysql_errno((MYSQL *)conn->connection);
 	*errstr = strdup(mysql_error((MYSQL *)conn->connection));
@@ -83,7 +83,7 @@ index 1f38094..d220a9e 100755
 	return NULL; /* Oracle can't do that .... */
  }
 
--int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr)
+-int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr) 
 +int dbd_geterror(dbi_conn_t *conn, int *err_no, char **errstr)
  {
 	char errbuf[1024];
@@ -101,7 +101,7 @@ index 1f38094..d220a9e 100755
 -		*errno = errcode;
 +		*err_no = errcode;
    }
-
+ 	
 	return 3;
 diff --git a/drivers/pgsql/dbd_pgsql.c b/drivers/pgsql/dbd_pgsql.c
 index 0433550..c097dac 100644
@@ -117,17 +117,17 @@ index 0433550..c097dac 100644
 +int dbd_geterror(dbi_conn_t *conn, int *err_no, char **errstr) {
 +	/* put error number into err_no, error string into errstr
 +	 * return 0 if error, 1 if err_no filled, 2 if errstr filled, 3 if both err_no and errstr filled */
-
+ 	
 -	*errno = 0;
 +	*err_no = 0;
 	*errstr = strdup(PQerrorMessage((PGconn *)conn->connection));
-
+ 	
 	return 2;
 diff --git a/drivers/sqlite/dbd_sqlite.c b/drivers/sqlite/dbd_sqlite.c
 index 94dacc0..aeadfa5 100644
 --- a/drivers/sqlite/dbd_sqlite.c
 +++ b/drivers/sqlite/dbd_sqlite.c
-@@ -913,13 +913,13 @@ const char *dbd_select_db(dbi_conn_t *conn, const char *db) {
+@@ -911,13 +911,13 @@ const char *dbd_select_db(dbi_conn_t *conn, const char *db) {
    return db;
  }
 
