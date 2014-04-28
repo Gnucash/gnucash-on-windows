@@ -22,8 +22,8 @@ function on_error() {
 
 function unix_path() { echo "$*" | sed 's,^\([A-Za-z]\):,/\1,;s,\\,/,g'; }
 
-. functions.sh
-. defaults.sh
+. ../functions.sh
+. ../defaults.sh
 
 tag="${1:-$GNUCASH_SCM_REV}"
 
@@ -65,7 +65,8 @@ set +e
 trap on_error ERR
 
 # Run the compile
-./install.sh 2>&1 | tee ${LOGFILE}
+_GC_WIN_REPOS_UDIR=`unix_path $GC_WIN_REPOS_DIR`
+$_GC_WIN_REPOS_UDIR/install.sh 2>&1 | tee ${LOGFILE}
 
 # This directory needs to be removed before calling dist.sh
 DIST_DIR=${INSTALL_DIR}\\..\\dist
@@ -73,7 +74,7 @@ _DIST_UDIR=`unix_path $DIST_DIR`
 rm -rf ${_DIST_UDIR}
 
 # Create the installer
-./dist.sh 2>&1 | tee -a ${LOGFILE}
+$_GC_WIN_REPOS_UDIR/dist.sh 2>&1 | tee -a ${LOGFILE}
 
 # Copy the resulting installer into the output directory
 _BUILD_UDIR=`unix_path $BUILD_DIR`

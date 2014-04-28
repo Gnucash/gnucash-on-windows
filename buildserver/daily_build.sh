@@ -3,8 +3,8 @@
 # Notes:
 # 1. for this script to work, git must have been setup before
 #    in a way that doesn't conflict with the GnuCash build.
-#    The easiest way to do so is to run the build once manually
-#    with a properly set up custom.sh.
+#    If you set up the build environment using the bootstrap script
+#    this should have been taken care of automatically.
 #
 # 2. Should this script change in the source repository, then the
 #    git pull below will fail due to a limitation in Windows that
@@ -19,15 +19,25 @@ function qpopd() { popd >/dev/null; }
 function unix_path() { echo "$*" | sed 's,^\([A-Za-z]\):,/\1,;s,\\,/,g'; }
 
 qpushd "$(dirname $(unix_path "$0"))"
-. functions.sh
-. defaults.sh
+. ../functions.sh
+. ../defaults.sh
 
 # Variables
 _GIT_UDIR=`unix_path $GIT_DIR`
 set_env "$_GIT_UDIR/bin/git" GIT_CMD
 export GIT_CMD
 
+# Update the gnucash-on-windows build scripts
+_GC_WIN_REPOS_UDIR=`unix_path $GC_WIN_REPOS_DIR`
+qpushd "$_GC_WIN_REPOS_UDIR"
 $GIT_CMD pull
+qpopd
+
+# Update the gnucash repository
+_REPOS_UDIR=`unix_path $REPOS_DIR`
+qpushd "$_REPOS_UDIR"
+$GIT_CMD pull
+qpopd
 
 ################################################################
 # determine if there are any new commits since the last time we ran
