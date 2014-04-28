@@ -22,34 +22,34 @@ index 2a24764..9f57d85 100644
 @@ -733,10 +733,10 @@ const char *dbd_select_db(dbi_conn_t * conn, const char *db)
      return (char *) db;
  }
-
--int dbd_geterror(dbi_conn_t * conn, int *errno, char **errstr) 
+ 
+-int dbd_geterror(dbi_conn_t * conn, int *errno, char **errstr)
 +int dbd_geterror(dbi_conn_t * conn, int *err_no, char **errstr)
  {
      /* put error number into errno, error string into errstr
 -     * return 0 if error, 1 if errno filled, 2 if errstr filled, 3 if both errno and errstr filled */
 +     * return 0 if error, 1 if err_no filled, 2 if errstr filled, 3 if both err_no and errstr filled */
-
+ 
      /* We havn't functions for read error types in freetds */
      return -1;
 diff --git a/drivers/msql/dbd_msql.c b/drivers/msql/dbd_msql.c
 index bdf270e..cef20a8 100644
 --- a/drivers/msql/dbd_msql.c
 +++ b/drivers/msql/dbd_msql.c
-@@ -277,12 +277,12 @@ const char *dbd_select_db(dbi_conn_t *conn, const char *db)
-	return db;
+@@ -277,12 +277,12 @@
+ 	return db;
  }
-
--int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr)
-+int dbd_geterror(dbi_conn_t *conn, int *err_no, char **errstr)
+ 
+-int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr) 
++int dbd_geterror(dbi_conn_t *conn, int *err_no, char **errstr) 
  {
-	if(!msqlErrMsg)
-		return -1;
-
+ 	if(!msqlErrMsg)
+ 		return -1;
+   
 -	*errno = 0;
 +	*err_no = 0;
-	*errstr = strdup(msqlErrMsg);
-	return 2;
+ 	*errstr = strdup(msqlErrMsg);
+ 	return 2;
  }
 diff --git a/drivers/mysql/dbd_mysql.c b/drivers/mysql/dbd_mysql.c
 index 7d06f62..237506c 100644
@@ -82,7 +82,7 @@ index 1f38094..d220a9e 100755
 @@ -400,12 +400,12 @@ const char *dbd_select_db(dbi_conn_t *conn, const char *db)
 	return NULL; /* Oracle can't do that .... */
  }
-
+ 
 -int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr) 
 +int dbd_geterror(dbi_conn_t *conn, int *err_no, char **errstr)
  {
@@ -91,18 +91,18 @@ index 1f38094..d220a9e 100755
 	Oraconn *Oconn = conn->connection;
 -	*errno = 0;
 +	*err_no = 0;
-
+ 
 	if (!conn->connection) {
 		*errstr = strdup("Unable to connect to database.");
 @@ -414,7 +414,7 @@ int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr)
-		OCIErrorGet((dvoid *)Oconn->err, (ub4) 1, (text *) NULL, &errcode, errbuf,
-			    (ub4) sizeof(errbuf), OCI_HTYPE_ERROR);
-		*errstr = strdup(errbuf);
+ 		OCIErrorGet((dvoid *)Oconn->err, (ub4) 1, (text *) NULL, &errcode, errbuf, 
+ 			    (ub4) sizeof(errbuf), OCI_HTYPE_ERROR);
+ 		*errstr = strdup(errbuf);
 -		*errno = errcode;
 +		*err_no = errcode;
    }
  	
-	return 3;
+ 	return 3;
 diff --git a/drivers/pgsql/dbd_pgsql.c b/drivers/pgsql/dbd_pgsql.c
 index 0433550..c097dac 100644
 --- a/drivers/pgsql/dbd_pgsql.c
