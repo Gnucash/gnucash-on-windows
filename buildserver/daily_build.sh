@@ -45,7 +45,6 @@ $GIT_CMD pull
 # If we don't have a rev file then start from 'now' and force a build
 revfile=$_GC_WIN_REPOS_UDIR/last_rev_daily
 if [ ! -f ${revfile} ] ; then
-  echo $($GIT_CMD rev-parse HEAD) > ${revfile}
   oldrev=a   # definitely an invalid, so non-existing git rev
 else
   oldrev=$(cat ${revfile})
