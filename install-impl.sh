@@ -212,24 +212,6 @@ function inst_mingw() {
     #[ ! -d $_AUTOTOOLS_UDIR/share/aclocal ] || add_to_env "-I $_AUTOTOOLS_UDIR/share/aclocal" ACLOCAL_FLAGS
 }
 
-function inst_svn() {
-    setup Subversion
-    _SVN_UDIR=`unix_path $SVN_DIR`
-    add_to_env $_SVN_UDIR/bin PATH
-    if quiet $_SVN_UDIR/bin/svn --version
-    then
-        echo "subversion already installed in $_SVN_UDIR.  skipping."
-    else
-		wget_unpacked $SVN_URL $DOWNLOAD_DIR $TMP_DIR
-		assert_one_dir $TMP_UDIR/svn-win32-*
-		rm -rf $SVN_DIR
-		mkdir -p $SVN_DIR
-		cp -a $TMP_UDIR/svn-win32-*/* $SVN_DIR
-		rm -rf $TMP_UDIR/svn-win32-*
-        quiet $_SVN_UDIR/bin/svn --version || die "svn not installed correctly"
-    fi
-}
-
 function inst_swig() {
     setup Swig
     _SWIG_UDIR=`unix_path $SWIG_DIR`
@@ -1007,7 +989,7 @@ function inst_openssl() {
         die "Did not find libeay32.dll in your PATH, why that?"
     fi
     if [ "$_eay32dll" != "$_OPENSSL_UDIR/bin/libeay32.dll" ] ; then
-        die "Found $_eay32dll in PATH.  If you have added $_OPENSSL_UDIR/bin to your PATH before, make sure it is listed before paths from other packages shipping SSL libraries, like SVN.  In particular, check $_MINGW_UDIR/etc/profile.d/installer.sh."
+        die "Found $_eay32dll in PATH.  If you have added $_OPENSSL_UDIR/bin to your PATH before, make sure it is listed before paths from other packages shipping SSL libraries.  In particular, check $_MINGW_UDIR/etc/profile.d/installer.sh."
     fi
 }
 
@@ -1336,18 +1318,6 @@ EOF
     fi
 }
 
-function checkupd_docs_svn() {
-    if [ "$UPDATE_DOCS" = "yes" ]; then
-        if [ -x .svn ]; then
-            setup "Docs - Update repository (svn)"
-            svn up -r $DOCS_SCM_REV
-        else
-            setup "Docs - Checkout repository (svn)"
-            svn co -r $DOCS_SCM_REV $DOCS_URL .
-        fi
-    fi
-}
-
 function checkupd_docs_git() {
     
     if [ "$UPDATE_DOCS" = "yes" ]; then
@@ -1417,11 +1387,7 @@ function inst_docs() {
 
     mkdir -p $_DOCS_UDIR/repos
     qpushd $_DOCS_UDIR/repos
-        if [ "$REPOS_TYPE" = "svn" ]; then
-            checkupd_docs_svn
-        else
-            checkupd_docs_git
-        fi
+        checkupd_docs_git
         setup docs
         _DOCS_INST_UDIR=`unix_path $INSTALL_DIR`/share/gnucash/help
         mkdir -p $_DOCS_INST_UDIR/{C,de,it,ja}

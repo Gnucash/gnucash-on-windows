@@ -25,7 +25,6 @@ function add_precious_path() {
 
 add_precious_path msys $MSYS_DIR
 add_precious_path wget $WGET_DIR
-add_precious_path svn $SVN_DIR
 add_precious_path git $GIT_DIR
 add_precious_path repos $REPOS_DIR
 add_precious_path hh $HH_DIR

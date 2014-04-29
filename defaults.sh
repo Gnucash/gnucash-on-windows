@@ -42,12 +42,8 @@ else
 
     set_default REPOS_TYPE "git"
     if [ "$REPOS_TYPE" = "git" ]; then
-      set_default GNUCASH_SCM_REV "trunk"
+      set_default GNUCASH_SCM_REV "master"
       set_default REPOS_URL "git://github.com/Gnucash/gnucash.git"
-    elif [ "$REPOS_TYPE" = "svn" ]; then
-      # latest revision that should compile, use HEAD or vwxyz
-      set_default GNUCASH_SCM_REV "HEAD"
-      set_default REPOS_URL "http://svn.gnucash.org/repo/gnucash/trunk"
     fi
 fi
 set_default BUILD_DIR $GNUCASH_DIR\\build
@@ -330,9 +326,6 @@ set_default ICU4C_SRC_URL "http://download.icu-project.org/files/icu4c/4.4.1/icu
 set_default ICU4C_DIR $GLOBAL_DIR\\icu-mingw32
 set_default ICU4C_PATCH `pwd`/icu-crossmingw.patch
 
-set_default SVN_URL "http://subversion.tigris.org/files/documents/15/47914/svn-win32-1.6.6.zip"
-set_default SVN_DIR $GLOBAL_DIR\\svn
-
 set_default GIT_URL "http://msysgit.googlecode.com/files/Git-1.7.10-preview20120409.exe"
 set_default GIT_DIR $GLOBAL_DIR\\git-1.7.10
 
@@ -379,12 +372,8 @@ set_default CMAKE_DIR $GLOBAL_DIR\\cmake
 set_default DOCBOOK_XSL_URL "$SF_MIRROR/docbook/docbook-xsl-1.76.1.zip"
 set_default DOCBOOK_DTD_URL "http://www.oasis-open.org/docbook/xml/4.1.2/docbkx412.zip"
 if [ "$REPOS_TYPE" = "git" ]; then
-  set_default DOCS_SCM_REV "trunk"
+  set_default DOCS_SCM_REV "master"
   set_default DOCS_URL "git://github.com/Gnucash/gnucash-docs.git"
-elif [ "$REPOS_TYPE" = "svn" ]; then
-  # latest revision that should compile, use HEAD or vwxyz
-  set_default DOCS_SCM_REV "HEAD"
-  set_default DOCS_URL "http://svn.gnucash.org/repo/gnucash-docs/trunk"
 fi
 set_default UPDATE_DOCS yes
 set_default DOCS_DIR $GLOBAL_DIR\\gnucash-docs

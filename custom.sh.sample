@@ -4,7 +4,7 @@
 # 
 # Note: All directories must be without spaces!
 #
-# REPOS_URL="svn+ssh://<dev>@svn.gnucash.org/repo/gnucash/trunk"
+# REPOS_URL="git@github.com:Gnucash/gnucash.git"
 # SF_MIRROR="http://switch.dl.sourceforge.net/sourceforge"
 # DISABLE_OPTIMIZATIONS=yes
 # GLOBAL_DIR=Z:\\mydir  # all directories will use this
