@@ -76,20 +76,22 @@ rm -rf ${_DIST_UDIR}
 # Create the installer
 $_GC_WIN_REPOS_UDIR/dist.sh 2>&1 | tee -a ${LOGFILE}
 
-# Copy the resulting installer into the output directory
+# Choose the output filename based on our "build_from_tarball" setting
+# Make sure this logic matches the logic in dist.sh!
 _BUILD_UDIR=`unix_path $BUILD_DIR`
 _GNUCASH_UDIR=`unix_path $GNUCASH_DIR`
 PKG_VERSION=`grep PACKAGE_VERSION ${_BUILD_UDIR}/config.h | cut -d" " -f3 | cut -d\" -f2 `
 REVISION=`grep GNUCASH_SCM_REV ${_BUILD_UDIR}/src/core-utils/gnc-scm-info.h | cut -d" " -f3 | cut -d\" -f2 `
 
-# Choose the output filename based on our "build_from_tarball" setting
-# Make sure this logic matches the logic in dist.sh!
 if [ "$BUILD_FROM_TARBALL" = "no" ]; then
   SETUP_FILENAME="gnucash-${PKG_VERSION}-$(date +'%Y-%m-%d')-git-${REVISION}-setup.exe"
 else
   SETUP_FILENAME="gnucash-${PKG_VERSION}-setup.exe"
 fi
+# Copy the resulting installer into the output directory
 mv ${_GNUCASH_UDIR}/${SETUP_FILENAME} ${_OUTPUT_DIR}
+echo "Buildserver has moved final installer to"
+echo ${_OUTPUT_DIR}/${SETUP_FILENAME}
 
 #
 # Verify that PKG_VERSION == $tag, and add to the build log if it's not.
