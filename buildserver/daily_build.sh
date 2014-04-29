@@ -50,8 +50,9 @@ if [ ! -f ${revfile} ] ; then
 else
   oldrev=$(cat ${revfile})
 fi
-
 newrev=$($GIT_CMD rev-parse HEAD)
+qpopd # leave gnucash repository
+
 if [[ "${oldrev}" != "${newrev}" ]]; then
   $_BUILDSERVER_UDIR/build_package.sh
 fi
@@ -59,5 +60,4 @@ fi
 # move the new file into place, will only happen if the build was successful
 echo ${newrev} > ${revfile}
 
-qpopd # leave gnucash repository
 qpopd # return to directory the script was invoked from (not necessarily the directory this script resides in)

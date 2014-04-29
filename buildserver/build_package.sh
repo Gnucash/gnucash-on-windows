@@ -22,8 +22,8 @@ function on_error() {
 
 function unix_path() { echo "$*" | sed 's,^\([A-Za-z]\):,/\1,;s,\\,/,g'; }
 
-. ../functions.sh
-. ../defaults.sh
+. ./functions.sh
+. ./defaults.sh
 
 tag="${1:-$GNUCASH_SCM_REV}"
 
