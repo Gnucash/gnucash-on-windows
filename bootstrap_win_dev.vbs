@@ -278,7 +278,7 @@ Else
     objCustomSh.WriteLine "GIT_DIR=" & strGitDir
     objCustomSh.WriteLine "REPOS_TYPE=git" ' Bootstrap only works with a git repo
     objCustomSh.WriteLine "GC_WIN_REPOS_URL=" & GC_WIN_REPOS_URL
-    objCustomSh.WriteLine "GC_WIN_REPOS_DIR=" & strReposDir
+    objCustomSh.WriteLine "GC_WIN_REPOS_DIR=" & strGCWinReposDir
     objCustomSh.WriteLine "REPOS_URL=" & REPOS_URL
     objCustomSh.WriteLine "REPOS_DIR=" & strReposDir
     objCustomSh.Close
