@@ -1136,6 +1136,8 @@ function inst_hh() {
         echo "html help workshop already installed in $_HH_UDIR.  skipping."
     else
         smart_wget $HH_URL $DOWNLOAD_DIR
+        echo "!!! Attention !!!"
+        echo "!!! This is the only installation step that requires your direct input !!!"
         echo "!!! When asked for an installation path, specify $HH_DIR !!!"
         $LAST_FILE
         qpushd $HH_DIR
