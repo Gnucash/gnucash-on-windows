@@ -60,16 +60,17 @@ register_env_var SQLITE3_LIBS " "
 # There is no reason to ever need to comment these out!
 # * commented out glade, as it is not needed to run gnucash
 add_step inst_prepare
-# Install html help first. It's the only step requiring
-# human interaction, so better do it at the beginning
-# so the user doesn't need to wait all the time.
-if [ "$CROSS_COMPILE" != "yes" ]; then
- add_step inst_hh
-fi
 if [ "$CROSS_COMPILE" != "yes" ]; then
  add_step inst_msys
 fi
 add_step inst_mingw
+# Install html help as soon as possible.
+# It's the only step requiring human
+# interaction, so better do it at the beginning
+# so the user doesn't need to wait all the time.
+if [ "$CROSS_COMPILE" != "yes" ]; then
+ add_step inst_hh
+fi
 add_step inst_regex
 add_step inst_readline
 add_step inst_exetype
