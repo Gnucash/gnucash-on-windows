@@ -26,26 +26,56 @@
 ' Ensure we have a visible console to display output
 CheckStartMode
 
-' Parameters
-' ----------
+' Parameters than can be overridden on the command line
+' -----------------------------------------------------
 ' All of the above will be installed in the base directory specified below.
-' If this path doesn't suit you, please feel free to modify it before
-' running this bootstrap script.
+' If this path doesn't suit you, you can specify another path as a named
+' variable on the command line like so:
+  bootstrap_win_dev.vbs /GLOBAL_DIR:c:\soft
+
 ' Note: avoid paths with spaces or other special characters (like &).
 '       these can confuse msys/mingw or some of the tools depending on them.
-GLOBAL_DIR = "c:\gcdev"
-MINGW_DIR  = GLOBAL_DIR & "\mingw"
-TMP_DIR= GLOBAL_DIR & "\tmp"
-DOWNLOAD_DIR= GLOBAL_DIR & "\downloads"
-GIT_PKG = "Git-1.7.10-preview20120409.exe"
-strGitBaseUrl = "http://msysgit.googlecode.com/files/"
-GIT_URL = strGitBaseUrl & GIT_PKG
-GIT_DIR = GLOBAL_DIR & "\git-1.7.10"
-GC_WIN_REPOS_URL = "git://github.com/gjanssens/gnucash-on-windows.git"
-GC_WIN_REPOS_DIR = GLOBAL_DIR & "\gnucash-on-windows.git"
-REPOS_URL = "git://github.com/Gnucash/gnucash.git"
-REPOS_DIR = GLOBAL_DIR & "\gnucash.git"
 
+' Any of the parameters set up below can be overridden in this way. 
+If WScript.Arguments.Named.Item("GLOBAL_DIR") = "" Then
+    GLOBAL_DIR = "c:\gcdev"
+End If
+If WScript.Arguments.Named.Item("MINGW_DIR") = "" Then
+    MINGW_DIR  = GLOBAL_DIR & "\mingw"
+End If
+If WScript.Arguments.Named.Item("TMP_DIR") = "" Then
+    TMP_DIR= GLOBAL_DIR & "\tmp"
+End If
+If WScript.Arguments.Named.Item("DOWNLOAD_DIR") = "" Then
+    DOWNLOAD_DIR= GLOBAL_DIR & "\downloads"
+End If
+If WScript.Arguments.Named.Item("GIT_PKG") = "" Then
+    GIT_PKG = "Git-1.7.10-preview20120409.exe"
+End If
+If WScript.Arguments.Named.Item("strGitBaseUrl") = "" Then
+    strGitBaseUrl = "http://msysgit.googlecode.com/files/"
+End If
+If WScript.Arguments.Named.Item("GIT_URL") = "" Then
+    GIT_URL = strGitBaseUrl & GIT_PKG
+End If
+If WScript.Arguments.Named.Item("GIT_DIR") = "" Then
+    GIT_DIR = GLOBAL_DIR & "\git-1.7.10"
+End If
+If WScript.Arguments.Named.Item("GC_WIN_REPOS_URL") = "" Then
+    GC_WIN_REPOS_URL = "git://github.com/gjanssens/gnucash-on-windows.git"
+End If
+If WScript.Arguments.Named.Item("GC_WIN_REPOS_DIR") = "" Then
+    GC_WIN_REPOS_DIR = GLOBAL_DIR & "\gnucash-on-windows.git"
+End If
+If WScript.Arguments.Named.Item("REPOS_URL") = "" Then
+    REPOS_URL = "git://github.com/Gnucash/gnucash.git"
+End If
+If WScript.Arguments.Named.Item("REPOS_DIR") = "" Then
+    REPOS_DIR = GLOBAL_DIR & "\gnucash.git"
+End If
+
+' Parameters that can't/shouldn't be overridden
+'----------------------------------------------
 ' Global parameters for visual basic
 Set objFso = CreateObject("Scripting.FileSystemObject")
 Set stdout = objFso.GetStandardStream(1)
@@ -328,8 +358,10 @@ Sub Welcome
     stdout.WriteLine "  won't be touched. Instead the available versions"
     stdout.WriteLine "  will be used in that case."
     stdout.WriteLine "* If the proposed locations don't suit you, you can"
-    stdout.WriteLine "  customize them before running this script."
-    stdout.WriteLine "  All of them are located at the beginning of this file."
+    stdout.WriteLine "  pass alternate locations as named parameters to this script."
+    stdout.WriteLine "  For example to use c:\soft as base directory you can run this script as"
+    stdout.WriteLine "  bootstrap_win_dev.vbs /GLOBAL_DIR:c:\soft"
+    stdout.WriteLine "  Which parameters you can modify can be found near the beginning of this script."
     stdout.WriteBlankLines 1
     stdout.Write "Continue with the set up (Y/N) ? "
     chRead = stdin.ReadLine
