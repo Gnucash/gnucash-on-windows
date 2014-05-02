@@ -101,8 +101,8 @@ End If
 ' If you want the script to run without prompting the user,
 ' add the /silent:yes switch to the command line
 ' It will still print output though to help in locating errors
+silent = False
 If WScript.Arguments.Named.Exists("silent") Then
-    stdout.WriteLine "Going into silent mode"
     silent = True
 End If
 
