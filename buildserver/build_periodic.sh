@@ -22,6 +22,7 @@ set -e
 # that script is run will effectively determine how regularly this script is run.
 periodicity=$1
 if [ x$periodicity = xweekly ]
+then
   ## Only run this script on Monday night (first day of the week)
   if [ `date +%u` != 1 ]
   then 
