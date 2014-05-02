@@ -37,47 +37,72 @@ CheckStartMode
 '       these can confuse msys/mingw or some of the tools depending on them.
 
 ' Any of the parameters set up below can be overridden in this way. 
-If WScript.Arguments.Named.Item("GLOBAL_DIR") = "" Then
+If WScript.Arguments.Named.Exists("GLOBAL_DIR") Then
+    GLOBAL_DIR = WScript.Arguments.Named.Item("GLOBAL_DIR")
+Else
     GLOBAL_DIR = "c:\gcdev"
 End If
-If WScript.Arguments.Named.Item("MINGW_DIR") = "" Then
+If WScript.Arguments.Named.Exists("MINGW_DIR") Then
+    MINGW_DIR = WScript.Arguments.Named.Item("MINGW_DIR")
+Else
     MINGW_DIR  = GLOBAL_DIR & "\mingw"
 End If
-If WScript.Arguments.Named.Item("TMP_DIR") = "" Then
+If WScript.Arguments.Named.Exists("TMP_DIR") Then
+    TMP_DIR = WScript.Arguments.Named.Item("TMP_DIR")
+Else
     TMP_DIR= GLOBAL_DIR & "\tmp"
 End If
-If WScript.Arguments.Named.Item("DOWNLOAD_DIR") = "" Then
+If WScript.Arguments.Named.Exists("DOWNLOAD_DIR") Then
+    DOWNLOAD_DIR = WScript.Arguments.Named.Item("DOWNLOAD_DIR")
+Else
     DOWNLOAD_DIR= GLOBAL_DIR & "\downloads"
 End If
-If WScript.Arguments.Named.Item("GIT_PKG") = "" Then
+If WScript.Arguments.Named.Exists("GIT_PKG") Then
+    GIT_PKG = WScript.Arguments.Named.Item("GIT_PKG")
+Else
     GIT_PKG = "Git-1.7.10-preview20120409.exe"
 End If
-If WScript.Arguments.Named.Item("strGitBaseUrl") = "" Then
+If WScript.Arguments.Named.Exists("strGitBaseUrl") Then
+    strGitBaseUrl = WScript.Arguments.Named.Item("strGitBaseUrl")
+Else
     strGitBaseUrl = "http://msysgit.googlecode.com/files/"
 End If
-If WScript.Arguments.Named.Item("GIT_URL") = "" Then
+If WScript.Arguments.Named.Exists("GIT_URL") Then
+    GIT_URL = WScript.Arguments.Named.Item("GIT_URL")
+Else
     GIT_URL = strGitBaseUrl & GIT_PKG
 End If
-If WScript.Arguments.Named.Item("GIT_DIR") = "" Then
+If WScript.Arguments.Named.Exists("GIT_DIR") Then
+    GIT_DIR = WScript.Arguments.Named.Item("GIT_DIR")
+Else
     GIT_DIR = GLOBAL_DIR & "\git-1.7.10"
 End If
-If WScript.Arguments.Named.Item("GC_WIN_REPOS_URL") = "" Then
+If WScript.Arguments.Named.Exists("GC_WIN_REPOS_URL") Then
+    GC_WIN_REPOS_URL = WScript.Arguments.Named.Item("GC_WIN_REPOS_URL")
+Else
     GC_WIN_REPOS_URL = "git://github.com/gjanssens/gnucash-on-windows.git"
 End If
-If WScript.Arguments.Named.Item("GC_WIN_REPOS_DIR") = "" Then
+If WScript.Arguments.Named.Exists("GC_WIN_REPOS_DIR") Then
+    GC_WIN_REPOS_DIR = WScript.Arguments.Named.Item("GC_WIN_REPOS_DIR")
+Else
     GC_WIN_REPOS_DIR = GLOBAL_DIR & "\gnucash-on-windows.git"
 End If
-If WScript.Arguments.Named.Item("REPOS_URL") = "" Then
+If WScript.Arguments.Named.Exists("REPOS_URL") Then
+    REPOS_URL = WScript.Arguments.Named.Item("REPOS_URL")
+Else
     REPOS_URL = "git://github.com/Gnucash/gnucash.git"
 End If
-If WScript.Arguments.Named.Item("REPOS_DIR") = "" Then
+If WScript.Arguments.Named.Exists("REPOS_DIR") Then
+    REPOS_DIR = WScript.Arguments.Named.Item("REPOS_DIR")
+Else
     REPOS_DIR = GLOBAL_DIR & "\gnucash.git"
 End If
 
 ' If you want the script to run without prompting the user,
 ' add the /s switch to the command line
 ' It will still print output though to help in locating errors
-If WScript.Arguments.Named.Exists("s") Then
+If WScript.Arguments.Named.Exists("silent") Then
+    stdout.WriteLine "Going into silent mode"
     silent = True
 End If
 
@@ -347,6 +372,7 @@ AbortScript
 Sub Welcome
     If silent then
         ' Don't interact with user if in silent mode
+        stdout.WriteLine "Skipping intro because silent mode was set"
         Exit Sub
     End If
 
