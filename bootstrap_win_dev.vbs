@@ -31,7 +31,7 @@ CheckStartMode
 ' All of the above will be installed in the base directory specified below.
 ' If this path doesn't suit you, you can specify another path as a named
 ' variable on the command line like so:
-  bootstrap_win_dev.vbs /GLOBAL_DIR:c:\soft
+' bootstrap_win_dev.vbs /GLOBAL_DIR:c:\soft
 
 ' Note: avoid paths with spaces or other special characters (like &).
 '       these can confuse msys/mingw or some of the tools depending on them.
