@@ -21,28 +21,37 @@ function unix_path() { echo "$*" | sed 's,^\([A-Za-z]\):,/\1,;s,\\,/,g'; }
 ################################################################
 # Setup our environment  (we need the DOWNLOAD_DIR)
 
-qpushd "$(dirname $(unix_path "$0"))"
+_BUILDSERVER_UDIR="$(dirname $(unix_path "$0"))"
+qpushd "$_BUILDSERVER_UDIR/.."
 pkgdir="`pwd`"
-. functions.sh
-. defaults.sh
+. ./functions.sh
+. ./defaults.sh
 
 # Variables
 _GIT_UDIR=`unix_path $GIT_DIR`
 set_env "$_GIT_UDIR/bin/git" GIT_CMD
 export GIT_CMD
 
+# Update the gnucash-on-windows build scripts
+_GC_WIN_REPOS_UDIR=`unix_path $GC_WIN_REPOS_DIR`
+qpushd "$_GC_WIN_REPOS_UDIR"
 $GIT_CMD pull
-. functions.sh
-. defaults.sh
+. ./functions.sh
+. ./defaults.sh
+qpopd
 
 
 ################################################################
 # determine if there are any new tags since the last time we ran
 #
+_REPOS_UDIR=`unix_path $REPOS_DIR`
+qpushd "$_REPOS_UDIR"
+
+# Update the gnucash repository
 $GIT_CMD fetch -t
 
 # If we don't have a tagfile then start from 'now'
-tagfile=tags_git
+tagfile=$_GC_WIN_REPOS_UDIR/tags
 if [ ! -f ${tagfile} ] ; then
   for one_tag in $($GIT_CMD tag)
   do
@@ -59,9 +68,12 @@ do
   echo ${tag_hash}/${one_tag} >> ${tagfile}.new
 done
 tags="`diff --suppress-common-lines ${tagfile} ${tagfile}.new | grep '^> ' | sed -e 's/^> //g'`"
+qpopd
 
 # move the new file into place
 mv -f ${tagfile}.new ${tagfile}
+
+qpopd # return to directory the script was invoked from (not necessarily the directory this script resides in)
 
 ################################################################
 # Now iterate over all the new tags (if any) and build a package
@@ -80,49 +92,40 @@ for tag_rev in $tags ; do
      continue
   fi
   
-  tagbasedir=/c/soft/gnucash-${tag}
-  tagdir=${tagbasedir}/gnucash
-  rm -fr $tagbasedir
-  mkdir -p ${tagdir}
+  TAG_GLOBAL_DIR="c:\\gcdev\\gnucash-${tag}"
+  _TAG_GLOBAL_UDIR=$(unix_path "$TAG_GLOBAL_DIR")
+  rm -fr $_TAG_GLOBAL_UDIR
+  
+  # Set up a clean build environment for this tag
+  # This will automatically create a custom.sh with
+  # several parameters correctly pre-set like
+  # GLOBAL_DIR, DOWNLOAD_DIR,...
+  $_GC_WIN_REPOS_UDIR/bootstrap_win_dev.vbs /s /GLOBAL_DIR:$TAG_GLOBAL_DIR /DOWNLOAD_DIR:$DOWNLOAD_DIR
 
   # Check out the tag and setup custom.sh
-  qpushd ${tagdir}
-  $GIT_CMD clone ${REPOS_URL} repos
-  qpushd repos
+  TAG_REPOS_DIR="${TAG_GLOBAL_DIR}\\gnucash.git"
+  _TAG_REPOS_UDIR=$(unix_path "$TAG_REPOS_DIR")
+  qpushd $TAG_REPOS_DIR
   $GIT_CMD checkout $tag
   qpopd
-  qpopd
-  w32pkg=${tagdir}/repos/packaging/win32
-  cp -p "${pkgdir}/custom.sh" ${w32pkg}/custom.sh
-
-  # Set the global directory to the tag build
-  echo -n 'GLOBAL_DIR=c:\\soft\\gnucash-' >> ${w32pkg}/custom.sh
-  echo "${tag}" >> ${w32pkg}/custom.sh
-
-  # Point DOWNLOAD_DIR at the global installation so we can reuse
-  # most of the already downloaded packages
-  echo -n "DOWNLOAD_DIR=" >> ${w32pkg}/custom.sh
-  echo "${DOWNLOAD_DIR}" | sed -e 's/\\/\\\\/g' >> ${w32pkg}/custom.sh
-
-  # UPDATE_SOURCES is obsolete, but preserved here to allow the
-  # current script to also build older tags, that may still
-  # use this parameter.
-  # No need to update the sources we just checked out
-  echo "UPDATE_SOURCES=no" >> ${w32pkg}/custom.sh
+  
+  $TAG_WIN_REPOS_DIR="${TAG_GLOBAL_DIR}\\gnucash-on-windows.git"
+  $_TAG_WIN_REPOS_UDIR=$(unix_path "$TAG_WIN_REPOS_DIR")
+  #cp -p "${pkgdir}/custom.sh" ${_TAG_WIN_REPOS_UDIR}/custom.sh
 
   # BUILD_FROM_TARBALL is special:
   # in install.sh place we check !=yes, in defaults.sh =yes, in dist.sh =no
   # We want it to look like 'no' in install and defaults, but yes in dist
   # so this hack works!
-  echo "BUILD_FROM_TARBALL=maybe" >> ${w32pkg}/custom.sh
+  echo "BUILD_FROM_TARBALL=maybe" >> ${_TAG_WIN_REPOS_UDIR}/custom.sh
 
   # Point HH_DIR at the global installation because we don't need to redo it
-  echo -n "HH_DIR=" >> ${w32pkg}/custom.sh
-  echo "${GLOBAL_DIR}\\hh" | sed -e 's/\\/\\\\/g' >> ${w32pkg}/custom.sh
+  echo -n "HH_DIR=" >> ${_TAG_WIN_REPOS_UDIR}/custom.sh
+  echo "${GLOBAL_DIR}\\hh" | sed -e 's/\\/\\\\/g' >> ${_TAG_WIN_REPOS_UDIR}/custom.sh
 
   # Now build the tag!  (this will upload it too)
-  # Use the build_package script from trunk (cwd), not from the tag
-  qpushd ${w32pkg}
+  # Use the build_package script from master (cwd), not from the tag
+  qpushd ${_TAG_WIN_REPOS_UDIR}
     ${pkgdir}/build_package.sh ${tag}
   qpopd
 done

@@ -14,6 +14,21 @@
 
 set -e
 
+# Determine how frequently to run this script
+# Currently only 'weekly' restricts the run frequency
+# Any other periodicity will just run the script regardless of how long it has
+# been since the last run.
+# As this script is meant to be called from build_periodic.bat the frequency
+# that script is run will effectively determine how regularly this script is run.
+periodicity=$1
+if [ x$periodicity = xweekly ]
+  ## Only run this script on Monday night (first day of the week)
+  if [ `date +%u` != 1 ]
+  then 
+    exit
+  fi
+fi
+
 function qpushd() { pushd "$@" >/dev/null; }
 function qpopd() { popd >/dev/null; }
 function unix_path() { echo "$*" | sed 's,^\([A-Za-z]\):,/\1,;s,\\,/,g'; }
@@ -43,7 +58,7 @@ qpushd "$_REPOS_UDIR"
 # Update the gnucash repository
 $GIT_CMD pull
 # If we don't have a rev file then start from 'now' and force a build
-revfile=$_GC_WIN_REPOS_UDIR/last_rev_daily
+revfile=$_GC_WIN_REPOS_UDIR/last_rev_periodic
 if [ ! -f ${revfile} ] ; then
   oldrev=a   # definitely an invalid, so non-existing git rev
 else

@@ -74,6 +74,13 @@ If WScript.Arguments.Named.Item("REPOS_DIR") = "" Then
     REPOS_DIR = GLOBAL_DIR & "\gnucash.git"
 End If
 
+' If you want the script to run without prompting the user,
+' add the /s switch to the command line
+' It will still print output though to help in locating errors
+If WScript.Arguments.Named.Exists("s") Then
+    silent = True
+End If
+
 ' Parameters that can't/shouldn't be overridden
 '----------------------------------------------
 ' Global parameters for visual basic
@@ -338,6 +345,11 @@ AbortScript
 ' ----------------------------
 ' Initial message to user
 Sub Welcome
+    If silent then
+        ' Don't interact with user if in silent mode
+        Exit Sub
+    End If
+
     stdout.WriteLine "Boostrap GnuCash Development on Windows"
     stdout.WriteLine "---------------------------------------"
     stdout.WriteLine "This script is intended for people that wish to develop GnuCash on Windows"
@@ -453,6 +465,11 @@ End Sub
 
 ' Abort the script
 Sub AbortScript
+    If silent then
+        ' Don't interact with user if in silent mode
+        Exit Sub
+    End If
+
     stdout.WriteBlankLines 1
     stdout.Write "Pres enter to continue... "
     chRead = stdin.Read (1)

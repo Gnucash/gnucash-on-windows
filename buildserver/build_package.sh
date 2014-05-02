@@ -1,9 +1,9 @@
 #!/bin/sh
 
 #
-# This assumes we're in the "packaging" directory for the correct build.
-# It could be the packaging/win32 subdir of a tag checkout, or it could
-# be the top-level daily-build packaging directory.
+# This assumes we're in the "gnucash-on-windows" directory for the correct build.
+# It could be for tag build environment, or it could
+# be the top-level daily-build gnucash-on-windows directory.
 # Note: GIT_CMD below should have been set by a calling script.
 #
 
