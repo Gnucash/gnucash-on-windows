@@ -26,6 +26,13 @@
 ' Ensure we have a visible console to display output
 CheckStartMode
 
+' This regexp is used to "Windoize" path names when this script is called
+' from inside an msys environment (like from the build_tags.sh script)
+' It should be a noop when the script is called from a pure Windows cmd prompt
+Set myRegExp = New RegExp
+myRegExp.Global = True
+myRegExp.Pattern = "/"
+
 ' Parameters than can be overridden on the command line
 ' -----------------------------------------------------
 ' All of the above will be installed in the base directory specified below.
@@ -38,22 +45,22 @@ CheckStartMode
 
 ' Any of the parameters set up below can be overridden in this way. 
 If WScript.Arguments.Named.Exists("GLOBAL_DIR") Then
-    GLOBAL_DIR = WScript.Arguments.Named.Item("GLOBAL_DIR")
+    GLOBAL_DIR = myRegExp.Replace (WScript.Arguments.Named.Item("GLOBAL_DIR"), "\")
 Else
     GLOBAL_DIR = "c:\gcdev"
 End If
 If WScript.Arguments.Named.Exists("MINGW_DIR") Then
-    MINGW_DIR = WScript.Arguments.Named.Item("MINGW_DIR")
+    MINGW_DIR = myRegExp.Replace (WScript.Arguments.Named.Item("MINGW_DIR"), "\")
 Else
     MINGW_DIR  = GLOBAL_DIR & "\mingw"
 End If
 If WScript.Arguments.Named.Exists("TMP_DIR") Then
-    TMP_DIR = WScript.Arguments.Named.Item("TMP_DIR")
+    TMP_DIR = myRegExp.Replace (WScript.Arguments.Named.Item("TMP_DIR"), "\")
 Else
     TMP_DIR= GLOBAL_DIR & "\tmp"
 End If
 If WScript.Arguments.Named.Exists("DOWNLOAD_DIR") Then
-    DOWNLOAD_DIR = WScript.Arguments.Named.Item("DOWNLOAD_DIR")
+    DOWNLOAD_DIR = myRegExp.Replace (WScript.Arguments.Named.Item("DOWNLOAD_DIR"), "\")
 Else
     DOWNLOAD_DIR= GLOBAL_DIR & "\downloads"
 End If
@@ -73,7 +80,7 @@ Else
     GIT_URL = strGitBaseUrl & GIT_PKG
 End If
 If WScript.Arguments.Named.Exists("GIT_DIR") Then
-    GIT_DIR = WScript.Arguments.Named.Item("GIT_DIR")
+    GIT_DIR = myRegExp.Replace (WScript.Arguments.Named.Item("GIT_DIR"), "\")
 Else
     GIT_DIR = GLOBAL_DIR & "\git-1.7.10"
 End If
@@ -83,7 +90,7 @@ Else
     GC_WIN_REPOS_URL = "git://github.com/gjanssens/gnucash-on-windows.git"
 End If
 If WScript.Arguments.Named.Exists("GC_WIN_REPOS_DIR") Then
-    GC_WIN_REPOS_DIR = WScript.Arguments.Named.Item("GC_WIN_REPOS_DIR")
+    GC_WIN_REPOS_DIR = myRegExp.Replace (WScript.Arguments.Named.Item("GC_WIN_REPOS_DIR"), "\")
 Else
     GC_WIN_REPOS_DIR = GLOBAL_DIR & "\gnucash-on-windows.git"
 End If
@@ -93,7 +100,7 @@ Else
     REPOS_URL = "git://github.com/Gnucash/gnucash.git"
 End If
 If WScript.Arguments.Named.Exists("REPOS_DIR") Then
-    REPOS_DIR = WScript.Arguments.Named.Item("REPOS_DIR")
+    REPOS_DIR = myRegExp.Replace (WScript.Arguments.Named.Item("REPOS_DIR"), "\")
 Else
     REPOS_DIR = GLOBAL_DIR & "\gnucash.git"
 End If
