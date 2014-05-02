@@ -100,7 +100,7 @@ for tag_rev in $tags ; do
   # This will automatically create a custom.sh with
   # several parameters correctly pre-set like
   # GLOBAL_DIR, DOWNLOAD_DIR,...
-  cscript.exe $_GC_WIN_REPOS_UDIR/bootstrap_win_dev.vbs /silent /GLOBAL_DIR:$TAG_GLOBAL_DIR /DOWNLOAD_DIR:$DOWNLOAD_DIR
+  cscript.exe $_GC_WIN_REPOS_UDIR/bootstrap_win_dev.vbs /silent:yes /GLOBAL_DIR:$TAG_GLOBAL_DIR /DOWNLOAD_DIR:$DOWNLOAD_DIR
 
   # Check out the tag and setup custom.sh
   TAG_REPOS_DIR="${TAG_GLOBAL_DIR}\\gnucash.git"
