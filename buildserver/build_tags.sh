@@ -126,6 +126,6 @@ for tag_rev in $tags ; do
   # Now build the tag!  (this will upload it too)
   # Use the build_package script from master (cwd), not from the tag
   qpushd ${_TAG_WIN_REPOS_UDIR}
-    ${pkgdir}/build_package.sh ${tag}
+    ${_BUILDSERVER_UDIR}/build_package.sh ${tag}
   qpopd
 done
