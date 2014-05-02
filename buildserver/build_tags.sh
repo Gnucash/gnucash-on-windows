@@ -109,8 +109,8 @@ for tag_rev in $tags ; do
   $GIT_CMD checkout $tag
   qpopd
   
-  $TAG_WIN_REPOS_DIR="${TAG_GLOBAL_DIR}\\gnucash-on-windows.git"
-  $_TAG_WIN_REPOS_UDIR=$(unix_path "$TAG_WIN_REPOS_DIR")
+  TAG_WIN_REPOS_DIR="${TAG_GLOBAL_DIR}\\gnucash-on-windows.git"
+  _TAG_WIN_REPOS_UDIR=$(unix_path "$TAG_WIN_REPOS_DIR")
   #cp -p "${pkgdir}/custom.sh" ${_TAG_WIN_REPOS_UDIR}/custom.sh
 
   # BUILD_FROM_TARBALL is special:
