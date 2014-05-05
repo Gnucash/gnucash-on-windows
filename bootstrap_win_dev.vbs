@@ -35,7 +35,7 @@ myRegExp.Pattern = "/"
 
 ' Parameters than can be overridden on the command line
 ' -----------------------------------------------------
-' All of the above will be installed in the base directory specified below.
+' Everything will be installed in the base directory specified below.
 ' If this path doesn't suit you, you can specify another path as a named
 ' variable on the command line like so:
 ' bootstrap_win_dev.vbs /GLOBAL_DIR:c:\soft
