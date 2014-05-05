@@ -87,7 +87,7 @@ End If
 If WScript.Arguments.Named.Exists("GC_WIN_REPOS_URL") Then
     GC_WIN_REPOS_URL = WScript.Arguments.Named.Item("GC_WIN_REPOS_URL")
 Else
-    GC_WIN_REPOS_URL = "git://github.com/gjanssens/gnucash-on-windows.git"
+    GC_WIN_REPOS_URL = "git://github.com/Gnucash/gnucash-on-windows.git"
 End If
 If WScript.Arguments.Named.Exists("GC_WIN_REPOS_DIR") Then
     GC_WIN_REPOS_DIR = myRegExp.Replace (WScript.Arguments.Named.Item("GC_WIN_REPOS_DIR"), "\")
@@ -162,7 +162,7 @@ Else
     strMingwGetZip = DOWNLOAD_DIR & "\mingw-get.zip"
     If Not objFso.FileExists(strMingwGetZip) Then
         stdout.Write "Downloading mingw-get.zip (slow!)... "
-        strMingwGetZipUrl = "https://github.com/gjanssens/gnucash-on-windows/raw/master/mingw-get.zip"
+        strMingwGetZipUrl = "https://github.com/Gnucash/gnucash-on-windows/raw/master/mingw-get.zip"
         HTTPDownload strMingwGetZipUrl, strMingwGetZip
         stdout.WriteLine "Success"
     End If
