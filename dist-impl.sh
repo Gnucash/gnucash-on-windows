@@ -53,7 +53,7 @@ function dist_mingw() {
     setup mingw
 
     # Prepare mingw-get to install to alternative location
-    MINGWGET_DIST_DIR=${INSTALL_DIR}\\..\\mingw-get-dist
+    MINGWGET_DIST_DIR=${GNUCASH_DIR}\\mingw-get-dist
     MINGWGET_DIST_UDIR=`unix_path $MINGWGET_DIST_DIR`
     mkdir -p $MINGWGET_DIST_UDIR/{bin,libexec,var/lib/mingw-get/data}
     cp $_MINGW_UDIR/bin/mingw-get.exe $MINGWGET_DIST_UDIR/bin/
