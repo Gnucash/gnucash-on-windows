@@ -48,6 +48,7 @@ else
 fi
 set_default BUILD_DIR $GNUCASH_DIR\\build
 set_default INSTALL_DIR $GNUCASH_DIR\\inst
+set_default DIST_DIR $GNUCASH_DIR\\dist
 
 set_default WITH_CUTECASH no
 set_default CUTECASH_BUILD_DIR $GNUCASH_DIR\\build-cutecash

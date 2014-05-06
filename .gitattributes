@@ -30,6 +30,6 @@
 *.isl text eol=crlf
 *.vbs text eol=crlf
 
-gnucash.iss.in text eol=crlf
+gnucash.iss text eol=crlf
 gnucash.rc.in  text eol=crlf
 README*win32-bin.txt text eol=crlf

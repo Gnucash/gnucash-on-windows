@@ -16,16 +16,16 @@ AppUpdatesURL=http://www.gnucash.org
 VersionInfoVersion=@VERSION@
 DefaultDirName={pf}\@PACKAGE@
 DefaultGroupName=GnuCash
-LicenseFile=@prefix@\..\dist\share\doc\@PACKAGE@\COPYING
+LicenseFile=@DIST_DIR\share\doc\@PACKAGE@\COPYING
 Compression=lzma
 MinVersion=5.0,5.0
 PrivilegesRequired=poweruser
 OutputDir=.
 OutputBaseFilename=@PACKAGE@-@VERSION@-setup
 UninstallFilesDir={app}\uninstall\@PACKAGE@
-InfoAfterFile=@prefix@\..\dist\share\doc\@PACKAGE@\README.win32-bin.txt
-SetupIconFile=@prefix@\..\dist\share\@PACKAGE@\pixmaps\gnucash-icon.ico
-WizardSmallImageFile=@prefix@\..\dist\share\@PACKAGE@\pixmaps\gnucash-icon-48x48.bmp
+InfoAfterFile=@DIST_DIR\share\doc\@PACKAGE@\README.win32-bin.txt
+SetupIconFile=@DIST_DIR\share\@PACKAGE@\pixmaps\gnucash-icon.ico
+WizardSmallImageFile=@DIST_DIR\share\@PACKAGE@\pixmaps\gnucash-icon-48x48.bmp
 
 [Types]
 Name: "full"; Description: "{cm:FullInstall}"
@@ -61,33 +61,33 @@ Filename: "{app}\bin\guile.cmd"; Flags: runhidden
 ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 [Files]
 ; The main executables and DLLs
-Source: "@prefix@\..\dist\bin\*"; DestDir: "{app}\bin"; Flags: recursesubdirs ignoreversion; Components: main
-Source: "@prefix@\..\dist\etc\*"; DestDir: "{app}\etc"; Flags: recursesubdirs; Components: main
-Source: "@prefix@\..\dist\etc\@PACKAGE@\environment"; DestDir: "{app}\etc\@PACKAGE@"; Components: main; AfterInstall: MyAfterInstallEnvironment()
+Source: "@DIST_DIR\bin\*"; DestDir: "{app}\bin"; Flags: recursesubdirs ignoreversion; Components: main
+Source: "@DIST_DIR\etc\*"; DestDir: "{app}\etc"; Flags: recursesubdirs; Components: main
+Source: "@DIST_DIR\etc\@PACKAGE@\environment"; DestDir: "{app}\etc\@PACKAGE@"; Components: main; AfterInstall: MyAfterInstallEnvironment()
 ; Note: The above AfterInstall function will adapt the 
 ; environment config file on-the-fly by the Pascal script below.
-Source: "@prefix@\..\dist\lib\*"; DestDir: "{app}\lib"; Flags: recursesubdirs; Components: main
+Source: "@DIST_DIR\lib\*"; DestDir: "{app}\lib"; Flags: recursesubdirs; Components: main
 ;; We don't have anything in libexec anymore at the moment
-;Source: "@prefix@\..\dist\libexec\*"; DestDir: "{app}\libexec"; Flags: recursesubdirs; Components: main
-Source: "@prefix@\..\dist\share\*"; DestDir: "{app}\share"; Flags: recursesubdirs; Components: main
+;Source: "@DIST_DIR\libexec\*"; DestDir: "{app}\libexec"; Flags: recursesubdirs; Components: main
+Source: "@DIST_DIR\share\*"; DestDir: "{app}\share"; Flags: recursesubdirs; Components: main
 
 ;; The translations
-;Source: "@prefix@\..\dist\share\locale\*"; DestDir: "{app}\share\locale"; Flags: recursesubdirs; Components: translations
+;Source: "@DIST_DIR\share\locale\*"; DestDir: "{app}\share\locale"; Flags: recursesubdirs; Components: translations
 ;
 ;; The account templates
-;Source: "@prefix@\..\dist\share\@PACKAGE@\accounts\*"; DestDir: "{app}\share\@PACKAGE@\accounts"; Flags: recursesubdirs; Components: templates
+;Source: "@DIST_DIR\share\@PACKAGE@\accounts\*"; DestDir: "{app}\share\@PACKAGE@\accounts"; Flags: recursesubdirs; Components: templates
 
 ; And all the documentation
-Source: "@prefix@\..\dist\share\doc\@PACKAGE@\README"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
-Source: "@prefix@\..\dist\share\doc\@PACKAGE@\README.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
-Source: "@prefix@\..\dist\share\doc\@PACKAGE@\README-de.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
-Source: "@prefix@\..\dist\share\doc\@PACKAGE@\README-fr.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
-Source: "@prefix@\..\dist\share\doc\@PACKAGE@\README-it.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
-Source: "@prefix@\..\dist\share\doc\@PACKAGE@\README-zh_CN.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
-Source: "@prefix@\..\dist\share\doc\@PACKAGE@\README-zh_TW.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
-Source: "@prefix@\..\dist\share\doc\@PACKAGE@\COPYING"; DestDir: "{app}\doc\@PACKAGE@"; Flags: ignoreversion; Components: main
-Source: "@prefix@\..\dist\share\doc\@PACKAGE@\AUTHORS"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
-Source: "@prefix@\..\dist\share\doc\@PACKAGE@\ChangeLog"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
+Source: "@DIST_DIR\share\doc\@PACKAGE@\README"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
+Source: "@DIST_DIR\share\doc\@PACKAGE@\README.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
+Source: "@DIST_DIR\share\doc\@PACKAGE@\README-de.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
+Source: "@DIST_DIR\share\doc\@PACKAGE@\README-fr.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
+Source: "@DIST_DIR\share\doc\@PACKAGE@\README-it.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
+Source: "@DIST_DIR\share\doc\@PACKAGE@\README-zh_CN.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
+Source: "@DIST_DIR\share\doc\@PACKAGE@\README-zh_TW.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
+Source: "@DIST_DIR\share\doc\@PACKAGE@\COPYING"; DestDir: "{app}\doc\@PACKAGE@"; Flags: ignoreversion; Components: main
+Source: "@DIST_DIR\share\doc\@PACKAGE@\AUTHORS"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
+Source: "@DIST_DIR\share\doc\@PACKAGE@\ChangeLog"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
 
 
 ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -370,16 +370,16 @@ end;
 
 [Languages]
 Name: "en"; MessagesFile: "compiler:Default.isl"
-Name: "de"; MessagesFile: "compiler:Languages\German.isl"; InfoAfterFile: "@prefix@\share\doc\@PACKAGE@\README-de.win32-bin.txt"
-Name: "el"; MessagesFile: "@prefix@\share\@PACKAGE@\Greek-4-5.1.11.isl"
-Name: "fr"; MessagesFile: "compiler:Languages\French.isl"; InfoAfterFile: "@prefix@\share\doc\@PACKAGE@\README-fr.win32-bin.txt"
-Name: "it"; MessagesFile: "compiler:Languages\Italian.isl"; InfoAfterFile: "@prefix@\share\doc\@PACKAGE@\README-it.win32-bin.txt"
-Name: "ja"; MessagesFile: "@prefix@\share\@PACKAGE@\Japanese-5-5.1.11.isl"
-Name: "lv"; MessagesFile: "@prefix@\share\@PACKAGE@\Latvian-1-5.1.11.isl"; InfoAfterFile: "@prefix@\share\doc\@PACKAGE@\README-lv.win32-bin.txt"
-Name: "nl"; MessagesFile: "compiler:Languages\Dutch.isl"; InfoAfterFile: "@prefix@\share\doc\@PACKAGE@\README-nl.win32-bin.txt"
+Name: "de"; MessagesFile: "compiler:Languages\German.isl"; InfoAfterFile: "@INSTALL_DIR@\share\doc\@PACKAGE@\README-de.win32-bin.txt"
+Name: "el"; MessagesFile: "@GC_WIN_REPOS_DIR@\Greek-4-5.1.11.isl"
+Name: "fr"; MessagesFile: "compiler:Languages\French.isl"; InfoAfterFile: "@INSTALL_DIR@\share\doc\@PACKAGE@\README-fr.win32-bin.txt"
+Name: "it"; MessagesFile: "compiler:Languages\Italian.isl"; InfoAfterFile: "@INSTALL_DIR@\share\doc\@PACKAGE@\README-it.win32-bin.txt"
+Name: "ja"; MessagesFile: "@GC_WIN_REPOS_DIR@\Japanese-5-5.1.11.isl"
+Name: "lv"; MessagesFile: "@GC_WIN_REPOS_DIR@\Latvian-1-5.1.11.isl"; InfoAfterFile: "@INSTALL_DIR@\share\doc\@PACKAGE@\README-lv.win32-bin.txt"
+Name: "nl"; MessagesFile: "compiler:Languages\Dutch.isl"; InfoAfterFile: "@INSTALL_DIR@\share\doc\@PACKAGE@\README-nl.win32-bin.txt"
 Name: "pt_BR"; MessagesFile: "compiler:Languages\BrazilianPortuguese.isl"
-Name: "zh_CN"; MessagesFile: "@prefix@\share\@PACKAGE@\ChineseSimp-12-5.1.11.isl"; InfoAfterFile: "@prefix@\share\doc\@PACKAGE@\README-zh_CN.win32-bin.txt"
-Name: "zh_TW"; MessagesFile: "@prefix@\share\@PACKAGE@\ChineseTrad-2-5.1.11.isl"; InfoAfterFile: "@prefix@\share\doc\@PACKAGE@\README-zh_TW.win32-bin.txt"
+Name: "zh_CN"; MessagesFile: "@GC_WIN_REPOS_DIR@\ChineseSimp-12-5.1.11.isl"; InfoAfterFile: "@INSTALL_DIR@\share\doc\@PACKAGE@\README-zh_CN.win32-bin.txt"
+Name: "zh_TW"; MessagesFile: "@GC_WIN_REPOS_DIR@\ChineseTrad-2-5.1.11.isl"; InfoAfterFile: "@INSTALL_DIR@\share\doc\@PACKAGE@\README-zh_TW.win32-bin.txt"
 
 ;; The following language files are available as well, in alphabetical
 ;; order: Basque, BrazilianPortuguese, Catalan, Czech, Danish, Dutch,
