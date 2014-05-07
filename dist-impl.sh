@@ -264,8 +264,6 @@ function dist_gnucash() {
         -e "s#@GNUCASH_MAJOR_VERSION@#${GNUCASH_MAJOR_VERSION}#g" \
         -e "s#@GNUCASH_MINOR_VERSION@#${GNUCASH_MINOR_VERSION}#g" \
         -e "s#@GNUCASH_MICRO_VERSION@#${GNUCASH_MICRO_VERSION}#g" \
-        -e "s#@GC_WIN_REPOS_DIR@#${GC_WIN_REPOS_DIR}#g" \
-        -e "s#@INSTALL_DIR@#${INSTALL_DIR}#g" \
         -e "s#@DIST_DIR@#${DIST_DIR}#g"
 }
 
