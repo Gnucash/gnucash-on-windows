@@ -102,7 +102,43 @@ d. To generate a self-installing setup.exe file that contains *everything* run
 
    ./dist.sh
 
-More information is collected on http://wiki.gnucash.org/wiki/Windows
+
+And next ?
+----------
+If you got here without errors then congratulations ! You have just completed
+your first successful GnuCash Build. To use this version you can launch the
+Windows GnuCash Installer you just built in step d. You can find this installer
+in c:\gcdev\gnucash\. It works just like any other installer for a piece of
+Windows software: you double-click it and follow the instructions that are
+displayed.
+
+At some point you may want to build GnuCash again to get updates. To do so you
+should start with updating the GnuCash source files as well as the scripts
+used to build GnuCash on Windows.
+
+The former are stored in c:\gcdev\gnucash.git
+The latter in c:\gcdev\gnucash-on-windows.git
+
+As the name suggests both are managed by a tool called git. Below is only a
+minimal explanation on how to update these directories.
+- Open a Windows Explorer
+- Right-click on the gnucash-on-windows.git directory
+- Select Git Bash. This will open a command prompt.
+- Enter one command: git pull
+- Close the command prompt again
+This example shows how to update gnucash-on-windows.git but the same steps
+apply as well for gnucash.git.
+
+If you want to do more advanced things such as modifying code or building
+from a git branch other than the default 'master' branch you will need to
+familiarize yourself with git more intimately. A good starting point is
+http://wiki.gnucash.org/wiki/Git
+
+In general more information with regards to building GnuCash on Windows is
+collected on http://wiki.gnucash.org/wiki/Windows/Development
+
+At the time of this writing it should still be adapted to the new build
+scripts (2014-05-07).
 
 Known Issues/Things to improve
 ------------------------------
