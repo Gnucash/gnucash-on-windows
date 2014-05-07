@@ -371,15 +371,15 @@ end;
 [Languages]
 Name: "en"; MessagesFile: "compiler:Default.isl"
 Name: "de"; MessagesFile: "compiler:Languages\German.isl"; InfoAfterFile: "@DIST_DIR@\share\doc\@PACKAGE@\README-de.win32-bin.txt"
-Name: "el"; MessagesFile: "@DIST_DIR@\share\@PACKAGE@\Greek-4-5.1.11.isl"
+Name: "el"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\Greek-4-5.1.11.isl"
 Name: "fr"; MessagesFile: "compiler:Languages\French.isl"; InfoAfterFile: "@DIST_DIR@\share\doc\@PACKAGE@\README-fr.win32-bin.txt"
 Name: "it"; MessagesFile: "compiler:Languages\Italian.isl"; InfoAfterFile: "@DIST_DIR@\share\doc\@PACKAGE@\README-it.win32-bin.txt"
-Name: "ja"; MessagesFile: "@DIST_DIR@\share\@PACKAGE@\Japanese-5-5.1.11.isl"
-Name: "lv"; MessagesFile: "@DIST_DIR@\share\@PACKAGE@\Latvian-1-5.1.11.isl"; InfoAfterFile: "@DIST_DIR@\share\doc\@PACKAGE@\README-lv.win32-bin.txt"
+Name: "ja"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\Japanese-5-5.1.11.isl"
+Name: "lv"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\Latvian-1-5.1.11.isl"; InfoAfterFile: "@DIST_DIR@\share\doc\@PACKAGE@\README-lv.win32-bin.txt"
 Name: "nl"; MessagesFile: "compiler:Languages\Dutch.isl"; InfoAfterFile: "@DIST_DIR@\share\doc\@PACKAGE@\README-nl.win32-bin.txt"
 Name: "pt_BR"; MessagesFile: "compiler:Languages\BrazilianPortuguese.isl"
-Name: "zh_CN"; MessagesFile: "@DIST_DIR@\share\@PACKAGE@\ChineseSimp-12-5.1.11.isl"; InfoAfterFile: "@DIST_DIR@\share\doc\@PACKAGE@\README-zh_CN.win32-bin.txt"
-Name: "zh_TW"; MessagesFile: "@DIST_DIR@\share\@PACKAGE@\ChineseTrad-2-5.1.11.isl"; InfoAfterFile: "@DIST_DIR@\share\doc\@PACKAGE@\README-zh_TW.win32-bin.txt"
+Name: "zh_CN"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\ChineseSimp-12-5.1.11.isl"; InfoAfterFile: "@DIST_DIR@\share\doc\@PACKAGE@\README-zh_CN.win32-bin.txt"
+Name: "zh_TW"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\ChineseTrad-2-5.1.11.isl"; InfoAfterFile: "@DIST_DIR@\share\doc\@PACKAGE@\README-zh_TW.win32-bin.txt"
 
 ;; The following language files are available as well, in alphabetical
 ;; order: Basque, BrazilianPortuguese, Catalan, Czech, Danish, Dutch,

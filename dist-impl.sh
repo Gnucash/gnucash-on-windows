@@ -239,7 +239,7 @@ function dist_gnucash() {
     cp -a $_INSTALL_UDIR/lib/lib*.la $_DIST_UDIR/bin
     mkdir -p $_DIST_UDIR/share
     cp -a $_INSTALL_UDIR/share/{doc,gnucash,locale,glib-2.0} $_DIST_UDIR/share
-    cp -a $_REPOS_UDIR/packaging/win32/{getperl.vbs,gnc-path-check,install-fq-mods.cmd} $_DIST_UDIR/bin
+    cp -a $_GC_WIN_REPOS_UDIR/{getperl.vbs,gnc-path-check,install-fq-mods.cmd} $_DIST_UDIR/bin
 
     _QTDIR_WIN=$(unix_path $QTDIR | sed 's,^/\([A-Za-z]\)/,\1:/,g' )
     # aqbanking >= 5.0.0
@@ -255,7 +255,8 @@ function dist_gnucash() {
     GNUCASH_MINOR_VERSION=$(awk '/ GNUCASH_MINOR_VERSION / { print $3 }' ${GNUCASH_CONFIG_H} )
     GNUCASH_MICRO_VERSION=$(awk '/ GNUCASH_MICRO_VERSION / { print $3 }' ${GNUCASH_CONFIG_H} )
     DIST_WFSDIR=$(echo $DIST_DIR | sed -e 's#\\#\\\\#g')
-    sed < $_GC_WIN_REPOS_UDIR/gnucash.iss \
+    GC_WIN_REPOS_WFSDIR=$(echo $GC_WIN_REPOS_DIR | sed -e 's#\\#\\\\#g')
+    sed < $_GC_WIN_REPOS_UDIR/inno_setup/gnucash.iss \
         > $_GNUCASH_UDIR/gnucash.iss \
         -e "s#@-qtbindir-@#${_QTDIR_WIN}/bin#g" \
         -e "s#@-gwenhywfar_so_effective-@#${_GWENHYWFAR_SO_EFFECTIVE}#g" \
@@ -265,7 +266,8 @@ function dist_gnucash() {
         -e "s#@GNUCASH_MAJOR_VERSION@#${GNUCASH_MAJOR_VERSION}#g" \
         -e "s#@GNUCASH_MINOR_VERSION@#${GNUCASH_MINOR_VERSION}#g" \
         -e "s#@GNUCASH_MICRO_VERSION@#${GNUCASH_MICRO_VERSION}#g" \
-        -e "s#@DIST_DIR@#${DIST_WFSDIR}#g"
+        -e "s#@DIST_DIR@#${DIST_WFSDIR}#g" \
+        -e "s#@GC_WIN_REPOS_DIR@#${GC_WIN_REPOS_WFSDIR}#g"
 }
 
 function dist_finish() {
