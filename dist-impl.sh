@@ -254,6 +254,7 @@ function dist_gnucash() {
     GNUCASH_MAJOR_VERSION=$(awk '/ GNUCASH_MAJOR_VERSION / { print $3 }' ${GNUCASH_CONFIG_H} )
     GNUCASH_MINOR_VERSION=$(awk '/ GNUCASH_MINOR_VERSION / { print $3 }' ${GNUCASH_CONFIG_H} )
     GNUCASH_MICRO_VERSION=$(awk '/ GNUCASH_MICRO_VERSION / { print $3 }' ${GNUCASH_CONFIG_H} )
+    DIST_WFSDIR=$(echo $DIST_DIR | sed -e 's#\\#\\\\#g')
     sed < $_GC_WIN_REPOS_UDIR/gnucash.iss \
         > $_GNUCASH_UDIR/gnucash.iss \
         -e "s#@-qtbindir-@#${_QTDIR_WIN}/bin#g" \
@@ -264,7 +265,7 @@ function dist_gnucash() {
         -e "s#@GNUCASH_MAJOR_VERSION@#${GNUCASH_MAJOR_VERSION}#g" \
         -e "s#@GNUCASH_MINOR_VERSION@#${GNUCASH_MINOR_VERSION}#g" \
         -e "s#@GNUCASH_MICRO_VERSION@#${GNUCASH_MICRO_VERSION}#g" \
-        -e "s#@DIST_DIR@#${DIST_DIR}#g"
+        -e "s#@DIST_DIR@#${DIST_WFSDIR}#g"
 }
 
 function dist_finish() {
