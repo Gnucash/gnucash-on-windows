@@ -34,10 +34,12 @@ Note: if you have already set up a gnucash build environment using
    Be sure to replace <path\to> with the correct path.
 
 Note: by default everything will be installed inside c:\gcdev\
-      In theory you could alter this location by passing some parameters
-      to bootstrap_win_dev.vbs. However the build server scripts expect
-      to find at least msys in this default location so changing it
-      will likely lead to a malfunctioning build server script.
+      You could alter this location and some other paths by passing
+      some parameters to bootstrap_win_dev.vbs. Which parameters exist can
+      be read in the bootstrap script itself. You should take care however that
+      mingw/msys and the gnucash-on-windows git repository will be installed
+      where the build_periodic.bat script expects them. If not your buildserver
+      will fail to work.
 
 3. If this has run successfully open an msys (bash) console. Unless
    you have altered the default paths, you will find this in

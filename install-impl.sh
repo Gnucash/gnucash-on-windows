@@ -1279,8 +1279,8 @@ function make_install() {
     if [ -z $_skip_scripts ]; then
         # Create a startup script that works without the msys shell
         # If you make any changes here, you should probably also change
-		# the equivalent sections in packaging/win32/gnucash.iss.in, and
-		# src/bin/environment*.in
+        # the equivalent sections in inno_setup/gnucash.iss, and
+        # (in the gnucash source repository) src/bin/environment*.in
         qpushd $_INSTALL_UDIR/bin
 		cat > gnucash-launcher.cmd <<EOF
 @echo off

@@ -1,106 +1,159 @@
-These scripts try to download and install a Windows/mingw32 build
-environment for GnuCash on Windows.
+These scripts will provide a build environment to build GnuCash on Windows.
+The scripts will take care of building/installing all the dependencies needed
+to build an run GnuCash on Windows.
 
-Note: The mingw homepage is http://www.mingw.org. You can read more
-      about mingw over there. The packages to download are all
-      on sourceforge however, so the direct links are given here.
+Note: this build system depends on the mingw project which provides the gcc compiler 
+      in a Windows environment. You can read more about mingw on its homepage:
+      http://www.mingw.org/
 
 These scripts support two ways to build a Windows/mingw32 version of GnuCash:
 - directly on a Windows PC
-- via cross-compilation on Linux
+- via cross-compilation on Linux (Note 2014-05-07: the scripts have been under
+  heavy modification recently. The cross-compilation may no longer work.)
 
+-----------------------------------------
 1. Build GnuCash directly on a Windows PC
 -----------------------------------------
 
-Before you start with the automated build, you have to complete these
-steps manually. The directory variables are set in `defaults.sh' and optionally
-`custom.sh'.
+Building GnuCash directly on a Windows PC requires you to enter commands
+directly on a command line. Several command line interfaces exist. To
+build GnuCash you will need to use two:
 
-Note: when installing software as asked below, avoid using paths
-      with spaces. Some parts of the build system don't cope well
-      with spaces. So don't install in c:\Program Files. The build
-      system by default assumes c:\soft as base directory
-      called $GLOBAL_DIR from now on).
-      
-* Download and install git for windows from http://git-scm.com/downloads.
-  This will install some git related items in the Windows Explorer
-  context menus (you can access them via right-click in any directory)
-  
-* Choose a spot where you want to store a copy of the GnuCash repository.
-  The default path is $GLOBAL_DIR\gnucash\repos.
-  Reminder: avoid pathnames with spaces in it.
+1. The Windows built-in command prompt (cmd.exe)
+2. The Msys shell (will be installed automatically)
 
-* Create all directories in the path except the last one. For the example,
-  make sure $GLOBAL_DIR\gnucash exists
-  
-* Open a Windows explorer and go to $GLOBAL_DIR\gnucash (or your chosen location)
+This is mentioned here because both command lines have a completely different
+set of commands available so it will matter which command line to start from
+for certain steps. In principle the instruction below will always specify
+which command line to use.
 
-* Right-click. In the popup select git bash. This will open a command prompt.
+Some notes on path names to begin:
+----------------------------------
+* Avoid using paths with spaces. Some parts of the build system don't cope well
+  with spaces. So don't install in c:\Program Files. The build system by
+  default assumes c:\gcdev as base directory called $GLOBAL_DIR from now on).
 
-* Enter: git clone git://github.com/Gnucash/gnucash.git repos
-  The last part should be what you chose the call the directory to store the
-  copy of the GnuCash repository.
+* Windows and mingw/msys use a slightly different notation for paths. When
+  working in an msys shell window you are advised to always use the msys notation.
+  Outside the msys shell window you should use the Windows notation. Here is an
+  example to show the difference:
+  Windows: c:\gcdev\gnucash-on-windows.git
+  Msys   : /c/gcdev/gnucash-on-windows.git
+  The difference is in the direction of the slashes and that c: is replaced with /c
+  Note for completeness that in msys you can also use the Windows notation. However
+  msys interprets a '\' as an escape character. So to use back slashes you will have
+  to escape them. So the below will also work in msys:
+  Msys (alternate): c:\\gcdev\\gnucash-on-windows.git
 
-* Download MSYS from
-  https://sourceforge.net/projects/mingw/files/MSYS%20Base%20System/msys-1.0.11/MSYS-1.0.11.exe/download
-  to $DOWNLOAD_DIR
-  Note: there may be a more recent version available when you read this, use
-        whatever version that is available. BUT: be sure to use MSYS-xyz.exe
-        (ie the MSYS installer) and not the *bin.tar.lzma. I got confused
-        the first time I tried, because directory msys-1.0.12 existed on
-        sourceforge, but it didn't have the windows installer. You should
-        use the installer, not try to unpack the -bin.tar.lzma files. So
-        choose whatever version that has got an installer.
 
-* Install MSYS into $MSYS_DIR.
+The steps
+---------
+On to building GnuCash now. The scripts have been set up to require as little
+manual actions as possible. The following should get you going:
 
-* Download mingwPORT's wget from
-  https://sourceforge.net/projects/mingw/files/mingwPORT/Current%20Releases/wget-1.9.1-mingwPORT.tar.bz2/download
-  to $DOWNLOAD_DIR
-  Note: the version number may have changed when you try this. Use whatever version
-        that is available
+a. Download bootstrap_win_dev.vbs from the gnucash-on-windows
+   repository on Github. Direct url:
+   https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/bootstrap_win_dev.vbs
 
-* Via Windows Explorer go to <your-repos-dir>\packaging\win32
+b. Run this script by double-clicking it and follow the instructions.
+   If the script's output window closes before you get to a "Happy hacking"
+   message then something went wrong. To figure out what you can instead
+   open a Windows command prompt (cmd.exe) and run the script as
+   cscript.exe <path\to>\bootstrap_win_dev.vbs
+   Be sure to replace <path\to> with the correct path.
 
-* Look at defaults.sh and create a file named custom.sh to specify adapted directory
-  variables.
-  
-  - If you used a path to your GnuCash repository other than the default
-    $GLOBAL_DIR\gnucash\repos, you should at least specify REPOS_DIR in here.
-  - Also if you want the build system to reuse git you have just installed,
-    you can specify the path to git's installation location via GIT_DIR
-  - If you want verbose output of any script step, add "set -x" to that file.
+Note: by default everything will be installed inside c:\gcdev\
+      You could alter this location by passing some parameters
+      to bootstrap_win_dev.vbs. There are a couple of other parameters
+      you can set to influence what is installed where. Please read the
+      bootstrap script to learn which ones. If you want to pass
+      parameters you will have to run the script from the command line
+      of course instead of double-clicking it.
 
-* (No Qt is needed. In earlier versions of libaqbanking, qt was needed
-  for the aqbanking setup wizard, but in aqbanking-5.x this is no
-  longer the case.)
+Note: if you intend to use the buildserver scripts (see separate directory)
+      to have a fully automated build that runs at regular intervals
+      there are some restrictions to the paths you can/should alter.
+      For more detail please check README.txt in the buildserver directory.
 
-Start/Enter any MSYS shell window. Let the automated build begin by:
+You are now ready to build gnucash for the first time. The build is fully parameterized.
+That means which versions of libraries and tools to install, where to install them,
+which branch to build and so on can all be defined. If not set explicitly some default
+values will be used. If you're already familiar with the Windows build you may want to 
+customize some of these parameters. If not sure - don't. The build should run just fine
+without it.
 
-  $INSTALLER_DIR/install.sh
+The default values will all be found in 'defaults.sh'. You can override any of these
+in 'custom.sh'. The boostrap script you ran in step b. already created an initial
+version of this file.
 
-Good luck!
+c. Open an Msys shell window. You do this by running
+   c:\gcdev\mingw\msys\1.0\msys.bat
+   Unless you chose to install mingw/msys in another directory of course.
+   Let the automated build begin by:
 
-To generate a self-installing setup.exe file that contains
-*everything*, run the following command after install.sh has
-completed:
+   cd /c/gcdev/gnucash-on-windows.git
+   ./install.sh
 
-  $INSTALLER_DIR/dist.sh
-  
-  
-  Note: if you didn't download and install Qt earlier, this command will fail
-        regardless of whether you disabled AQ_BANKING_WITH_QT or not. This is
-        a bug in the configuration script for the installer builder (issc).
+   If you chose to set up the build environment in a different location adjust
+   the path accordingly.
+
+d. To generate a self-installing setup.exe file that contains *everything* run
+   the following command after install.sh has completed:
+
+   ./dist.sh
 
 More information is collected on http://wiki.gnucash.org/wiki/Windows
 
+Known Issues/Things to improve
+------------------------------
+* It appears that installing html help on Windows systems more recent than
+  Windows XP can fail. It looks like the installer triggers a Windows authorization
+  dialog. For some reason this dialog can't be displayed when the installer is started
+  from an msys shell.
+  The workaround is a bit awkward currently and consists of
+  1. install html help directly by double-clicking it. Remember to install it where
+     the gnucash build scripts expect it ! That is c:\gcdev\hh by default.
+  2. Inside your msys shell window enter these commands:
 
+     pushd /c/gcdev/hh
+     _HHCTRL_OCX=$(which hhctrl.ocx || true)
+     [ "$_HHCTRL_OCX" ] || die "Did not find hhctrl.ocx"
+     pexports -h include/htmlhelp.h $_HHCTRL_OCX > lib/htmlhelp.def
+     pushd lib
+         dlltool -k -d htmlhelp.def -l libhtmlhelp.a
+         mv htmlhelp.lib htmlhelp.lib.bak
+     popd
+     popd
+
+  3. You can now rerun install.sh which should get past the html help installation step
+
+  (Reference: http://lists.gnucash.org/pipermail/gnucash-devel/2014-May/037561.html
+   and following messages)
+
+* Error: unrecognized “l” format
+  This seems to happen on more recent Windows systems as well, perhaps only
+  on 64-bit systems. The cause seems to be that mingw is using a very old
+  version of msvcrt.dll which doen't know about the %lld modifier to print
+  64-bit integers.
+  To work around this you can add a line in custom.sh:
+  EXTRA_CFLAGS=" -D__USE_MINGW_ANSI_STDIO"
+  The same list message mentioned a couple of additional flags to set but these were
+  not explained. For completeness the complete line was:
+  EXTRA_CFLAGS=" -Wall -Werror -fno-builtin-dgettext -fno-builtin-towupper -fno-builtin-iswlower -ggdb3 -D__USE_MINGW_ANSI_STDIO"
+  Adjust as you see fit.
+
+  (Reference: http://lists.gnucash.org/pipermail/gnucash-devel/2014-May/037561.html
+   and following messages)
+
+--------------------------------------------
 2. Cross-compile GnuCash/win32 on a linux PC
 --------------------------------------------
-
 Cross-compiling a Windows/mingw32 executable of GnuCash on a Linux
-host system. (Note: This used to work unchangedly in Sept'2006 but
-probably not any longer.)
+host system.
+
+Note: as mentioned earlier this part is probably no longer accurate due to
+      the heavy changes to the build system in April 2014. It is kept here
+      as a reminder to update it and fix any issues encountered.
 
 These steps need to be performed:
 

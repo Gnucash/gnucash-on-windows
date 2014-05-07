@@ -327,7 +327,7 @@ var
 begin
   { Make some Windows-only changes to the etc/@PACKAGE@/environment file }
   { If you make any changes here, you should probably also change the equivalent sections }
-  { in packaging/win32/install.sh }
+  { in install.sh }
   { A new line is stared with #13#10 - #10 is the linefeed character and #13 CR }
 
   { Get the installation-specific paths }
