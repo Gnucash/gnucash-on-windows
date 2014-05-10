@@ -1194,7 +1194,7 @@ function inst_gnucash() {
 
     AQBANKING_OPTIONS="--enable-aqbanking"
     AQBANKING_UPATH="${_OPENSSL_UDIR}/bin:${_GWENHYWFAR_UDIR}/bin:${_AQBANKING_UDIR}/bin"
-    LIBOFX_OPTIONS="--enable-ofx --with-ofx-prefix=${_LIBOFX_UDIR}"
+    LIBOFX_OPTIONS="--enable-ofx"
 
     if [ "$BUILD_FROM_TARBALL" != "yes" ]; then
         qpushd $REPOS_DIR
@@ -1206,7 +1206,6 @@ function inst_gnucash() {
         $_REPOS_UDIR/configure ${HOST_XCOMPILE} \
             --prefix=$_INSTALL_WFSDIR \
             --enable-debug \
-            --enable-schemas-install=no \
             --enable-dbi \
             --with-dbi-dbd-dir=$( echo ${_LIBDBI_DRIVERS_UDIR} | sed 's,^/\([A-Za-z]\)/,\1:/,g' )/lib/dbd \
             ${LIBOFX_OPTIONS} \
