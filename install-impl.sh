@@ -1139,7 +1139,7 @@ function inst_hh() {
         echo "!!! Attention !!!"
         echo "!!! This is the only installation step that requires your direct input !!!"
         echo "!!! When asked for an installation path, specify $HH_DIR !!!"
-        $LAST_FILE
+#        $LAST_FILE
         qpushd $HH_DIR
            _HHCTRL_OCX=$(which hhctrl.ocx || true)
            [ "$_HHCTRL_OCX" ] || die "Did not find hhctrl.ocx"
@@ -1150,6 +1150,35 @@ function inst_hh() {
            qpopd
         qpopd
         quiet test_for_hh || die "html help workshop not installed correctly"
+    fi
+}
+
+function inst_boost() {
+    setup Boost
+    _BOOST_UDIR=`unix_path ${BOOST_DIR}`
+    set_env ${_BOOST_UDIR} BOOST_ROOT
+    add_to_env ${_BOOST_UDIR}/lib PATH
+    if test -f ${_BOOST_UDIR}/lib/libboost_date_time.dll
+    then
+        echo "Boost already installed in $_BOOST_UDIR. skipping."
+    else
+        wget_unpacked $BOOST_URL $DOWNLOAD_DIR $TMP_DIR
+        assert_one_dir $TMP_UDIR/boost_*
+        qpushd $TMP_UDIR/boost_*
+        if test ! -f ${_BOOST_UDIR}/bin/b2
+        then
+            qpushd tools/build/v2
+                ./bootstrap.sh --with-toolset=mingw
+                ./b2 install toolset=gcc --prefix=${_BOOST_UDIR}
+             qpopd
+         fi
+        # Limit the built libraries to what we think we'll need. Note
+        # that the python and context libraries depend on Python and
+        # Visual Studio respectively to build, so don't add them.
+         ${_BOOST_UDIR}/bin/b2 install-proper --prefix=${_BOOST_UDIR} --with-atomic --with-chrono --with-date_time --with-filesystem --with-log --with-program_options --with-regex --with-signals --with-system --with-test link=shared variant=release toolset=gcc --layout=tagged
+        qpopd
+        test -f ${_BOOST_UDIR}/lib/libboost_date_time.dll || die "Boost not installed correctly"
+	rm -rf $TMP_UDIR/boost_*
     fi
 }
 
@@ -1185,6 +1214,7 @@ function inst_cutecash() {
 
 function inst_gnucash() {
     setup GnuCash
+    echo $BOOST_ROOT
     _INSTALL_WFSDIR=`win_fs_path $INSTALL_DIR`
     _INSTALL_UDIR=`unix_path $INSTALL_DIR`
     _BUILD_UDIR=`unix_path $BUILD_DIR`
@@ -1212,6 +1242,7 @@ function inst_gnucash() {
             ${AQBANKING_OPTIONS} \
             --enable-binreloc \
             --enable-locale-specific-tax \
+            --with-boost=${BOOST_ROOT} \
             CPPFLAGS="${REGEX_CPPFLAGS} ${GNOME_CPPFLAGS} ${GUILE_CPPFLAGS} ${LIBDBI_CPPFLAGS} ${KTOBLZCHECK_CPPFLAGS} ${HH_CPPFLAGS} ${LIBSOUP_CPPFLAGS} -D_WIN32 ${EXTRA_CFLAGS}" \
             LDFLAGS="${REGEX_LDFLAGS} ${GNOME_LDFLAGS} ${GUILE_LDFLAGS} ${LIBDBI_LDFLAGS} ${KTOBLZCHECK_LDFLAGS} ${HH_LDFLAGS} -L${_SQLITE3_UDIR}/lib -L${_ENCHANT_UDIR}/lib -L${_LIBXSLT_UDIR}/lib -L${_MINGW_UDIR}/lib" \
             PKG_CONFIG_PATH="${PKG_CONFIG_PATH}"

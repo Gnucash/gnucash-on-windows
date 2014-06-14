@@ -72,7 +72,7 @@ set_default MSYS_PATCH_VERSION "2.6.1-1"
 set_default MSYS_PERL_VERSION  "5.8.8-1"
 set_default MSYS_UNZIP_VERSION "6.0-1"
 
-set_default SF_MIRROR "http://heanet.dl.sourceforge.net/sourceforge"
+set_default SF_MIRROR "http://heanet.sourceforge.net/sourceforge"
 set_default GTK_MIRROR "ftp.gtk.org/pub"
 set_default GNOME_MIRROR "ftp.gnome.org/pub/gnome"
 set_default GNOME_WIN32_URL "$GNOME_MIRROR/binaries/win32"
@@ -382,6 +382,9 @@ set_default XSLTPROCFLAGS ""
 
 set_default ISOCODES_URL "http://pkg-isocodes.alioth.debian.org/downloads/iso-codes-3.49.tar.xz"
 set_default ISOCODES_DIR $GLOBAL_DIR\\isocodes
+
+set_default BOOST_URL "http://downloads.sf.net/boost/boost/boost_1_55_0.tar.bz2"
+set_default BOOST_DIR $GLOBAL_DIR\\boost
 
 ### Local Variables: ***
 ### sh-basic-offset: 4 ***

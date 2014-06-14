@@ -99,6 +99,8 @@ add_step inst_libdbi
 add_step inst_libsoup
 add_step inst_enchant
 add_step inst_webkit
+#boost now needed for C++
+add_step inst_boost
 
 ##
 if [ "$WITH_CUTECASH" = "yes" ]; then
