@@ -239,7 +239,7 @@ function dist_gnucash() {
     cp -a $_INSTALL_UDIR/lib/lib*.la $_DIST_UDIR/bin
     mkdir -p $_DIST_UDIR/share
     cp -a $_INSTALL_UDIR/share/{doc,gnucash,locale,glib-2.0} $_DIST_UDIR/share
-    cp -a $_GC_WIN_REPOS_UDIR/{getperl.vbs,gnc-path-check,install-fq-mods.cmd} $_DIST_UDIR/bin
+    cp -a $_GC_WIN_REPOS_UDIR/extra_dist/{getperl.vbs,gnc-path-check,install-fq-mods.cmd} $_DIST_UDIR/bin
 
     _QTDIR_WIN=$(unix_path $QTDIR | sed 's,^/\([A-Za-z]\)/,\1:/,g' )
     # aqbanking >= 5.0.0
