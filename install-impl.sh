@@ -1139,7 +1139,7 @@ function inst_hh() {
         echo "!!! Attention !!!"
         echo "!!! This is the only installation step that requires your direct input !!!"
         echo "!!! When asked for an installation path, specify $HH_DIR !!!"
-#        $LAST_FILE
+        $LAST_FILE
         qpushd $HH_DIR
            _HHCTRL_OCX=$(which hhctrl.ocx || true)
            [ "$_HHCTRL_OCX" ] || die "Did not find hhctrl.ocx"
