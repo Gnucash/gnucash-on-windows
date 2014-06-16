@@ -1121,35 +1121,46 @@ int main(int argc, char **argv) {
   return 0;
 }
 EOF
-        gcc -shared -o ofile.dll ofile.c $HH_CPPFLAGS $HH_LDFLAGS -lhtmlhelp || return 1
+        gcc -shared -o ofile.dll ofile.c "$HH_CPPFLAGS" "$HH_LDFLAGS" -lhtmlhelp || return 1
     qpopd
 }
 
 function inst_hh() {
     setup HTML Help Workshop
+    HH_SYS_DIR=$(cscript //nologo get-install-path.vbs)
+    if [ -z "$HH_SYS_DIR" ]; then
+        smart_wget $HH_URL $DOWNLOAD_DIR
+        echo "!!! Attention !!!"
+        echo "!!! This is the only installation step that requires your direct input !!!"
+        echo "!!! Contray to older installation scripts the HtmlHelp Workshop should !!!"
+        echo "!!! no longer be installed in $HH_DIR !!!"
+        echo "!!! When asked for an installation path, DO NOT specify $HH_DIR !!!"
+        $LAST_FILE
+        HH_SYS_DIR=$(cscript //nologo get-install-path.vbs)
+        if [ -z "$HH_SYS_DIR" ]; then
+            die "HTML Help Workshop not installed correctly (Windows installer failed for some reason)"
+        fi
+    fi
+    
     _HH_UDIR=`unix_path $HH_DIR`
-    add_to_env -I$_HH_UDIR/include HH_CPPFLAGS
+    _HH_SYS_UDIR="`unix_path $HH_SYS_DIR`"
+    add_to_env "-I$_HH_SYS_UDIR/include" HH_CPPFLAGS
     add_to_env -L$_HH_UDIR/lib HH_LDFLAGS
     add_to_env $_HH_UDIR PATH
     if quiet test_for_hh
     then
         echo "html help workshop already installed in $_HH_UDIR.  skipping."
     else
-        smart_wget $HH_URL $DOWNLOAD_DIR
-        echo "!!! Attention !!!"
-        echo "!!! This is the only installation step that requires your direct input !!!"
-        echo "!!! When asked for an installation path, specify $HH_DIR !!!"
-        $LAST_FILE
-        qpushd $HH_DIR
-           _HHCTRL_OCX=$(which hhctrl.ocx || true)
-           [ "$_HHCTRL_OCX" ] || die "Did not find hhctrl.ocx"
-           pexports -h include/htmlhelp.h $_HHCTRL_OCX > lib/htmlhelp.def
-           qpushd lib
-               ${DLLTOOL} -k -d htmlhelp.def -l libhtmlhelp.a
-               mv htmlhelp.lib htmlhelp.lib.bak
-           qpopd
+        mkdir -p $_HH_UDIR/lib
+        _HHCTRL_OCX=$(which hhctrl.ocx || true)
+        [ "$_HHCTRL_OCX" ] || die "Did not find hhctrl.ocx"
+        qpushd "$_HH_SYS_UDIR"
+            pexports -h include/htmlhelp.h $_HHCTRL_OCX > $_HH_UDIR/lib/htmlhelp.def
         qpopd
-        quiet test_for_hh || die "html help workshop not installed correctly"
+        qpushd $_HH_UDIR/lib
+            ${DLLTOOL} -k -d htmlhelp.def -l libhtmlhelp.a
+        qpopd
+        quiet test_for_hh || die "HTML Help Workshop not installed correctly (link test failed)"
     fi
 }
 
@@ -1243,8 +1254,8 @@ function inst_gnucash() {
             --enable-binreloc \
             --enable-locale-specific-tax \
             --with-boost=${BOOST_ROOT} \
-            CPPFLAGS="${REGEX_CPPFLAGS} ${GNOME_CPPFLAGS} ${GUILE_CPPFLAGS} ${LIBDBI_CPPFLAGS} ${KTOBLZCHECK_CPPFLAGS} ${HH_CPPFLAGS} ${LIBSOUP_CPPFLAGS} -D_WIN32 ${EXTRA_CFLAGS}" \
-            LDFLAGS="${REGEX_LDFLAGS} ${GNOME_LDFLAGS} ${GUILE_LDFLAGS} ${LIBDBI_LDFLAGS} ${KTOBLZCHECK_LDFLAGS} ${HH_LDFLAGS} -L${_SQLITE3_UDIR}/lib -L${_ENCHANT_UDIR}/lib -L${_LIBXSLT_UDIR}/lib -L${_MINGW_UDIR}/lib" \
+            CPPFLAGS="${REGEX_CPPFLAGS} ${GNOME_CPPFLAGS} ${GUILE_CPPFLAGS} ${LIBDBI_CPPFLAGS} ${KTOBLZCHECK_CPPFLAGS} "${HH_CPPFLAGS}" ${LIBSOUP_CPPFLAGS} -D_WIN32 ${EXTRA_CFLAGS}" \
+            LDFLAGS="${REGEX_LDFLAGS} ${GNOME_LDFLAGS} ${GUILE_LDFLAGS} ${LIBDBI_LDFLAGS} ${KTOBLZCHECK_LDFLAGS} "${HH_LDFLAGS}" -L${_SQLITE3_UDIR}/lib -L${_ENCHANT_UDIR}/lib -L${_LIBXSLT_UDIR}/lib -L${_MINGW_UDIR}/lib" \
             PKG_CONFIG_PATH="${PKG_CONFIG_PATH}"
 
         make
