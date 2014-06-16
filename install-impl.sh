@@ -1141,9 +1141,20 @@ function inst_hh() {
             die "HTML Help Workshop not installed correctly (Windows installer failed for some reason)"
         fi
     fi
-    
+
     _HH_UDIR=`unix_path $HH_DIR`
     _HH_SYS_UDIR="`unix_path $HH_SYS_DIR`"
+    if [ "$_HH_UDIR" = "$_HH_SYS_UDIR" ]; then
+        echo "Warning: Installing HTML Help Workshop inside the gnucash development directory is no longer recommended."
+        echo "         The script will proceed in $HH_DIR\\mingw for now."
+        echo "         To fix this for future safety, you should"
+        echo "         - uninstall HTML Help Workshop"
+        echo "         - delete directory $HH_DIR and all of its remaining content"
+        echo "         - rerun install.sh"
+        echo
+        _HH_UDIR="$_HH_UDIR/mingw"
+    fi
+
     add_to_env "-I$_HH_SYS_UDIR/include" HH_CPPFLAGS
     add_to_env -L$_HH_UDIR/lib HH_LDFLAGS
     add_to_env $_HH_UDIR PATH
