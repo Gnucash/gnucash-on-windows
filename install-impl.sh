@@ -1156,23 +1156,24 @@ function inst_hh() {
         _HH_UDIR="$_HH_UDIR/mingw"
     fi
 
-    add_to_env "-I$_HH_SYS_UDIR/include" HH_CPPFLAGS
+    add_to_env -I$_HH_UDIR/include HH_CPPFLAGS
     add_to_env -L$_HH_UDIR/lib HH_LDFLAGS
     add_to_env $_HH_UDIR PATH
     if quiet test_for_hh
     then
         echo "html help workshop already installed in $_HH_UDIR.  skipping."
     else
-        mkdir -p $_HH_UDIR/lib
+        mkdir -p $_HH_UDIR/{include,lib}
         _HHCTRL_OCX=$(which hhctrl.ocx || true)
         [ "$_HHCTRL_OCX" ] || die "Did not find hhctrl.ocx"
-        qpushd "$_HH_SYS_UDIR"
+        cp "$_HH_SYS_UDIR/include/htmlhelp.h" $_HH_UDIR/include
+        qpushd "$_HH_UDIR"
             pexports -h include/htmlhelp.h $_HHCTRL_OCX > $_HH_UDIR/lib/htmlhelp.def
         qpopd
         qpushd $_HH_UDIR/lib
             ${DLLTOOL} -k -d htmlhelp.def -l libhtmlhelp.a
         qpopd
-        quiet test_for_hh || die "HTML Help Workshop not installed correctly (link test failed)"
+        test_for_hh || die "HTML Help Workshop not installed correctly (link test failed)"
     fi
 }
 
@@ -1266,8 +1267,8 @@ function inst_gnucash() {
             --enable-binreloc \
             --enable-locale-specific-tax \
             --with-boost=${BOOST_ROOT} \
-            CPPFLAGS="${REGEX_CPPFLAGS} ${GNOME_CPPFLAGS} ${GUILE_CPPFLAGS} ${LIBDBI_CPPFLAGS} ${KTOBLZCHECK_CPPFLAGS} "${HH_CPPFLAGS}" ${LIBSOUP_CPPFLAGS} -D_WIN32 ${EXTRA_CFLAGS}" \
-            LDFLAGS="${REGEX_LDFLAGS} ${GNOME_LDFLAGS} ${GUILE_LDFLAGS} ${LIBDBI_LDFLAGS} ${KTOBLZCHECK_LDFLAGS} "${HH_LDFLAGS}" -L${_SQLITE3_UDIR}/lib -L${_ENCHANT_UDIR}/lib -L${_LIBXSLT_UDIR}/lib -L${_MINGW_UDIR}/lib" \
+            CPPFLAGS="${REGEX_CPPFLAGS} ${GNOME_CPPFLAGS} ${GUILE_CPPFLAGS} ${LIBDBI_CPPFLAGS} ${KTOBLZCHECK_CPPFLAGS} ${HH_CPPFLAGS} ${LIBSOUP_CPPFLAGS} -D_WIN32 ${EXTRA_CFLAGS}" \
+            LDFLAGS="${REGEX_LDFLAGS} ${GNOME_LDFLAGS} ${GUILE_LDFLAGS} ${LIBDBI_LDFLAGS} ${KTOBLZCHECK_LDFLAGS} ${HH_LDFLAGS} -L${_SQLITE3_UDIR}/lib -L${_ENCHANT_UDIR}/lib -L${_LIBXSLT_UDIR}/lib -L${_MINGW_UDIR}/lib" \
             PKG_CONFIG_PATH="${PKG_CONFIG_PATH}"
 
         make
