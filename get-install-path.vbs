@@ -31,5 +31,3 @@ For Each strSubkey In arrSubkeys
         WScript.Quit 0
     End If
 Next
-
-WScript.Quit 1
