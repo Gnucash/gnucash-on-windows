@@ -1135,7 +1135,8 @@ function inst_hh() {
         echo "!!! Contray to older installation scripts the HtmlHelp Workshop should !!!"
         echo "!!! no longer be installed in $HH_DIR !!!"
         echo "!!! When asked for an installation path, DO NOT specify $HH_DIR !!!"
-        $LAST_FILE
+        CMD=$(basename "$LAST_FILE")
+        cscript //nologo run-as-admin.vbs $CMD "" "$DOWNLOAD_DIR"
         HH_SYS_DIR=$(cscript //nologo get-install-path.vbs)
         if [ -z "$HH_SYS_DIR" ]; then
             die "HTML Help Workshop not installed correctly (Windows installer failed for some reason)"
