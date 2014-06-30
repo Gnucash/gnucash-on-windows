@@ -1238,7 +1238,6 @@ function inst_cutecash() {
 
 function inst_gnucash() {
     setup GnuCash
-    echo $BOOST_ROOT
     _INSTALL_WFSDIR=`win_fs_path $INSTALL_DIR`
     _INSTALL_UDIR=`unix_path $INSTALL_DIR`
     _BUILD_UDIR=`unix_path $BUILD_DIR`
