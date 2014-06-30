@@ -383,7 +383,7 @@ set_default XSLTPROCFLAGS ""
 set_default ISOCODES_URL "http://pkg-isocodes.alioth.debian.org/downloads/iso-codes-3.49.tar.xz"
 set_default ISOCODES_DIR $GLOBAL_DIR\\isocodes
 
-set_default BOOST_URL "http://downloads.sf.net/boost/boost/boost_1_55_0.tar.bz2"
+set_default BOOST_URL "$SF_MIRROR/boost/boost/boost_1_55_0.tar.bz2"
 set_default BOOST_DIR $GLOBAL_DIR\\boost
 
 ### Local Variables: ***
