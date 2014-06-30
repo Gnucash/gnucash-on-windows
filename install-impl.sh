@@ -1158,7 +1158,7 @@ function inst_hh() {
 
     add_to_env -I$_HH_UDIR/include HH_CPPFLAGS
     add_to_env -L$_HH_UDIR/lib HH_LDFLAGS
-    add_to_env $_HH_UDIR PATH
+    add_to_env "$_HH_SYS_UDIR" PATH
     if quiet test_for_hh
     then
         echo "html help workshop already installed in $_HH_UDIR.  skipping."
