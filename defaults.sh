@@ -72,7 +72,7 @@ set_default MSYS_PATCH_VERSION "2.6.1-1"
 set_default MSYS_PERL_VERSION  "5.8.8-1"
 set_default MSYS_UNZIP_VERSION "6.0-1"
 
-set_default SF_MIRROR "http://heanet.dl.sourceforge.net/sourceforge"
+set_default SF_MIRROR "http://downloads.sf.net"
 set_default GTK_MIRROR "ftp.gtk.org/pub"
 set_default GNOME_MIRROR "ftp.gnome.org/pub/gnome"
 set_default GNOME_WIN32_URL "$GNOME_MIRROR/binaries/win32"
