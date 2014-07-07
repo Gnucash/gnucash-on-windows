@@ -327,8 +327,8 @@ set_default ICU4C_SRC_URL "http://download.icu-project.org/files/icu4c/4.4.1/icu
 set_default ICU4C_DIR $GLOBAL_DIR\\icu-mingw32
 set_default ICU4C_PATCH `pwd`/icu-crossmingw.patch
 
-set_default GIT_URL "http://msysgit.googlecode.com/files/Git-1.7.10-preview20120409.exe"
-set_default GIT_DIR $GLOBAL_DIR\\git-1.7.10
+set_default GIT_URL "https://github.com/msysgit/msysgit/releases/download/Git-1.9.4-preview20140611/Git-1.9.4-preview20140611.exe"
+set_default GIT_DIR $GLOBAL_DIR\\git-1.9.4
 
 # OFX import in gnucash and ofx directconnect support for aqbanking
 set_default OPENSP_URL "$SF_MIRROR/openjade/OpenSP-1.5.2.tar.gz"

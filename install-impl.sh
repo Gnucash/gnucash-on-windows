@@ -247,9 +247,11 @@ function inst_git() {
         echo "git already installed in $_GIT_UDIR.  skipping."
         set_env "$_GIT_UDIR/bin/git" GIT_CMD
     else
-        smart_wget $GIT_URL $DOWNLOAD_DIR
+        WGET_EXTRA_OPTIONS="--no-check-certificate -O$TMP_DIR\\$(basename $GIT_URL)" # github certificate can't be verified on WinXP
+        smart_wget $GIT_URL $DOWNLOAD_DIR $(basename $GIT_URL)
         $LAST_FILE //SP- //SILENT //DIR="$GIT_DIR"
         set_env "$_GIT_UDIR/bin/git" GIT_CMD
+        unset WGET_EXTRA_OPTIONS
         quiet "$GIT_CMD" --help || die "git unavailable"
     fi
     # Make sure GIT_CMD is available to subshells if it is set

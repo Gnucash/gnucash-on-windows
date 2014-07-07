@@ -61,9 +61,9 @@ function smart_wget() {
     if [ ! -f $_DLD/$_UFILE ] ; then
     # If WGET_RATE is set (in bytes/sec), limit download bandwith
     if [ ! -z "$WGET_RATE" ] ; then
-            wget --passive-ftp -c $1 -P $TMP_UDIR --limit-rate=$WGET_RATE
+            wget --passive-ftp -c $1 -P $TMP_UDIR --limit-rate=$WGET_RATE $WGET_EXTRA_OPTIONS
         else
-            wget --passive-ftp -c $1 -P $TMP_UDIR
+            wget --passive-ftp -c $1 -P $TMP_UDIR $WGET_EXTRA_OPTIONS
         fi
     mv $TMP_UDIR/$_FILE $_DLD/$_UFILE
     fi

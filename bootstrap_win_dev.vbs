@@ -67,22 +67,22 @@ End If
 If WScript.Arguments.Named.Exists("GIT_PKG") Then
     GIT_PKG = WScript.Arguments.Named.Item("GIT_PKG")
 Else
-    GIT_PKG = "Git-1.7.10-preview20120409.exe"
+    GIT_PKG = "Git-1.9.4-preview20140611"
 End If
 If WScript.Arguments.Named.Exists("strGitBaseUrl") Then
     strGitBaseUrl = WScript.Arguments.Named.Item("strGitBaseUrl")
 Else
-    strGitBaseUrl = "http://msysgit.googlecode.com/files/"
+    strGitBaseUrl = "https://github.com/msysgit/msysgit/releases/download/"
 End If
 If WScript.Arguments.Named.Exists("GIT_URL") Then
     GIT_URL = WScript.Arguments.Named.Item("GIT_URL")
 Else
-    GIT_URL = strGitBaseUrl & GIT_PKG
+    GIT_URL = strGitBaseUrl & GIT_PKG & "/" & GIT_PKG & ".exe"
 End If
 If WScript.Arguments.Named.Exists("GIT_DIR") Then
     GIT_DIR = myRegExp.Replace (WScript.Arguments.Named.Item("GIT_DIR"), "\")
 Else
-    GIT_DIR = GLOBAL_DIR & "\git-1.7.10"
+    GIT_DIR = GLOBAL_DIR & "\git-1.9.4"
 End If
 If WScript.Arguments.Named.Exists("GC_WIN_REPOS_URL") Then
     GC_WIN_REPOS_URL = WScript.Arguments.Named.Item("GC_WIN_REPOS_URL")
@@ -218,10 +218,10 @@ If objFso.FileExists(strGit) Then
 Else
     stdout.WriteLine "Not found, will be installed"
 
-    strGitPkg = DOWNLOAD_DIR & "\" & GIT_PKG
+    strGitPkg = DOWNLOAD_DIR & "\" & GIT_PKG & ".exe"
     If Not objFso.FileExists(strGitPkg) Then
         stdout.Write "Downloading git installer... "
-        objWsh.Run strWget & " -P" & DOWNLOAD_DIR & " " & GIT_URL, 1, true
+        objWsh.Run strWget & " -O" & strGitPkg & " --no-check-certificate " & GIT_URL, 1, true
 
         If Not objFso.FileExists(strGitPkg) Then
             stdout.WriteLine "Failed"
