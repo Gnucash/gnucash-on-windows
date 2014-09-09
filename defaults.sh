@@ -106,8 +106,9 @@ set_default MINGW_MPC_VERSION         "1.0.1-2"
 set_default MINGW_MPFR_VERSION        "3.1.2-2"
 set_default MINGW_PEXPORTS_VERSION    "0.46"
 set_default MINGW_PTHREAD_W32_VERSION "2.9.1-1"
-set_default MINGW_RT_VERSION          "4.0.3-1"
+set_default MINGW_RT_VERSION          "3.20-2"
 set_default MINGW_ZLIB_VERSION        "1.2.8-1"
+set_default MINGW_W32API_VERSION      "3.17-2"
 set_default MINGW_MAKE_VERSION        "3.82-5"
 
 if [ "$CROSS_COMPILE" != yes ]; then

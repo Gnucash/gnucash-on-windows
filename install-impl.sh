@@ -149,7 +149,7 @@ function inst_mingw() {
 
     # Win32 runtime and api
     mingw_smart_get mingw32-mingwrt-dev ${MINGW_RT_VERSION}
-    mingw_smart_get mingw32-w32api-dev ${MINGW_RT_VERSION}
+    mingw_smart_get mingw32-w32api-dev ${MINGW_W32API_VERSION}
     # GCC/G++ dependencies
     mingw_smart_get mingw32-libgmp-dll ${MINGW_GMP_VERSION}
     mingw_smart_get mingw32-libmpfr-dll ${MINGW_MPFR_VERSION}
