@@ -45,7 +45,7 @@ if %errorlevel% neq 0 (
    del  %TEMP%\Perl.msi
    goto error
 )
-perl -v
+%SystemDrive%\strawberry\perl\bin\perl -v
 del  %TEMP%\Perl.msi
 
 REM ----------------------------------------------------------------------------
