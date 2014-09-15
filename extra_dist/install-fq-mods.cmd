@@ -104,10 +104,10 @@ echo.
 perl -e "use Win32;if(defined &Win32::BuildNumber){exit 2;}else{exit 3;};"
 REM echo status = %errorlevel%
 if %errorlevel% equ 2 (
-  echo   => ActivePerl
+  echo   - ActivePerl
   goto inst_mod_as
 ) else if %errorlevel% equ 3 (
-  echo   => Other, probably Strawberry perl ?
+  echo   - Other, probably Strawberry perl ?
   goto inst_mod_oth
 ) else if %errorlevel% neq 0 goto error
 
