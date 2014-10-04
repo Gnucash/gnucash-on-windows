@@ -85,13 +85,11 @@ function dist_aqbanking() {
 
 function dist_gnome() {
     setup Gnome platform
-    wget_unpacked $ATK_URL $DOWNLOAD_DIR $DIST_DIR
     wget_unpacked $CAIRO_URL $DOWNLOAD_DIR $DIST_DIR
     wget_unpacked $EXPAT_URL $DOWNLOAD_DIR $DIST_DIR
     wget_unpacked $FONTCONFIG_URL $DOWNLOAD_DIR $DIST_DIR
     wget_unpacked $FREETYPE_URL $DOWNLOAD_DIR $DIST_DIR
     wget_unpacked $GAIL_URL $DOWNLOAD_DIR $DIST_DIR
-    wget_unpacked $GDK_PIXBUF_URL $DOWNLOAD_DIR $DIST_DIR
     wget_unpacked $GETTEXT_RUNTIME_URL $DOWNLOAD_DIR $DIST_DIR
     wget_unpacked $GLIB_URL $DOWNLOAD_DIR $DIST_DIR
     wget_unpacked $GTK_URL $DOWNLOAD_DIR $DIST_DIR
@@ -103,8 +101,6 @@ function dist_gnome() {
     wget_unpacked $LIBPNG_URL $DOWNLOAD_DIR $DIST_DIR
     wget_unpacked $LIBTIFF_URL $DOWNLOAD_DIR $DIST_DIR
     #wget_unpacked $LIBXML2_URL $DOWNLOAD_DIR $DIST_DIR
-    wget_unpacked $PANGO_URL $DOWNLOAD_DIR $DIST_DIR
-    wget_unpacked $ZLIB_URL $DOWNLOAD_DIR $DIST_DIR
     echo 'gtk-theme-name = "Nimbus"' > $DIST_DIR/etc/gtk-2.0/gtkrc
 
     wget_unpacked $GTK_THEME_URL $DOWNLOAD_DIR $TMP_DIR

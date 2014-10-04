@@ -77,6 +77,7 @@ set_default GTK_MIRROR "ftp.gtk.org/pub"
 set_default GNOME_MIRROR "ftp.gnome.org/pub/gnome"
 set_default GNOME_WIN32_URL "$GNOME_MIRROR/binaries/win32"
 set_default GNOME_WIN32_DEPS_URL "$GNOME_WIN32_URL/dependencies"
+set_default GC_DEPS_URL "$SF_MIRROR/gnucash/Dependencies"
 
 
 # Mingw toolchain
@@ -225,11 +226,6 @@ set_default LIBXSLT_ICONV_URL "${XMLSOFT_URL}/iconv-1.9.2.win32.zip"
 set_default LIBXSLT_ZLIB_URL "${XMLSOFT_URL}/zlib-1.2.3.win32.zip"
 set_default LIBXSLT_DIR $GLOBAL_DIR\\libxslt
 
-set_default ATK_URL                 "$GNOME_WIN32_URL/atk/1.32/atk_1.32.0-2_win32.zip"
-set_default ATK_DEV_URL             "$GNOME_WIN32_URL/atk/1.32/atk-dev_1.32.0-2_win32.zip"
-CAIRO_VERSION="1.10.2"
-set_default CAIRO_URL               "$GNOME_WIN32_DEPS_URL/cairo_${CAIRO_VERSION}-2_win32.zip"
-set_default CAIRO_DEV_URL           "$GNOME_WIN32_DEPS_URL/cairo-dev_${CAIRO_VERSION}-2_win32.zip"
 set_default EXPAT_URL               "$GNOME_WIN32_DEPS_URL/expat_2.0.1-1_win32.zip"
 set_default EXPAT_DEV_URL           "$GNOME_WIN32_DEPS_URL/expat-dev_2.0.1-1_win32.zip"
 set_default FONTCONFIG_URL          "$GNOME_WIN32_DEPS_URL/fontconfig_2.8.0-2_win32.zip"
@@ -238,17 +234,9 @@ set_default FREETYPE_URL            "$GNOME_WIN32_DEPS_URL/freetype_2.4.4-1_win3
 set_default FREETYPE_DEV_URL        "$GNOME_WIN32_DEPS_URL/freetype-dev_2.4.4-1_win32.zip"
 set_default GAIL_URL                "$GNOME_WIN32_URL/gail/1.22/gail-1.22.0.zip"
 set_default GAIL_DEV_URL            "$GNOME_WIN32_URL/gail/1.22/gail-dev-1.22.0.zip"
-GDK_PIXBUF_VERSION=2.24.0
-set_default GDK_PIXBUF_URL          "$GNOME_WIN32_URL/gdk-pixbuf/2.24/gdk-pixbuf_${GDK_PIXBUF_VERSION}-1_win32.zip"
-set_default GDK_PIXBUF_DEV_URL      "$GNOME_WIN32_URL/gdk-pixbuf/2.24/gdk-pixbuf-dev_${GDK_PIXBUF_VERSION}-1_win32.zip"
 set_default GETTEXT_RUNTIME_URL     "$GNOME_WIN32_DEPS_URL/gettext-runtime_0.18.1.1-2_win32.zip"
 set_default GETTEXT_RUNTIME_DEV_URL "$GNOME_WIN32_DEPS_URL/gettext-runtime-dev_0.18.1.1-2_win32.zip"
 set_default GETTEXT_TOOLS_URL       "$GNOME_WIN32_DEPS_URL/gettext-tools-dev_0.18.1.1-2_win32.zip"
-set_default GLIB_URL                "$GNOME_WIN32_URL/glib/2.28/glib_2.28.8-1_win32.zip"
-set_default GLIB_DEV_URL            "$GNOME_WIN32_URL/glib/2.28/glib-dev_2.28.8-1_win32.zip"
-GTK_VERSION="2.24.10"
-set_default GTK_URL                 "$GNOME_WIN32_URL/gtk+/2.24/gtk+_${GTK_VERSION}-1_win32.zip"
-set_default GTK_DEV_URL             "$GNOME_WIN32_URL/gtk+/2.24/gtk+-dev_${GTK_VERSION}-1_win32.zip"
 set_default GTK_DOC_URL             "$GNOME_MIRROR/sources/gtk-doc/1.13/gtk-doc-1.13.tar.bz2"
 set_default GTK_PREFS_URL           "$SF_MIRROR/gtk-win/gtk2_prefs-0.4.1.bin-gtk2.10-win32.zip"
 set_default GTK_THEME_URL           "$SF_MIRROR/gtk-win/gtk2-themes-2009-09-07-win32_bin.zip"
@@ -266,12 +254,14 @@ set_default LIBTIFF_URL             "$GNOME_WIN32_DEPS_URL/libtiff_3.9.2-1_win32
 set_default LIBTIFF_DEV_URL         "$GNOME_WIN32_DEPS_URL/libtiff-dev_3.9.2-1_win32.zip"
 set_default LIBXML2_URL             "$GNOME_WIN32_DEPS_URL/libxml2_2.7.7-1_win32.zip"
 set_default LIBXML2_DEV_URL         "$GNOME_WIN32_DEPS_URL/libxml2-dev_2.7.7-1_win32.zip"
-set_default PANGO_URL               "$GNOME_WIN32_URL/pango/1.29/pango_1.29.4-1_win32.zip"
-set_default PANGO_DEV_URL           "$GNOME_WIN32_URL/pango/1.29/pango-dev_1.29.4-1_win32.zip"
 set_default PKG_CONFIG_URL          "$GNOME_WIN32_DEPS_URL/pkg-config_0.25-1_win32.zip"
 set_default PKG_CONFIG_DEV_URL      "$GNOME_WIN32_DEPS_URL/pkg-config-dev_0.25-1_win32.zip"
-set_default ZLIB_URL                "$GNOME_WIN32_DEPS_URL/zlib_1.2.5-2_win32.zip"
-set_default ZLIB_DEV_URL            "$GNOME_WIN32_DEPS_URL/zlib-dev_1.2.5-2_win32.zip"
+set_default GLIB_URL                "$GC_DEPS_URL/glib-2.38.2-minGW.tgz"
+set_default CAIRO_VERSION="1.12.2"
+set_default CAIRO_URL               "$GC_DEPS_URL/cairo-1.12.16-minGW.tgz"
+set_default GTK_VERSION="2.24.24"
+set_default GTK_URL                 "$GC_DEPS_URL/gtk+-2.24.24-minGW.tgz"
+
 set_default GNOME_DIR $GLOBAL_DIR\\gnome
 
 set_default SWIG_URL "$SF_MIRROR/swig/swigwin-2.0.11.zip"

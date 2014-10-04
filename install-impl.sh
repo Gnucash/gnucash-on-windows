@@ -358,10 +358,7 @@ function inst_gnome() {
         echo "gnome packages installed in $_GNOME_UDIR.  skipping."
     else
         mkdir -p $_GNOME_UDIR
-        wget_unpacked $ATK_URL $DOWNLOAD_DIR $GNOME_DIR
-        wget_unpacked $ATK_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $CAIRO_URL $DOWNLOAD_DIR $GNOME_DIR
-        wget_unpacked $CAIRO_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $EXPAT_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $EXPAT_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $FONTCONFIG_URL $DOWNLOAD_DIR $GNOME_DIR
@@ -370,12 +367,8 @@ function inst_gnome() {
         wget_unpacked $FREETYPE_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $GAIL_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $GAIL_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
-        wget_unpacked $GDK_PIXBUF_URL $DOWNLOAD_DIR $GNOME_DIR
-        wget_unpacked $GDK_PIXBUF_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $GLIB_URL $DOWNLOAD_DIR $GNOME_DIR
-        wget_unpacked $GLIB_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $GTK_URL $DOWNLOAD_DIR $GNOME_DIR
-        wget_unpacked $GTK_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $INTLTOOL_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $LIBART_LGPL_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $LIBART_LGPL_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
@@ -387,12 +380,9 @@ function inst_gnome() {
         wget_unpacked $LIBPNG_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $LIBTIFF_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $LIBTIFF_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
-        wget_unpacked $PANGO_URL $DOWNLOAD_DIR $GNOME_DIR
-        wget_unpacked $PANGO_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $PKG_CONFIG_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $PKG_CONFIG_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
-        wget_unpacked $ZLIB_URL $DOWNLOAD_DIR $GNOME_DIR
-        wget_unpacked $ZLIB_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
+
         echo 'gtk-theme-name = "Nimbus"' > ${_GNOME_UDIR}/etc/gtk-2.0/gtkrc
 
         wget_unpacked $GTK_THEME_URL $DOWNLOAD_DIR $TMP_DIR
