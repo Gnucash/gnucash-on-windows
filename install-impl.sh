@@ -361,8 +361,6 @@ function inst_gnome() {
         wget_unpacked $CAIRO_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $EXPAT_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $EXPAT_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
-        wget_unpacked $FONTCONFIG_URL $DOWNLOAD_DIR $GNOME_DIR
-        wget_unpacked $FONTCONFIG_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $FREETYPE_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $FREETYPE_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $GAIL_URL $DOWNLOAD_DIR $GNOME_DIR
@@ -382,7 +380,8 @@ function inst_gnome() {
         wget_unpacked $LIBTIFF_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $PKG_CONFIG_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $PKG_CONFIG_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
-
+        wget_unpacked $ZLIB_URL $DOWNLOAD_DIR $GNOME_DIR
+        wget_unpacked $ZLIB_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         echo 'gtk-theme-name = "Nimbus"' > ${_GNOME_UDIR}/etc/gtk-2.0/gtkrc
 
         wget_unpacked $GTK_THEME_URL $DOWNLOAD_DIR $TMP_DIR

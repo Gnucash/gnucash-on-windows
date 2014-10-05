@@ -87,7 +87,6 @@ function dist_gnome() {
     setup Gnome platform
     wget_unpacked $CAIRO_URL $DOWNLOAD_DIR $DIST_DIR
     wget_unpacked $EXPAT_URL $DOWNLOAD_DIR $DIST_DIR
-    wget_unpacked $FONTCONFIG_URL $DOWNLOAD_DIR $DIST_DIR
     wget_unpacked $FREETYPE_URL $DOWNLOAD_DIR $DIST_DIR
     wget_unpacked $GAIL_URL $DOWNLOAD_DIR $DIST_DIR
     wget_unpacked $GETTEXT_RUNTIME_URL $DOWNLOAD_DIR $DIST_DIR

@@ -228,8 +228,6 @@ set_default LIBXSLT_DIR $GLOBAL_DIR\\libxslt
 
 set_default EXPAT_URL               "$GNOME_WIN32_DEPS_URL/expat_2.0.1-1_win32.zip"
 set_default EXPAT_DEV_URL           "$GNOME_WIN32_DEPS_URL/expat-dev_2.0.1-1_win32.zip"
-set_default FONTCONFIG_URL          "$GNOME_WIN32_DEPS_URL/fontconfig_2.8.0-2_win32.zip"
-set_default FONTCONFIG_DEV_URL      "$GNOME_WIN32_DEPS_URL/fontconfig-dev_2.8.0-2_win32.zip"
 set_default FREETYPE_URL            "$GNOME_WIN32_DEPS_URL/freetype_2.4.4-1_win32.zip"
 set_default FREETYPE_DEV_URL        "$GNOME_WIN32_DEPS_URL/freetype-dev_2.4.4-1_win32.zip"
 set_default GAIL_URL                "$GNOME_WIN32_URL/gail/1.22/gail-1.22.0.zip"
@@ -261,6 +259,8 @@ set_default CAIRO_VERSION="1.12.2"
 set_default CAIRO_URL               "$GC_DEPS_URL/cairo-1.12.16-minGW.tgz"
 set_default GTK_VERSION="2.24.24"
 set_default GTK_URL                 "$GC_DEPS_URL/gtk+-2.24.24-minGW.tgz"
+set_default ZLIB_URL                "$GNOME_WIN32_DEPS_URL/zlib_1.2.5-2_win32.zip"
+set_default ZLIB_DEV_URL            "$GNOME_WIN32_DEPS_URL/zlib-dev_1.2.5-2_win32.zip"
 
 set_default GNOME_DIR $GLOBAL_DIR\\gnome
 
