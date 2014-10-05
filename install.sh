@@ -99,8 +99,10 @@ add_step inst_libdbi
 add_step inst_libsoup
 add_step inst_enchant
 add_step inst_webkit
-#boost now needed for C++
-add_step inst_boost
+#boost now needed for C++ on master only
+if [ "$GNUCASH_SCM_REV" = "master" ]; then
+  add_step inst_boost
+fi
 
 ##
 if [ "$WITH_CUTECASH" = "yes" ]; then
