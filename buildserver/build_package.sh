@@ -31,6 +31,8 @@ tag="${1:-$GNUCASH_SCM_REV}"
 # NOTE: this assumes "tag" to be either a tag or a branch, not a
 #       commit hash. It will probably work with a hash as well,
 #       but will create a directory for the hash
+_REPOS_UDIR=`unix_path $REPOS_DIR`
+qpushd "$_REPOS_UDIR"
 if [ -n "$($GIT_CMD tag -l $tag)" ]; then
   TARGET_DIR=releases
   LOG_TAG=$tag
@@ -38,6 +40,7 @@ else
   TARGET_DIR=$tag
   LOG_TAG=$TARGET_DIR
 fi
+qpopd
 
 set_default OUTPUT_DIR $GLOBAL_DIR\\output
 LOGFILENAME=build-${LOG_TAG}-`date +'%Y-%m-%d'`.log
