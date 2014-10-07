@@ -48,6 +48,7 @@ set_env "$_GIT_UDIR/bin/git" GIT_CMD
 export GIT_CMD
 
 # Update the gnucash-on-windows build scripts
+echo "Pulling latest changes from gnucash-on-windows..."
 _GC_WIN_REPOS_UDIR=`unix_path $GC_WIN_REPOS_DIR`
 qpushd "$_GC_WIN_REPOS_UDIR"
 $GIT_CMD pull
@@ -60,6 +61,7 @@ _REPOS_UDIR=`unix_path $REPOS_DIR`
 qpushd "$_REPOS_UDIR"
 
 # Update the gnucash repository
+echo "Pulling latest changes from gnucash.git..."
 $GIT_CMD pull
 # If we don't have a rev file then start from 'now' and force a build
 revfile=$_GC_WIN_REPOS_UDIR/last_rev_periodic

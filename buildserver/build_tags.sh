@@ -90,11 +90,13 @@ for tag_rev in $tags ; do
   tag_hash=${tag_rev#*/}
   tag=${tag_rev%/*}
 
+  echo "Building tag $tag"
+
   # Git builds are only supported from 2.5 up
   get_major_minor $tag
   if (( $major_minor < 205 ))
   then
-     echo "Skipping build of tag $tag (reason: older than 2.5)"
+     echo "  *** Tag $tag is older than 2.5 or not a release tag. Skipping."
   else
 
     TAG_GLOBAL_DIR="c:\\gcdev\\gnucash-${tag}"
