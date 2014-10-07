@@ -126,6 +126,9 @@ for tag_rev in $tags ; do
   echo -n "HH_DIR=" >> ${_TAG_WIN_REPOS_UDIR}/custom.sh
   echo "${GLOBAL_DIR}\\hh" | sed -e 's/\\/\\\\/g' >> ${_TAG_WIN_REPOS_UDIR}/custom.sh
 
+  # Inform the build scripts of the tag we're building.
+  echo "GNUCASH_SCM_REV=$tag" >> ${_TAG_WIN_REPOS_UDIR}/custom.sh
+
   # Now build the tag!  (this will upload it too)
   # Use the build_package script from master (cwd), not from the tag
   qpushd ${_TAG_WIN_REPOS_UDIR}
