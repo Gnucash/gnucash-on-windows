@@ -33,6 +33,7 @@ set_env "$_GIT_UDIR/bin/git" GIT_CMD
 export GIT_CMD
 
 # Update the gnucash-on-windows build scripts
+echo "Pulling latest changes from gnucash-on-windows..."
 _GC_WIN_REPOS_UDIR=`unix_path $GC_WIN_REPOS_DIR`
 qpushd "$_GC_WIN_REPOS_UDIR"
 $GIT_CMD pull
@@ -48,6 +49,7 @@ _REPOS_UDIR=`unix_path $REPOS_DIR`
 qpushd "$_REPOS_UDIR"
 
 # Update the gnucash repository
+echo "Fetching new tags from upstream repository..."
 $GIT_CMD fetch -t
 
 # If we don't have a tagfile then start from 'now'
@@ -89,6 +91,7 @@ for tag_rev in $tags ; do
   major_minor=$(( $tag_major*100 + $tag_minor ))
   if (( $major_minor < 205 ))
   then
+     echo "Skipping build of tag $tag (reason: older than 2.5)"
      continue
   fi
 
@@ -103,6 +106,7 @@ for tag_rev in $tags ; do
   cscript.exe $_GC_WIN_REPOS_UDIR/bootstrap_win_dev.vbs /silent:yes /GLOBAL_DIR:$TAG_GLOBAL_DIR /DOWNLOAD_DIR:$DOWNLOAD_DIR /GIT_DIR:$GIT_DIR
 
   # Check out the tag and setup custom.sh
+  echo "Checking out tag $tag"
   TAG_REPOS_DIR="${TAG_GLOBAL_DIR}\\gnucash.git"
   _TAG_REPOS_UDIR=$(unix_path "$TAG_REPOS_DIR")
   qpushd $TAG_REPOS_DIR
