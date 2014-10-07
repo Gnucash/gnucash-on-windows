@@ -1235,11 +1235,6 @@ function inst_gnucash() {
     _REPOS_UDIR=`unix_path $REPOS_DIR`
     mkdir -p $_BUILD_UDIR
     add_to_env $_INSTALL_UDIR/bin PATH
-    if [ "$GNUCASH_SCM_REV" = "master" ]; then
-        _MASTER_OPTIONS="--with-boost=${BOOST_ROOT}"
-    else
-        _MASTER_OPTIONS=""
-    fi
 
     AQBANKING_OPTIONS="--enable-aqbanking"
     AQBANKING_UPATH="${_OPENSSL_UDIR}/bin:${_GWENHYWFAR_UDIR}/bin:${_AQBANKING_UDIR}/bin"
@@ -1249,6 +1244,14 @@ function inst_gnucash() {
         qpushd $REPOS_DIR
             ./autogen.sh
         qpopd
+    fi
+
+    # Check for options that may not be available in all versions we can build
+    _CONFIG_HELP=$($_REPOS_UDIR/configure --help)
+    if [ -n "$(grep -- '--with-boost' <<< $_CONFIG_HELP)" ]; then
+        _EXTRA_OPTIONS="--with-boost=${BOOST_ROOT}"
+    else
+        _EXTRA_OPTIONS=""
     fi
 
     qpushd $_BUILD_UDIR
@@ -1261,7 +1264,7 @@ function inst_gnucash() {
             ${AQBANKING_OPTIONS} \
             --enable-binreloc \
             --enable-locale-specific-tax \
-            ${_MASTER_OPTIONS} \
+            ${_EXTRA_OPTIONS} \
             CPPFLAGS="${REGEX_CPPFLAGS} ${GNOME_CPPFLAGS} ${GUILE_CPPFLAGS} ${LIBDBI_CPPFLAGS} ${KTOBLZCHECK_CPPFLAGS} ${HH_CPPFLAGS} ${LIBSOUP_CPPFLAGS} -D_WIN32 ${EXTRA_CFLAGS}" \
             LDFLAGS="${REGEX_LDFLAGS} ${GNOME_LDFLAGS} ${GUILE_LDFLAGS} ${LIBDBI_LDFLAGS} ${KTOBLZCHECK_LDFLAGS} ${HH_LDFLAGS} -L${_SQLITE3_UDIR}/lib -L${_ENCHANT_UDIR}/lib -L${_LIBXSLT_UDIR}/lib -L${_MINGW_UDIR}/lib" \
             PKG_CONFIG_PATH="${PKG_CONFIG_PATH}"

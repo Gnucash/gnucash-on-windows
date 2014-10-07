@@ -297,6 +297,21 @@ function mingw_smart_get () {
     fi
 }
 
+# Take a version number in the form M.m.µ-b
+# and return the major (M) and minor (m) component in numeric form
+# as follows: major*100 + minor
+# for example: 2.4.8-1 would yield 204
+# If the version entered is not a version in the expected format
+# 0 will be returned.
+function get_major_minor () {
+  local version=${1//[!0-9.-]/}
+
+  local -i version_major=${version%%.*}
+  local version_tmp=${version#*.}
+  local -i version_minor=${version_tmp%%.*}
+  major_minor=$(( $version_major*100 + $version_minor ))
+}
+
 ### Local Variables: ***
 ### mode: shell-script ***
 ### sh-basic-offset: 4 ***

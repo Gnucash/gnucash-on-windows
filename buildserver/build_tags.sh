@@ -85,10 +85,7 @@ for tag_rev in $tags ; do
   tag=${tag%/*}
 
   # Git builds are only supported from 2.5 up
-  tag_major=${tag%%.*}
-  tag_tmp=${tag#*.}
-  tag_minor=${tag_tmp%%.*}
-  major_minor=$(( $tag_major*100 + $tag_minor ))
+  get_major_minor $tag
   if (( $major_minor < 205 ))
   then
      echo "Skipping build of tag $tag (reason: older than 2.5)"
