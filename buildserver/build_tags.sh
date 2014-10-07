@@ -60,22 +60,26 @@ if [ ! -f ${tagfile} ] ; then
   for one_tag in $($GIT_CMD tag)
   do
     tag_hash=$($GIT_CMD rev-parse ${one_tag})
-    echo ${tag_hash}/${one_tag} >> ${tagfile}
+    echo ${one_tag}/${tag_hash} >> ${tagfile}
   done
 fi
 
 # Figure out the new set of tags
+prev_built_tags="$(cat "${tagfile}")"
+built_tags=
+tags=
 rm -f ${tagfile}.new
 for one_tag in $($GIT_CMD tag)
 do
   tag_hash=$($GIT_CMD rev-parse ${one_tag})
-  echo ${tag_hash}/${one_tag} >> ${tagfile}.new
+  if [ -n "$(grep ${one_tag}/${tag_hash} <<< "${prev_built_tags}")" ]
+  then
+      built_tags="${built_tags}${one_tag}/${tag_hash}"$'\n'
+  else
+      tags="${tags}${one_tag}/${tag_hash}"$'\n'
+  fi
 done
-tags="`diff --suppress-common-lines ${tagfile} ${tagfile}.new | grep '^> ' | sed -e 's/^> //g'`"
 qpopd
-
-# move the new file into place
-mv -f ${tagfile}.new ${tagfile}
 
 qpopd # return to directory the script was invoked from (not necessarily the directory this script resides in)
 
@@ -83,8 +87,8 @@ qpopd # return to directory the script was invoked from (not necessarily the dir
 # Now iterate over all the new tags (if any) and build a package
 
 for tag_rev in $tags ; do
-  tag=${tag_rev#*/}
-  tag=${tag%/*}
+  tag_hash=${tag_rev#*/}
+  tag=${tag_rev%/*}
 
   # Git builds are only supported from 2.5 up
   get_major_minor $tag
@@ -133,4 +137,10 @@ for tag_rev in $tags ; do
   qpushd ${_TAG_WIN_REPOS_UDIR}
     ${BUILDSERVER_DIR}/build_package.sh ${tag}
   qpopd
+  
+  # Successful build of one tag. We may be in a loop to build several tags.
+  # So mark this one as done to prevent it from being rebuilt if a subsequent
+  # build fails.
+  built_tags="${built_tags}${tag_rev}"$'\n'
+  echo "${built_tags}" | sort  | grep -v '^$' > ${tagfile}
 done
