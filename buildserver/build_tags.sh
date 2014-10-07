@@ -11,20 +11,22 @@
 #    won't allow to change a file that is "in use". So in the rare
 #    situation this script needs to be updated, you will need to
 #    run the git pull once yourself.
+#
+# 3. This script assumes it's called with a full absolute path.
+#    eg: c:\\gcdev\\gnucash-on-windows.git\\buildserver\\build_tags.sh
+#    or  /c/gcdev/gnucash-on-windows.git/buildserver/build_tags.sh
+#    Failing to do so will break the build.
 
 set -e
-
-function qpushd() { pushd "$@" >/dev/null; }
-function qpopd() { popd >/dev/null; }
-function unix_path() { echo "$*" | sed 's,^\([A-Za-z]\):,/\1,;s,\\,/,g'; }
 
 ################################################################
 # Setup our environment  (we need the DOWNLOAD_DIR)
 
-_BUILDSERVER_UDIR="$(dirname $(unix_path "$0"))"
-qpushd "$_BUILDSERVER_UDIR/.."
-pkgdir="`pwd`"
-. ./functions.sh
+BUILDSERVER_DIR="$(dirname "$0")"
+GC_WIN_DIR="$BUILDSERVER_DIR/.."
+. "$GC_WIN_DIR/functions.sh"
+
+qpushd "$GC_WIN_DIR"
 . ./defaults.sh
 
 # Variables
@@ -129,6 +131,6 @@ for tag_rev in $tags ; do
   # Now build the tag!  (this will upload it too)
   # Use the build_package script from master (cwd), not from the tag
   qpushd ${_TAG_WIN_REPOS_UDIR}
-    ${_BUILDSERVER_UDIR}/build_package.sh ${tag}
+    ${BUILDSERVER_DIR}/build_package.sh ${tag}
   qpopd
 done

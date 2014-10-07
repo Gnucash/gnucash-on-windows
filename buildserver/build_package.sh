@@ -20,11 +20,9 @@ function on_error() {
   exit
 }
 
-function qpushd() { pushd "$@" >/dev/null; }
-function qpopd() { popd >/dev/null; }
-function unix_path() { echo "$*" | sed 's,^\([A-Za-z]\):,/\1,;s,\\,/,g'; }
-
-. ./functions.sh
+BUILDSERVER_DIR="$(dirname "$0")"
+GC_WIN_DIR="$BUILDSERVER_DIR/.."
+. "$GC_WIN_DIR/functions.sh"
 . ./defaults.sh
 
 tag="${1:-$GNUCASH_SCM_REV}"

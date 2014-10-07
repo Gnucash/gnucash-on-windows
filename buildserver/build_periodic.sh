@@ -11,6 +11,11 @@
 #    won't allow to change a file that is "in use". So in the rare
 #    situation this script needs to be updated, you will need to
 #    run the git pull once yourself.
+#
+# 3. This script assumes it's called with a full absolute path.
+#    eg: c:\\gcdev\\gnucash-on-windows.git\\buildserver\\build_periodic.sh
+#    or  /c/gcdev/gnucash-on-windows.git/buildserver/build_periodic.sh
+#    Failing to do so will break the build.
 
 set -e
 
@@ -30,13 +35,11 @@ then
   fi
 fi
 
-function qpushd() { pushd "$@" >/dev/null; }
-function qpopd() { popd >/dev/null; }
-function unix_path() { echo "$*" | sed 's,^\([A-Za-z]\):,/\1,;s,\\,/,g'; }
+BUILDSERVER_DIR="$(dirname "$0")"
+GC_WIN_DIR="$BUILDSERVER_DIR/.."
+. "$GC_WIN_DIR/functions.sh"
 
-_BUILDSERVER_UDIR="$(dirname $(unix_path "$0"))"
-qpushd "$_BUILDSERVER_UDIR/.."
-. ./functions.sh
+qpushd "$GC_WIN_DIR"
 . ./defaults.sh
 
 # Variables
@@ -69,7 +72,7 @@ newrev=$($GIT_CMD rev-parse HEAD)
 qpopd # leave gnucash repository
 
 if [[ "${oldrev}" != "${newrev}" ]]; then
-  $_BUILDSERVER_UDIR/build_package.sh
+  $BUILDSERVER_DIR/build_package.sh
 fi
 
 # move the new file into place, will only happen if the build was successful
