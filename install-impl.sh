@@ -1248,7 +1248,7 @@ function inst_gnucash() {
 
     # Check for options that may not be available in all versions we can build
     _CONFIG_HELP=$($_REPOS_UDIR/configure --help)
-    if [ -n "$(grep -- '--with-boost' <<< $_CONFIG_HELP)" ]; then
+    if [ -n "$(grep -- '--with-boost' <<< "$_CONFIG_HELP")" ]; then
         _EXTRA_OPTIONS="--with-boost=${BOOST_ROOT}"
     else
         _EXTRA_OPTIONS=""
