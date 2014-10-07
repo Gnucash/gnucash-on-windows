@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # GnuCash shellscript functions for install.sh
-# 
+#
 
 function inst_prepare() {
     # Necessary so that intltoolize doesn't come up with some
@@ -683,7 +683,7 @@ function inst_libdbi() {
         rm -rf ${TMP_UDIR}/sqlite-*
     fi
     if test -f ${_MYSQL_LIB_UDIR}/lib/libmysql.dll -a \
-	        -f ${_MYSQL_LIB_UDIR}/lib/libmysqlclient.a
+            -f ${_MYSQL_LIB_UDIR}/lib/libmysqlclient.a
     then
         echo "MySQL library already installed in $_MYSQL_LIB_UDIR.  skipping."
     else
@@ -851,11 +851,11 @@ function inst_libsoup() {
         qpushd $TMP_UDIR/libsoup-*
             ./configure ${HOST_XCOMPILE} \
                 --prefix=${_LIBSOUP_UDIR} \
-		--disable-gtk-doc \
-		--without-gnome \
-		--disable-ssl \
-		CPPFLAGS=-I${_GNOME_UDIR}/include \
-		LDFLAGS="-L${_GNOME_UDIR}/lib -Wl,-s -lz"
+                --disable-gtk-doc \
+                --without-gnome \
+                --disable-ssl \
+                CPPFLAGS=-I${_GNOME_UDIR}/include \
+                LDFLAGS="-L${_GNOME_UDIR}/lib -Wl,-s -lz"
             make
             make install
         qpopd
@@ -928,7 +928,7 @@ function inst_opensp() {
             make -i install
         qpopd
         test -f ${_OPENSP_UDIR}/bin/libosp-5.dll || die "OpenSP not installed correctly"
-	rm -rf $TMP_UDIR/OpenSP-*
+        rm -rf $TMP_UDIR/OpenSP-*
     fi
 }
 
@@ -1049,38 +1049,38 @@ function inst_webkit() {
             wget_unpacked $WEBKIT_SRC_URL $DOWNLOAD_DIR $TMP_DIR
             assert_one_dir ${TMP_UDIR}/webkit-*
             qpushd $TMP_UDIR/webkit-*
-	        add_to_env /c/Programs/GnuWin32/bin PATH
-	        SAVED_PATH=$PATH
-	        add_to_env ${_ACTIVE_PERL_BASE_DIR}/bin PATH
-	        export PERL5LIB=${_ACTIVE_PERL_BASE_DIR}/lib
-    
-	        patch -p0 -u < $WEBKIT_CONFIGURE_PATCH
-	        CPPFLAGS="${GNOME_CPPFLAGS} ${SQLITE3_CFLAGS}" \
+                add_to_env /c/Programs/GnuWin32/bin PATH
+                SAVED_PATH=$PATH
+                add_to_env ${_ACTIVE_PERL_BASE_DIR}/bin PATH
+                export PERL5LIB=${_ACTIVE_PERL_BASE_DIR}/lib
+
+                patch -p0 -u < $WEBKIT_CONFIGURE_PATCH
+                CPPFLAGS="${GNOME_CPPFLAGS} ${SQLITE3_CFLAGS}" \
                 LDFLAGS="${GNOME_LDFLAGS} ${SQLITE3_LDFLAGS} -lsqlite3" \
-	        PERL="${_ACTIVE_PERL_BASE_DIR}/bin/perl" \
-	        ./configure \
-	            --prefix=${_WEBKIT_UDIR} \
-		    --with-target=win32 \
-		    --with-unicode-backend=glib \
-		    --enable-web-sockets \
-		    --enable-3D-transforms \
-		    --disable-video
+                PERL="${_ACTIVE_PERL_BASE_DIR}/bin/perl" \
+                ./configure \
+                    --prefix=${_WEBKIT_UDIR} \
+                    --with-target=win32 \
+                    --with-unicode-backend=glib \
+                    --enable-web-sockets \
+                    --enable-3D-transforms \
+                    --disable-video
                 patch -p0 -u < $WEBKIT_DATADIR_PATCH
                 patch -p0 -u < $WEBKIT_GCCPATH_PATCH
                 patch -p0 -u < $WEBKIT_MAKEFILE_PATCH
                 patch -p0 -u < $WEBKIT_MINGW32_PATCH
                 patch -p0 -u < $WEBKIT_NOSVG_PATCH
-	        cp $WEBKIT_WEBKITENUMTYPES_CPP DerivedSources
-	        cp $WEBKIT_WEBKITENUMTYPES_H Webkit/gtk/webkit
-	        make
-	        make install
-	        PATH=$SAVED_PATH
-	    qpopd
-	else
+                cp $WEBKIT_WEBKITENUMTYPES_CPP DerivedSources
+                cp $WEBKIT_WEBKITENUMTYPES_H Webkit/gtk/webkit
+                make
+                make install
+                PATH=$SAVED_PATH
+            qpopd
+        else
             wget_unpacked $WEBKIT_URL $DOWNLOAD_DIR $WEBKIT_DIR
-	fi
+        fi
         quiet ${PKG_CONFIG} --exists webkit-1.0 || die "webkit not installed correctly"
-	rm -rf ${TMP_UDIR}/webkit-*
+        rm -rf ${TMP_UDIR}/webkit-*
 
         qpushd $_WEBKIT_UDIR/lib/pkgconfig
             perl -pi.bak -e"s!^prefix=.*\$!prefix=$_WEBKIT_UDIR!" *.pc
@@ -1193,7 +1193,7 @@ function inst_boost() {
          ${_BOOST_UDIR}/bin/b2 install-proper --prefix=${_BOOST_UDIR} --with-atomic --with-chrono --with-date_time --with-filesystem --with-log --with-program_options --with-regex --with-signals --with-system --with-test link=shared variant=release toolset=gcc --layout=tagged
         qpopd
         test -f ${_BOOST_UDIR}/lib/libboost_date_time.dll || die "Boost not installed correctly"
-	rm -rf $TMP_UDIR/boost_*
+        rm -rf $TMP_UDIR/boost_*
     fi
 }
 
@@ -1331,7 +1331,7 @@ function make_install() {
         # the equivalent sections in inno_setup/gnucash.iss, and
         # (in the gnucash source repository) src/bin/environment*.in
         qpushd $_INSTALL_UDIR/bin
-		cat > gnucash-launcher.cmd <<EOF
+            cat > gnucash-launcher.cmd <<EOF
 @echo off
 setlocal
 set PATH=$INSTALL_DIR\\bin;%PATH%
@@ -1360,7 +1360,7 @@ set PATH=$LIBSOUP_DIR\\bin;%PATH%
 set PATH=$LIBSOUP_DIR\\lib;%PATH%
 set PATH=$LIBXSLT_DIR\\bin;%PATH%
 set PATH=$LIBXSLT_DIR\\lib;%PATH%
-  
+
 set LTDL_LIBRARY_PATH=${INSTALL_DIR}\\lib
 
 start gnucash %*
@@ -1370,7 +1370,7 @@ EOF
 }
 
 function checkupd_docs_git() {
-    
+
     if [ "$UPDATE_DOCS" = "yes" ]; then
         if [ -x .git ]; then
             setup "Docs - Update repository (git)"

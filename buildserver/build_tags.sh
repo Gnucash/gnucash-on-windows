@@ -81,7 +81,7 @@ qpopd # return to directory the script was invoked from (not necessarily the dir
 for tag_rev in $tags ; do
   tag=${tag_rev#*/}
   tag=${tag%/*}
-  
+
   # Git builds are only supported from 2.5 up
   tag_major=${tag%%.*}
   tag_tmp=${tag#*.}
@@ -91,11 +91,11 @@ for tag_rev in $tags ; do
   then
      continue
   fi
-  
+
   TAG_GLOBAL_DIR="c:\\gcdev\\gnucash-${tag}"
   _TAG_GLOBAL_UDIR=$(unix_path "$TAG_GLOBAL_DIR")
   rm -fr $_TAG_GLOBAL_UDIR
-  
+
   # Set up a clean build environment for this tag
   # This will automatically create a custom.sh with
   # several parameters correctly pre-set like
@@ -108,10 +108,9 @@ for tag_rev in $tags ; do
   qpushd $TAG_REPOS_DIR
   $GIT_CMD checkout $tag
   qpopd
-  
+
   TAG_WIN_REPOS_DIR="${TAG_GLOBAL_DIR}\\gnucash-on-windows.git"
   _TAG_WIN_REPOS_UDIR=$(unix_path "$TAG_WIN_REPOS_DIR")
-  #cp -p "${pkgdir}/custom.sh" ${_TAG_WIN_REPOS_UDIR}/custom.sh
 
   # BUILD_FROM_TARBALL is special:
   # in install.sh place we check !=yes, in defaults.sh =yes, in dist.sh =no

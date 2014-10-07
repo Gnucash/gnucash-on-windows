@@ -25,7 +25,7 @@ if [ x$periodicity = xweekly ]
 then
   ## Only run this script on Monday night (first day of the week)
   if [ `date +%u` != 1 ]
-  then 
+  then
     exit
   fi
 fi

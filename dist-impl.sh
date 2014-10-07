@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # GnuCash shellscript functions for dist.sh
-# 
+#
 
 function dist_prepare() {
     TMP_UDIR=`unix_path $TMP_DIR`
