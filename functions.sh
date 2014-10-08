@@ -307,12 +307,8 @@ function mingw_smart_get () {
 # If the version entered is not a version in the expected format
 # 0 will be returned.
 function get_major_minor () {
-  local version=${1//[!0-9.-]/}
-
-  local -i version_major=${version%%.*}
-  local version_tmp=${version#*.}
-  local -i version_minor=${version_tmp%%.*}
-  major_minor=$(( $version_major*100 + $version_minor ))
+  version=$1
+  major_minor=$(perl  -e '($maj,$min,$rest) = <>  =~ /([0-9]*)[.]([0-9]*)(.*)/; print $maj*100+$min;' <<< $version)
 }
 
 ### Local Variables: ***
