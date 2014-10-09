@@ -359,6 +359,7 @@ function inst_gnome() {
     else
         mkdir -p $_GNOME_UDIR
         wget_unpacked $CAIRO_URL $DOWNLOAD_DIR $GNOME_DIR
+        wget_unpacked $CAIRO_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $EXPAT_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $EXPAT_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $FREETYPE_URL $DOWNLOAD_DIR $GNOME_DIR
@@ -366,7 +367,9 @@ function inst_gnome() {
         wget_unpacked $GAIL_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $GAIL_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $GLIB_URL $DOWNLOAD_DIR $GNOME_DIR
+        wget_unpacked $GLIB_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $GTK_URL $DOWNLOAD_DIR $GNOME_DIR
+        wget_unpacked $GTK_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $INTLTOOL_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $LIBART_LGPL_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $LIBART_LGPL_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
