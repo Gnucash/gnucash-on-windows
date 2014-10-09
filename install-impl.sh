@@ -409,6 +409,9 @@ function inst_gnome() {
                 sed '1s,!.*perl,!'"perl"',;s,/opt/gnu/bin/iconv,iconv,' $file > tmp
                 mv tmp $file
             done
+
+            # remove *.la files. They are hindering the build
+            rm -f lib/*.la
         qpopd
 
         if quiet ${PKG_CONFIG} --exact-version=${LIBXML2_VERSION} libxml-2.0 ; then
