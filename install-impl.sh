@@ -78,6 +78,8 @@ function inst_msys() {
     mingw_smart_get msys-patch ${MSYS_PATCH_VERSION}
     mingw_smart_get msys-perl ${MSYS_PERL_VERSION}
     mingw_smart_get msys-unzip ${MSYS_UNZIP_VERSION}
+    mingw_smart_get msys-bison ${MSYS_BISON_VERSION}
+    mingw_smart_get msys-flex ${MSYS_FLEX_VERSION}
 
     quiet perl --help || die "perl not installed correctly"
     quiet wget --version || die "wget unavailable"

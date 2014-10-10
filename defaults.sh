@@ -66,11 +66,13 @@ set_default MSYS_DIR $MINGW_DIR\\msys
 
 # tools here means binaries runnable without other DLLs or data files
 set_default TOOLS_DIR $GLOBAL_DIR\\tools
-set_default MSYS_WGET_VERSION  "1.12-1"
+set_default MSYS_BISON_VERSION "2.4.2-1"
+set_default MSYS_FLEX_VERSION  "2.5.35-2"
 set_default MSYS_M4_VERSION    "1.4.16-2"
 set_default MSYS_PATCH_VERSION "2.6.1-1"
 set_default MSYS_PERL_VERSION  "5.8.8-1"
 set_default MSYS_UNZIP_VERSION "6.0-1"
+set_default MSYS_WGET_VERSION  "1.12-1"
 
 set_default SF_MIRROR "http://downloads.sf.net"
 set_default GTK_MIRROR "ftp.gtk.org/pub"
