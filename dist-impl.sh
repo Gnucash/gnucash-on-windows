@@ -6,7 +6,8 @@
 function dist_prepare() {
     TMP_UDIR=`unix_path $TMP_DIR`
     if [ -x $DIST_DIR ]; then
-        die "Please remove ${DIST_DIR} first"
+        echo "Removing previous DIST_DIR ${DIST_DIR}"
+        rm -fr "${DIST_DIR}"
     fi
     _UNZIP_UDIR=`unix_path $UNZIP_DIR`
     _GUILE_UDIR=`unix_path $GUILE_DIR`
