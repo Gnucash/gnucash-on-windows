@@ -28,6 +28,7 @@ qpushd "$GC_WIN_DIR"
 
 # variables
 register_env_var ACLOCAL_FLAGS " "
+register_env_var ENCHANT_LDFLAGS " "
 register_env_var GNOME_CPPFLAGS " "
 register_env_var GNOME_LDFLAGS " "
 register_env_var GNUTLS_CPPFLAGS " "
@@ -40,6 +41,7 @@ register_env_var HH_LDFLAGS " "
 register_env_var INTLTOOL_PERL " "
 register_env_var LIBDBI_CPPFLAGS " "
 register_env_var LIBDBI_LDFLAGS " "
+register_env_var LIBXSLT_LDFLAGS " "
 register_env_var KTOBLZCHECK_CPPFLAGS " "
 register_env_var KTOBLZCHECK_LDFLAGS " "
 register_env_var PATH ":"
@@ -52,7 +54,7 @@ register_env_var READLINE_LDFLAGS " "
 register_env_var REGEX_CPPFLAGS " "
 register_env_var REGEX_LDFLAGS " "
 register_env_var SQLITE3_CFLAGS " "
-register_env_var SQLITE3_LIBS " "
+register_env_var SQLITE3_LDFLAGS " "
 
 # steps
 # There is no reason to ever need to comment these out!
