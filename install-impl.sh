@@ -1044,6 +1044,11 @@ function inst_regex() {
     fi
 }
 
+#To build webkit from source you need an extra dependency, gperf. You
+#can most easily get it from
+#http://gnuwin32.sourceforge.net/packages.html; install it in
+#c:\Programs\GnuWin32.
+#You also need python and ICU.
 function inst_webkit() {
     setup WebKit
     _WEBKIT_UDIR=`unix_path ${WEBKIT_DIR}`
@@ -1062,22 +1067,17 @@ function inst_webkit() {
                 add_to_env ${_ACTIVE_PERL_BASE_DIR}/bin PATH
                 export PERL5LIB=${_ACTIVE_PERL_BASE_DIR}/lib
 
-                patch -p0 -u < $WEBKIT_CONFIGURE_PATCH
-                CPPFLAGS="${GNOME_CPPFLAGS} ${SQLITE3_CFLAGS}" \
-                LDFLAGS="${GNOME_LDFLAGS} ${SQLITE3_LDFLAGS} -lsqlite3" \
-                PERL="${_ACTIVE_PERL_BASE_DIR}/bin/perl" \
+                patch -p1 -u < $WEBKIT_MINGW_PATCH
+                autoreconf -fis -ISource/autotools -I$GNOME_DIR/share/aclocal
                 ./configure \
                     --prefix=${_WEBKIT_UDIR} \
                     --with-target=win32 \
                     --with-unicode-backend=glib \
                     --enable-web-sockets \
-                    --enable-3D-transforms \
-                    --disable-video
-                patch -p0 -u < $WEBKIT_DATADIR_PATCH
-                patch -p0 -u < $WEBKIT_GCCPATH_PATCH
-                patch -p0 -u < $WEBKIT_MAKEFILE_PATCH
-                patch -p0 -u < $WEBKIT_MINGW32_PATCH
-                patch -p0 -u < $WEBKIT_NOSVG_PATCH
+                    --disable-video \
+                CPPFLAGS="${GNOME_CPPFLAGS} ${SQLITE3_CFLAGS}" \
+                LDFLAGS="${GNOME_LDFLAGS} ${SQLITE3_LDFLAGS} -lsqlite3" \
+                PERL="${_ACTIVE_PERL_BASE_DIR}/bin/perl"
                 cp $WEBKIT_WEBKITENUMTYPES_CPP DerivedSources
                 cp $WEBKIT_WEBKITENUMTYPES_H Webkit/gtk/webkit
                 make
@@ -1086,6 +1086,7 @@ function inst_webkit() {
             qpopd
         else
             wget_unpacked $WEBKIT_URL $DOWNLOAD_DIR $WEBKIT_DIR
+            wget_unpacked $WEBKIT_DEV_URL $DOWNLOAD_DIR $WEBKIT_DIR
         fi
         quiet ${PKG_CONFIG} --exists webkit-1.0 || die "webkit not installed correctly"
         rm -rf ${TMP_UDIR}/webkit-*

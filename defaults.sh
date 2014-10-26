@@ -205,8 +205,8 @@ set_default GUILE_PATCH `pwd`/guile-1.8.patch
 set_default OPENSSL_URL "http://www.openssl.org/source/openssl-0.9.8j.tar.gz"
 set_default OPENSSL_DIR $GLOBAL_DIR\\openssl
 
-GNUTLS_VERSION="2.10.1"
-set_default GNUTLS_URL "http://josefsson.org/gnutls4win/gnutls-${GNUTLS_VERSION}.zip"
+GNUTLS_VERSION="3.2.19"
+set_default GNUTLS_URL "ftp://ftp.gnutls.org/gcrypt/gnutls/w32/gnutls-${GNUTLS_VERSION}-w32.zip"
 set_default GNUTLS_DIR $GLOBAL_DIR\\gnutls
 
 set_default MINGW_UTILS_URL "$SF_MIRROR/mingw/mingw-utils-0.3.tar.gz"
@@ -295,29 +295,22 @@ set_default HH_URL "http://download.microsoft.com/download/0/a/9/0a939ef6-e31c-4
 set_default HH_DIR $GLOBAL_DIR\\hh
 
 set_default BUILD_WEBKIT_FROM_SOURCE no
-set_default WEBKIT_VERSION "1.2.7"
-set_default WEBKIT_URL "$SF_MIRROR/gnucash/webkit-${WEBKIT_VERSION}-win32.zip"
+set_default WEBKIT_VERSION "1.8.3"
+set_default WEBKIT_URL "$SF_MIRROR/gnucash/webkit-${WEBKIT_VERSION}-minGW.tgz"
+set_default WEBKIT_DEV_URL "$SF_MIRROR/gnucash/webkit-${WEBKIT_VERSION}-dev-minGW.tgz"
 set_default WEBKIT_DIR $GLOBAL_DIR\\webkit
-set_default WEBKIT_SRC_URL "http://www.webkitgtk.org/webkit-1.2.7.tar.gz"
-set_default WEBKIT_PATCH `pwd`/webkit-1.2.7-time.patch
-set_default WEBKIT_PATCH2 `pwd`/webkit-1.2.7-vasprintf.patch
-set_default WEBKIT_CONFIGURE_PATCH `pwd`/webkit-1.2.7-configure.patch
-set_default WEBKIT_DATADIR_PATCH `pwd`/webkit-1.2.7-datadir.patch
-set_default WEBKIT_GCCPATH_PATCH `pwd`/webkit-1.2.7-gccpath.patch
-set_default WEBKIT_MAKEFILE_PATCH `pwd`/webkit-1.2.7-makefile.patch
-set_default WEBKIT_MINGW32_PATCH `pwd`/webkit-1.2.7-mingw32.patch
-set_default WEBKIT_NOSVG_PATCH `pwd`/webkit-1.2.7-nosvg.patch
-set_default WEBKIT_WEBKITENUMTYPES_CPP `pwd`/webkitenumtypes.cpp
-set_default WEBKIT_WEBKITENUMTYPES_H `pwd`/webkitenumtypes.h
+#NB: The Fedora project maintains a source version that has been patched for building in a Fedora-MinGW cross-compiler. This isn't quite good enough to build in MinGW itself, but it's a lot closer and less work than starting with a tarball direct from the WebKitGtk project.
+set_default WEBKIT_SRC_URL "https://pkgs.fedoraproject.org/repo/pkgs/mingw-webkitgtk/webkit-1.8.3.tar.xz/dcbf9d5e2e6391f857c29a57528b32a6/webkit-1.8.3.tar.xz"
+set_default WEBKIT_MINGW_PATCH=`pwd`/0001-Fix-various-issues-when-compiling-natively-on-MinGW.patch
 set_default ENCHANT_VERSION "1.5.0"
 set_default ENCHANT_URL "$GNOME_WIN32_URL/dependencies/enchant_${ENCHANT_VERSION}-2_win32.zip"
 set_default ENCHANT_DEV_URL "$GNOME_WIN32_URL/dependencies/enchant-dev_${ENCHANT_VERSION}-2_win32.zip"
 set_default ENCHANT_DIR $GLOBAL_DIR\\enchant
-set_default LIBSOUP_VERSION "2.28.2"
-set_default LIBSOUP_URL "$GNOME_WIN32_URL/libsoup/2.26/libsoup-${LIBSOUP_VERSION}-1_win32.zip"
-set_default LIBSOUP_DEV_URL "$GNOME_WIN32_URL/libsoup/2.26/libsoup-dev-${LIBSOUP_VERSION}-1_win32.zip"
+set_default LIBSOUP_VERSION "2.34.3"
+set_default LIBSOUP_URL "$GNOME_WIN32_URL/libsoup/2.34/libsoup-${LIBSOUP_VERSION}-1_win32.zip"
+set_default LIBSOUP_DEV_URL "$GNOME_WIN32_URL/libsoup/2.34/libsoup-dev-${LIBSOUP_VERSION}-1_win32.zip"
 set_default LIBSOUP_DIR $GLOBAL_DIR\\libsoup
-set_default LIBSOUP_SRC_URL "$GNOME_MIRROR/sources/libsoup/2.28/libsoup-${LIBSOUP_VERSION}.tar.bz2"
+set_default LIBSOUP_SRC_URL "$GNOME_MIRROR/sources/libsoup/2.34/libsoup-${LIBSOUP_VERSION}.tar.bz2"
 set_default ICU4C_URL "http://download.icu-project.org/files/icu4c/4.4.1/icu4c-4_4_1-Win32-msvc9.zip"
 set_default ICU4C_SRC_URL "http://download.icu-project.org/files/icu4c/4.4.1/icu4c-4_4_1-src.tgz"
 set_default ICU4C_DIR $GLOBAL_DIR\\icu-mingw32
