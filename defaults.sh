@@ -207,6 +207,10 @@ set_default OPENSSL_DIR $GLOBAL_DIR\\openssl
 
 GNUTLS_VERSION="3.2.19"
 set_default GNUTLS_URL "ftp://ftp.gnutls.org/gcrypt/gnutls/w32/gnutls-${GNUTLS_VERSION}-w32.zip"
+GCRYPT_VERSION="1.6.2"
+set_default GCRYPT_SRC_URL "ftp://ftp.gnutls.org/gcrypt/libgcrypt/libgcrypt-${GCRYPT_VERSION}.tar.bz2"
+GPG_ERROR_VERSION="1.17"
+set_default GPG_ERROR_SRC_URL "ftp://ftp.gnutls.org/gcrypt/libgpg-error/libgpg-error-${GPG_ERROR_VERSION}.tar.bz2"
 set_default GNUTLS_DIR $GLOBAL_DIR\\gnutls
 
 set_default MINGW_UTILS_URL "$SF_MIRROR/mingw/mingw-utils-0.3.tar.gz"

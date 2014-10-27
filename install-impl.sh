@@ -459,6 +459,26 @@ function inst_gnutls() {
         echo "GNUTLS already installed in $_GNUTLS_UDIR. skipping."
     else
         wget_unpacked $GNUTLS_URL $DOWNLOAD_DIR $GNUTLS_DIR
+        wget_unpacked $GCRYPT_SRC_URL $DOWNLOAD_DIR $TMP_DIR
+        wget_unpacked $GPG_ERROR_SRC_URL $DOWNLOAD_DIR $TMP_DIR
+        mydir=`pwd`
+        assert_one_dir $TMP_UDIR/libgcrypt-*
+        assert_one_dir $TMP_UDIR/libgpg-error-*
+        qpushd $TMP_UDIR/libgpg-error-*
+            ./configure ${HOST_XCOMPILE} --prefix=$_GNUTLS_UDIR  --disable-nls \
+                --disable-languages \
+                CPPFLAGS="${GNOME_CPPFLAGS}" \
+                LDFLAGS="${GNOME_LDFLAGS}"
+            make
+            make install
+        qpopd
+        qpushd $TMP_UDIR/libgcrypt-*
+            ./configure ${HOST_XCOMPILE} --prefix=$_GNUTLS_UDIR \
+                CPPFLAGS="${GNOME_CPPFLAGS}" \
+                LDFLAGS="${GNOME_LDFLAGS}"
+            make
+            make install
+        qpopd
         rm -f $_GNUTLS_UDIR/lib/*.la
         quiet ${PKG_CONFIG} --exists gnutls || die "GNUTLS not installed correctly"
     fi
