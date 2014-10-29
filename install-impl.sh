@@ -1105,6 +1105,7 @@ function inst_webkit() {
                 PATH=$SAVED_PATH
             qpopd
         else
+            mkdir -p $_WEBKIT_UDIR
             wget_unpacked $WEBKIT_URL $DOWNLOAD_DIR $WEBKIT_DIR
             wget_unpacked $WEBKIT_DEV_URL $DOWNLOAD_DIR $WEBKIT_DIR
         fi
