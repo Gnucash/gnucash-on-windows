@@ -53,8 +53,8 @@ register_env_var READLINE_CPPFLAGS " "
 register_env_var READLINE_LDFLAGS " "
 register_env_var REGEX_CPPFLAGS " "
 register_env_var REGEX_LDFLAGS " "
-register_env_var SQLITE3_CFLAGS " "
-register_env_var SQLITE3_LDFLAGS " "
+register_env_var SQLITE_CFLAGS " "
+register_env_var SQLITE_LIBS " "
 
 # steps
 # There is no reason to ever need to comment these out!

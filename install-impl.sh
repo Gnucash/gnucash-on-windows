@@ -692,8 +692,8 @@ function inst_libdbi() {
     _LIBDBI_DRIVERS_UDIR=`unix_path ${LIBDBI_DRIVERS_DIR}`
     add_to_env -I$_LIBDBI_UDIR/include LIBDBI_CPPFLAGS
     add_to_env -L$_LIBDBI_UDIR/lib LIBDBI_LDFLAGS
-    add_to_env -I${_SQLITE3_UDIR}/include SQLITE3_CFLAGS
-    add_to_env -L${_SQLITE3_UDIR}/lib SQLITE3_LDFLAGS
+    add_to_env -I${_SQLITE3_UDIR}/include SQLITE_CFLAGS
+    add_to_env "-L${_SQLITE3_UDIR}/lib -lsqlite3" SQLITE_LIBS
     if test -f ${_SQLITE3_UDIR}/bin/libsqlite3-0.dll
     then
         echo "SQLite3 already installed in $_SQLITE3_UDIR.  skipping."
@@ -866,6 +866,7 @@ function inst_libofx() {
     fi
 }
 
+#Building LibSoup requires python. Setting $PYTHON isn't sufficient, it must be on the path.
 function inst_libsoup() {
     setup libsoup
     _LIBSOUP_UDIR=`unix_path $LIBSOUP_DIR`
@@ -874,19 +875,26 @@ function inst_libsoup() {
     then
         echo "libsoup already installed in $_LIBSOUP_UDIR.  skipping."
     else
+        if [ "$BUILD_LIBSOUP_FROM_SOURCE" = "yes" ]; then
         wget_unpacked $LIBSOUP_SRC_URL $DOWNLOAD_DIR $TMP_DIR
         assert_one_dir $TMP_UDIR/libsoup-*
         qpushd $TMP_UDIR/libsoup-*
+            patch -p1 < $LIBSOUP_BAD_SYMBOL_PATCH
+            	patch -p1 < $LIBSOUP_RESERVED_WORD_PATCH
             ./configure ${HOST_XCOMPILE} \
                 --prefix=${_LIBSOUP_UDIR} \
                 --disable-gtk-doc \
                 --without-gnome \
-                --disable-ssl \
                 CPPFLAGS=-I${_GNOME_UDIR}/include \
                 LDFLAGS="-L${_GNOME_UDIR}/lib -Wl,-s -lz"
             make
             make install
         qpopd
+        else
+            mkdir -p $_LIBSOUP_UDIR
+            wget_unpacked $LIBSOUP_URL $DOWNLOAD_DIR $LIBSOUP_DIR
+            wget_unpacked $LIBSOUP_DEV_URL $DOWNLOAD_DIR $LIBSOUP_DIR
+        fi
         quiet ${PKG_CONFIG} --exists libsoup-2.4 || die "libsoup not installed correctly"
         rm -rf ${TMP_UDIR}/libsoup-*
     fi
@@ -1068,7 +1076,15 @@ function inst_regex() {
 #can most easily get it from
 #http://gnuwin32.sourceforge.net/packages.html; install it in
 #c:\Programs\GnuWin32.
-#You also need python and ICU.
+#You also need python 2.6+ and ICU 50+
+#Setting $PYTHON isn't sufficient, it must be on the path.
+#Build ICU and install it in /c/gcdev/webkit. Symlink icu*.dll to libicu*.dll.
+#
+#After building and before installing, make the following changes to
+#$(top_builddir)/Source/WebKit/gtk/webkit-1.0.pc:
+#${prefix}/lib -> ${prefix}/bin
+#Libs: ${libdir} -lwebkitgtk-1.0 -> Libs: ${libdir} -lwebkitgtk-1.0-0
+#
 function inst_webkit() {
     setup WebKit
     _WEBKIT_UDIR=`unix_path ${WEBKIT_DIR}`
@@ -1087,16 +1103,18 @@ function inst_webkit() {
                 add_to_env ${_ACTIVE_PERL_BASE_DIR}/bin PATH
                 export PERL5LIB=${_ACTIVE_PERL_BASE_DIR}/lib
 
-                patch -p1 -u < $WEBKIT_MINGW_PATCH
+                patch -p1 -u < $WEBKIT_MINGW_PATCH_1
+                patch -p1 -u < $WEBKIT_MINGW_PATCH_2
                 autoreconf -fis -ISource/autotools -I$GNOME_DIR/share/aclocal
                 ./configure \
                     --prefix=${_WEBKIT_UDIR} \
                     --with-target=win32 \
-                    --with-unicode-backend=glib \
+                    --with-gtk=2.0 \
+                    --disable-geolocation \
                     --enable-web-sockets \
                     --disable-video \
-                CPPFLAGS="${GNOME_CPPFLAGS} ${SQLITE3_CFLAGS}" \
-                LDFLAGS="${GNOME_LDFLAGS} ${SQLITE3_LDFLAGS} -lsqlite3" \
+                CPPFLAGS="${GNOME_CPPFLAGS} ${SQLITE_CFLAGS}" \
+                LDFLAGS="${GNOME_LDFLAGS} ${SQLITE_LIBS}" \
                 PERL="${_ACTIVE_PERL_BASE_DIR}/bin/perl"
                 cp $WEBKIT_WEBKITENUMTYPES_CPP DerivedSources
                 cp $WEBKIT_WEBKITENUMTYPES_H Webkit/gtk/webkit

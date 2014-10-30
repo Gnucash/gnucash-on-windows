@@ -305,16 +305,20 @@ set_default WEBKIT_DEV_URL "$SF_MIRROR/gnucash/webkit-${WEBKIT_VERSION}-dev-minG
 set_default WEBKIT_DIR $GLOBAL_DIR\\webkit
 #NB: The Fedora project maintains a source version that has been patched for building in a Fedora-MinGW cross-compiler. This isn't quite good enough to build in MinGW itself, but it's a lot closer and less work than starting with a tarball direct from the WebKitGtk project.
 set_default WEBKIT_SRC_URL "https://pkgs.fedoraproject.org/repo/pkgs/mingw-webkitgtk/webkit-1.8.3.tar.xz/dcbf9d5e2e6391f857c29a57528b32a6/webkit-1.8.3.tar.xz"
-set_default WEBKIT_MINGW_PATCH=`pwd`/0001-Fix-various-issues-when-compiling-natively-on-MinGW.patch
+set_default WEBKIT_MINGW_PATCH_1=`pwd`/0001-Fix-various-issues-when-compiling-natively-on-MinGW.patch
+set_default WEBKIT_MINGW_PATCH_2=`pwd`/0002-webkit-second-minGW.patch
 set_default ENCHANT_VERSION "1.5.0"
 set_default ENCHANT_URL "$GNOME_WIN32_URL/dependencies/enchant_${ENCHANT_VERSION}-2_win32.zip"
 set_default ENCHANT_DEV_URL "$GNOME_WIN32_URL/dependencies/enchant-dev_${ENCHANT_VERSION}-2_win32.zip"
 set_default ENCHANT_DIR $GLOBAL_DIR\\enchant
-set_default LIBSOUP_VERSION "2.34.3"
-set_default LIBSOUP_URL "$GNOME_WIN32_URL/libsoup/2.34/libsoup-${LIBSOUP_VERSION}-1_win32.zip"
-set_default LIBSOUP_DEV_URL "$GNOME_WIN32_URL/libsoup/2.34/libsoup-dev-${LIBSOUP_VERSION}-1_win32.zip"
+set_default BUILD_LIBSOUP_FROM_SOURCE no
+set_default LIBSOUP_VERSION "2.48.0"
+set_default LIBSOUP_URL "$SF_MIRROR/gnucash/libsoup-${LIBSOUP_VERSION}-minGW.tgz"
+set_default LIBSOUP_DEV_URL "$SF_MIRROR/gnucash/libsoup-${LIBSOUP_VERSION}-dev-minGW.tgz"
 set_default LIBSOUP_DIR $GLOBAL_DIR\\libsoup
-set_default LIBSOUP_SRC_URL "$GNOME_MIRROR/sources/libsoup/2.34/libsoup-${LIBSOUP_VERSION}.tar.bz2"
+set_default LIBSOUP_SRC_URL "$GNOME_MIRROR/sources/libsoup/2.48/libsoup-${LIBSOUP_VERSION}.tar.xz"
+set_default LIBSOUP_BAD_SYMBOL_PATCH `pwd`/libsoup-2.48.0-bad-symbol.patch
+set_default LIBSOUP_RESERVED_WORD_PATCH `pwd`/libsoup-2.48.0-soup-server-reserved-word.patch
 set_default ICU4C_URL "http://download.icu-project.org/files/icu4c/4.4.1/icu4c-4_4_1-Win32-msvc9.zip"
 set_default ICU4C_SRC_URL "http://download.icu-project.org/files/icu4c/4.4.1/icu4c-4_4_1-src.tgz"
 set_default ICU4C_DIR $GLOBAL_DIR\\icu-mingw32
