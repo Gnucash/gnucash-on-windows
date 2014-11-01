@@ -458,28 +458,34 @@ function inst_gnutls() {
     then
         echo "GNUTLS already installed in $_GNUTLS_UDIR. skipping."
     else
-        wget_unpacked $GNUTLS_URL $DOWNLOAD_DIR $GNUTLS_DIR
-        wget_unpacked $GCRYPT_SRC_URL $DOWNLOAD_DIR $TMP_DIR
-        wget_unpacked $GPG_ERROR_SRC_URL $DOWNLOAD_DIR $TMP_DIR
-        mydir=`pwd`
-        assert_one_dir $TMP_UDIR/libgcrypt-*
-        assert_one_dir $TMP_UDIR/libgpg-error-*
-        qpushd $TMP_UDIR/libgpg-error-*
-            ./configure ${HOST_XCOMPILE} --prefix=$_GNUTLS_UDIR  --disable-nls \
-                --disable-languages \
-                CPPFLAGS="${GNOME_CPPFLAGS}" \
-                LDFLAGS="${GNOME_LDFLAGS}"
-            make
-            make install
-        qpopd
-        qpushd $TMP_UDIR/libgcrypt-*
-            ./configure ${HOST_XCOMPILE} --prefix=$_GNUTLS_UDIR \
-                CPPFLAGS="${GNOME_CPPFLAGS}" \
-                LDFLAGS="${GNOME_LDFLAGS}"
-            make
-            make install
-        qpopd
-        rm -f $_GNUTLS_UDIR/lib/*.la
+        if [ "$BUILD_GNUTLS_FROM_SOURCE" = "yes" ]; then
+            wget_unpacked $GNUTLS_URL $DOWNLOAD_DIR $GNUTLS_DIR
+            wget_unpacked $GCRYPT_SRC_URL $DOWNLOAD_DIR $TMP_DIR
+            wget_unpacked $GPG_ERROR_SRC_URL $DOWNLOAD_DIR $TMP_DIR
+            mydir=`pwd`
+            assert_one_dir $TMP_UDIR/libgcrypt-*
+            assert_one_dir $TMP_UDIR/libgpg-error-*
+            qpushd $TMP_UDIR/libgpg-error-*
+                ./configure ${HOST_XCOMPILE} --prefix=$_GNUTLS_UDIR  --disable-nls \
+                    --disable-languages \
+                    CPPFLAGS="${GNOME_CPPFLAGS}" \
+                    LDFLAGS="${GNOME_LDFLAGS}"
+                make
+                make install
+            qpopd
+            qpushd $TMP_UDIR/libgcrypt-*
+                ./configure ${HOST_XCOMPILE} --prefix=$_GNUTLS_UDIR \
+                    CPPFLAGS="${GNOME_CPPFLAGS}" \
+                    LDFLAGS="${GNOME_LDFLAGS}"
+                make
+                make install
+            qpopd
+            rm -f $_GNUTLS_UDIR/lib/*.la
+        else
+            mkdir -p $_GNUTLS_UDIR
+            wget_unpacked $GNUTLS_URL $DOWNLOAD_DIR $GNUTLS_DIR
+            wget_unpacked $GNUTLS_DEV_URL $DOWNLOAD_DIR $GNUTLS_DIR
+        fi
         quiet ${PKG_CONFIG} --exists gnutls || die "GNUTLS not installed correctly"
     fi
     [ ! -d $_GNUTLS_UDIR/share/aclocal ] || add_to_env "-I $_GNUTLS_UDIR/share/aclocal" ACLOCAL_FLAGS
@@ -876,20 +882,20 @@ function inst_libsoup() {
         echo "libsoup already installed in $_LIBSOUP_UDIR.  skipping."
     else
         if [ "$BUILD_LIBSOUP_FROM_SOURCE" = "yes" ]; then
-        wget_unpacked $LIBSOUP_SRC_URL $DOWNLOAD_DIR $TMP_DIR
-        assert_one_dir $TMP_UDIR/libsoup-*
-        qpushd $TMP_UDIR/libsoup-*
-            patch -p1 < $LIBSOUP_BAD_SYMBOL_PATCH
+            wget_unpacked $LIBSOUP_SRC_URL $DOWNLOAD_DIR $TMP_DIR
+            assert_one_dir $TMP_UDIR/libsoup-*
+            qpushd $TMP_UDIR/libsoup-*
+            	patch -p1 < $LIBSOUP_BAD_SYMBOL_PATCH
             	patch -p1 < $LIBSOUP_RESERVED_WORD_PATCH
-            ./configure ${HOST_XCOMPILE} \
-                --prefix=${_LIBSOUP_UDIR} \
-                --disable-gtk-doc \
-                --without-gnome \
-                CPPFLAGS=-I${_GNOME_UDIR}/include \
-                LDFLAGS="-L${_GNOME_UDIR}/lib -Wl,-s -lz"
-            make
-            make install
-        qpopd
+                ./configure ${HOST_XCOMPILE} \
+                    --prefix=${_LIBSOUP_UDIR} \
+                    --disable-gtk-doc \
+                    --without-gnome \
+                    CPPFLAGS=-I${_GNOME_UDIR}/include \
+                    LDFLAGS="-L${_GNOME_UDIR}/lib -Wl,-s -lz"
+                make
+                make install
+            qpopd
         else
             mkdir -p $_LIBSOUP_UDIR
             wget_unpacked $LIBSOUP_URL $DOWNLOAD_DIR $LIBSOUP_DIR
