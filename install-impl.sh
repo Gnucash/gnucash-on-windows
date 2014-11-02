@@ -466,6 +466,7 @@ function inst_gnutls() {
             assert_one_dir $TMP_UDIR/libgcrypt-*
             assert_one_dir $TMP_UDIR/libgpg-error-*
             qpushd $TMP_UDIR/libgpg-error-*
+                sed -i'' s/ro// po/LINGUAS #Converting ro.po to UTF8 hangs
                 ./configure ${HOST_XCOMPILE} --prefix=$_GNUTLS_UDIR  --disable-nls \
                     --disable-languages \
                     CPPFLAGS="${GNOME_CPPFLAGS}" \
