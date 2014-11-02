@@ -459,10 +459,12 @@ function inst_gnutls() {
         echo "GNUTLS already installed in $_GNUTLS_UDIR. skipping."
     else
         if [ "$BUILD_GNUTLS_FROM_SOURCE" = "yes" ]; then
-            wget_unpacked $GNUTLS_URL $DOWNLOAD_DIR $GNUTLS_DIR
+            mkdir -p $_GNUTLS_UDIR
+            wget_unpacked $GNUTLS_PKG_URL $DOWNLOAD_DIR $GNUTLS_DIR
             wget_unpacked $GCRYPT_SRC_URL $DOWNLOAD_DIR $TMP_DIR
             wget_unpacked $GPG_ERROR_SRC_URL $DOWNLOAD_DIR $TMP_DIR
             wget_unpacked $GLIB_NETWORKING_SRC_URL $DOWNLOAD_DIR $TMP_DIR
+            rm $_GNUTLS_UDIR/lib/*.la
             assert_one_dir $TMP_UDIR/libgcrypt-*
             assert_one_dir $TMP_UDIR/libgpg-error-*
             assert_one_dir $TMP_UDIR/glib-networking-*
