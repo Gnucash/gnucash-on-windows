@@ -205,6 +205,7 @@ set_default GUILE_PATCH `pwd`/guile-1.8.patch
 set_default OPENSSL_URL "http://www.openssl.org/source/openssl-0.9.8j.tar.gz"
 set_default OPENSSL_DIR $GLOBAL_DIR\\openssl
 
+GLIB_VERSION="2.38.2"
 GNUTLS_VERSION="3.2.19"
 set_default BUILD_GNUTLS_FROM_SOURCE "no"
 set_default GNUTLS_URL  "$GC_DEPS_URL/gnutls-3.2.19-minGW.tgz"
@@ -214,6 +215,7 @@ GCRYPT_VERSION="1.6.2"
 set_default GCRYPT_SRC_URL "ftp://ftp.gnutls.org/gcrypt/libgcrypt/libgcrypt-${GCRYPT_VERSION}.tar.bz2"
 GPG_ERROR_VERSION="1.17"
 set_default GPG_ERROR_SRC_URL "ftp://ftp.gnutls.org/gcrypt/libgpg-error/libgpg-error-${GPG_ERROR_VERSION}.tar.bz2"
+set_default GLIB_NETWORKING_SRC_URL "$GNOME_MIRROR/sources/glib-networking/2.38/glib-networking-${GLIB_VERSION}.tar.xz"
 set_default GNUTLS_DIR $GLOBAL_DIR\\gnutls
 
 set_default MINGW_UTILS_URL "$SF_MIRROR/mingw/mingw-utils-0.3.tar.gz"
@@ -263,8 +265,8 @@ set_default LIBXML2_URL             "$GNOME_WIN32_DEPS_URL/libxml2_2.7.7-1_win32
 set_default LIBXML2_DEV_URL         "$GNOME_WIN32_DEPS_URL/libxml2-dev_2.7.7-1_win32.zip"
 set_default PKG_CONFIG_URL          "$GNOME_WIN32_DEPS_URL/pkg-config_0.25-1_win32.zip"
 set_default PKG_CONFIG_DEV_URL      "$GNOME_WIN32_DEPS_URL/pkg-config-dev_0.25-1_win32.zip"
-set_default GLIB_URL                "$GC_DEPS_URL/glib-2.38.2-minGW.tgz"
-set_default GLIB_DEV_URL            "$GC_DEPS_URL/glib-2.38.2-dev-minGW.tgz"
+set_default GLIB_URL                "$GC_DEPS_URL/glib-$GLIB_VERSION-minGW.tgz"
+set_default GLIB_DEV_URL            "$GC_DEPS_URL/glib-$GLIB_VERSION-dev-minGW.tgz"
 set_default CAIRO_VERSION="1.10.2"
 set_default CAIRO_URL               "$GC_DEPS_URL/cairo-1.10.2-minGW.tgz"
 set_default CAIRO_DEV_URL           "$GC_DEPS_URL/cairo-1.10.2-dev-minGW.tgz"

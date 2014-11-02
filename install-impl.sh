@@ -462,9 +462,10 @@ function inst_gnutls() {
             wget_unpacked $GNUTLS_URL $DOWNLOAD_DIR $GNUTLS_DIR
             wget_unpacked $GCRYPT_SRC_URL $DOWNLOAD_DIR $TMP_DIR
             wget_unpacked $GPG_ERROR_SRC_URL $DOWNLOAD_DIR $TMP_DIR
-            mydir=`pwd`
+            wget_unpacked $GLIB_NETWORKING_SRC_URL $DOWNLOAD_DIR $TMP_DIR
             assert_one_dir $TMP_UDIR/libgcrypt-*
             assert_one_dir $TMP_UDIR/libgpg-error-*
+            assert_one_dir $TMP_UDIR/glib-networking-*
             qpushd $TMP_UDIR/libgpg-error-*
                 sed -i'' s/ro// po/LINGUAS #Converting ro.po to UTF8 hangs
                 ./configure ${HOST_XCOMPILE} --prefix=$_GNUTLS_UDIR  --disable-nls \
@@ -481,6 +482,16 @@ function inst_gnutls() {
                 make
                 make install
             qpopd
+            qpushd $TMP_UDIR/glib-networking-*
+                ./configure ${HOST_XCOMPILE} --prefix=$_GNUTLS_UDIR \
+                    --with-ca-certificates=no \
+                    --with-pkcs11=no \
+                    CPPFLAGS="${GNOME_CPPFLAGS}" \
+                    LDFLAGS="${GNOME_LDFLAGS}"
+                make
+                make install
+            qpopd
+
             rm -f $_GNUTLS_UDIR/lib/*.la
         else
             mkdir -p $_GNUTLS_UDIR
