@@ -53,6 +53,7 @@ function inst_prepare() {
 function inst_msys() {
     setup MSys
     _MINGW_UDIR=`unix_path $MINGW_DIR`
+    _MINGW_LDDIR=/mingw/lib
     _MSYS_UDIR=`unix_path $MSYS_DIR`
     add_to_env $_MINGW_UDIR/bin PATH
     add_to_env $_MSYS_UDIR/bin PATH
@@ -543,9 +544,10 @@ function inst_guile() {
     setup Guile
     _GUILE_WFSDIR=`win_fs_path $GUILE_DIR`
     _GUILE_UDIR=`unix_path $GUILE_DIR`
+    _GUILE_LDDIR=`unix_ldpath $GUILE_DIR`
     _WIN_UDIR=`unix_path $WINDIR`
     add_to_env -I$_GUILE_UDIR/include GUILE_CPPFLAGS
-    add_to_env -L$_GUILE_UDIR/lib GUILE_LDFLAGS
+    add_to_env -L$_GUILE_LDDIR/lib GUILE_LDFLAGS
     add_to_env $_GUILE_UDIR/bin PATH
     add_to_env ${_GUILE_UDIR}/lib/pkgconfig PKG_CONFIG_PATH
     if quiet guile -c '(use-modules (srfi srfi-39))' &&
@@ -1334,7 +1336,7 @@ function inst_gnucash() {
             --enable-locale-specific-tax \
             ${_EXTRA_OPTIONS} \
             CPPFLAGS="${REGEX_CPPFLAGS} ${GNOME_CPPFLAGS} ${GUILE_CPPFLAGS} ${LIBDBI_CPPFLAGS} ${KTOBLZCHECK_CPPFLAGS} ${HH_CPPFLAGS} ${LIBSOUP_CPPFLAGS} -D_WIN32 ${EXTRA_CFLAGS}" \
-            LDFLAGS="${REGEX_LDFLAGS} ${GNOME_LDFLAGS} ${GUILE_LDFLAGS} ${LIBDBI_LDFLAGS} ${KTOBLZCHECK_LDFLAGS} ${HH_LDFLAGS} -L${_SQLITE3_UDIR}/lib -L${_ENCHANT_UDIR}/lib -L${_LIBXSLT_UDIR}/lib -L${_MINGW_UDIR}/lib" \
+            LDFLAGS="${REGEX_LDFLAGS} ${GNOME_LDFLAGS} ${GUILE_LDFLAGS} ${LIBDBI_LDFLAGS} ${KTOBLZCHECK_LDFLAGS} ${HH_LDFLAGS} -L${_SQLITE3_UDIR}/lib -L${_ENCHANT_UDIR}/lib -L${_LIBXSLT_UDIR}/lib -L${_MINGW_LDDIR}" \
             PKG_CONFIG_PATH="${PKG_CONFIG_PATH}"
 
         make

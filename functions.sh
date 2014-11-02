@@ -41,6 +41,7 @@ function qpushd() { pushd "$@" >/dev/null; }
 function qpopd() { popd >/dev/null; }
 function win_fs_path() { echo "$*" | sed 's,\\,/,g'; }
 function unix_path() { echo "$*" | sed 's,^\([A-Za-z]\):,/\1,;s,\\,/,g'; }
+function unix_ldpath() { echo "$*" | sed 's,\\,/,g'; }
 
 # usage:  wpwd [rel]
 # rel can be any relative path
