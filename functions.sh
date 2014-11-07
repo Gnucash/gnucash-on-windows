@@ -312,6 +312,26 @@ function get_major_minor () {
   major_minor=$(perl  -e '($maj,$min,$rest) = <>  =~ /([0-9]*)[.]([0-9]*)(.*)/; print $maj*100+$min;' <<< $version)
 }
 
+function fix_lt_file () {
+    filename="$2";
+    orig_dir=`grep ^libdir= $filename | cut -d "'" -f 2`
+    orig_dir=`dirname $orig_dir`
+    target_dir="$1"/`echo $(dirname "$filename") | sed -e"s;$1/;;"`
+
+    sed -i'.bak' -E -e"s;-L$orig_dir;-L$target_dir;g" -e"s;([/a-z0-9A-Z:_-]+)/lib([a-zA-Z0-9._-]+)\.la;-L\1 -l\2;g" -e"s;^libdir=.*$;libdir='$target_dir';" $filename
+}
+
+function fix_libtool_files () {
+if test -n "$1" -a -d "$1"; then
+    for i in `find "$1" -name *.la`; do
+        fix_lt_file $1 $i
+    done
+else
+    echo "Can't find directory $1"
+    exit 1
+fi
+}
+
 ### Local Variables: ***
 ### mode: shell-script ***
 ### sh-basic-offset: 4 ***

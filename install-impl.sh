@@ -412,9 +412,6 @@ function inst_gnome() {
                 sed '1s,!.*perl,!'"perl"',;s,/opt/gnu/bin/iconv,iconv,' $file > tmp
                 mv tmp $file
             done
-
-            # remove *.la files. They are hindering the build
-            rm -f lib/*.la
         qpopd
 
         if quiet ${PKG_CONFIG} --exact-version=${LIBXML2_VERSION} libxml-2.0 ; then
@@ -439,6 +436,7 @@ function inst_gnome() {
             perl -pi.bak -e"s!^prefix=.*\$!prefix=$_GNOME_UDIR!" *.pc
             #perl -pi.bak -e's!^Libs: !Libs: -L\${prefix}/bin !' *.pc
         qpopd
+        fix_libtool_files ${_GNOME_UDIR}
 
         quiet ${PKG_CONFIG} --atleast-version=${GTK_VERSION} gtk+-2.0 || die "gnome not installed correctly: no gtk+-2.0 with atleast-version=${GTK_VERSION}"
         quiet ${PKG_CONFIG} --atleast-version=${CAIRO_VERSION} cairo || die "gnome not installed correctly: no cairo with atleast-version=${CAIRO_VERSION}"
@@ -500,6 +498,7 @@ function inst_gnutls() {
             mkdir -p $_GNUTLS_UDIR
             wget_unpacked $GNUTLS_URL $DOWNLOAD_DIR $GNUTLS_DIR
             wget_unpacked $GNUTLS_DEV_URL $DOWNLOAD_DIR $GNUTLS_DIR
+            fix_libtool_files ${_GNUTLS_UDIR}
         fi
         quiet ${PKG_CONFIG} --exists gnutls || die "GNUTLS not installed correctly"
     fi
@@ -651,6 +650,7 @@ function inst_gwenhywfar() {
             rm -rf ${_GWENHYWFAR_UDIR}
             make install
         qpopd
+#        fix_libtool_files ${_GWENHYWFAR_UDIR}
         ${PKG_CONFIG} --exists gwenhywfar || die "Gwenhywfar not installed correctly"
         rm -rf ${TMP_UDIR}/gwenhywfar-*
     fi
@@ -912,10 +912,11 @@ function inst_libsoup() {
                 make
                 make install
             qpopd
-        else
+       else
             mkdir -p $_LIBSOUP_UDIR
             wget_unpacked $LIBSOUP_URL $DOWNLOAD_DIR $LIBSOUP_DIR
             wget_unpacked $LIBSOUP_DEV_URL $DOWNLOAD_DIR $LIBSOUP_DIR
+            fix_libtool_files ${_LIBSOUP_UDIR}
         fi
         quiet ${PKG_CONFIG} --exists libsoup-2.4 || die "libsoup not installed correctly"
         rm -rf ${TMP_UDIR}/libsoup-*
