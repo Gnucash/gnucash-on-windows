@@ -1149,6 +1149,7 @@ function inst_webkit() {
             mkdir -p $_WEBKIT_UDIR
             wget_unpacked $WEBKIT_URL $DOWNLOAD_DIR $WEBKIT_DIR
             wget_unpacked $WEBKIT_DEV_URL $DOWNLOAD_DIR $WEBKIT_DIR
+            fix_libtool_files ${_WEBKIT_UDIR}
         fi
         quiet ${PKG_CONFIG} --exists webkit-1.0 || die "webkit not installed correctly"
         rm -rf ${TMP_UDIR}/webkit-*
