@@ -378,8 +378,6 @@ function inst_gnome() {
         wget_unpacked $LIBART_LGPL_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $LIBGNOMECANVAS_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $LIBGNOMECANVAS_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
-        wget_unpacked $LIBJPEG_URL $DOWNLOAD_DIR $GNOME_DIR
-        wget_unpacked $LIBJPEG_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $LIBPNG_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $LIBPNG_DEV_URL $DOWNLOAD_DIR $GNOME_DIR
         wget_unpacked $LIBTIFF_URL $DOWNLOAD_DIR $GNOME_DIR

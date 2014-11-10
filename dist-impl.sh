@@ -97,7 +97,6 @@ function dist_gnome() {
     wget_unpacked $LIBGNOMECANVAS_URL $DOWNLOAD_DIR $DIST_DIR
     smart_wget $LIBICONV_URL $DOWNLOAD_DIR
     unzip -q $LAST_FILE bin/iconv.dll -d $DIST_DIR
-    wget_unpacked $LIBJPEG_URL $DOWNLOAD_DIR $DIST_DIR
     wget_unpacked $LIBPNG_URL $DOWNLOAD_DIR $DIST_DIR
     wget_unpacked $LIBTIFF_URL $DOWNLOAD_DIR $DIST_DIR
     #wget_unpacked $LIBXML2_URL $DOWNLOAD_DIR $DIST_DIR
