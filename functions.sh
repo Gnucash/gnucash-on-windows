@@ -319,11 +319,11 @@ function fix_lt_file () {
     target_dir="$1"/`echo $(dirname "$filename") | sed -e"s;$1/;;"`
     global_udir=`unix_path ${GLOBAL_DIR}`
 
-    sed -i'.bak' -E \
-        -e"s;-L$orig_dir;-L$target_dir;g" \
-        -e"s;([/a-z0-9A-Z:_-]+)/lib([a-zA-Z0-9._-]+)\.la;-L\1 -l\2;g" \
-        -e"s;^libdir=.*$;libdir='$target_dir';" \
-        -e"s;(/c|c:)/gcdev/;$global_udir/;g" \
+    perl -pi.bak \
+        -e"s{-L$orig_dir}{-L$target_dir}g;" \
+        -e"s{([/a-z0-9A-Z:_-]+)/lib([a-zA-Z0-9._-]+)\.la}{-L\1 -l\2}g;" \
+        -e"s{^libdir=.*$}{libdir='$target_dir'};" \
+        -e"s{(/c|c:)/gcdev/}{$global_udir/}g" \
         $filename
 }
 
