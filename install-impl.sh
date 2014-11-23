@@ -1099,6 +1099,7 @@ function inst_regex() {
 #c:\Programs\GnuWin32.
 #You also need python 2.6+ and ICU 50+
 #Setting $PYTHON isn't sufficient, it must be on the path.
+#Make sure that $CC is set, otherwise the perl modules will try to use /usr/bin/gcc which doesn't exist.
 #Build ICU and install it in /c/gcdev/webkit. Symlink icu*.dll to libicu*.dll.
 #
 #After building and before installing, make the following changes to
