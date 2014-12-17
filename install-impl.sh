@@ -412,6 +412,12 @@ function inst_gnome() {
             done
         qpopd
 
+        qpushd $_GNOME_UDIR/lib/pkgconfig
+            perl -pi.bak -e"s!^prefix=.*\$!prefix=$_GNOME_UDIR!" *.pc
+            #perl -pi.bak -e's!^Libs: !Libs: -L\${prefix}/bin !' *.pc
+        qpopd
+        fix_libtool_files ${_GNOME_UDIR}
+
         if quiet ${PKG_CONFIG} --exact-version=${LIBXML2_VERSION} libxml-2.0 ; then
             echo "Libxml2 already compiled + installed"
         else
@@ -429,12 +435,6 @@ function inst_gnome() {
             qpopd
             rm -rf ${TMP_UDIR}/libxml2-*
         fi
-
-        qpushd $_GNOME_UDIR/lib/pkgconfig
-            perl -pi.bak -e"s!^prefix=.*\$!prefix=$_GNOME_UDIR!" *.pc
-            #perl -pi.bak -e's!^Libs: !Libs: -L\${prefix}/bin !' *.pc
-        qpopd
-        fix_libtool_files ${_GNOME_UDIR}
 
         quiet ${PKG_CONFIG} --atleast-version=${GTK_VERSION} gtk+-2.0 || die "gnome not installed correctly: no gtk+-2.0 with atleast-version=${GTK_VERSION}"
         quiet ${PKG_CONFIG} --atleast-version=${CAIRO_VERSION} cairo || die "gnome not installed correctly: no cairo with atleast-version=${CAIRO_VERSION}"
