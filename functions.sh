@@ -322,8 +322,8 @@ function fix_lt_file () {
     perl -pi.bak \
         -e"s{-L$orig_dir}{-L$target_dir}g;" \
         -e"s{([/a-z0-9A-Z:_-]+)/lib([a-zA-Z0-9._-]+)\.la}{-L\1 -l\2}g;" \
-        -e"s{^libdir=.*$}{libdir='$target_dir'};" \
-        -e"s{(/c|c:)/gcdev/}{$global_udir/}g" \
+        -e"s{(/c|c:)/gcdev/}{$global_udir/}g;" \
+        -e"s{^libdir=.*$}{libdir='$target_dir'}" \
         $filename
 }
 
