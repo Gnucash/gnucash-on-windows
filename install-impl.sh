@@ -268,7 +268,7 @@ function inst_aqbanking() {
     add_to_env ${_AQBANKING_UDIR}/lib/pkgconfig PKG_CONFIG_PATH
     if quiet ${PKG_CONFIG} --exact-version=${AQBANKING_VERSION} aqbanking
     then
-        echo "AqBanking already installed in $_AQBANKING_UDIR. skipping."
+        echo "AqBanking ${AQBANKING_VERSION} already installed in $_AQBANKING_UDIR. skipping."
     else
         wget_unpacked $AQBANKING_URL $DOWNLOAD_DIR $TMP_DIR
         assert_one_dir $TMP_UDIR/aqbanking-*
@@ -628,7 +628,7 @@ function inst_gwenhywfar() {
     add_to_env ${_GWENHYWFAR_UDIR}/lib/pkgconfig PKG_CONFIG_PATH
     if quiet ${PKG_CONFIG} --exact-version=${GWENHYWFAR_VERSION} gwenhywfar
     then
-        echo "Gwenhywfar already installed in $_GWENHYWFAR_UDIR. skipping."
+        echo "Gwenhywfar ${GWENHYWFAR_VERSION} already installed in $_GWENHYWFAR_UDIR. skipping."
     else
         wget_unpacked $GWENHYWFAR_URL $DOWNLOAD_DIR $TMP_DIR
         assert_one_dir $TMP_UDIR/gwenhywfar-*
@@ -684,7 +684,7 @@ function inst_ktoblzcheck() {
     add_to_env "-L${_GWENHYWFAR_UDIR}/lib" KTOBLZCHECK_LDFLAGS
     if quiet ${PKG_CONFIG} --exact-version=${KTOBLZCHECK_VERSION} ktoblzcheck
     then
-        echo "Ktoblzcheck already installed in $_GWENHYWFAR_UDIR. skipping."
+        echo "Ktoblzcheck ${KTOBLZCHECK_VERSION} already installed in $_GWENHYWFAR_UDIR. skipping."
     else
         wget_unpacked $KTOBLZCHECK_URL $DOWNLOAD_DIR $TMP_DIR
         assert_one_dir $TMP_UDIR/ktoblzcheck-*
@@ -767,7 +767,7 @@ function inst_libdbi() {
                 patch -p1 < $LIBDBI_PATCH
             fi
             if [ "$CROSS_COMPILE" = "yes" ]; then
-                rm ltmain.sh aclocal.m4
+                rm -f ltmain.sh aclocal.m4
                 libtoolize --force
                 aclocal
                 autoheader
