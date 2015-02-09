@@ -121,34 +121,6 @@ if %errorlevel% neq 0 goto error
 goto fqchk
 
 REM ----------------------------------------------------------------------------
-:inst_mod_as
-echo * Install DateManip
-echo.
-perl -x -S ppm install Date-Manip
-if %errorlevel% neq 0 (
-  perl -x -S ppm install DateManip
-  if %errorlevel% neq 0 goto error
-)
-
-REM ----------------------------------------------------------------------------
-echo.
-echo * Install Crypt-SSLeay
-echo.
-
-set OLDPATH=%PATH%
-set PATH=%CD%;%PATH%
-if %_perlversion% == 5.6 (
-  perl -x -S ppm install http://theoryx5.uwinnipeg.ca/ppmpackages/Crypt-SSLeay.ppd
-) else if %_perlversion% == 5.8 (
-  echo anything | perl -x -S ppm install http://theoryx5.uwinnipeg.ca/ppms/Crypt-SSLeay.ppd
-) else (
-  perl -x -S ppm install Crypt-SSLeay
-)
-set errlvlbak=%errorlevel%
-set PATH=%OLDPATH%
-if "%errlvlbak%" neq "0" goto error
-
-REM ----------------------------------------------------------------------------
 echo.
 echo * Install Finance-Quote
 echo.
