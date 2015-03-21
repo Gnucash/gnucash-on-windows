@@ -121,6 +121,7 @@ if %errorlevel% neq 0 goto error
 goto fqchk
 
 REM ----------------------------------------------------------------------------
+:inst_mod_as
 echo.
 echo * Install Finance-Quote
 echo.
