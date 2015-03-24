@@ -627,32 +627,31 @@ lv.IconComment_Uninstall=Noņemt GnuCash grāmatvedības programmu
 ;; Dutch translation
 
 nl.FullInstall=Volledige installatie
-nl.CustomInstall=Aangepaste installatiie
-nl.CreateDesktopIcon=Een &bureablad icoon aanmaken
-nl.CreateMenuLink=Een verwijzing in het start menu aanmaken
+nl.CustomInstall=Aangepaste installatie
+nl.CreateDesktopIcon=Een icoon op het Bureaublad plaatsen
+nl.CreateMenuLink=Een koppeling in menu Start plaatsen
 nl.RunPrg=GnuCash nu starten
 nl.AdditionalIcons=Deze iconen aanmaken:
-nl.StatusMsgFirewall=Windows firewall regels installeren...
+nl.StatusMsgFirewall=Windows Firewall-regels installeren...
 
-nl.MainFiles=GnuCash Programma
+nl.MainFiles=Programmabestanden voor GnuCash
 nl.TranslFiles=Vertalingsbestanden
 nl.TemplFiles=Grootboekrekeningssjablonen
 
-nl.IconComment_GnuCash=GnuCash Vrij Financieel Beheer
-nl.IconName_README=GnuCash LEESMIJ Tonen
-nl.IconComment_README=Het LEESMIJ bestand tonen
+nl.IconComment_GnuCash=GnuCash vrije boekhoudsoftware
+nl.IconName_README=GnuCash LEESMIJ tonen
+nl.IconComment_README=Het LEESMIJ-bestand weergeven
 nl.IconFilename_README=README-nl.win32-bin.txt
-nl.IconName_FAQ=GnuCash FAQ (Online)
-nl.IconName_Bugzilla=Een bug melden in GnuCash (Online)
-nl.IconName_InstallFQ=Online Koersen Opvragen installeren voor GnuCash
-nl.IconComment_InstallFQ=De benodigde perl module Finance Quote om online koersen op te vragen installeren.  Hiervoor is ActivePerl 5.8 of recenter nodig.
-nl.IconName_Theme=GnuCash stijl selecteren
+nl.IconName_FAQ=GnuCash FAQ (online)
+nl.IconName_Bugzilla=Een bug melden in GnuCash (online)
+nl.IconName_InstallFQ=Online koersinformatie installeren voor GnuCash
+nl.IconComment_InstallFQ=De Perl-module Finance-Quote installeren om online koersen op te vragen. Hiervoor is ActivePerl or Strawberry Perl 5.8 of recenter nodig.
+nl.IconName_Theme=Thema voor GnuCash selecteren
 nl.IconName_Uninstall=GnuCash verwijderen
-nl.IconComment_Uninstall=Het financieel beheersprogramma GnuCash verwijderen
-
+nl.IconComment_Uninstall=De vrije boekhoudsoftware GnuCash verwijderen
 nl.AIWP_Title=Een eerdere installatie werd gevonden
 nl.AIWP_Description=%1 is momenteel op deze computer geïnstalleerd
-nl.AIWP_Message=Deze eerdere installatie moet verwijderd worden alvorens verder te gaan.%n%nAls je dat niet wil, klik dan nu op Annuleren om de huidige installatie af te breken.%n%nKlik op Volgende om %1 te verwijderen en de installatie te vervolgen.%n%nOpmerking: enkel het programma zal verwijderd worden, niet je financiële data.
+nl.AIWP_Message=Deze eerdere installatie moet verwijderd worden alvorens verder te gaan.%n%nAls u dat niet wil, klik dan nu op Annuleren om de huidige installatie af te breken.%n%nKlik op Volgende om %1 te verwijderen en de installatie te vervolgen.%n%nOpmerking: alleen het programma zal verwijderd worden, niet je financiële gegevens.
 
 
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
