@@ -444,7 +444,7 @@ de.CreateDesktopIcon=Ein Icon auf dem Desktop erstellen
 de.CreateMenuLink=Eine Verknüpfung im Startmenü erstellen
 de.RunPrg=GnuCash jetzt starten
 de.AdditionalIcons=Folgende Icons erstellen:
-de.StatusMsgFirewall=Ausnahmen für Windows-Firewall installieren...
+de.StatusMsgFirewall=Windows Firewall für GnuCash automatisch Anpassen (empfohlen)...
 
 de.MainFiles=GnuCash Hauptprogramm
 de.TranslFiles=Deutsche Übersetzung
@@ -456,8 +456,8 @@ de.IconComment_README=Die Informationsdatei (README) anzeigen
 de.IconFilename_README=README-de.win32-bin.txt
 de.IconName_FAQ=GnuCash Häufige Fragen (online, engl.)
 de.IconName_Bugzilla=Fehlerbericht einsenden für GnuCash (online, engl.)
-de.IconName_InstallFQ=Online Kursabruf installieren für GnuCash
-de.IconComment_InstallFQ=Das zusätzliche Modul Finance-Quote installieren, um online Aktien- und Devisenkurse abrufen zu können.  Dazu ist das Programm ActivePerl 5.8 oder neuer erforderlich.
+de.IconName_InstallFQ=Erweiterung um Wechselkurse mit GnuCash online abzurufen
+de.IconComment_InstallFQ=Aktien- und Devisenkurse online abrufen (optionales Modul Finance-Quote: Achtung! Erfordert das Programm ActivePerl oder Strawberry Perl 5.8 oder neuer)
 de.IconName_Uninstall=Deinstallieren von GnuCash
 de.IconComment_Uninstall=Die OpenSource-Finanzverwaltung GnuCash wieder deinstallieren und vom Computer löschen
 
