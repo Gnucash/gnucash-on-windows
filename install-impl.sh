@@ -1313,6 +1313,7 @@ function inst_gnucash() {
 
     if [ "$BUILD_FROM_TARBALL" != "yes" ]; then
         qpushd $REPOS_DIR
+            $GIT_CMD checkout $GNUCASH_SCM_REV
             ./autogen.sh
         qpopd
     fi
