@@ -235,6 +235,8 @@ function mingw_smart_get () {
     PACKAGE=$1
     VERSION=$2
 
+    echo "Attempting to install $PACKAGE-$VERSION"
+
     # Check if a sensible package name has been given
     [ "$PACKAGE" ] || return
 
@@ -254,6 +256,7 @@ function mingw_smart_get () {
     #       different versions of the tool (or more precisely different
     #       configurations for the tool).
 
+    echo "Checking package status..."
     COMPONENTS="$(mingw-get show "$PACKAGE" | awk '/Components:/')"
     if [ -n "$COMPONENTS" ]
     then
@@ -265,13 +268,15 @@ function mingw_smart_get () {
         # This assumption may lead to a situation where manulal
         # intervention is needed in case of errors during mingw-get calls
         # Let's hope that such errors are the exception
+        echo "Found the package to have components."
         COMPONENT="${COMPONENTS#Components: }"
         COMPONENT="${COMPONENT%%,*}"
         SUBPACKAGE="$PACKAGE-$COMPONENT"
     else
+        echo "No components, proceding to check package status"
         SUBPACKAGE="$PACKAGE"
     fi
-
+    echo "Checking $SUBPACKAGE versions"
     INSTVERSION="$(mingw-get show "$SUBPACKAGE" | awk '/Installed Version:/')"
     INSTVERSION="${INSTVERSION#Installed Version:  }"
     REPOVERSION="$(mingw-get show "$SUBPACKAGE" | awk '/Repository Version:/')"
@@ -283,18 +288,22 @@ function mingw_smart_get () {
     if [ -z "$INSTVERSION" ]
     then
         # Unknown package
+        echo "Package $PACKAGE is unknown by mingw."
         die "Package $PACKAGE is unknown by mingw."
     elif [ "$INSTVERSION" == "none" ]
     then
         # Package not yet installed
+        echo "installing $PACKAGE"
         mingw-get install ${PACKAGE}
     elif [ -n "$VERSION" ] && [ -z "$(echo "$INSTVERSION" | awk "/$VERSION/")" ]
     then
         # Requested version differs from installed version
+        echo "upgrading $PACKAGE from $INSTVERSION to $VERSION"
         mingw-get upgrade ${PACKAGE}
     elif [ -z "$VERSION" ] && [ "$INSTVERSION" != "$REPOVERSION" ]
     then
         # No version requested, but installed version differs from version in repo
+        echo "upgrading because installed doesn't match repo $PACKAGE"
         mingw-get upgrade ${PACKAGE}
     else
         echo "Package $PACKAGE is up to date"

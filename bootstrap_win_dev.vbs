@@ -47,7 +47,7 @@ myRegExp.Pattern = "/"
 If WScript.Arguments.Named.Exists("GLOBAL_DIR") Then
     GLOBAL_DIR = myRegExp.Replace (WScript.Arguments.Named.Item("GLOBAL_DIR"), "\")
 Else
-    GLOBAL_DIR = "c:\gcdev"
+    GLOBAL_DIR = "c:\gcdev-maint"
 End If
 If WScript.Arguments.Named.Exists("MINGW_DIR") Then
     MINGW_DIR = myRegExp.Replace (WScript.Arguments.Named.Item("MINGW_DIR"), "\")

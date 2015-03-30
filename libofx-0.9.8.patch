@@ -9,3 +9,26 @@
              const char * inchar = (const char *)s_buffer.c_str();
  #else
              char * inchar = (char *)s_buffer.c_str();
+--- a/lib/win32.cpp	Wed Mar 30 15:30:50 2011
++++ b/lib/win32.cpp	Sun Mar 29 15:07:27 2015
+@@ -25,7 +25,7 @@
+ 
+ 
+ 
+-#ifdef OS_WIN32
++#if defined(OS_WIN32) && !defined(__MINGW32__)
+ 
+ int mkstemp(char *tmpl)
+ {
+
+--- a/lib/win32.hh	Wed Mar 30 15:30:50 2011
++++ b/lib/win32.hh	Sun Mar 29 16:26:58 2015
+@@ -21,7 +21,7 @@
+ #endif
+ 
+ 
+-#ifdef OS_WIN32
++#if defined(OS_WIN32) && !defined(__MINGW32__)
+ 
+ int mkstemp(char *tmpl);
+ 

@@ -633,6 +633,10 @@ function inst_gwenhywfar() {
         wget_unpacked $GWENHYWFAR_URL $DOWNLOAD_DIR $TMP_DIR
         assert_one_dir $TMP_UDIR/gwenhywfar-*
         qpushd $TMP_UDIR/gwenhywfar-*
+
+            if [ -n "$GWEN_PATCH" -a -f "$GWEN_PATCH" ]; then
+                patch -p1 < $GWEN_PATCH
+            fi
             # circumvent binreloc bug, http://trac.autopackage.org/ticket/28
             # Note: gwenhywfar-3.x and higher don't use openssl anymore.
             ./configure ${HOST_XCOMPILE} \

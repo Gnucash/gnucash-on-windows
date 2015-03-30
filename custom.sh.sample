@@ -1,20 +1,19 @@
 #! /bin/bash
-# This is an example custom.sh file. Copy this file to custom.sh and 
-# edit it.
-# 
-# Note: All directories must be without spaces!
-#
-# REPOS_URL="git@github.com:Gnucash/gnucash.git"
-# SF_MIRROR="http://switch.dl.sourceforge.net/sourceforge"
-# DISABLE_OPTIMIZATIONS=yes
-# GLOBAL_DIR=Z:\\mydir  # all directories will use this
-# WGET_RATE=50k         #limit download bandwith to 50KB/s
-# NO_SAVE_PROFILE=yes   # don't save env settings to /etc/profile.d
-# late_eval 'INSTALL_DIR=$GNUCASH_DIR\\myinst'  # no need to define GNUCASH_DIR
-# block_step inst_docs
-# late_eval 'add_step greetings'
-# function greetings() { setup Greetings; }
-# QTDIR=c:\\Qt\\4.2.3
-# CROSS_COMPILE=yes
-#Uncomment this for building on Win7 (and maybe Vista):
-#EXTRA_CFLAGS="-fno-builtin-dgettext -fno-builtin-towupper -fno-builtin-iswlower"
+"
+GLOBAL_DIR=c:\\gcdev-maint
+MINGW_DIR=c:\\gcdev-maint\\mingw
+MSYS_DIR=c:\\gcdev-maint\\mingw\\msys\\1.0
+TMP_DIR=c:\\gcdev-maint\\tmp
+DOWNLOAD_DIR=c:\\gcdev\\downloads
+GIT_DIR=c:\\gcdev\\git-1.9.4
+REPOS_TYPE=git
+GC_WIN_REPOS_URL=git://github.com/Gnucash/gnucash-on-windows.git
+GC_WIN_REPOS_DIR=c:\\gcdev-maint\\gnucash-on-windows.git
+REPOS_URL=git://github.com/Gnucash/gnucash.git
+REPOS_DIR=c:\\gcdev-maint\\gnucash.git
+GNUCASH_SCM_REV=maint
+
+HH_DIR=c:\\soft\\hh
+
+# Don't save the profile settings
+NO_SAVE_PROFILE=yes

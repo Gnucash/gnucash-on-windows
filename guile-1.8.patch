@@ -24,3 +24,23 @@
  
  srfidir = $(datadir)/guile/$(GUILE_EFFECTIVE_VERSION)/srfi
  srfi_DATA = srfi-1.scm \
+--- a/libguile/pthread-threads.h     2010-12-13 09:24:40 -0800
++++ b/libguile/pthread-threads.h      2015-03-30 11:38:56 -0700
+@@ -24,10 +24,16 @@
+ 
+ /* The pthreads-threads implementation.  This is a direct mapping.
+ */
++#if !defined(_TIMESPEC_DEFINED) && defined(__struct_timespec_defined)
++#define _TIMESPEC_DEFINED 1
++#endif
+ 
+ #include <pthread.h>
+ #include <sched.h>
+ 
++#if !defined(__struct_timespec_defined) && defined(_TIMESPEC_DEFINED)
++#define  __struct_timespec_defined 1
++#endif
+ /* Threads 
+ */
+ #define scm_i_pthread_t                     pthread_t
+

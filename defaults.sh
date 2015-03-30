@@ -109,7 +109,7 @@ set_default MINGW_MPC_VERSION         "1.0.1-2"
 set_default MINGW_MPFR_VERSION        "3.1.2-2"
 set_default MINGW_PEXPORTS_VERSION    "0.46"
 set_default MINGW_PTHREAD_W32_VERSION "2.9.1-1"
-set_default MINGW_RT_VERSION          "3.20-2"
+set_default MINGW_RT_VERSION          "3.21"
 set_default MINGW_ZLIB_VERSION        "1.2.8-1"
 set_default MINGW_W32API_VERSION      "3.17-2"
 set_default MINGW_MAKE_VERSION        "3.82-5"
@@ -344,6 +344,7 @@ set_default LIBOFX_PATCH `pwd`/libofx-0.9.8.patch
 GWENHYWFAR_VERSION="4.13.1"
 set_default GWENHYWFAR_URL "http://www2.aquamaniac.de/sites/download/download.php?package=01&release=78&file=01&dummy=gwenhywfar-${GWENHYWFAR_VERSION}.tar.gz"
 set_default GWENHYWFAR_DIR $GLOBAL_DIR\\gwenhywfar
+set_default GWEN_PATCH `pwd`/gwen-4.13.1.patch
 
 KTOBLZCHECK_VERSION="1.48"
 set_default KTOBLZCHECK_URL "$SF_MIRROR/ktoblzcheck/ktoblzcheck-${KTOBLZCHECK_VERSION}.tar.gz"
