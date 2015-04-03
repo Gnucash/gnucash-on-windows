@@ -458,6 +458,7 @@ de.IconName_FAQ=GnuCash Häufige Fragen (online, engl.)
 de.IconName_Bugzilla=Fehlerbericht einsenden für GnuCash (online, engl.)
 de.IconName_InstallFQ=Erweiterung um Wechselkurse mit GnuCash online abzurufen
 de.IconComment_InstallFQ=Aktien- und Devisenkurse online abrufen (optionales Modul Finance-Quote: Achtung! Erfordert das Programm ActivePerl oder Strawberry Perl 5.8 oder neuer)
+de.IconName_Theme=GnuCash's Erscheinungsbild (GTK-Thema) auswählen
 de.IconName_Uninstall=Deinstallieren von GnuCash
 de.IconComment_Uninstall=Die OpenSource-Finanzverwaltung GnuCash wieder deinstallieren und vom Computer löschen
 
