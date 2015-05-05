@@ -31,19 +31,19 @@ Some notes on path names to begin:
 ----------------------------------
 * Avoid using paths with spaces. Some parts of the build system don't cope well
   with spaces. So don't install in c:\Program Files. The build system by
-  default assumes c:\gcdev as base directory called $GLOBAL_DIR from now on).
+  default assumes c:\gcdev-maint as base directory called $GLOBAL_DIR from now on).
 
 * Windows and mingw/msys use a slightly different notation for paths. When
   working in an msys shell window you are advised to always use the msys notation.
   Outside the msys shell window you should use the Windows notation. Here is an
   example to show the difference:
-  Windows: c:\gcdev\gnucash-on-windows.git
-  Msys   : /c/gcdev/gnucash-on-windows.git
+  Windows: c:\gcdev-maint\gnucash-on-windows.git
+  Msys   : /c/gcdev-maint/gnucash-on-windows.git
   The difference is in the direction of the slashes and that c: is replaced with /c
   Note for completeness that in msys you can also use the Windows notation. However
   msys interprets a '\' as an escape character. So to use back slashes you will have
   to escape them. So the below will also work in msys:
-  Msys (alternate): c:\\gcdev\\gnucash-on-windows.git
+  Msys (alternate): c:\\gcdev-maint\\gnucash-on-windows.git
 
 
 The steps
@@ -62,7 +62,7 @@ b. Run this script by double-clicking it and follow the instructions.
    cscript.exe <path\to>\bootstrap_win_dev.vbs
    Be sure to replace <path\to> with the correct path.
 
-Note: by default everything will be installed inside c:\gcdev\
+Note: by default everything will be installed inside c:\gcdev-maint\
       You could alter this location by passing some parameters
       to bootstrap_win_dev.vbs. There are a couple of other parameters
       you can set to influence what is installed where. Please read the
@@ -87,11 +87,11 @@ in 'custom.sh'. The boostrap script you ran in step b. already created an initia
 version of this file.
 
 c. Open an Msys shell window. You do this by running
-   c:\gcdev\mingw\msys\1.0\msys.bat
+   c:\gcdev-maint\mingw\msys\1.0\msys.bat
    Unless you chose to install mingw/msys in another directory of course.
    Let the automated build begin by:
 
-   cd /c/gcdev/gnucash-on-windows.git
+   cd /c/gcdev-maint/gnucash-on-windows.git
    ./install.sh
 
    If you chose to set up the build environment in a different location adjust
@@ -108,7 +108,7 @@ And next ?
 If you got here without errors then congratulations ! You have just completed
 your first successful GnuCash Build. To use this version you can launch the
 Windows GnuCash Installer you just built in step d. You can find this installer
-in c:\gcdev\gnucash\. It works just like any other installer for a piece of
+in c:\gcdev-maint\gnucash\. It works just like any other installer for a piece of
 Windows software: you double-click it and follow the instructions that are
 displayed.
 
@@ -116,8 +116,8 @@ At some point you may want to build GnuCash again to get updates. To do so you
 should start with updating the GnuCash source files as well as the scripts
 used to build GnuCash on Windows.
 
-The former are stored in c:\gcdev\gnucash.git
-The latter in c:\gcdev\gnucash-on-windows.git
+The former are stored in c:\gcdev-maint\gnucash.git
+The latter in c:\gcdev-maint\gnucash-on-windows.git
 
 As the name suggests both are managed by a tool called git. Below is only a
 minimal explanation on how to update these directories.
@@ -148,10 +148,10 @@ Known Issues/Things to improve
   from an msys shell.
   The workaround is a bit awkward currently and consists of
   1. install html help directly by double-clicking it. Remember to install it where
-     the gnucash build scripts expect it ! That is c:\gcdev\hh by default.
+     the gnucash build scripts expect it ! That is c:\gcdev-maint\hh by default.
   2. Inside your msys shell window enter these commands:
 
-     pushd /c/gcdev/hh
+     pushd /c/gcdev-maint/hh
      _HHCTRL_OCX=$(which hhctrl.ocx || true)
      [ "$_HHCTRL_OCX" ] || die "Did not find hhctrl.ocx"
      pexports -h include/htmlhelp.h $_HHCTRL_OCX > lib/htmlhelp.def
