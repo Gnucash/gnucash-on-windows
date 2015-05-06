@@ -51,15 +51,11 @@ The steps
 On to building GnuCash now. The scripts have been set up to require as little
 manual actions as possible. The following should get you going:
 
-a. Download and install either Strawberry Perl
-   (http://strawberryperl.com/) or AcivePerl
-   (http://www.activestate.com/activeperl/downloads).
-
-b. Download bootstrap_win_dev.vbs from the gnucash-on-windows
+a. Download bootstrap_win_dev.vbs from the gnucash-on-windows
    repository on Github. Direct url:
    https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/bootstrap_win_dev.vbs
 
-c. Run this script by double-clicking it and follow the instructions.
+b. Run this script by double-clicking it and follow the instructions.
    If the script's output window closes before you get to a "Happy hacking"
    message then something went wrong. To figure out what you can instead
    open a Windows command prompt (cmd.exe) and run the script as
@@ -91,7 +87,7 @@ The default values will all be found in 'defaults.sh'. You can
 override any of these in 'custom.sh'. The boostrap script you ran in
 step b. already created an initial version of this file.
 
-d. Open an Msys shell window. You do this by running
+c. Open an Msys shell window. You do this by running
    c:\gcdev\mingw\msys\1.0\msys.bat
    Unless you chose to install mingw/msys in another directory of course.
    Let the automated build begin by:
@@ -102,7 +98,7 @@ d. Open an Msys shell window. You do this by running
    If you chose to set up the build environment in a different location adjust
    the path accordingly.
 
-e. To generate a self-installing setup.exe file that contains *everything* run
+d. To generate a self-installing setup.exe file that contains *everything* run
    the following command after install.sh has completed:
 
    ./dist.sh
