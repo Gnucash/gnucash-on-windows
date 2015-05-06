@@ -190,14 +190,7 @@ function inst_mingw() {
 
     if [ "$CROSS_COMPILE" != "yes" ]; then
         mingw_smart_get mingw32-pexports ${MINGW_PEXPORTS_VERSION}
-        # Some additional steps, only for native (non-cross-compile)
-        #cp ${_MINGW_UDIR}/bin/libpthread-2.dll ${_MINGW_UDIR}/bin/pthreadGC2.dll
-        echo "Skipping lpthread copying for now, let's see if this is still needed..."
-        #mingw_smart_get mingw32-make ${MINGW_MAKE_VERSION}
-        echo "Skipping mingw32-make installation for now, let's see if this is still needed..."
         quiet which pexports || die "mingw-utils not installed correctly (pexports)"
-        # FIXME which library uses reimp ?
-        # quiet which reimp || die "mingw-utils not installed correctly (reimp)"
         # Hack to make Gnome's pkg-config happy (without having to rebuild it)
         cp "${_MINGW_UDIR}"/bin/libintl*.dll "${_MINGW_UDIR}/bin/intl.dll"
     else
