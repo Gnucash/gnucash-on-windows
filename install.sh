@@ -100,11 +100,7 @@ add_step inst_libsoup
 add_step inst_enchant
 add_step inst_webkit
 #boost now needed for C++ on master only
-get_major_minor "$GNUCASH_SCM_REV"
-if [ "$GNUCASH_SCM_REV" = "master" ] ||
-   (( $major_minor > 206 )); then
-  add_step inst_boost
-fi
+add_step inst_boost
 
 ##
 if [ "$WITH_CUTECASH" = "yes" ]; then

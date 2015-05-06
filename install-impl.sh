@@ -1245,6 +1245,13 @@ function inst_hh() {
 
 function inst_boost() {
     setup Boost
+    get_major_minor "$GNUCASH_SCM_REV"
+    if [ "$GNUCASH_SCM_REV" != "master" ] &&
+        (( $major_minor <= 206 )); then
+        echo "Skipping. Boost is only needed for the master branch or future 2.7.x and up versions of gnucash."
+        return
+    fi
+
     _BOOST_UDIR=`unix_path ${BOOST_DIR}`
     set_env ${_BOOST_UDIR} BOOST_ROOT
     add_to_env ${_BOOST_UDIR}/lib PATH
