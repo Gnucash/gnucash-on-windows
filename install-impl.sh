@@ -60,7 +60,7 @@ function inst_msys() {
 
     # The bootstrap script already set some of this up
     # It will be set up again here to catch version updates of any of these packages
-    #mingw-get update
+    mingw-get update
     mingw-get upgrade mingw-get
 
     # Note: msys-base can't be upgraded by this script
