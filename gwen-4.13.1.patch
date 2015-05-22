@@ -63,3 +63,69 @@
  #include <unistd.h>
  
  
+--- a/src/crypt3/cryptkey_be.h	2014-10-12 15:12:22 +0200
++++ b/src/crypt3/cryptkey_be.h	2015-05-07 20:51:40 +0200
+@@ -18,22 +18,22 @@
+ 
+ 
+ 
+-typedef int (*GWEN_CRYPT_KEY_SIGN_FN)(GWEN_CRYPT_KEY *k,
++typedef GWENHYWFAR_CB int (*GWEN_CRYPT_KEY_SIGN_FN)(GWEN_CRYPT_KEY *k,
+                                       const uint8_t *pInData,
+                                       uint32_t inLen,
+                                       uint8_t *pSignatureData,
+                                       uint32_t *pSignatureLen);
+-typedef int (*GWEN_CRYPT_KEY_VERIFY_FN)(GWEN_CRYPT_KEY *k,
++typedef GWENHYWFAR_CB int (*GWEN_CRYPT_KEY_VERIFY_FN)(GWEN_CRYPT_KEY *k,
+                                         const uint8_t *pInData,
+                                         uint32_t inLen,
+                                         const uint8_t *pSignatureData,
+                                         uint32_t signatureLen);
+-typedef int (*GWEN_CRYPT_KEY_ENCIPHER_FN)(GWEN_CRYPT_KEY *k,
++typedef GWENHYWFAR_CB int (*GWEN_CRYPT_KEY_ENCIPHER_FN)(GWEN_CRYPT_KEY *k,
+     const uint8_t *pInData,
+     uint32_t inLen,
+     uint8_t *pOutData,
+     uint32_t *pOutLen);
+-typedef int (*GWEN_CRYPT_KEY_DECIPHER_FN)(GWEN_CRYPT_KEY *k,
++typedef GWENHYWFAR_CB int (*GWEN_CRYPT_KEY_DECIPHER_FN)(GWEN_CRYPT_KEY *k,
+     const uint8_t *pInData,
+     uint32_t inLen,
+     uint8_t *pOutData,
+--- a/src/crypt3/cryptkeysym.c	2014-10-12 15:12:22 +0200
++++ b/src/crypt3/cryptkeysym.c	2015-05-07 20:51:04 +0200
+@@ -29,7 +29,7 @@
+ 
+ 
+ 
+-int GWEN_Crypt_KeySym_Encipher(GWEN_CRYPT_KEY *k,
++GWENHYWFAR_CB int GWEN_Crypt_KeySym_Encipher(GWEN_CRYPT_KEY *k,
+                                const uint8_t *pInData,
+                                uint32_t inLen,
+                                uint8_t *pOutData,
+@@ -53,7 +53,7 @@
+ 
+ 
+ 
+-int GWEN_Crypt_KeySym_Decipher(GWEN_CRYPT_KEY *k,
++GWENHYWFAR_CB int GWEN_Crypt_KeySym_Decipher(GWEN_CRYPT_KEY *k,
+                                const uint8_t *pInData,
+                                uint32_t inLen,
+                                uint8_t *pOutData,
+--- a/src/crypt3/cryptkeysym_p.h	2014-10-12 15:12:22 +0200
++++ b/src/crypt3/cryptkeysym_p.h	2015-05-07 20:50:41 +0200
+@@ -29,12 +29,12 @@
+ 
+ static GWENHYWFAR_CB void GWEN_Crypt_KeySym_freeData(void *bp, void *p);
+ 
+-static int GWEN_Crypt_KeySym_Encipher(GWEN_CRYPT_KEY *k,
++static GWENHYWFAR_CB int GWEN_Crypt_KeySym_Encipher(GWEN_CRYPT_KEY *k,
+                                       const uint8_t *pInData,
+                                       uint32_t inLen,
+                                       uint8_t *pOutData,
+                                       uint32_t *pOutLen);
+-static int GWEN_Crypt_KeySym_Decipher(GWEN_CRYPT_KEY *k,
++static GWENHYWFAR_CB int GWEN_Crypt_KeySym_Decipher(GWEN_CRYPT_KEY *k,
+                                       const uint8_t *pInData,
+                                       uint32_t inLen,
+                                       uint8_t *pOutData,
