@@ -14,6 +14,7 @@ function dist_prepare() {
     _WIN_UDIR=`unix_path $WINDIR`
     _EXETYPE_UDIR=`unix_path $EXETYPE_DIR`
     _GNOME_UDIR=`unix_path $GNOME_DIR`
+    _BOOST_UDIR=`unix_path $BOOST_DIR`
     _PCRE_UDIR=`unix_path $PCRE_DIR`
     _LIBSOUP_UDIR=`unix_path $LIBSOUP_DIR`
     _ENCHANT_UDIR=`unix_path $ENCHANT_DIR`
@@ -82,6 +83,12 @@ function dist_aqbanking() {
     cp -a ${_AQBANKING_UDIR}/lib/aqbanking ${_DIST_UDIR}/lib
     cp -a ${_AQBANKING_UDIR}/share/aqbanking ${_DIST_UDIR}/share
     cp -a ${_AQBANKING_UDIR}/share/locale ${_DIST_UDIR}/share
+}
+
+function dist_boost() {
+   setup Boost
+   cp -a ${_BOOST_UDIR}/lib/libboost_chrono.dll ${_DIST_UDIR}/lib
+   cp -a ${_BOOST_UDIR}/lib/libboost_date_time.dll ${_DIST_UDIR}/lib
 }
 
 function dist_gnome() {

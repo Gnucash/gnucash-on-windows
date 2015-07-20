@@ -1416,6 +1416,7 @@ setlocal
 set PATH=$INSTALL_DIR\\bin;%PATH%
 set PATH=$INSTALL_DIR\\lib;%PATH%
 set PATH=$INSTALL_DIR\\lib\\gnucash;%PATH%
+set PATH=$BOOST_DIR\\lib;%PATH%
 set PATH=$GNUTLS_DIR\\bin;%PATH%
 set PATH=$MINGW_DIR\\bin;%PATH%
 set PATH=$GOFFICE_DIR\\bin;%PATH%
