@@ -69,16 +69,16 @@ set _perlminor=%errorlevel%
 if %_perlmajor% equ 5 (
   if %_perlminor% geq 10 (
     set _perlversion=5.10
-    goto pchk
+    goto install
   )
   if %_perlminor% equ 8 (
     set _perlversion=5.8
-    goto pchk
+    goto install
   )
 REM Note: GnuCash no longer "officially" supports perl 5.6, but as long as it works it will be allowed...
   if %_perlminor% equ 6 (
     set _perlversion=5.6
-    goto pchk
+    goto install
   )
 )
 echo.
@@ -98,38 +98,14 @@ REM perl -w gnc-path-check
 REM if %errorlevel% neq 0 goto error
 
 REM ----------------------------------------------------------------------------
-echo.
-echo * Determine which Perl flavour we have found
-echo.
-perl -e "use Win32;if(defined &Win32::BuildNumber){exit 2;}else{exit 3;};"
-REM echo status = %errorlevel%
-if %errorlevel% equ 2 (
-  echo   - ActivePerl
-  goto inst_mod_as
-) else if %errorlevel% equ 3 (
-  echo   - Other, probably Strawberry perl ?
-  goto inst_mod_oth
-) else if %errorlevel% neq 0 goto error
-
-REM ----------------------------------------------------------------------------
-:inst_mod_oth
+:install
 echo.
 echo * Install required perl modules
 echo.
 perl -w gnc-fq-update
 if %errorlevel% neq 0 goto error
-goto fqchk
 
 REM ----------------------------------------------------------------------------
-:inst_mod_as
-echo.
-echo * Install Finance-Quote
-echo.
-perl -x -S ppm install Finance-Quote
-if %errorlevel% neq 0 goto error
-
-REM ----------------------------------------------------------------------------
-:fqchk
 echo.
 echo * Run gnc-fq-check
 echo.
