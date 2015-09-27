@@ -86,9 +86,16 @@ function dist_aqbanking() {
 }
 
 function dist_boost() {
-   setup Boost
-   cp -a ${_BOOST_UDIR}/lib/libboost_chrono.dll ${_DIST_UDIR}/bin
-   cp -a ${_BOOST_UDIR}/lib/libboost_date_time.dll ${_DIST_UDIR}/bin
+    setup Boost
+    get_major_minor "$GNUCASH_SCM_REV"
+    if [ "$GNUCASH_SCM_REV" != "master" ] &&
+           (( $major_minor <= 206 )); then
+        echo "Skipping. Boost is only needed for the master branch or future 2.7.x and up versions of gnucash."
+        return
+    fi
+
+    cp -a ${_BOOST_UDIR}/lib/libboost_chrono.dll ${_DIST_UDIR}/bin
+    cp -a ${_BOOST_UDIR}/lib/libboost_date_time.dll ${_DIST_UDIR}/bin
 }
 
 function dist_gnome() {
