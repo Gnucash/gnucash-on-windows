@@ -48,10 +48,14 @@ else
 fi
 set_default BUILD_DIR $GNUCASH_DIR\\build
 set_default INSTALL_DIR $GNUCASH_DIR\\inst
+set_default INSTALL_DIR_CMAKE $GNUCASH_DIR\\inst-cmake
 set_default DIST_DIR $GNUCASH_DIR\\dist
 
 set_default WITH_CUTECASH no
+set_default WITH_CMAKE no
+set_default WITH_NINJA no
 set_default CUTECASH_BUILD_DIR $GNUCASH_DIR\\build-cutecash
+set_default GNUCASH_CMAKE_BUILD_DIR $GNUCASH_DIR\\build-cmake
 
 
 ####
@@ -368,8 +372,11 @@ set_default LIBDBI_DRIVERS_URL "$SF_MIRROR/libdbi-drivers/libdbi-drivers-0.8.3-1
 set_default LIBDBI_DRIVERS_DIR $GLOBAL_DIR\\libdbi-drivers
 set_default LIBDBI_DRIVERS_PATCH `pwd`/libdbi-drivers-errno.patch
 
-set_default CMAKE_URL "http://www.cmake.org/files/v2.8/cmake-2.8.0-win32-x86.zip"
+set_default CMAKE_URL "https://cmake.org/files/v3.3/cmake-3.3.2-win32-x86.zip"
 set_default CMAKE_DIR $GLOBAL_DIR\\cmake
+
+set_default NINJA_URL "http://github.com/ninja-build/ninja/releases/download/v1.6.0/ninja-win.zip"
+set_default NINJA_DIR $GLOBAL_DIR\\ninja
 
 set_default DOCBOOK_XSL_URL "$SF_MIRROR/docbook/docbook-xsl-1.76.1.zip"
 set_default DOCBOOK_DTD_URL "http://www.oasis-open.org/docbook/xml/4.1.2/docbkx412.zip"
