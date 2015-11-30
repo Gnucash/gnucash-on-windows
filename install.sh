@@ -107,7 +107,19 @@ if [ "$WITH_CUTECASH" = "yes" ]; then
  add_step inst_cmake
  add_step inst_cutecash
 fi
-add_step inst_gnucash
+
+if [ "$WITH_CMAKE" = "yes" ]; then
+	add_step inst_cmake
+	CMAKE_GENERATOR="MSYS Makefiles"
+	if [ "$WITH_NINJA" = "yes" ]; then
+		add_step inst_ninja
+		CMAKE_GENERATOR="Ninja"
+	fi
+	add_step inst_gnucash_using_cmake
+else	
+    add_step inst_gnucash
+fi
+
 if [ "$CROSS_COMPILE" != "yes" ]; then
  add_step inst_inno
 fi

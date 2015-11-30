@@ -95,13 +95,30 @@ function inst_cmake() {
     then
         echo "cmake already installed in $_CMAKE_UDIR.  skipping."
     else
+        WGET_EXTRA_OPTIONS="--no-check-certificate"
         wget_unpacked $CMAKE_URL $DOWNLOAD_DIR $CMAKE_DIR
-
-        assert_one_dir ${_CMAKE_UDIR}/cmake-2*
-        mv ${_CMAKE_UDIR}/cmake-2*/* ${_CMAKE_UDIR}
-        rm -rf ${_CMAKE_UDIR}/cmake-2*
+        unset WGET_EXTRA_OPTIONS
+        assert_one_dir ${_CMAKE_UDIR}/cmake-3*
+        mv ${_CMAKE_UDIR}/cmake-3*/* ${_CMAKE_UDIR}
+        rm -rf ${_CMAKE_UDIR}/cmake-3*
 
         [ -f ${_CMAKE_UDIR}/bin/cmake.exe ] || die "cmake not installed correctly"
+    fi
+}
+
+function inst_ninja() {
+    setup Ninja
+    _NINJA_UDIR=`unix_path ${NINJA_DIR}`
+    add_to_env ${_NINJA_UDIR} PATH
+    if [ -f ${_NINJA_UDIR}/ninja.exe ]
+    then
+        echo "ninja already install in $_NINJA_UDIR.  skipping."
+    else
+        WGET_EXTRA_OPTIONS="--no-check-certificate -O $TMP_DIR\\$(basename $NINJA_URL)"
+        wget_unpacked $NINJA_URL $DOWNLOAD_DIR $NINJA_DIR
+        unset WGET_EXTRA_OPTIONS
+
+        [ -f ${_NINJA_UDIR}/ninja.exe ] || die "ninja not installed correctly"
     fi
 }
 
@@ -1300,6 +1317,39 @@ function inst_cutecash() {
             -DCMAKE_BUILD_TYPE=Debug
         make
     qpopd
+}
+
+function inst_gnucash_using_cmake() {
+    setup "Gnucash (using cmake)"
+    _INSTALL_UDIR=`unix_path $INSTALL_DIR_CMAKE`
+    _BUILD_UDIR=`unix_path  $GNUCASH_CMAKE_BUILD_DIR`
+    _GLOBAL_UDIR=`unix_path $GLOBAL_DIR`
+    _REPOS_UDIR=`unix_path  $REPOS_DIR`
+    _NINJA_UDIR=`unix_path  $NINJA_DIR`
+    _MSYS_UDIR=`unix_path   $MSYS_DIR`
+
+    mkdir -p $_BUILD_UDIR
+    add_to_env $_INSTALL_UDIR/bin PATH
+
+    if [ "$BUILD_FROM_TARBALL" != "yes" ]; then
+        qpushd $REPOS_DIR
+            $GIT_CMD checkout $GNUCASH_SCM_REV
+        qpopd
+    fi
+
+    _CMAKE_MAKE_PROGRAM=$_MSYS_UDIR/bin/make
+    if [ "$CMAKE_GENERATOR" = "Ninja" ]; then
+        _CMAKE_MAKE_PROGRAM=$_NINJA_UDIR/ninja.exe
+    fi
+    qpushd $_BUILD_UDIR
+         cmake -G "$CMAKE_GENERATOR" \
+               -D CMAKE_INSTALL_PREFIX=${_INSTALL_UDIR} \
+               -D CMAKE_PREFIX_PATH=${_GLOBAL_UDIR} \
+               -D PERL_EXECUTABLE=${_MSYS_UDIR}/bin/perl \
+               -D CMAKE_MAKE_PROGRAM=${_CMAKE_MAKE_PROGRAM} \
+               ${_REPOS_UDIR}
+          ${_CMAKE_MAKE_PROGRAM} install
+     qpopd
 }
 
 function inst_gnucash() {
