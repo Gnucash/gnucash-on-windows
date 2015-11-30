@@ -1345,7 +1345,7 @@ function inst_gnucash_using_cmake() {
          cmake -G "$CMAKE_GENERATOR" \
                -D CMAKE_INSTALL_PREFIX=${_INSTALL_UDIR} \
                -D CMAKE_PREFIX_PATH=${_GLOBAL_UDIR} \
-               -D PERL_EXECUTABLE=${_MSYS_UDIR}/bin/perl \
+               -D PERL_EXECUTABLE=${_MSYS_UDIR}/1.0/bin/perl \
                -D CMAKE_MAKE_PROGRAM=${_CMAKE_MAKE_PROGRAM} \
                ${_REPOS_UDIR}
           ${_CMAKE_MAKE_PROGRAM} install
