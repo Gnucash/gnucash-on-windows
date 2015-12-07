@@ -48,7 +48,7 @@ else
 fi
 set_default BUILD_DIR $GNUCASH_DIR\\build
 set_default INSTALL_DIR $GNUCASH_DIR\\inst
-set_default INSTALL_DIR_CMAKE $GNUCASH_DIR\\inst-cmake
+
 set_default DIST_DIR $GNUCASH_DIR\\dist
 
 set_default WITH_CUTECASH no
