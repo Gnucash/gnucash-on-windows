@@ -1321,13 +1321,14 @@ function inst_cutecash() {
 
 function inst_gnucash_using_cmake() {
     setup "Gnucash (using cmake)"
-    _INSTALL_UDIR=`unix_path $INSTALL_DIR_CMAKE`
+    _INSTALL_UDIR=`unix_path $INSTALL_DIR`
     _BUILD_UDIR=`unix_path  $GNUCASH_CMAKE_BUILD_DIR`
     _GLOBAL_UDIR=`unix_path $GLOBAL_DIR`
     _REPOS_UDIR=`unix_path  $REPOS_DIR`
     _NINJA_UDIR=`unix_path  $NINJA_DIR`
     _MSYS_UDIR=`unix_path   $MSYS_DIR`
-
+    _LIBDBI_DRIVERS_UDIR=`unix_path ${LIBDBI_DRIVERS_DIR}`
+    
     mkdir -p $_BUILD_UDIR
     add_to_env $_INSTALL_UDIR/bin PATH
 
@@ -1345,8 +1346,9 @@ function inst_gnucash_using_cmake() {
          cmake -G "$CMAKE_GENERATOR" \
                -D CMAKE_INSTALL_PREFIX=${_INSTALL_UDIR} \
                -D CMAKE_PREFIX_PATH=${_GLOBAL_UDIR} \
-               -D PERL_EXECUTABLE=${_MSYS_UDIR}/1.0/bin/perl \
+               -D PERL_EXECUTABLE=${_MSYS_UDIR}/bin/perl \
                -D CMAKE_MAKE_PROGRAM=${_CMAKE_MAKE_PROGRAM} \
+               -D GNC_DBD_DIR=${_LIBDBI_DRIVERS_UDIR}/lib/dbd \
                ${_REPOS_UDIR}
           ${_CMAKE_MAKE_PROGRAM} install
      qpopd
