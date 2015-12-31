@@ -26,7 +26,14 @@
 
 export OLDPATH=$PATH
 
-GLOBAL_UDIR="/c/gcdev"
+_currdir=`pwd`
+_dirname=`basename $_currdir`
+if [ $(expr $_dirname : gnucash-on-windows.*) -ne 0 ]; then
+    GLOBAL_UDIR=`dirname $_currdir`
+else
+    echo "Source me in gnucash-on-windows so that I can set the right directory."
+    exit
+fi
 AQBANKING_UDIR=$GLOBAL_UDIR/aqbanking
 CMAKE_UDIR=$GLOBAL_UDIR/cmake
 GWENHYWFAR_UDIR=$GLOBAL_UDIR/gwenhywfar
