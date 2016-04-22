@@ -245,7 +245,12 @@ function dist_gnucash() {
     cp -a $_INSTALL_UDIR/bin/* $_DIST_UDIR/bin
     mkdir -p $_DIST_UDIR/etc/gnucash
     cp -a $_INSTALL_UDIR/etc/gnucash/* $_DIST_UDIR/etc/gnucash
-    cp -a $_INSTALL_UDIR/lib/lib*.la $_DIST_UDIR/bin
+
+    # For CMake builds, there are no lib*.la files, so skip. 
+    if [ "$WITH_CMAKE" != "yes" ]; then
+        cp -a $_INSTALL_UDIR/lib/lib*.la $_DIST_UDIR/bin
+    fi 
+
     mkdir -p $_DIST_UDIR/share
     cp -a $_INSTALL_UDIR/share/{doc,gnucash,locale,glib-2.0} $_DIST_UDIR/share
     cp -a $_GC_WIN_REPOS_UDIR/extra_dist/{getperl.vbs,gnc-path-check,install-fq-mods.cmd} $_DIST_UDIR/bin
@@ -280,11 +285,15 @@ function dist_gnucash() {
 }
 
 function dist_finish() {
-    # Strip redirections in distributed libtool .la files
-    for file in $_DIST_UDIR/bin/*.la; do
-        cat $file | sed 's,^libdir=,#libdir=,' > $file.new
-        mv $file.new $file
-    done
+    if [ "$WITH_CMAKE" != "yes" ]; then
+        # Strip redirections in distributed libtool .la files.
+	# Skip this for CMake builds, which don't generate *.la files.
+
+        for file in $_DIST_UDIR/bin/*.la; do
+            cat $file | sed 's,^libdir=,#libdir=,' > $file.new
+            mv $file.new $file
+        done
+    fi;
 
     echo "Now running the Inno Setup Compiler for creating the setup.exe"
     ${_INNO_UDIR}/iscc //Q ${_GNUCASH_UDIR}/gnucash.iss

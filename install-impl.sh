@@ -1330,6 +1330,13 @@ function inst_gnucash_using_cmake() {
     _LIBDBI_DRIVERS_UDIR=`unix_path ${LIBDBI_DRIVERS_DIR}`
     
     mkdir -p $_BUILD_UDIR
+
+    # Remove existing INSTALL_UDIR
+    if [ -x $_INSTALL_UDIR ]; then
+        echo Removing previous inst dir $_INSTALL_UDIR ...
+        rm -rf "$_INSTALL_UDIR"
+    fi;
+
     add_to_env $_INSTALL_UDIR/bin PATH
 
     if [ "$BUILD_FROM_TARBALL" != "yes" ]; then
