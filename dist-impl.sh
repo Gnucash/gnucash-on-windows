@@ -36,6 +36,7 @@ function dist_prepare() {
     _GC_WIN_REPOS_UDIR=`unix_path $GC_WIN_REPOS_DIR`
     _REPOS_UDIR=`unix_path $REPOS_DIR`
     _BUILD_UDIR=`unix_path $BUILD_DIR`
+    _GNUCASH_CMAKE_BUILD_UDIR=`unix_path $GNUCASH_CMAKE_BUILD_DIR`
     _DIST_UDIR=`unix_path $DIST_DIR`
     _MINGW_UDIR=`unix_path $MINGW_DIR`
     _INSTALL_UDIR=`unix_path $INSTALL_DIR`
@@ -260,6 +261,9 @@ function dist_gnucash() {
     AQBANKING_VERSION_H=${_AQBANKING_UDIR}/include/aqbanking5/aqbanking/version.h
     GWENHYWFAR_VERSION_H=${_GWENHYWFAR_UDIR}/include/gwenhywfar4/gwenhywfar/version.h
     GNUCASH_CONFIG_H=${_BUILD_UDIR}/config.h
+    if [ "$WITH_CMAKE" == "yes" ]; then
+        GNUCASH_CONFIG_H=${_GNUCASH_CMAKE_BUILD_UDIR}/src/config.h
+    fi
 
     _AQBANKING_SO_EFFECTIVE=$(awk '/AQBANKING_SO_EFFECTIVE / { print $3 }' ${AQBANKING_VERSION_H} )
     _GWENHYWFAR_SO_EFFECTIVE=$(awk '/GWENHYWFAR_SO_EFFECTIVE / { print $3 }' ${GWENHYWFAR_VERSION_H} )
