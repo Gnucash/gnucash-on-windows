@@ -47,6 +47,9 @@ else
     fi
 fi
 set_default BUILD_DIR $GNUCASH_DIR\\build
+if [ x"$WITH_CMAKE" = xyes ]; then
+    set_default BUILD_DIR $GNUCASH_DIR\\cmake-build
+fi
 set_default INSTALL_DIR $GNUCASH_DIR\\inst
 
 set_default DIST_DIR $GNUCASH_DIR\\dist
@@ -55,7 +58,7 @@ set_default WITH_CUTECASH no
 set_default WITH_CMAKE no
 set_default WITH_NINJA no
 set_default CUTECASH_BUILD_DIR $GNUCASH_DIR\\build-cutecash
-set_default GNUCASH_CMAKE_BUILD_DIR $GNUCASH_DIR\\build-cmake
+
 
 
 ####

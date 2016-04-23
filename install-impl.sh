@@ -1322,7 +1322,7 @@ function inst_cutecash() {
 function inst_gnucash_using_cmake() {
     setup "Gnucash (using cmake)"
     _INSTALL_UDIR=`unix_path $INSTALL_DIR`
-    _BUILD_UDIR=`unix_path  $GNUCASH_CMAKE_BUILD_DIR`
+    _BUILD_UDIR=`unix_path  $BUILD_DIR`
     _GLOBAL_UDIR=`unix_path $GLOBAL_DIR`
     _REPOS_UDIR=`unix_path  $REPOS_DIR`
     _NINJA_UDIR=`unix_path  $NINJA_DIR`
