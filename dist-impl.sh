@@ -36,6 +36,7 @@ function dist_prepare() {
     _GC_WIN_REPOS_UDIR=`unix_path $GC_WIN_REPOS_DIR`
     _REPOS_UDIR=`unix_path $REPOS_DIR`
     _BUILD_UDIR=`unix_path $BUILD_DIR`
+    _GNUCASH_CMAKE_BUILD_UDIR=`unix_path $GNUCASH_CMAKE_BUILD_DIR`
     _DIST_UDIR=`unix_path $DIST_DIR`
     _MINGW_UDIR=`unix_path $MINGW_DIR`
     _INSTALL_UDIR=`unix_path $INSTALL_DIR`
@@ -260,6 +261,9 @@ function dist_gnucash() {
     AQBANKING_VERSION_H=${_AQBANKING_UDIR}/include/aqbanking5/aqbanking/version.h
     GWENHYWFAR_VERSION_H=${_GWENHYWFAR_UDIR}/include/gwenhywfar4/gwenhywfar/version.h
     GNUCASH_CONFIG_H=${_BUILD_UDIR}/config.h
+    if [ "$WITH_CMAKE" == "yes" ]; then
+        GNUCASH_CONFIG_H=${_GNUCASH_CMAKE_BUILD_UDIR}/src/config.h
+    fi
 
     _AQBANKING_SO_EFFECTIVE=$(awk '/AQBANKING_SO_EFFECTIVE / { print $3 }' ${AQBANKING_VERSION_H} )
     _GWENHYWFAR_SO_EFFECTIVE=$(awk '/GWENHYWFAR_SO_EFFECTIVE / { print $3 }' ${GWENHYWFAR_VERSION_H} )
@@ -300,7 +304,7 @@ function dist_finish() {
 
     if [ "$BUILD_FROM_TARBALL" = "no" ]; then
         # And changing output filename
-        PKG_VERSION=`grep PACKAGE_VERSION ${_BUILD_UDIR}/config.h | cut -d" " -f3 | cut -d\" -f2 `
+        PKG_VERSION=`grep PACKAGE_VERSION ${GNUCASH_CONFIG_H} | cut -d" " -f3 | cut -d\" -f2 `
         REVISION=`grep GNUCASH_SCM_REV ${_BUILD_UDIR}/src/core-utils/gnc-vcs-info.h | cut -d" " -f3 | cut -d\" -f2 `
         SETUP_FILENAME="gnucash-${PKG_VERSION}-$(date +'%Y-%m-%d')-${REPOS_TYPE}-${REVISION}-setup.exe"
         qpushd ${_GNUCASH_UDIR}
