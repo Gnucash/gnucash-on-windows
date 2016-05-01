@@ -348,7 +348,7 @@ set_default LIBOFX_DIR $GLOBAL_DIR\\libofx
 set_default LIBOFX_PATCH `pwd`/libofx-0.9.8.patch
 
 ## online banking: gwenhywfar+aqbanking
-GWENHYWFAR_VERSION="4.13.1"
+GWENHYWFAR_VERSION="4.15.3"
 set_default GWENHYWFAR_URL "http://www2.aquamaniac.de/sites/download/download.php?package=01&release=78&file=01&dummy=gwenhywfar-${GWENHYWFAR_VERSION}.tar.gz"
 set_default GWENHYWFAR_DIR $GLOBAL_DIR\\gwenhywfar
 set_default GWEN_PATCH `pwd`/gwen-4.13.1.patch
@@ -357,7 +357,7 @@ KTOBLZCHECK_VERSION="1.48"
 set_default KTOBLZCHECK_URL "$SF_MIRROR/ktoblzcheck/ktoblzcheck-${KTOBLZCHECK_VERSION}.tar.gz"
 # ktoblzcheck is being installed into GWENHYWFAR_DIR
 
-AQBANKING_VERSION="5.5.1"
+AQBANKING_VERSION="5.6.10"
 set_default AQBANKING_URL "http://www2.aquamaniac.de/sites/download/download.php?package=03&release=118&file=01&dummy=aqbanking-${AQBANKING_VERSION}.tar.gz"
 set_default AQBANKING_DIR $GLOBAL_DIR\\aqbanking
 
