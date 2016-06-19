@@ -270,7 +270,7 @@ set_default LIBXML2_URL             "$GNOME_WIN32_DEPS_URL/libxml2_2.7.7-1_win32
 set_default LIBXML2_DEV_URL         "$GNOME_WIN32_DEPS_URL/libxml2-dev_2.7.7-1_win32.zip"
 set_default PKG_CONFIG_URL          "$GNOME_WIN32_DEPS_URL/pkg-config_0.25-1_win32.zip"
 set_default PKG_CONFIG_DEV_URL      "$GNOME_WIN32_DEPS_URL/pkg-config-dev_0.25-1_win32.zip"
-set_default GLIB_URL                "$GC_DEPS_URL/glib-$GLIB_VERSION-minGW.tgz"
+set_default GLIB_URL                "$GC_DEPS_URL/glib-$GLIB_VERSION-2-minGW.tar.gz"
 set_default GLIB_DEV_URL            "$GC_DEPS_URL/glib-$GLIB_VERSION-dev-minGW.tgz"
 set_default CAIRO_VERSION="1.10.2"
 set_default CAIRO_URL               "$GC_DEPS_URL/cairo-1.10.2-minGW.tgz"
