@@ -349,17 +349,21 @@ set_default LIBOFX_PATCH `pwd`/libofx-0.9.8.patch
 
 ## online banking: gwenhywfar+aqbanking
 GWENHYWFAR_VERSION="4.15.3"
-set_default GWENHYWFAR_URL "http://www2.aquamaniac.de/sites/download/download.php?package=01&release=78&file=01&dummy=gwenhywfar-${GWENHYWFAR_VERSION}.tar.gz"
+## NB: Dummy means dummy! The important value in the following url is
+## the release number, not the file name at the end!
+set_default GWENHYWFAR_URL "http://www2.aquamaniac.de/sites/download/download.php?package=01&release=201&file=01&dummy=gwenhywfar-4.15.3.tar.gz"
 set_default GWENHYWFAR_DIR $GLOBAL_DIR\\gwenhywfar
-set_default GWEN_PATCH `pwd`/gwen-4.13.1.patch
 
 KTOBLZCHECK_VERSION="1.48"
 set_default KTOBLZCHECK_URL "$SF_MIRROR/ktoblzcheck/ktoblzcheck-${KTOBLZCHECK_VERSION}.tar.gz"
 # ktoblzcheck is being installed into GWENHYWFAR_DIR
 
 AQBANKING_VERSION="5.6.10"
-set_default AQBANKING_URL "http://www2.aquamaniac.de/sites/download/download.php?package=03&release=118&file=01&dummy=aqbanking-${AQBANKING_VERSION}.tar.gz"
+## NB: Dummy means dummy! The important value in the following url is
+## the release number, not the file name at the end!
+set_default AQBANKING_URL "http://www2.aquamaniac.de/sites/download/download.php?package=03&release=206&file=01&dummy=aqbanking-5.6.10.tar.gz"
 set_default AQBANKING_DIR $GLOBAL_DIR\\aqbanking
+set_default AQB_PATCH `pwd`/swift940-strndup.patch
 
 set_default SQLITE3_URL "http://sqlite.org/sqlite-amalgamation-3.6.1.tar.gz"
 set_default SQLITE3_DIR $GLOBAL_DIR\\sqlite3

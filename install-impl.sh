@@ -283,6 +283,10 @@ function inst_aqbanking() {
         wget_unpacked $AQBANKING_URL $DOWNLOAD_DIR $TMP_DIR
         assert_one_dir $TMP_UDIR/aqbanking-*
         qpushd $TMP_UDIR/aqbanking-*
+            if [ -n "$AQB_PATCH" -a -f "$AQB_PATCH" ]; then
+                patch -p1 < $AQB_PATCH
+            fi
+
             _AQ_CPPFLAGS="-I${_LIBOFX_UDIR}/include ${KTOBLZCHECK_CPPFLAGS} ${GNOME_CPPFLAGS} ${GNUTLS_CPPFLAGS} -I${_GWENHYWFAR_UDIR}/include/gwenhywfar4"
             _AQ_LDFLAGS="-L${_LIBOFX_UDIR}/lib ${KTOBLZCHECK_LDFLAGS} ${GNOME_LDFLAGS} ${GNUTLS_LDFLAGS}"
             if test x$CROSS_COMPILE = xyes; then
@@ -640,6 +644,9 @@ function inst_gwenhywfar() {
     then
         echo "Gwenhywfar ${GWENHYWFAR_VERSION} already installed in $_GWENHYWFAR_UDIR. skipping."
     else
+#        INSTALLED_GWEN=`${PKG_CONFIG} --modversion gwenhywfar`
+#        echo "GWENHYWFAR installed version ${INSTALLED_GWEN} doesn't match required version ${GWENHYWFAR_VERSION}"
+#        exit
         wget_unpacked $GWENHYWFAR_URL $DOWNLOAD_DIR $TMP_DIR
         assert_one_dir $TMP_UDIR/gwenhywfar-*
         qpushd $TMP_UDIR/gwenhywfar-*
