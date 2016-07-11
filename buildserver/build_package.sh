@@ -24,6 +24,7 @@ BUILDSERVER_DIR="$(dirname "$0")"
 GC_WIN_DIR="$BUILDSERVER_DIR/.."
 . "$GC_WIN_DIR/functions.sh"
 . ./defaults.sh
+. ./custom.sh
 
 tag="${1:-$GNUCASH_SCM_REV}"
 
@@ -83,7 +84,11 @@ $_GC_WIN_REPOS_UDIR/dist.sh 2>&1 | tee -a ${LOGFILE}
 # Make sure this logic matches the logic in dist.sh!
 _BUILD_UDIR=`unix_path $BUILD_DIR`
 _GNUCASH_UDIR=`unix_path $GNUCASH_DIR`
-PKG_VERSION=`grep PACKAGE_VERSION ${_BUILD_UDIR}/config.h | cut -d" " -f3 | cut -d\" -f2 `
+_GNUCASH_CONFIG_H=${_BUILD_UDIR}/config.h
+if [ "$WITH_CMAKE" == "yes" ]; then
+  _GNUCASH_CONFIG_H=${_BUILD_UDIR}/src/config.h
+fi
+PKG_VERSION=`grep PACKAGE_VERSION ${_GNUCASH_CONFIG_H}/config.h | cut -d" " -f3 | cut -d\" -f2 `
 REVISION=`grep GNUCASH_SCM_REV ${_BUILD_UDIR}/src/core-utils/gnc-vcs-info.h | cut -d" " -f3 | cut -d\" -f2 `
 
 if [ "$BUILD_FROM_TARBALL" = "no" ]; then
