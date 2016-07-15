@@ -1,4 +1,11 @@
+# Edit cmake/custom.cmake with overrides for the variables set in cmake/defaults.cmake.
 # Call cmake defining the variables you need to build the modules you want and set -G "MSYS Makefile".
+# Important variables are
+# GNC_BUILD_GLIB Specifies GLib, Harfbuzz, and their dependencies.
+# GNC_BUILD_DEPS Specifies all dependencies.
+# "Specified" dependencies will be built into ${GLOBAL_DEP_BUILD_DIR}.
+# GNC_INSTALL_DEPS Installs the dependencies into ${GLOBAL_DIR}.
+# GNC_MAKE_TARBALLS Makes the distribution tarballs for upload to SourceForge from the specified dependencies.
 cmake_minimum_required (VERSION 3.3.2)
 include (cmake/defaults.cmake)
 include (cmake/custom.cmake)
