@@ -1,5 +1,6 @@
 set_property (GLOBAL PROPERTY EP_BASE ${GLOBAL_DEP_BUILD_DIR})
 set (INSTALL_DIR ${GLOBAL_DEP_BUILD_DIR}/glib-install)
+set (CMAKE_INSTALL_PREFIX ${INSTALL_DIR})
 ExternalProject_Add(pkgconfig
   URL ${PKG_CONFIG_SRC_URL}
   CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix ${INSTALL_DIR} --with-internal-glib
@@ -12,7 +13,7 @@ ExternalProject_Add(zlib
   CONFIGURE_COMMAND sed -i s/SHARED_MODE=0/SHARED_MODE=1/ <SOURCE_DIR>/win32/Makefile.gcc
   BUILD_COMMAND make -f <SOURCE_DIR>/win32/Makefile.gcc
   BUILD_IN_SOURCE 1
-  INSTALL_COMMAND INCLUDE_PATH=${INSTALL_DIR}/include LIBRARY_PATH=${INSTALL_DIR}/lib BINARY_PATH=${INSTALL_DIR}/bin make -f <SOURCE_DIR>/win32/Makefile.gcc install
+  INSTALL_COMMAND prefix=${INSTALL_DIR} INCLUDE_PATH=${INSTALL_DIR}/include LIBRARY_PATH=${INSTALL_DIR}/lib BINARY_PATH=${INSTALL_DIR}/bin make -f <SOURCE_DIR>/win32/Makefile.gcc install
   INSTALL_DIR ${INSTALL_DIR}
   )
 ExternalProject_Add(intltool
@@ -24,7 +25,7 @@ ExternalProject_Add(intltool
   )
 ExternalProject_Add(freetype
   URL ${FREETYPE_URL}
-  CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix ${INSTALL_DIR} --without-bzip2
+  CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix ${INSTALL_DIR} --without-bzip2 --without-png
   BUILD_COMMAND make
   INSTALL_COMMAND make install
   INSTALL_DIR ${INSTALL_DIR}
@@ -70,17 +71,10 @@ ExternalProject_Add(harfbuzz
   )
 # harfbuzz has a dependency on glib for three unicode functions, so we
 # need to build it again after building glib.
-#ExternalProject_Add(harfbuzz2
-#  URL ${HARFBUZZ_URL}
-#  CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix ${INSTALL_DIR}
-#  BUILD_COMMAND make
-#  INSTALL_DIR ${INSTALL_DIR}
-#  DEPENDS glib
-#  )
 ExternalProject_Add_Step(harfbuzz fix-pkgconfig-prefix
   COMMAND sh -c "chmod -R o+w ${INSTALL_DIR}"
   COMMAND sh -c "sed -i 's@prefix *= *${INSTALL_DIR}@prefix = c:/gcdev@' ${INSTALL_DIR}/lib/pkgconfig/*.pc"
-  COMMAND sh -c "sed -i s@${INSTALL_DIR}@\${prefix}@ ${INSTALL_DIR}/lib/pkgconfig/*.pc"
+  COMMAND sh -c "sed -i s@${INSTALL_DIR}@\\$\\{prefix\\}@ ${INSTALL_DIR}/lib/pkgconfig/*.pc"
   DEPENDEES install
   )
 if (GNC_MAKE_TARBALLS)
