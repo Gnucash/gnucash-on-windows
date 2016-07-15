@@ -132,6 +132,9 @@ for tag_rev in $tags ; do
 
     # Inform the build scripts of the tag we're building.
     echo "GNUCASH_SCM_REV=$tag" >> ${_TAG_WIN_REPOS_UDIR}/custom.sh
+    #Set up CMAKE and NINJA build:
+    echo "WITH_CMAKE=yes" >> ${_TAG_WIN_REPOS_UDIR}/custom.sh
+    echo "WITH_NINJA=yes" >> ${_TAG_WIN_REPOS_UDIR}/custom.sh
 
     # Now build the tag!  (this will upload it too)
     # Use the build_package script from master (cwd), not from the tag
