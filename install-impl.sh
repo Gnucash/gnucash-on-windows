@@ -1334,6 +1334,7 @@ function inst_gnucash_using_cmake() {
     _REPOS_UDIR=`unix_path  $REPOS_DIR`
     _NINJA_UDIR=`unix_path  $NINJA_DIR`
     _MSYS_UDIR=`unix_path   $MSYS_DIR`
+    _HH_UDIR=`unix_path     $HH_DIR`
     _LIBDBI_DRIVERS_UDIR=`unix_path ${LIBDBI_DRIVERS_DIR}`
     
     mkdir -p $_BUILD_UDIR
@@ -1363,6 +1364,7 @@ function inst_gnucash_using_cmake() {
                -D PERL_EXECUTABLE=${_MSYS_UDIR}/bin/perl \
                -D CMAKE_MAKE_PROGRAM=${_CMAKE_MAKE_PROGRAM} \
                -D GNC_DBD_DIR=${_LIBDBI_DRIVERS_UDIR}/lib/dbd \
+	       -D HTMLHELP_DIR=${_HH_UDIR} \
                ${_REPOS_UDIR}
           ${_CMAKE_MAKE_PROGRAM} install
      qpopd
