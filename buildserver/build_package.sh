@@ -4,7 +4,10 @@
 # This assumes we're in the "gnucash-on-windows" directory for the correct build.
 # It could be for tag build environment, or it could
 # be the top-level daily-build gnucash-on-windows directory.
-# Note: GIT_CMD below should have been set by a calling script.
+# For this script to work, git must have been setup before
+# in a way that doesn't conflict with the GnuCash build.
+# The easiest way to do so is to run the build once manually
+# with a properly set up custom.sh.
 #
 
 set -o pipefail
@@ -26,6 +29,9 @@ GC_WIN_DIR="$BUILDSERVER_DIR/.."
 . ./defaults.sh
 . ./custom.sh
 
+_GIT_UDIR=`unix_path $GIT_DIR`
+set_env "$_GIT_UDIR/bin/git" GIT_CMD
+export GIT_CMD
 tag="${1:-$GNUCASH_SCM_REV}"
 
 # Determine where to upload to
