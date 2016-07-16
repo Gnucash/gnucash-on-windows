@@ -88,7 +88,7 @@ _GNUCASH_CONFIG_H=${_BUILD_UDIR}/config.h
 if [ "$WITH_CMAKE" == "yes" ]; then
   _GNUCASH_CONFIG_H=${_BUILD_UDIR}/src/config.h
 fi
-PKG_VERSION=`grep PACKAGE_VERSION ${_GNUCASH_CONFIG_H}/config.h | cut -d" " -f3 | cut -d\" -f2 `
+PKG_VERSION=`grep PACKAGE_VERSION ${_GNUCASH_CONFIG_H} | cut -d" " -f3 | cut -d\" -f2 `
 REVISION=`grep GNUCASH_SCM_REV ${_BUILD_UDIR}/src/core-utils/gnc-vcs-info.h | cut -d" " -f3 | cut -d\" -f2 `
 
 if [ "$BUILD_FROM_TARBALL" = "no" ]; then
