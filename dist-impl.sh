@@ -96,6 +96,7 @@ function dist_boost() {
 
     cp -a ${_BOOST_UDIR}/lib/libboost_chrono.dll ${_DIST_UDIR}/bin
     cp -a ${_BOOST_UDIR}/lib/libboost_date_time.dll ${_DIST_UDIR}/bin
+    cp -a ${_BOOST_UDIR}/lib/libboost_regex.dll ${_DIST_UDIR}/bin
 }
 
 function dist_gnome() {
