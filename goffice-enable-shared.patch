@@ -1,0 +1,11 @@
+--- a/configure.in	2011-06-16 16:46:53 -0700
++++ b/configure.in	2016-10-22 15:29:49 -0700
+@@ -69,7 +69,7 @@
+ AC_PROG_YACC
+ AM_PROG_LEX
+ AC_PROG_LN_S
+-AM_PROG_LIBTOOL
++LT_INIT([win32-dll])
+ DOLT
+ AC_STDC_HEADERS
+ AC_SYS_LARGEFILE

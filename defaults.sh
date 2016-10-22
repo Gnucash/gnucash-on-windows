@@ -297,7 +297,7 @@ set_default LIBGSF_DIR $GLOBAL_DIR\\libgsf
 GOFFICE_VERSION="0.8.17"
 set_default GOFFICE_URL "$GNOME_MIRROR/sources/goffice/0.8/goffice-${GOFFICE_VERSION}.tar.bz2"
 set_default GOFFICE_DIR $GLOBAL_DIR\\goffice
-#set_default GOFFICE_PATCH `pwd`/goffice-x.x.x.patch
+set_default GOFFICE_PATCH `pwd`/goffice-enable-shared.patch
 
 set_default GLADE_URL "$GNOME_MIRROR/sources/glade3/3.0/glade3-3.1.2.tar.bz2"
 set_default GLADE_DIR $GLOBAL_DIR\\glade
