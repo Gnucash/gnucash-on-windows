@@ -401,6 +401,7 @@ set_default ISOCODES_DIR $GLOBAL_DIR\\isocodes
 set_default BOOST_URL "$SF_MIRROR/boost/boost/boost_1_55_0.tar.bz2"
 set_default BOOST_DIR $GLOBAL_DIR\\boost
 
+set_default WGET_EXTRA_OPTIONS "--no-check-certificate"
 ### Local Variables: ***
 ### sh-basic-offset: 4 ***
 ### indent-tabs-mode: nil ***
