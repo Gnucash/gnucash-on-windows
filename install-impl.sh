@@ -1358,6 +1358,9 @@ function inst_gnucash_using_cmake() {
         _CMAKE_MAKE_PROGRAM=$_NINJA_UDIR/ninja.exe
     fi
     qpushd $_BUILD_UDIR
+         if [ -f CMakeCache.txt ]; then
+             rm CMakeCache.txt
+         fi
          cmake -G "$CMAKE_GENERATOR" \
                -D CMAKE_INSTALL_PREFIX=${_INSTALL_UDIR} \
                -D CMAKE_PREFIX_PATH=${_GLOBAL_UDIR} \
