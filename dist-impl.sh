@@ -242,7 +242,7 @@ function dist_webkit() {
 function dist_gnucash() {
     setup GnuCash
     mkdir -p $_DIST_UDIR/bin
-    cp $_MINGW_UDIR/bin/pthreadGC2.dll $_DIST_UDIR/bin
+    cp $_MINGW_UDIR/bin/pthreadGC-3.dll $_DIST_UDIR/bin
     cp -a $_INSTALL_UDIR/bin/* $_DIST_UDIR/bin
     mkdir -p $_DIST_UDIR/etc/gnucash
     cp -a $_INSTALL_UDIR/etc/gnucash/* $_DIST_UDIR/etc/gnucash
