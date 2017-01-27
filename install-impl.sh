@@ -662,8 +662,8 @@ function inst_gwenhywfar() {
                 --disable-ssl \
                 --prefix=$_GWENHYWFAR_UDIR \
                 --with-guis=gtk2 \
-                CPPFLAGS="${REGEX_CPPFLAGS} ${GNOME_CPPFLAGS} ${GNUTLS_CPPFLAGS} `pkg-config --cflags gtk+-2.0`" \
-                LDFLAGS="${REGEX_LDFLAGS} ${GNOME_LDFLAGS} ${GNUTLS_LDFLAGS} -lintl"
+                CPPFLAGS="${GNOME_CPPFLAGS} ${GNUTLS_CPPFLAGS} `pkg-config --cflags gtk+-2.0`" \
+                LDFLAGS="${GNOME_LDFLAGS} ${GNUTLS_LDFLAGS} -lintl"
             make
 #            [ "$CROSS_COMPILE" != "yes" ] && make check
             rm -rf ${_GWENHYWFAR_UDIR}
