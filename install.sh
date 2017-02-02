@@ -99,8 +99,9 @@ add_step inst_libdbi
 add_step inst_libsoup
 add_step inst_enchant
 add_step inst_webkit
-#boost now needed for C++ on master only
+#boost and gtest now needed for C++ on master only
 add_step inst_boost
+add_step inst_gtest
 
 ##
 if [ "$WITH_CUTECASH" = "yes" ]; then

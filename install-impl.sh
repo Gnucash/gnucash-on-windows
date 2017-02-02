@@ -1297,6 +1297,36 @@ function inst_boost() {
     fi
 }
 
+function inst_gtest() {
+    setup Googe Test Framework
+    get_major_minor "$GNUCASH_SCM_REV"
+    if [ "$GNUCASH_SCM_REV" != "master" ] &&
+        (( $major_minor <= 206 )); then
+        echo "Skipping. The Google test framework is only needed for the master branch or future 2.7.x and up versions of gnucash."
+        return
+    fi
+
+    _GTEST_UDIR=`unix_path ${GTEST_DIR}`
+    set_env ${_GTEST_UDIR}/googletest GTEST_ROOT
+    set_env ${_GTEST_UDIR}/googlemock GMOCK_ROOT
+    export GTEST_ROOT GMOCK_ROOT
+    if [ -f ${GTEST_ROOT}/src/gtest-all.cc ] &&
+       [ -f ${GTEST_ROOT}/include/gtest/gtest.h ] &&
+       [ -f ${GMOCK_ROOT}/src/gmock-all.cc ] &&
+       [ -f ${GMOCK_ROOT}/include/gmock/gmock.h ]
+    then
+        echo "Google test framework already installed in ${_GTEST_UDIR}. skipping."
+    else
+        rm -fr ${_GTEST_UDIR}
+        git clone $GTEST_REPO -b $GTEST_VERSION ${_GTEST_UDIR}
+
+        ([ -f ${GTEST_ROOT}/src/gtest-all.cc ] &&
+         [ -f ${GTEST_ROOT}/include/gtest/gtest.h ] &&
+         [ -f ${GMOCK_ROOT}/src/gmock-all.cc ] &&
+         [ -f ${GMOCK_ROOT}/include/gmock/gmock.h ]) || die "Google test framework not installed correctly"
+    fi
+}
+
 function inst_cutecash() {
     setup Cutecash
     _BUILD_UDIR=`unix_path $CUTECASH_BUILD_DIR`
