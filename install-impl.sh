@@ -1271,6 +1271,7 @@ function inst_boost() {
 
     _BOOST_UDIR=`unix_path ${BOOST_DIR}`
     set_env ${_BOOST_UDIR} BOOST_ROOT
+    export BOOST_ROOT
     add_to_env ${_BOOST_UDIR}/lib PATH
     if test -f ${_BOOST_UDIR}/lib/libboost_date_time.dll
     then
@@ -1393,14 +1394,6 @@ function inst_gnucash() {
         qpopd
     fi
 
-    # Check for options that may not be available in all versions we can build
-    _CONFIG_HELP=$($_REPOS_UDIR/configure --help)
-    if [ -n "$(grep -- '--with-boost' <<< "$_CONFIG_HELP")" ]; then
-        _EXTRA_OPTIONS="--with-boost=${BOOST_ROOT}"
-    else
-        _EXTRA_OPTIONS=""
-    fi
-
     qpushd $_BUILD_UDIR
         $_REPOS_UDIR/configure ${HOST_XCOMPILE} \
             --prefix=$_INSTALL_WFSDIR \
@@ -1411,7 +1404,6 @@ function inst_gnucash() {
             ${AQBANKING_OPTIONS} \
             --enable-binreloc \
             --enable-locale-specific-tax \
-            ${_EXTRA_OPTIONS} \
             CPPFLAGS="${REGEX_CPPFLAGS} ${GNOME_CPPFLAGS} ${GUILE_CPPFLAGS} ${LIBDBI_CPPFLAGS} ${KTOBLZCHECK_CPPFLAGS} ${HH_CPPFLAGS} ${LIBSOUP_CPPFLAGS} -D_WIN32 ${EXTRA_CFLAGS}" \
             LDFLAGS="${REGEX_LDFLAGS} ${GNOME_LDFLAGS} ${GUILE_LDFLAGS} ${LIBDBI_LDFLAGS} ${KTOBLZCHECK_LDFLAGS} ${HH_LDFLAGS} -L${_SQLITE3_UDIR}/lib -L${_ENCHANT_UDIR}/lib -L${_LIBXSLT_UDIR}/lib" \
             PKG_CONFIG_PATH="${PKG_CONFIG_PATH}"
