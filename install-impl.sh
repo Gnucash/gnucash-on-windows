@@ -1270,8 +1270,12 @@ function inst_boost() {
     fi
 
     _BOOST_UDIR=`unix_path ${BOOST_DIR}`
+    # The boost m4 macro included with gnucash looks for boost in either
+    # $BOOST_ROOT/staging (useless here) or $ac_boost_path, while the cmake build
+    # looks in $BOOST_ROOT. So we set both to support both build systems.
     set_env ${_BOOST_UDIR} BOOST_ROOT
-    export BOOST_ROOT
+    set_env ${_BOOST_UDIR} ac_boost_path
+    export BOOST_ROOT ac_boost_path
     add_to_env ${_BOOST_UDIR}/lib PATH
     if test -f ${_BOOST_UDIR}/lib/libboost_date_time.dll
     then
