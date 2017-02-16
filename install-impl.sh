@@ -1302,7 +1302,7 @@ function inst_boost() {
 }
 
 function inst_gtest() {
-    setup Googe Test Framework
+    setup Google Test Framework
     get_major_minor "$GNUCASH_SCM_REV"
     if [ "$GNUCASH_SCM_REV" != "master" ] &&
         (( $major_minor <= 206 )); then
@@ -1322,7 +1322,7 @@ function inst_gtest() {
         echo "Google test framework already installed in ${_GTEST_UDIR}. skipping."
     else
         rm -fr ${_GTEST_UDIR}
-        git clone $GTEST_REPO -b $GTEST_VERSION ${_GTEST_UDIR}
+        $GIT_CMD clone $GTEST_REPO -b $GTEST_VERSION ${_GTEST_UDIR}
 
         ([ -f ${GTEST_ROOT}/src/gtest-all.cc ] &&
          [ -f ${GTEST_ROOT}/include/gtest/gtest.h ] &&
