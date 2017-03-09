@@ -41,7 +41,7 @@ Name: desktopicon; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm
 Name: menuicon; Description: "{cm:CreateMenuLink}"; GroupDescription: "{cm:AdditionalIcons}"
 
 [Icons]
-Name: "{group}\GnuCash"; Filename: "{app}\bin\@PACKAGE@.exe"; WorkingDir: "{userdocs}"; Comment: "{cm:IconComment_GnuCash}"; IconFilename: "{app}\share\@PACKAGE@\pixmaps\gnucash-icon.ico"; Tasks: menuicon
+Name: "{group}\GnuCash"; Filename: "{app}\bin\@PACKAGE@.exe"; WorkingDir: "{code:GetDocPath}"; Comment: "{cm:IconComment_GnuCash}"; IconFilename: "{app}\share\@PACKAGE@\pixmaps\gnucash-icon.ico"; Tasks: menuicon
 Name: "{group}\{cm:IconName_README}"; Filename: "{app}\doc\@PACKAGE@\{cm:IconFilename_README}"; Comment: "{cm:IconComment_README}"; Tasks: menuicon
 Name: "{group}\{cm:IconName_FAQ}"; Filename: "http://wiki.gnucash.org/wiki/FAQ"; Tasks: menuicon
 Name: "{group}\{cm:IconName_Bugzilla}"; Filename: "http://bugzilla.gnome.org/enter_bug.cgi?product=GnuCash"; Tasks: menuicon
@@ -49,11 +49,11 @@ Name: "{group}\{cm:IconName_InstallFQ}"; Filename: "{app}\bin\install-fq-mods.cm
 Name: "{group}\{cm:IconName_Theme}"; Filename: "{app}\bin\gtk2_prefs.exe"; WorkingDir: "{app}\bin"; Tasks: menuicon
 Name: "{group}\{cm:IconName_Uninstall}"; Filename: "{uninstallexe}"; Comment: "{cm:IconComment_Uninstall}"; Tasks: menuicon
 
-Name: "{commondesktop}\GnuCash"; Filename: "{app}\bin\@PACKAGE@.exe"; WorkingDir: "{userdocs}"; Comment: "{cm:IconComment_GnuCash}"; IconFilename: "{app}\share\@PACKAGE@\pixmaps\gnucash-icon.ico"; Tasks: desktopicon
+Name: "{commondesktop}\GnuCash"; Filename: "{app}\bin\@PACKAGE@.exe"; WorkingDir: "{code:GetDocPath}"; Comment: "{cm:IconComment_GnuCash}"; IconFilename: "{app}\share\@PACKAGE@\pixmaps\gnucash-icon.ico"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\bin\pango-querymodules.exe"; Parameters: " --system --update-cache"; Flags: runhidden
-Filename: "{app}\bin\@PACKAGE@.exe"; Description: "{cm:RunPrg}"; WorkingDir: "{userdocs}"; OnlyBelowVersion: 0,6; Flags: postinstall skipifsilent
+Filename: "{app}\bin\@PACKAGE@.exe"; Description: "{cm:RunPrg}"; WorkingDir: "{code:GetDocPath}"; OnlyBelowVersion: 0,6; Flags: postinstall skipifsilent
 Filename: "{app}\bin\guile.cmd"; Flags: runhidden
 
 ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -367,6 +367,30 @@ begin
   Res := SaveStringsToFile(EnvFile, EnvStrList, False);
   if Res = False then
     MsgBox('Error on saving ' + EnvFile + ' for completing the installation', mbInformation, MB_OK);
+end;
+
+// Sometimes a user either doesn't have a CSIDL_PERSONAL setting or
+// it's invalid. This function tests is and if that's the case returns
+// CSIDL_COMMON_DOCUMENTS. Code lifted from
+// http://stackoverflow.com/questions/28635548/avoiding-failed-to-expand-shell-folder-constant-userdocs-errors-in-inno-setup.
+
+function GetDocPath(Param: string): string;
+var Folder: string;
+begin
+  try
+    // first try to expand the {userdocs} folder; if this raises that
+    // internal exception, you'll fall down to the except block where
+    // you expand the {allusersprofile}
+    Folder := ExpandConstant('{userdocs}');
+    // the {userdocs} folder expanding succeded, so let's test if the
+    // folder exists and if not, expand {allusersprofile}
+    if not DirExists(Folder) then
+      Folder := ExpandConstant('{allusersprofile}');
+  except
+    Folder := ExpandConstant('{allusersprofile}');
+  end;
+  // return the result
+  Result := Folder;
 end;
 
 [Languages]
