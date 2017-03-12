@@ -1260,6 +1260,48 @@ function inst_hh() {
     fi
 }
 
+
+function inst_icu4c() {
+    setup icu4c
+    get_major_minor "$GNUCASH_SCM_REV"
+    if [ "$GNUCASH_SCM_REV" != "master" ] &&
+        (( $major_minor <= 206 )); then
+        echo "Skipping. ICU is only needed for the master branch or future 2.7.x and up versions of gnucash."
+        return
+    fi
+    _ICU4C_UDIR=`unix_path $ICU4C_DIR`
+    if [ -f "$_ICU4C_UDIR/lib/libicuuc.dll.a" ]
+    then
+        echo "icu4c already installed.  Skipping."
+    else
+        wget_unpacked $ICU4C_SRC_URL $DOWNLOAD_DIR $TMP_DIR
+#        qpushd $TMP_UDIR/icu
+#            patch -p1 < $ICU4C_PATCH
+        #        qpopd
+        mkdir $TMP_UDIR/icu/build
+        qpushd $TMP_UDIR/icu/build
+        ../source/configure --prefix ${_ICU4C_UDIR} \
+                   --disable-strict \
+                   --disable-extras \
+                   --disable-layout \
+                   --disable-layoutex \
+                   --disable-tests \
+                   --disable-samples \
+                   CPPFLAGS="${CPPFLAGS} -DU_CHARSET_IS_UTF8=1 -DU_NO_DEFAULT_INCLUDE_UTF_HEADERS=1 -DU_USING_ICU_NAMESPACE=0" \
+                   CXXFLAGS="${CXXFLAGS} -std=gnu++11"
+
+            make V=0
+            make install V=0
+            ln ${_ICU4C_UDIR}/lib/libicudt.dll.a ${_ICU4C_UDIR}/lib/libicudata.dll.a
+            ln ${_ICU4C_UDIR}/lib/libicuin.dll.a ${_ICU4C_UDIR}/lib/libicui18n.dll.a
+        qpopd
+       # cleanup
+        rm -rf $TMP_UDIR/icu*
+    fi
+    add_to_env ${_ICU4C_UDIR}/lib PATH
+    add_to_env ${_ICU4C_UDIR}/lib/pkgconfig PKG_CONFIG_PATH
+}
+
 function inst_boost() {
     setup Boost
     get_major_minor "$GNUCASH_SCM_REV"
@@ -1268,8 +1310,8 @@ function inst_boost() {
         echo "Skipping. Boost is only needed for the master branch or future 2.7.x and up versions of gnucash."
         return
     fi
-
     _BOOST_UDIR=`unix_path ${BOOST_DIR}`
+    _ICU4C_WDIR=`win_fs_path ${ICU4C_DIR}`
     # The boost m4 macro included with gnucash looks for boost in either
     # $BOOST_ROOT/staging (useless here) or $ac_boost_path, while the cmake build
     # looks in $BOOST_ROOT. So we set both to support both build systems.
@@ -1284,17 +1326,15 @@ function inst_boost() {
         wget_unpacked $BOOST_URL $DOWNLOAD_DIR $TMP_DIR
         assert_one_dir $TMP_UDIR/boost_*
         qpushd $TMP_UDIR/boost_*
-        if test ! -f ${_BOOST_UDIR}/bin/b2
-        then
-            qpushd tools/build/v2
-                ./bootstrap.sh --with-toolset=mingw
-                ./b2 install toolset=gcc --prefix=${_BOOST_UDIR}
-             qpopd
-         fi
-        # Limit the built libraries to what we think we'll need. Note
-        # that the python and context libraries depend on Python and
-        # Visual Studio respectively to build, so don't add them.
-         ${_BOOST_UDIR}/bin/b2 install-proper --prefix=${_BOOST_UDIR} --with-atomic --with-chrono --with-date_time --with-filesystem --with-log --with-program_options --with-regex --with-signals --with-system --with-test link=shared variant=release toolset=gcc --layout=tagged
+        ./bootstrap.sh --with-toolset=mingw \
+                       --prefix=${_BOOST_UDIR} \
+                       --with-icu=${_ICU4C_WDIR} \
+                       --with-libraries=${BOOST_LIBS}
+        sed -i"" "s/mingw /gcc /" project-config.jam
+        ./b2 --prefix=${_BOOST_UDIR} --layout=system \
+             link=shared variant=release \
+             -sICU_PATH=${_ICU4C_WDIR} \
+             install
         qpopd
         test -f ${_BOOST_UDIR}/lib/libboost_date_time.dll || die "Boost not installed correctly"
         rm -rf $TMP_UDIR/boost_*

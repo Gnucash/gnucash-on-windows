@@ -330,9 +330,9 @@ set_default LIBSOUP_SRC_URL "$GNOME_MIRROR/sources/libsoup/2.48/libsoup-${LIBSOU
 set_default LIBSOUP_BAD_SYMBOL_PATCH `pwd`/libsoup-2.48.0-bad-symbol.patch
 set_default LIBSOUP_RESERVED_WORD_PATCH `pwd`/libsoup-2.48.0-soup-server-reserved-word.patch
 set_default ICU4C_URL "http://download.icu-project.org/files/icu4c/4.4.1/icu4c-4_4_1-Win32-msvc9.zip"
-set_default ICU4C_SRC_URL "http://download.icu-project.org/files/icu4c/4.4.1/icu4c-4_4_1-src.tgz"
+set_default ICU4C_SRC_URL "http://download.icu-project.org/files/icu4c/57.1/icu4c-57_1-src.tgz"
 set_default ICU4C_DIR $GLOBAL_DIR\\icu-mingw32
-set_default ICU4C_PATCH `pwd`/icu-crossmingw.patch
+set_default ICU4C_PATCH ""
 
 set_default GIT_URL "https://github.com/msysgit/msysgit/releases/download/Git-1.9.4-preview20140611/Git-1.9.4-preview20140611.exe"
 set_default GIT_DIR $GLOBAL_DIR\\git-1.9.4
@@ -400,6 +400,10 @@ set_default ISOCODES_DIR $GLOBAL_DIR\\isocodes
 
 set_default BOOST_URL "$SF_MIRROR/boost/boost/boost_1_55_0.tar.bz2"
 set_default BOOST_DIR $GLOBAL_DIR\\boost
+# Limit the built libraries to what we think we'll need. Note
+# that the python and context libraries depend on Python and
+# Visual Studio respectively to build, so don't add them.
+set_default BOOST_LIBS "atomic,chrono,date_time,filesystem,locale,log,program_options,regex,signals,system,test"
 
 set_default GTEST_REPO "https://github.com/google/googletest"
 set_default GTEST_VERSION "master"
