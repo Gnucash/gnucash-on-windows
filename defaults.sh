@@ -363,7 +363,7 @@ AQBANKING_VERSION="5.6.12"
 ## the release number, not the file name at the end!
 set_default AQBANKING_URL "https://www.aquamaniac.de/sites/download/download.php?package=03&release=208&file=01&dummy=aqbanking-5.6.12.tar.gz"
 set_default AQBANKING_DIR $GLOBAL_DIR\\aqbanking
-set_default AQB_PATCH `pwd`/swift940-strndup.patch
+set_default AQB_PATCH ""
 
 set_default SQLITE3_URL "http://sqlite.org/sqlite-amalgamation-3.6.1.tar.gz"
 set_default SQLITE3_DIR $GLOBAL_DIR\\sqlite3
