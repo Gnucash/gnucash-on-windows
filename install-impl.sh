@@ -1205,6 +1205,7 @@ int main(int argc, char **argv) {
 }
 EOF
         gcc -shared -o ofile.dll ofile.c "$HH_CPPFLAGS" "$HH_LDFLAGS" -lhtmlhelp || return 1
+        rm ofile*
     qpopd
 }
 
