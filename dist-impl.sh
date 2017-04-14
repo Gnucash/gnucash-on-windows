@@ -41,6 +41,7 @@ function dist_prepare() {
     _INSTALL_UDIR=`unix_path $INSTALL_DIR`
     _INNO_UDIR=`unix_path $INNO_DIR`
     _WEBKIT_UDIR=`unix_path $WEBKIT_DIR`
+    _ICU4C_UDIR=`unix_path $ICU4C_DIR`
     _ISOCODES_UDIR=`unix_path $ISOCODES_DIR`
     _MINGW_WFSDIR=`win_fs_path $MINGW_DIR`
     add_to_env $_UNZIP_UDIR/bin PATH # unzip
@@ -237,6 +238,17 @@ function dist_webkit() {
     cp -a ${_LIBXSLT_UDIR}/bin/* ${_DIST_UDIR}/bin
     cp -a ${_ENCHANT_UDIR}/bin/* ${_DIST_UDIR}/bin
     cp -a ${_WEBKIT_UDIR}/bin/* ${_DIST_UDIR}/bin
+}
+
+function dist_icu4c() {
+    setup icu4c
+    get_major_minor "$GNUCASH_SCM_REV"
+    if [ "$GNUCASH_SCM_REV" != "master" ] &&
+           (( $major_minor <= 206 )); then
+        echo "Skipping. ICU is only needed for the master branch or future 2.7.x and up versions of gnucash."
+        return
+    fi
+    cp -a ${_ICU4C_UDIR}/bin/* ${_DIST_UDIR}/bin
 }
 
 function dist_gnucash() {

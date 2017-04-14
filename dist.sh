@@ -38,6 +38,7 @@ add_step dist_ktoblzcheck
 add_step dist_aqbanking
 add_step dist_libdbi
 add_step dist_webkit
+add_step dist_icu4c
 add_step dist_boost
 add_step dist_gnucash
 add_step dist_finish
