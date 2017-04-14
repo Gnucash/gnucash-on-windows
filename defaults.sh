@@ -312,6 +312,7 @@ set_default BUILD_WEBKIT_FROM_SOURCE no
 set_default WEBKIT_VERSION "1.8.3"
 set_default WEBKIT_URL "$SF_MIRROR/gnucash/webkit-${WEBKIT_VERSION}-minGW.tgz"
 set_default WEBKIT_DEV_URL "$SF_MIRROR/gnucash/webkit-${WEBKIT_VERSION}-dev-minGW.tgz"
+set_default PTHREADGC2_URL "$GC_DEPS_URL/pthreadGC2.dll"
 set_default WEBKIT_DIR $GLOBAL_DIR\\webkit
 #NB: The Fedora project maintains a source version that has been patched for building in a Fedora-MinGW cross-compiler. This isn't quite good enough to build in MinGW itself, but it's a lot closer and less work than starting with a tarball direct from the WebKitGtk project.
 set_default WEBKIT_SRC_URL "https://pkgs.fedoraproject.org/repo/pkgs/mingw-webkitgtk/webkit-1.8.3.tar.xz/dcbf9d5e2e6391f857c29a57528b32a6/webkit-1.8.3.tar.xz"

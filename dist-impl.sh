@@ -236,6 +236,7 @@ function dist_webkit() {
     cp -a ${_LIBXSLT_UDIR}/bin/* ${_DIST_UDIR}/bin
     cp -a ${_ENCHANT_UDIR}/bin/* ${_DIST_UDIR}/bin
     cp -a ${_WEBKIT_UDIR}/bin/* ${_DIST_UDIR}/bin
+    cp -a ${_MINGW_UDIR}/bin/pthreadGC2.dll ${_DIST_UDIR}/bin
 }
 
 function dist_icu4c() {
