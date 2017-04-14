@@ -248,7 +248,7 @@ function dist_icu4c() {
         echo "Skipping. ICU is only needed for the master branch or future 2.7.x and up versions of gnucash."
         return
     fi
-    cp -a ${_ICU4C_UDIR}/bin/* ${_DIST_UDIR}/bin
+    cp -a ${_ICU4C_UDIR}/lib/*.dll ${_DIST_UDIR}/bin
 }
 
 function dist_gnucash() {
