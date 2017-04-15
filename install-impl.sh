@@ -1167,10 +1167,8 @@ function inst_webkit() {
             qpopd
         else
             mkdir -p $_WEBKIT_UDIR
-            _MINGW_UDIR=`unix_path $MINGW_DIR`
             wget_unpacked $WEBKIT_URL $DOWNLOAD_DIR $WEBKIT_DIR
             wget_unpacked $WEBKIT_DEV_URL $DOWNLOAD_DIR $WEBKIT_DIR
-            smart_wget $PTHREADGC2_URL $_MINGW_UDIR/bin
             fix_libtool_files ${_WEBKIT_UDIR}
         fi
         quiet ${PKG_CONFIG} --exists webkit-1.0 || die "webkit not installed correctly"
