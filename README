@@ -87,6 +87,13 @@ The default values will all be found in 'defaults.sh'. You can
 override any of these in 'custom.sh'. The boostrap script you ran in
 step b. already created an initial version of this file.
 
+Some particular additions you may want to make to custom.sh are:
+GNUCASH_SCM_REV=maint
+will switch the branch of GnuCash that the script builds from 'master' to 'maint'.
+WITH_CMAKE=yes
+WITH_NINJA=yes
+Will use CMake and ninja instead of autotools and make to configure and build GnuCash (and only GnuCash, it has no effect on any of the dependencies). If you leave off WITH_NINJA it will configure with CMake and build with make. CMake + ninja builds are substantially faster than autotools ones.
+
 c. Open an Msys shell window. You do this by running
    c:\gcdev\mingw\msys\1.0\msys.bat
    Unless you chose to install mingw/msys in another directory of course.
