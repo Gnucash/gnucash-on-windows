@@ -212,7 +212,7 @@ set_default GUILE_PATCH `pwd`/guile-1.8.patch
 set_default OPENSSL_URL "http://www.openssl.org/source/openssl-0.9.8j.tar.gz"
 set_default OPENSSL_DIR $GLOBAL_DIR\\openssl
 
-GLIB_VERSION="2.38.2"
+GLIB_VERSION="2.42.2"
 GNUTLS_VERSION="3.2.19"
 set_default BUILD_GNUTLS_FROM_SOURCE "no"
 set_default GNUTLS_URL  "$GC_DEPS_URL/gnutls-3.2.19-minGW.tgz"
