@@ -26,10 +26,15 @@
 
 export OLDPATH=$PATH
 
-_currdir=`pwd`
-_dirname=`basename $_currdir`
+
+_savedir="$(pwd)"
+cd "$(dirname ${BASH_SOURCE[0]})"
+_currdir="$(pwd)"
+cd "$_savedir"
+
+_dirname="$(basename $_currdir)"
 if [ $(expr $_dirname : gnucash-on-windows.*) -ne 0 ]; then
-    GLOBAL_UDIR=`dirname $_currdir`
+    GLOBAL_UDIR="$(dirname $_currdir)"
 else
     echo "Source me in gnucash-on-windows so that I can set the right directory."
     return
