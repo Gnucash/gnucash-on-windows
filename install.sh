@@ -95,12 +95,12 @@ add_step inst_ktoblzcheck
 add_step inst_aqbanking
 add_step inst_libdbi
 
-# libsoup and enchant needed by webkit
+# icu, libsoup and enchant needed by webkit
+add_step inst_icu4c
 add_step inst_libsoup
 add_step inst_enchant
 add_step inst_webkit
-#icu, boost, and gtest now needed for C++ on master only
-add_step inst_icu4c
+# boost, and gtest now needed for C++ on master only
 add_step inst_boost
 add_step inst_gtest
 

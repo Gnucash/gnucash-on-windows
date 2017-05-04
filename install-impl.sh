@@ -1264,12 +1264,6 @@ function inst_hh() {
 
 function inst_icu4c() {
     setup icu4c
-    get_major_minor "$GNUCASH_SCM_REV"
-    if [ "$GNUCASH_SCM_REV" != "master" ] &&
-        (( $major_minor <= 206 )); then
-        echo "Skipping. ICU is only needed for the master branch or future 2.7.x and up versions of gnucash."
-        return
-    fi
     _ICU4C_UDIR=`unix_path $ICU4C_DIR`
     if [ -f "$_ICU4C_UDIR/lib/libicuuc.dll.a" ]
     then
