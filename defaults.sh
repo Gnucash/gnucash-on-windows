@@ -365,7 +365,7 @@ set_default AQBANKING_URL "https://www.aquamaniac.de/sites/download/download.php
 set_default AQBANKING_DIR $GLOBAL_DIR\\aqbanking
 set_default AQB_PATCH ""
 
-set_default SQLITE3_URL "http://sqlite.org/sqlite-amalgamation-3.6.1.tar.gz"
+set_default SQLITE3_URL "https://sqlite.org/2017/sqlite-autotools-3180000.tar.gz"
 set_default SQLITE3_DIR $GLOBAL_DIR\\sqlite3
 set_default MYSQL_LIB_URL "http://mirror.csclub.uwaterloo.ca/mysql/Downloads/Connector-C/mysql-connector-c-noinstall-6.0.1-win32.zip"
 set_default MYSQL_LIB_DIR $GLOBAL_DIR\\mysql
