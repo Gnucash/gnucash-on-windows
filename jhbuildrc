@@ -1,0 +1,61 @@
+#-*- mode: python -*-
+def _popen(cmd_arg):
+    from subprocess import Popen, PIPE
+    devnull = open('/dev/null')
+    cmd = Popen(cmd_arg, stdout=PIPE, stderr=devnull, shell=True)
+    retval = cmd.stdout.read().strip()
+    err = cmd.wait()
+    cmd.stdout.close()
+    devnull.close()
+    if err:
+        raise RuntimeError, "Failed to close %s stream" % cmd_arg
+    return retval
+
+def environ_append(key, value, separator=' '):
+    old_value = os.environ.get(key)
+    if old_value is not None:
+        value = old_value + separator + value
+    os.environ[key] = value
+
+def append_autogenargs(module, args):
+    old_value = module_autogenargs.get(module, autogenargs)
+    module_autogenargs[module] = old_value + " " + args
+
+def remove_autogenargs(module, args):
+    arg_string = module_autogenargs.get(module, autogenargs)
+    module_autogenargs[module] = arg_string.replace(args, "")
+def add_to_path_var(var, path):
+    if not var in os.environ:
+        os.environ[var] = path
+    else:
+        os.environ[var] = os.environ[var] + ":" + path
+
+_config_dir = os.path.join('/c', 'gcdev64', 'src', 'gnucash-on-windows.git')
+_basedir = os.path.join('/c', 'gcdev64')
+prefix = os.path.join(_basedir, 'inst')
+checkoutroot = os.path.join(_basedir, 'src')
+buildroot = os.path.join(_basedir, 'build')
+tarballdir = os.path.join('/c', 'gcdev', 'downloads')
+moduleset = os.path.join(_config_dir, 'gnucash.modules')
+
+_mingw_includes = os.path.join(_basedir, 'msys2', 'mingw32', 'include')
+_mingw_libs = os.path.join(_basedir, 'msys2', 'mingw32', 'lib')
+_usr_include = os.path.join('/usr', 'include')
+_usr_lib = os.path.join('/usr', 'lib')
+environ_append('CPPFLAGS', '-I%s -I%s' % (_mingw_includes, _usr_include))
+environ_append('LDFLAGS', '-L%s -L%s' % (_mingw_libs, _usr_lib))
+add_to_path_var('PKG_CONFIG_PATH', os.path.join(_mingw_libs, 'pkgconfig'))
+add_to_path_var('PATH', os.path.join(_basedir, 'msys2', 'mingw32', 'bin'))
+
+os.environ['SRCROOT'] = checkoutroot
+os.environ['PREFIX'] = prefix
+autogenargs = "--build=i686-w64-mingw32"
+#autogenargs = 'CPPFLAGS="-I%s"' % _sys_includes
+
+append_autogenargs("libofx", "--with-opensp-includes=" + prefix + "/include/OpenSP --with-opensp-libs=" + prefix + "/lib")
+append_autogenargs("libdbi-drivers","--with-dbi-incdir=" + prefix + "/include --with-dbi-libdir=" + prefix + "/lib")
+module_makeargs["aqbanking"]="-j1"
+
+module_extra_env["gwenhywfar"]={'CPPFLAGS':_popen('pkg-config --cflags gtk+-2.0'), 'LDFLAGS':_popen('pkg-config --libs gtk+-2.0')}
+module_extra_env["gnucash"]={'ACLOCAL_FLAGS':'-I' + os.path.join('/mingw32', 'share', 'aclocal')}
+

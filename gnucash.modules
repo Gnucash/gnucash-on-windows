@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE moduleset SYSTEM "moduleset.dtd">
+<?xml-stylesheet type="text/xsl" href="moduleset.xsl"?>
+<moduleset>
+
+  <repository type='tarball' name='ftp.gnu.org'
+	      href="ftp://ftp.gnu.org/gnu/"/>
+  <repository type='tarball' name='sourceforge'
+	      href="http://downloads.sourceforge.net/"/>
+  <repository type="tarball" name="csail"
+	      href="http://groups.csail.mit.edu/mac/ftpdir/"/>
+  <repository type="tarball" name="csclub"
+	      href="http://mirror.csclub.uwaterloo.ca/mysql/Downloads/"/>
+  <repository type="tarball" name="gnucash.org"
+	      href="http://www.gnucash.org/pub/gnucash/sources/"/>
+  <repository type="git" name="git.gnucash.org"
+	      href="http://git.gnucash.org/"/>
+  <repository type="svn" name="aquamaniac"
+	      href="http://devel.aqbanking.de/svn/"/>
+  <repository type="git" name="github"
+	      href="git://github.com/"/>
+  <repository type="system" name="system"/>
+
+  <systemmodule id="webkitgtk-3.0">
+    <pkg-config>webkitgtk-3.0.pc</pkg-config>
+    <branch repo="system" version="2.4.11" />
+  </systemmodule>
+
+  <systemmodule id="shared-mime-info">
+    <pkg-config>shared-mime-info.pc</pkg-config>
+    <branch repo="system" version="1.4" />
+  </systemmodule>
+
+  <systemmodule id="gnutls">
+    <pkg-config>gnutls.pc</pkg-config>
+    <branch repo="system" version="3.5.10" />
+  </systemmodule>
+
+  <systemmodule id="openssl">
+    <pkg-config>openssl.pc</pkg-config>
+    <branch repo="system" version="1.0.2k" />
+  </systemmodule>
+
+  <systemmodule id="libffi">
+    <pkg-config>libffi.pc</pkg-config>
+    <branch repo="system" version="3.2.1" />
+  </systemmodule>
+
+  <systemmodule id="gmp">
+    <systemdependencies>
+      <dep type="c_include" name="gmp.h" />
+    </systemdependencies>
+    <branch repo="system" />
+  </systemmodule>
+
+  <systemmodule id="gcrypt">
+    <systemdependencies>
+      <dep type="c_include" name="gcrypt.h" />
+    </systemdependencies>
+    <branch repo="system" />
+  </systemmodule>
+
+  <systemmodule id="ltdl">
+    <systemdependencies>
+      <dep type="c_include" name="ltdl.h" />
+    </systemdependencies>
+    <branch repo="system" />
+  </systemmodule>
+
+  <systemmodule id="icu">
+    <pkg-config>icu-i18n.pc</pkg-config>
+    <branch repo="system" version="57.1" />
+  </systemmodule>
+
+  <systemmodule id="iso-codes">
+    <pkg-config>iso-codes.pc</pkg-config>
+    <branch repo="system" version="3.74" />
+  </systemmodule>
+
+  <systemmodule id="boost">
+    <systemdependencies>
+      <dep type="c_include" name="boost/regex.h" />
+    </systemdependencies>
+    <branch repo="system" />
+  </systemmodule>
+
+  <autotools id="libunistring" autogen-sh="configure">
+    <branch repo="ftp.gnu.org" module="libunistring/libunistring-0.9.7.tar.gz"
+	    version="0.9.7">
+    </branch>
+  </autotools>
+
+  <autotools id="libatomic-ops"
+             autogen-template="/bin/bash -c 'pushd %(srcdir)s &amp;&amp; ./%(autogen-sh)s &amp;&amp; popd &amp;&amp; %(srcdir)s/configure --prefix=%(prefix)s> %(autogenargs)s'">
+    <branch repo="github" module="ivmai/libatomic_ops"
+	    revision="libatomic_ops-7_4_4"/>
+  </autotools>
+
+  <autotools id="bdw-gc" autogen-template="/bin/bash -c 'pushd %(srcdir)s &amp;&amp; ./autogen.sh &amp;&amp; automake -ac &amp;&amp; popd &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s  %(autogenargs)s'"
+	     autogenargs="--enable-threads=pthreads">
+    <branch repo="github" module="ivmai/bdwgc"  revision="gc7_6_0" />
+    <dependencies>
+      <dep package="libatomic-ops"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="guile" autogen-sh="configure"
+	     autogenargs="--disable-error-on-warning">
+    <branch repo="ftp.gnu.org" module="guile/guile-1.8.8.tar.gz"
+	    version="1.8.8"/>
+    <dependencies>
+      <dep package="gmp"/>
+    </dependencies>
+  </autotools>
+
+  <!-- Unfortunately in addition to needing a few patches this hangs when it tries to compile Scheme. -->
+  <autotools id="guile2" autogen-sh="autoreconf">
+    <branch repo="ftp.gnu.org" module="guile/guile-2.0.12.tar.gz"
+	    version="2.0.12">
+      <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/guile-clocktime.patch" strip="1"/>
+    </branch>
+    <dependencies>
+      <dep package="libunistring"/>
+      <dep package="gmp"/>
+      <dep package="libffi"/>
+      <dep package="bdw-gc"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="libchipcard" autogen-sh="configure" autogenargs="--enable-local-install">
+    <branch module="gnucash/Dependencies/libchipcard-5.0.4.tar.gz" version="5.0.4"
+            repo="sourceforge">
+    </branch>
+    <dependencies>
+      <dep package="gcrypt"/>
+      <dep package="gnutls"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="gwenhywfar" autogen-sh="configure"
+	     autogenargs="--with-guis=gtk2 --enable-local-install --disable-binreloc --disable-ssl">
+    <branch module="gnucash/Dependencies/gwenhywfar-4.17.0.tar.gz" version="4.17.0"
+	    repo="sourceforge">
+    </branch>
+    <dependencies>
+      <dep package="gcrypt"/>
+      <dep package="gnutls"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="gwenhywfar-svn" autogen-template="make -fMakefile.cvs &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s --libdir %(libdir)s %(autogenargs)s"
+	     autogenargs="--with-guis=gtk2 --enable-local-install --disable-binreloc --disable-ssl">
+    <branch module="gwenhywfar" repo="aquamaniac"/>
+    <dependencies>
+      <dep package="gcrypt"/>
+      <dep package="gnutls"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="ktoblzcheck" autogen-sh="configure">
+    <branch module="ktoblzcheck/ktoblzcheck-1.47.tar.gz" version="1.47"
+	    repo="sourceforge"/>
+  </autotools>
+
+  <autotools id="xmlsec">
+    <branch module="lsh123/xmlsec" repo="github" tag="xmlsec-1_2_20"/>
+    <dependencies>
+      <dep package="openssl"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="aqbanking" autogen-sh="autoreconf" makeargs="-j1"
+	     autogenargs="--enable-local-install">
+    <branch module="gnucash/Dependencies/aqbanking-5.6.12.tar.gz" version="5.6.12"
+	    repo="sourceforge">
+    </branch>
+    <dependencies>
+      <dep package="gwenhywfar"/>
+      <dep package="gmp"/>
+      <dep package="ktoblzcheck"/>
+      <dep package="xmlsec"/>
+      <dep package="libchipcard"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="aqbanking-svn"
+	     autogenargs='--enable-local-install"'
+	     autogen-template="make -fMakefile.cvs &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s --libdir %(libdir)s %(autogenargs)s" >
+     <branch module="aqbanking" repo="aquamaniac" >
+    </branch>
+    <dependencies>
+      <dep package="libofx"/>
+      <dep package="gwenhywfar-svn"/>
+      <dep package="gmp"/>
+      <dep package="ktoblzcheck"/>
+      <dep package="xmlsec"/>
+      <dep package="libchipcard"/>
+    </dependencies>
+  </autotools>
+
+<!-- Note for cross-compilation: libtool, for reasons known only to
+     itself, ignores the CFLAGS and links libosp.5.0.0.la with the
+     native architecture. When jhbuild stops, start a shell and go
+     back and find the link step, copy and paste it, adding the
+     architecture flags, and fire away. Then you can exit the shell
+     and rerun build and it will work OK. -->
+  <autotools id="OpenSP"
+	     autogenargs="--disable-static --enable-shared --disable-doc-build --disable-nls"
+	     autogen-template='/bin/bash -c "pushd %(srcdir)s &amp;&amp; ./autoinit.sh &amp;&amp; popd &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s  %(autogenargs)s"'>
+    <branch repo="sourceforge" module="openjade/OpenSP-1.5.2.tar.gz"
+	    version='1.5.2'>
+      <patch file="/c/gcdev/gnucash-on-windows.git/opensp-1.5.2.patch" strip='1'/>
+    </branch>
+  </autotools>
+
+  <autotools id="libofx" autogen-sh='autoreconf'>
+    <branch repo="sourceforge" module="libofx/libofx-0.9.10.tar.gz"
+	    version="0.9.10"/>
+    <dependencies>
+      <dep package="OpenSP"/>
+    </dependencies>
+  </autotools>
+
+  <autotools id="pcre" autogenargs="--enable-unicode-properties"
+	     autogen-sh="configure">
+    <branch repo="sourceforge" module="pcre/pcre-8.32.tar.bz2"
+	    version="8.32"/>
+  </autotools>
+
+  <autotools id="swig" autogen-sh="configure">
+    <branch repo="sourceforge" module="swig/swig-2.0.11.tar.gz"
+	    version="2.0.11"/>
+    <dependencies>
+      <dep package="pcre"/>
+    </dependencies>
+  </autotools>
+
+
+  <cmake id="mysql">
+    <branch repo="csclub" module="Connector-C/mysql-connector-c-6.0.2.tar.gz"
+	    version="6.0.2" >
+    </branch>
+    <dependencies>
+      <dep package="cmake"/>
+    </dependencies>
+  </cmake>
+
+  <autotools id="libdbi" autogen-sh="autoreconf" autogenargs="--disable-docs">
+    <branch repo="sourceforge" module="libdbi/libdbi-0.8.4.tar.gz"
+	    version="0.8.4">
+      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/libdbi-0.8.3.patch" strip="1"/>
+    </branch>
+  </autotools>
+
+  <autotools id="libdbi-drivers" autogen-sh='autoreconf'
+	     autogenargs='--disable-docs --with-sqlite3 --with-sqlite3-dir="/mingw32" --with-pgsql --with-pgsql-dir="/mingw32" --with-mysql --with-mysql-dir="/mingw32" '>
+    <branch repo="sourceforge" version="0.8.3-1"
+	    module="libdbi-drivers/libdbi-drivers-0.8.3-1.tar.gz">
+      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/libdbi-drivers-errno.patch" strip="1"/>
+    </branch>
+    <dependencies>
+      <dep package="libdbi"/>
+    </dependencies>
+  </autotools>
+
+  <cmake id="googletest" cmakeargs="-DBUILD_GMOCK=OFF" skip-autogen="yes"
+	 skip-install="yes">
+    <branch module="google/googletest" repo="github" tag="release-1.8.0"/>
+  </cmake>
+
+   <!--autotools id="gnucash"
+	      autogen-template="%(srcdir)s/%(autogen-sh)s &amp;&amp; %(srcdir)s/configure -\-prefix %(prefix)s %(autogenargs)s"
+	      autogenargs="-\-enable-ofx -\-enable-aqbanking -\-enable-binreloc -\-enable-dbi -\-with-dbi-dbd-dir=$PREFIX/lib/dbd"-->
+ <cmake id="gnucash"
+        cmakeargs="-G 'MSYS Makefiles' -DCMAKE_INSTALL_LIBDIR=lib  -DCMAKE_PREFIX_PATH=c:/gcdev64/msys2 -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DHTMLHELP_DIR=$PREFIX/hh -DGTEST_ROOT=$SRCROOT/googletest/googletest -DGMOCK_ROOT=$SRCROOT/googletest/googlemock">
+   <branch repo="github" module="Gnucash/gnucash.git" revision="master"
+	   checkoutdir="gnucash-git"/>
+    <dependencies>
+      <dep package="libofx"/>
+      <dep package="aqbanking"/>
+      <dep package="libdbi-drivers"/>
+      <!--dep package="shared-mime-info"/-->
+      <!--dep package="iso-codes"/-->
+      <dep package="guile"/>
+      <!--dep package="swig"/-->
+      <dep package="boost"/>
+      <dep package="googletest"/>
+    </dependencies>
+   <!--/autotools-->
+ </cmake>
+
+  <autotools id="gnucash-docs-git" autogenargs="--disable-scrollkeeper"
+	    autogen-template="%(srcdir)s/%(autogen-sh)s &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s %(autogenargs)s"
+	    makeargs=" html" makeinstallargs="install-html" >
+    <branch  repo="github" module="Gnucash/gnucash-docs.git" revision="master"
+	   checkoutdir="gnucash-docs-git"/>
+    <dependencies>
+      <!-- dep package="scrollkeeper"/ -->
+    </dependencies>
+  </autotools>
+
+  <autotools id="gnucash-docs" autogenargs="--disable-scrollkeeper"
+	    autogen-template="%(srcdir)s/%(autogen-sh)s &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s %(autogenargs)s"
+	    makeargs=" html" makeinstallargs="install-html" >
+    <branch  module="gnucash/gnucash-docs/gnucash-docs-2.6.16.tar.gz"
+	     version="2.6.16" repo="sourceforge"/>
+  </autotools>
+
+  <metamodule id="meta-gnucash">
+    <dependencies>
+      <dep package="gnucash"/>
+      <dep package="gnucash-docs"/>
+    </dependencies>
+  </metamodule>
+
+</moduleset>
