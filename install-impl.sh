@@ -663,6 +663,7 @@ function inst_gwenhywfar() {
                 --prefix=$_GWENHYWFAR_UDIR \
                 --with-guis=gtk2 \
                 CPPFLAGS="${GNOME_CPPFLAGS} ${GNUTLS_CPPFLAGS} `pkg-config --cflags gtk+-2.0`" \
+                CFLAGS="-g -O2 -fno-omit-frame-pointer" \
                 LDFLAGS="${GNOME_LDFLAGS} ${GNUTLS_LDFLAGS} -lintl"
             make
 #            [ "$CROSS_COMPILE" != "yes" ] && make check
