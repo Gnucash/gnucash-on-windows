@@ -91,13 +91,14 @@
   </autotools>
 
   <autotools id="libatomic-ops"
-             autogen-template="/bin/bash -c 'pushd %(srcdir)s &amp;&amp; ./%(autogen-sh)s &amp;&amp; popd &amp;&amp; %(srcdir)s/configure --prefix=%(prefix)s> %(autogenargs)s'">
+             autogen-template="/bin/bash -c 'pushd %(srcdir)s &amp;&amp; ./%(autogen-sh)s &amp;&amp; popd &amp;&amp; %(srcdir)s/configure --prefix=%(prefix)s> %(autogenargs)s'"
+	     autogenargs="--enable-shared --disable-static">
     <branch repo="github" module="ivmai/libatomic_ops"
 	    revision="libatomic_ops-7_4_4"/>
   </autotools>
 
   <autotools id="bdw-gc" autogen-template="/bin/bash -c 'pushd %(srcdir)s &amp;&amp; ./autogen.sh &amp;&amp; automake -ac &amp;&amp; popd &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s  %(autogenargs)s'"
-	     autogenargs="--enable-threads=pthreads">
+	     autogenargs="--enable-threads=pthreads --enable-shared --disable-static">
     <branch repo="github" module="ivmai/bdwgc"  revision="gc7_6_0" />
     <dependencies>
       <dep package="libatomic-ops"/>
@@ -114,10 +115,10 @@
   </autotools>
 
   <!-- Unfortunately in addition to needing a few patches this hangs when it tries to compile Scheme. -->
-  <autotools id="guile2" autogen-sh="autoreconf">
-    <branch repo="ftp.gnu.org" module="guile/guile-2.0.12.tar.gz"
-	    version="2.0.12">
-      <patch file="https://git.gnome.org/browse/gtk-osx/plain/patches/guile-clocktime.patch" strip="1"/>
+  <autotools id="guile2" autogen-sh="autoreconf" autogenargs="--without-threads">
+    <branch repo="ftp.gnu.org" module="guile/guile-2.0.14.tar.gz"
+	    version="2.0.14">
+      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/guile-2.0.14-mingw64-fixup.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="libunistring"/>
@@ -209,7 +210,8 @@
 	     autogen-template='/bin/bash -c "pushd %(srcdir)s &amp;&amp; ./autoinit.sh &amp;&amp; popd &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s  %(autogenargs)s"'>
     <branch repo="sourceforge" module="openjade/OpenSP-1.5.2.tar.gz"
 	    version='1.5.2'>
-      <patch file="/c/gcdev/gnucash-on-windows.git/opensp-1.5.2.patch" strip='1'/>
+      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/opensp-1.5.2.patch" strip='1'/>
+      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/OpenSP-1.5.2-non-posix-functions.patch" strip='1'/>
     </branch>
   </autotools>
 
@@ -254,17 +256,17 @@
 
   <autotools id="libdbi-drivers" autogen-sh='autoreconf'
 	     autogenargs='--disable-docs --with-sqlite3 --with-sqlite3-dir="/mingw32" --with-pgsql --with-pgsql-dir="/mingw32" --with-mysql --with-mysql-dir="/mingw32" '>
-    <branch repo="sourceforge" version="0.8.3-1"
+    <branch repo="sourceforge" version="0.8.3"
 	    module="libdbi-drivers/libdbi-drivers-0.8.3-1.tar.gz">
       <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/libdbi-drivers-errno.patch" strip="1"/>
+      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/libdbi-drivers-linkage.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="libdbi"/>
     </dependencies>
   </autotools>
 
-  <cmake id="googletest" cmakeargs="-DBUILD_GMOCK=OFF" skip-autogen="yes"
-	 skip-install="yes">
+  <cmake id="googletest" cmakeargs="-G 'MSYS Makefiles' -DBUILD_GMOCK=OFF">
     <branch module="google/googletest" repo="github" tag="release-1.8.0"/>
   </cmake>
 
@@ -272,7 +274,7 @@
 	      autogen-template="%(srcdir)s/%(autogen-sh)s &amp;&amp; %(srcdir)s/configure -\-prefix %(prefix)s %(autogenargs)s"
 	      autogenargs="-\-enable-ofx -\-enable-aqbanking -\-enable-binreloc -\-enable-dbi -\-with-dbi-dbd-dir=$PREFIX/lib/dbd"-->
  <cmake id="gnucash"
-        cmakeargs="-G 'MSYS Makefiles' -DCMAKE_INSTALL_LIBDIR=lib  -DCMAKE_PREFIX_PATH=c:/gcdev64/msys2 -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DHTMLHELP_DIR=$PREFIX/hh -DGTEST_ROOT=$SRCROOT/googletest/googletest -DGMOCK_ROOT=$SRCROOT/googletest/googlemock">
+        cmakeargs="-G 'MSYS Makefiles' -DCMAKE_PREFIX_PATH=c:/gcdev64/msys2 -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DHTMLHELP_DIR=$PREFIX/hh -DGTEST_ROOT=$SRCROOT/googletest/googletest -DGMOCK_ROOT=$SRCROOT/googletest/googlemock">
    <branch repo="github" module="Gnucash/gnucash.git" revision="master"
 	   checkoutdir="gnucash-git"/>
     <dependencies>
@@ -281,7 +283,7 @@
       <dep package="libdbi-drivers"/>
       <!--dep package="shared-mime-info"/-->
       <!--dep package="iso-codes"/-->
-      <dep package="guile"/>
+      <dep package="guile2"/>
       <!--dep package="swig"/-->
       <dep package="boost"/>
       <dep package="googletest"/>

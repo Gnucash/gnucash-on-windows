@@ -1,0 +1,64 @@
+diff --git a/src/dbd_helper.c~ b/src/dbd_helper.c
+index e783847..156fc34 100644
+--- a/src/dbd_helper.c~
++++ b/src/dbd_helper.c
+@@ -24,6 +24,10 @@
+ #include <config.h>
+ #endif
+ 
++#ifdef __MINGW32__
++#define _POSIX_
++#endif
++
+ #include <sys/types.h>
+ #include <dirent.h>
+ #include <stddef.h>
+diff --git a/src/dbi_main.c~ b/src/dbi_main.c
+index 07b959b..348d114 100644
+--- a/src/dbi_main.c~
++++ b/src/dbi_main.c
+@@ -199,11 +199,18 @@ int dbi_initialize_r(const char *driverdir, dbi_inst *pInst) {
+ 
+ 		status = 0;
+ 		while (42) { /* yes, we all admire Douglas Adams */
++#ifdef HAVE_READDIR_R
+ 			driver_dirent = NULL;
+ 			status = readdir_r (dir, buffer, &driver_dirent);
+ 			if (status != 0 || driver_dirent == NULL) {
+ 			  break;
+ 			}
++#else
++			driver_dirent = readdir (dir);
++			if (driver_dirent == NULL)
++			  break;
++			memcpy (buffer, driver_dirent, buffer_size);
++#endif
+ 
+ 			driver = NULL;
+ 			snprintf(fullpath, FILENAME_MAX, "%s%s%s", effective_driverdir, DBI_PATH_SEPARATOR, driver_dirent->d_name);
+diff --git a/src/timegm.c~ b/src/timegm.c
+index a7d1bc0..f13f788 100644
+--- a/src/timegm.c~
++++ b/src/timegm.c
+@@ -25,6 +25,7 @@
+ #endif
+ 
+ #include <time.h>
++#include <string.h>
+ 
+ #ifndef HAVE_TIMEGM
+ 
+@@ -39,7 +40,13 @@ time_t timegm(struct tm *tm) {
+     temp_ltime = mktime(tm);
+   }
+ 
++#ifdef HAVE_GMTIME_R
+   gmtime_r(&temp_ltime, &temp_gm);
++#else
++  /* We're done with tm, might as well reuse it... */
++  tm = gmtime(&temp_ltime);
++  memcpy (&temp_gm, tm, sizeof(struct tm));
++#endif
+ 
+   return (time_t)(temp_ltime + (temp_ltime - mktime(&temp_gm)));
+ }
