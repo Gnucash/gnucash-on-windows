@@ -252,3 +252,12 @@ if (!(test-path -path "$target_dir\\src\\gnucash-on-windows.git")) {
   $proc = bash-command -command "git clone -b mingw64 https://github.com/gnucash/gnucash-on-windows.git $target_dir/src/gnucash-on-windows.git"
   $proc.waitForExit()
 }
+
+cat $target_dir\\src\\gnucash-on-windows.git\\jhbuildrc.in |
+ %{$_ -replace "@-BASE_DIR-@", "$target_dir"} |
+ %{$_ -replace "@-DOWNLOAD_DIR-@", "$download_dir"} > $target_dir\\src\\gnucash-on-windows.git\\jhbuildrc
+
+Write-Host @"
+Your build environment is now ready to use. Open an MSys2 shell from the start menu, cd to your target directory, and run
+jhbuild -f gnucash-on-windows.git/jhbuildrc build
+"@

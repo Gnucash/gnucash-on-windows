@@ -30,13 +30,15 @@ def add_to_path_var(var, path):
     else:
         os.environ[var] = os.environ[var] + ":" + path
 
-_config_dir = os.path.join('/c', 'gcdev64', 'src', 'gnucash-on-windows.git')
-_basedir = os.path.join('/c', 'gcdev64')
+_basedir = "@-BASE_DIR-@"
+_downloaddir = "@-DOWNLOAD_DIR-@"
+_config_dir = os.path.join(_basedir, 'src', 'gnucash-on-windows.git')
 prefix = os.path.join(_basedir, 'inst')
 checkoutroot = os.path.join(_basedir, 'src')
 buildroot = os.path.join(_basedir, 'build')
-tarballdir = os.path.join('/c', 'gcdev', 'downloads')
+tarballdir = os.path.join(_download_dir)
 moduleset = os.path.join(_config_dir, 'gnucash.modules')
+modules = ["meta-gnucash"]
 
 _mingw_includes = os.path.join(_basedir, 'msys2', 'mingw32', 'include')
 _mingw_libs = os.path.join(_basedir, 'msys2', 'mingw32', 'lib')
