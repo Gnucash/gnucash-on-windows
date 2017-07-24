@@ -1,0 +1,33 @@
+diff --git a/sx/XmlOutputEventHandler.cxx~ b/sx/XmlOutputEventHandler.cxx
+index 387af89..d03fe5b 100644
+--- a/sx/XmlOutputEventHandler.cxx~
++++ b/sx/XmlOutputEventHandler.cxx
+@@ -1202,7 +1202,9 @@ void XmlOutputEventHandler::inputOpened(InputSource *in)
+           char realDirs[MAXPATHLEN];
+           char realOutputDir[MAXPATHLEN];
+           char *outputDir = strdup(outputDir_);
+-
++#ifdef __MINGW32__
++#define realpath(N,R) _fullpath((R),(N),_MAX_PATH)
++#endif
+           realpath((const char *)dirname(dirs), realDirs);
+           realpath((const char *)dirname(outputDir), realOutputDir);
+ 
+@@ -1469,7 +1471,7 @@ int XmlOutputEventHandler::maybeCreateDirectories (char *path)
+     *pp = '/';
+   }
+ 
+-#ifndef _MSC_VER
++#if ! defined (_MSC_VER) && ! defined (__MINGW32__)
+   struct stat statbuf;
+   pp = strrchr(path, '/');
+ 
+@@ -1483,6 +1485,8 @@ int XmlOutputEventHandler::maybeCreateDirectories (char *path)
+   }
+ 
+   ret = mkdir(path, statbuf.st_mode);
++#elif  defined (__MINGW32__)
++  ret = mkdir(path);
+ #else
+   ret=_mkdir(path);
+ #endif

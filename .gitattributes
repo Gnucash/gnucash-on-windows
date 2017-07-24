@@ -23,12 +23,15 @@
 *.sh    text eol=lf
 *.svg   text eol=lf
 *.xsl   text eol=lf
+*.modules text eol=lf
+jhbuildrc text eol=lf
 
 # Files that should use CRLF at all times
 *.bat text eol=crlf
 *.cmd text eol=crlf
 *.isl text eol=crlf
 *.vbs text eol=crlf
+*.ps1 text eol=crlf
 
 gnucash.iss text eol=crlf
 gnucash.rc.in  text eol=crlf
