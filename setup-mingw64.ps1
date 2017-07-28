@@ -31,7 +31,7 @@ needed scripts is cloned into the target.
 
 You may need to allow running scripts on your computer and depending
 on where the target_dir is you may need to run the script with
-Administrator priviledges.
+Administrator privileges.
 
 .PARAMETER target_dir
 
