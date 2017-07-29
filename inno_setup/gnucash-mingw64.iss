@@ -148,9 +148,9 @@ Source: "@MINGW_DIR@\bin\libharfbuzz-0.dll"; DestDir: "{app}\bin"; Components: m
 Source: "@MINGW_DIR@\bin\libharfbuzz-icu-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libhogweed-4.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libiconv-2.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libicudt57.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libicuin57.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libicuuc57.dll"; DestDir: "{app}\bin"; Components: main
+Source: "@MINGW_DIR@\bin\libicudt*.dll"; DestDir: "{app}\bin"; Components: main
+Source: "@MINGW_DIR@\bin\libicuin*.dll"; DestDir: "{app}\bin"; Components: main
+Source: "@MINGW_DIR@\bin\libicuuc*.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libidn-11.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libintl-8.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libjavascriptcoregtk-3.0-0.dll"; DestDir: "{app}\bin"; Components: main
