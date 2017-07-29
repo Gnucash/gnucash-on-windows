@@ -31,8 +31,8 @@ def add_to_path_var(var, path):
         os.environ[var] = os.environ[var] + ":" + path
 
 _basedir = "@-BASE_DIR-@"
-_downloaddir = "@-DOWNLOAD_DIR-@"
-_config_dir = os.path.join(_basedir, 'src', 'gnucash-on-windows.git')
+_download_dir = "@-DOWNLOAD_DIR-@"
+_config_dir = os.path.dirname(os.path.realpath(__file__))
 prefix = os.path.join(_basedir, 'inst')
 checkoutroot = os.path.join(_basedir, 'src')
 buildroot = os.path.join(_basedir, 'build')
