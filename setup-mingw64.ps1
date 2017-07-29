@@ -101,10 +101,7 @@ function bash-command() {
 	return
     }
 #   write-host "Running bash command ""$command"""
-   $psi = new-object "Diagnostics.ProcessStartInfo"
-   $psi.Filename = "$target_dir\msys2\usr\bin\bash.exe"
-   $psi.Arguments =  "-c ""export PATH=/usr/bin; $command"""
-   [Diagnostics.Process]::Start($psi)
+    Start-Process -FilePath "$target_dir\msys2\usr\bin\bash.exe" -ArgumentList "-c ""export PATH=/usr/bin; $command""" -NoNewWindow -Wait
 }
 
 function make-unixpath([string]$path) {
@@ -183,8 +180,7 @@ Updating the new installation. A bash window will open. In that window accept th
 
 There will be a second update.
 "@
-   $proc = bash-command -command "pacman -Syuu"
-   $proc.WaitForExit()
+   bash-command -command "pacman -Syuu --noconfirm"
 }
 
 #Update the system.
@@ -193,12 +189,11 @@ Write-Host @"
 Updating the installation. Accept the proposed changes. If the window doesn't close on its own then close it and re-run the script when it finishes.
 "@
 
-$proc = bash-command -command "pacman -Syuu"
-$proc.WaitForExit()
+bash-command -command "pacman -Syuu --noconfirm"
 
 # Set up aliases for the parts of msys-devtools and mingw-w64-toolchain that
 # we need:
-$devel = "asciidoc autoconf autoconf2.13 autogen automake-wrapper automake1.10 automake1.11 automake1.12 automake1.13 automake1.14 automake1.15 automake1.6 automake1.7 automake1.8 automake1.9 bison diffstat diffutils dos2unix file flex gawk gettext gettext-devel gperf grep groff intltool libtool m4 make man-db pacman pactoys-git patch patchutils perl pkg-config sed swig texinfo texinfo-tex wget xmlto git jhbuild-git texinfo"
+$devel = "asciidoc autoconf autoconf2.13 autogen automake-wrapper automake1.10 automake1.11 automake1.12 automake1.13 automake1.14 automake1.15 automake1.6 automake1.7 automake1.8 automake1.9 bison cmake diffstat diffutils dos2unix file flex gawk gettext gettext-devel gperf grep groff intltool libtool m4 make man-db pacman pactoys-git patch patchutils perl pkg-config sed swig texinfo texinfo-tex wget xmlto git jhbuild-git texinfo"
 
 $toolchain = "binutils crt-git gcc gcc-libs gdb headers-git libmangle-git libwinpthread-git make pkg-config tools-git winpthreads-git"
 
@@ -216,12 +211,9 @@ $msys_devel = make-pkgnames -prefix "msys/" -items $devel
 $mingw_toolchain = make-pkgnames -prefix $mingw_prefix -items $toolchain
 $mingw_deps = make-pkgnames -prefix $mingw_prefix -items $deps
 
-$proc = bash-command -command "pacman -S $msys_devel"
-$proc.waitForExit()
-$proc = bash-command -command "pacman -S $mingw_toolchain"
-$proc.waitForExit()
-$proc = bash-command -command "pacman -S  $mingw_deps"
-$proc.waitForExit()
+bash-command -command "pacman -S $msys_devel --noconfirm --needed"
+bash-command -command "pacman -S $mingw_toolchain --noconfirm --needed"
+bash-command -command "pacman -S  $mingw_deps --noconfirm --needed"
 
 Write-Host @"
 
@@ -232,13 +224,10 @@ if (!$installed_hh) {
    $installed_hh = get-item -path "hkcu:\SOFTWARE\Microsoft\HTML Help Workshop" | foreach-object{$_.GetValue("InstallDir")}
 }
 $installed_hh = make-unixpath -path $installed_hh
-$proc = bash-command -command "cp $installed_hh/include/htmlhelp.h $mingw_path/include"
-$proc.waitForExit()
+bash-command -command "cp '$installed_hh/include/htmlhelp.h' '$mingw_path/include'"
 
-$proc = bash-command -command "$mingw_bin/gendef $hhctrl_ocx - > $mingw_path/lib/htmlhelp.def 2>> /errors"
-$proc.waitForExit()
-$proc = bash-command -command "$mingw_bin/dlltool -k -d $mingw_path/lib/htmlhelp.def -l $mingw_path/lib/libhtmlhelp.a >> /errors 2>&1"
-$proc.waitForExit()
+bash-command -command "$mingw_bin/gendef $hhctrl_ocx - > $mingw_path/lib/htmlhelp.def 2>> /errors"
+bash-command -command "$mingw_bin/dlltool -k -d $mingw_path/lib/htmlhelp.def -l $mingw_path/lib/libhtmlhelp.a >> /errors 2>&1"
 
 Write-Host @"
 
@@ -249,13 +238,19 @@ if (!(test-path -path "$target_dir\\src")) {
   New-Item $target_dir\\src -type directory
 }
 if (!(test-path -path "$target_dir\\src\\gnucash-on-windows.git")) {
-  $proc = bash-command -command "git clone -b mingw64 https://github.com/gnucash/gnucash-on-windows.git $target_dir/src/gnucash-on-windows.git"
-  $proc.waitForExit()
+  bash-command -command "git clone -b mingw64 https://github.com/gnucash/gnucash-on-windows.git $target_dir/src/gnucash-on-windows.git"
 }
+if (!(test-path -path "$target_dir\\src\\gnucash-on-windows.git")) {
+   write-host "Failed to clone the gnucash-on-windows repo, exiting."
+   exit
+}
+$target_unix = make-unixpath $target_dir
+$download_unix = make-unixpath $download_dir
 
-cat $target_dir\\src\\gnucash-on-windows.git\\jhbuildrc.in |
- %{$_ -replace "@-BASE_DIR-@", "$target_dir"} |
- %{$_ -replace "@-DOWNLOAD_DIR-@", "$download_dir"} > $target_dir\\src\\gnucash-on-windows.git\\jhbuildrc
+$jhbuildrc = get-content "$target_dir\\src\\gnucash-on-windows.git\\jhbuildrc.in" |
+ %{$_ -replace "@-BASE_DIR-@", "$target_unix"} |
+ %{$_ -replace "@-DOWNLOAD_DIR-@", "$download_unix"}
+ [IO.File]::WriteAllLines("$target_dir\\src\\gnucash-on-windows.git\\jhbuildrc", $jhbuildrc)
 
 Write-Host @"
 Your build environment is now ready to use. Open an MSys2 shell from the start menu, cd to your target directory, and run
