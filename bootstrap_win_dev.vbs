@@ -461,7 +461,7 @@ Sub HTTPDownload( myURL, myPath )
 End Sub
 
 ' Download a binary type file over http
-Sub HTTPDownloadBinaryFile( myURL, myPath )                                      
+Sub HTTPDownloadBinaryFile( myURL, myPath )
 ' This Sub downloads the FILE specified in myURL to the path specified in myPath.
 '
 ' myURL must always end with a file name
@@ -469,11 +469,10 @@ Sub HTTPDownloadBinaryFile( myURL, myPath )
 '
 ' Based on a script written by Rob van der Woude
 ' http://www.robvanderwoude.com
-' Ref: https://stackoverflow.com/questions/29367130/downloading-a-file-in-vba-and-storing-it                                        
+' Ref: https://stackoverflow.com/questions/29367130/downloading-a-file-in-vba-and-storing-it
 
     ' Standard housekeeping
     Dim i, objFile, objHTTP, strFile, strMsg
-
 
     Const adSaveCreateOverWrite = 2, adSaveCreateNotExist = 1
     Const adTypeBinary = 1
@@ -489,9 +488,6 @@ Sub HTTPDownloadBinaryFile( myURL, myPath )
         AbortScript
     End If
 
-    ' Create or open the target file
-    'Set objFile = objFso.OpenTextFile( strFile, ForWriting, True )
-
     ' Create an HTTP object
     Set objHTTP = CreateObject( "MSXML2.ServerXMLHTTP" )
 
@@ -501,19 +497,17 @@ Sub HTTPDownloadBinaryFile( myURL, myPath )
 
     ' Write the downloaded byte stream to the target file
     If objHTTP.Status = 200 Then
-            ' Create the target stream
-            Set oStream = CreateObject("ADODB.Stream")
-            oStream.Open            
-            oStream.Type = adTypeBinary
-            oStream.Write objHTTP.responseBody
-            oStream.SaveToFile filePath, adSaveCreateOverWrite ' 1 = no overwrite, 2 = overwrite
-            ' Close the target file
-            oStream.Close
-    End If                                                
-
+        ' Create the target stream
+        Set oStream = WScript.CreateObject( "ADODB.Stream" )
+        oStream.Open
+        oStream.Type = adTypeBinary
+        oStream.Write objHTTP.responseBody
+        oStream.SaveToFile strFile, adSaveCreateOverWrite ' 1 = no overwrite, 2 = overwrite
+        ' Close the target file
+        oStream.Close
+    End If
 End Sub
 
-                                    
 ' Extract a zip file strZipFile into strFolder
 Function ExtractAll(strZipFile, strFolder)
    Set objShell = CreateObject("Shell.Application")
