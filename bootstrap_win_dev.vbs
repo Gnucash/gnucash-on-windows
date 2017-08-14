@@ -163,7 +163,7 @@ Else
     If Not objFso.FileExists(strMingwGetZip) Then
         stdout.Write "Downloading mingw-get.zip (slow!)... "
         strMingwGetZipUrl = "https://github.com/Gnucash/gnucash-on-windows/raw/master/mingw-get.zip"
-        HTTPDownload strMingwGetZipUrl, strMingwGetZip
+        HTTPDownloadBinaryFile strMingwGetZipUrl, strMingwGetZip
         stdout.WriteLine "Success"
     End If
 
@@ -460,6 +460,53 @@ Sub HTTPDownload( myURL, myPath )
     objFile.Close( )
 End Sub
 
+' Download a binary type file over http
+Sub HTTPDownloadBinaryFile( myURL, myPath )
+' This Sub downloads the FILE specified in myURL to the path specified in myPath.
+'
+' myURL must always end with a file name
+' myPath may be a directory or a file name; in either case the directory must exist
+'
+' Based on a script written by Rob van der Woude
+' http://www.robvanderwoude.com
+' Ref: https://stackoverflow.com/questions/29367130/downloading-a-file-in-vba-and-storing-it
+
+    ' Standard housekeeping
+    Dim i, objFile, objHTTP, strFile, strMsg
+
+    Const adSaveCreateOverWrite = 2, adSaveCreateNotExist = 1
+    Const adTypeBinary = 1
+
+    ' Check if the specified target file or folder exists,
+    ' and build the fully qualified path of the target file
+    If objFso.FolderExists( myPath ) Then
+        strFile = objFso.BuildPath( myPath, Mid( myURL, InStrRev( myURL, "/" ) + 1 ) )
+    ElseIf objFso.FolderExists( Left( myPath, InStrRev( myPath, "\" ) - 1 ) ) Then
+        strFile = myPath
+    Else
+        stdout.WriteLine "ERROR: Target folder not found."
+        AbortScript
+    End If
+
+    ' Create an HTTP object
+    Set objHTTP = CreateObject( "MSXML2.ServerXMLHTTP" )
+
+    ' Download the specified URL
+    objHTTP.Open "GET", myURL, False
+    objHTTP.Send
+
+    ' Write the downloaded byte stream to the target file
+    If objHTTP.Status = 200 Then
+        ' Create the target stream
+        Set oStream = WScript.CreateObject( "ADODB.Stream" )
+        oStream.Open
+        oStream.Type = adTypeBinary
+        oStream.Write objHTTP.responseBody
+        oStream.SaveToFile strFile, adSaveCreateOverWrite ' 1 = no overwrite, 2 = overwrite
+        ' Close the target file
+        oStream.Close
+    End If
+End Sub
 
 ' Extract a zip file strZipFile into strFolder
 Function ExtractAll(strZipFile, strFolder)
