@@ -73,6 +73,10 @@ if (!(test-path -path $target_dir)) {
     new-item "$target_dir" -type directory
 }
 
+if (!(test-path -path $download_dir)) {
+    new-item "$download_dir" -type directory
+}
+
 function make-pkgnames ([string]$prefix, [string]$items) {
     $items.split(" ") | foreach-object {"$prefix$_"}
 }
@@ -193,14 +197,13 @@ bash-command -command "pacman -Syuu --noconfirm"
 
 # Set up aliases for the parts of msys-devtools and mingw-w64-toolchain that
 # we need:
-$devel = "asciidoc autoconf autoconf2.13 autogen automake-wrapper automake1.10 automake1.11 automake1.12 automake1.13 automake1.14 automake1.15 automake1.6 automake1.7 automake1.8 automake1.9 bison cmake diffstat diffutils dos2unix file flex gawk gettext gettext-devel gperf grep groff intltool m4 make man-db pacman pactoys-git patch patchutils perl pkg-config sed swig texinfo texinfo-tex wget xmlto git jhbuild-git texinfo"
+$devel = "asciidoc autoconf autoconf2.13 autogen automake-wrapper automake1.10 automake1.11 automake1.12 automake1.13 automake1.14 automake1.15 automake1.6 automake1.7 automake1.8 automake1.9 bison diffstat diffutils dos2unix file flex gawk gettext gettext-devel gperf grep groff intltool libtool m4 make man-db pacman pactoys-git patch patchutils perl pkg-config sed swig texinfo texinfo-tex wget xmlto git jhbuild-git texinfo"
 
-$toolchain = "binutils crt-git gcc gcc-libs gdb headers-git libmangle-git libtool libwinpthread-git make pkg-config tools-git winpthreads-git"
+$toolchain = "binutils cmake crt-git gcc gcc-libs gdb headers-git libmangle-git libtool libwinpthread-git make pkg-config tools-git winpthreads-git"
 
 
-# Note that webkitgtk3 will pull in gtk3 automatically; we need gtk2 as well to
-# support AQBanking.
-$deps = "webkitgtk3 gtk2 boost iso-codes shared-mime-info libmariadbclient postgresql libgnomecanvas ninja ncurses"
+# Note that webkitgtk3 will pull in gtk3 automatically.
+$deps = "webkitgtk3 boost iso-codes shared-mime-info libmariadbclient postgresql libgnomecanvas ninja ncurses"
 
 Write-Host @"
 
@@ -238,7 +241,7 @@ if (!(test-path -path "$target_dir\\src")) {
   New-Item $target_dir\\src -type directory
 }
 if (!(test-path -path "$target_dir\\src\\gnucash-on-windows.git")) {
-  bash-command -command "git clone -b mingw64 https://github.com/gnucash/gnucash-on-windows.git $target_dir/src/gnucash-on-windows.git"
+  bash-command -command "git clone https://github.com/gnucash/gnucash-on-windows.git $target_dir/src/gnucash-on-windows.git"
 }
 if (!(test-path -path "$target_dir\\src\\gnucash-on-windows.git")) {
    write-host "Failed to clone the gnucash-on-windows repo, exiting."
@@ -253,6 +256,8 @@ $jhbuildrc = get-content "$target_dir\\src\\gnucash-on-windows.git\\jhbuildrc.in
  [IO.File]::WriteAllLines("$target_dir\\src\\gnucash-on-windows.git\\jhbuildrc", $jhbuildrc)
 
 Write-Host @"
-Your build environment is now ready to use. Open an MSys2 shell from the start menu, cd to your target directory, and run
-jhbuild -f gnucash-on-windows.git/jhbuildrc build
+Your build environment is now ready to use. Open an MSys2/Mingw32 shell from the start menu, cd to your target directory, and run
+jhbuild -f src/gnucash-on-windows.git/jhbuildrc build
+
+Note that the build will not work with the plain MSys2 shell!
 "@
