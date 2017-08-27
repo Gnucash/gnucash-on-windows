@@ -162,6 +162,36 @@ index 7a139747f..7e4b7dfe3 100644
  /* You see, FreeBSD defines _POSIX_CPUTIME but not
     CLOCK_PROCESS_CPUTIME_ID.  */
  #define HAVE_POSIX_CPUTIME 1
--- 
-2.12.1
-
+@@ -830,12 +830,7 @@ scm_init_stime()
+ 
+ #ifdef HAVE_POSIX_CPUTIME
+   {
+-    clockid_t dummy;
+-    
+-    /* Only use the _POSIX_CPUTIME clock if it's going to work across
+-       CPUs. */
+-    if (clock_getcpuclockid (0, &dummy) == 0 &&
+-        clock_gettime (CLOCK_PROCESS_CPUTIME_ID, &posix_run_time_base) == 0)
++    if (clock_gettime (CLOCK_PROCESS_CPUTIME_ID, &posix_run_time_base) == 0)
+       get_internal_run_time = get_internal_run_time_posix_timer;
+     else
+       errno = 0;
+diff --git a/lib/intprops.h~ b/lib/intprops.h
+index feb02c3..84de8ee 100644
+--- a/lib/intprops.h~
++++ b/lib/intprops.h
+@@ -230,11 +230,11 @@ verify (TYPE_MAXIMUM (long long int) == LLONG_MAX);
+    (e.g., A and B) have the same type as MIN and MAX.  Instead, they assume
+    that the result (e.g., A + B) has that type.  */
+ #if _GL_HAS_BUILTIN_OVERFLOW_WITH_NULL
+-# define _GL_ADD_OVERFLOW(a, b, min, max)
++# define _GL_ADD_OVERFLOW(a, b, min, max) \
+    __builtin_add_overflow (a, b, (__typeof__ ((a) + (b)) *) 0)
+-# define _GL_SUBTRACT_OVERFLOW(a, b, min, max)
++# define _GL_SUBTRACT_OVERFLOW(a, b, min, max) \
+    __builtin_sub_overflow (a, b, (__typeof__ ((a) - (b)) *) 0)
+-# define _GL_MULTIPLY_OVERFLOW(a, b, min, max)
++# define _GL_MULTIPLY_OVERFLOW(a, b, min, max) \
+    __builtin_mul_overflow (a, b, (__typeof__ ((a) * (b)) *) 0)
+ #else
+ # define _GL_ADD_OVERFLOW(a, b, min, max)                                \

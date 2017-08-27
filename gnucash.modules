@@ -118,7 +118,8 @@
   <autotools id="guile2" autogen-sh="autoreconf" autogenargs="--without-threads">
     <branch repo="ftp.gnu.org" module="guile/guile-2.0.14.tar.gz"
 	    version="2.0.14">
-      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/guile-2.0.14-mingw64-fixup.patch" strip="1"/>
+      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/guile-2.0.14-mingw64-fixups.patch" strip="1"/>
+      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/guile-2.0.14-Fix-mktime-test.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="libunistring"/>

@@ -1,0 +1,33 @@
+From ba984ee511178fdf1f547931fff213db76ab3eee Mon Sep 17 00:00:00 2001
+From: John Ralls <jralls@ceridwen.us>
+Date: Sun, 23 Jul 2017 14:08:28 -0700
+Subject: [PATCH 3/3] Test for HAVE_MKTIME and NEED_REPLACE_MKTIME before
+ HAVE_MKTIME_INTERNAL
+
+So that if the latter is true and the former aren't they don't overwrite REPLACE_MKTIME.
+---
+ m4/gnulib-comp.m4 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/m4/gnulib-comp.m4 b/m4/gnulib-comp.m4
+index 9380120e7..824afaf2c 100644
+--- a/m4/gnulib-comp.m4
++++ b/m4/gnulib-comp.m4
+@@ -998,13 +998,13 @@ AC_SUBST([LTALLOCA])
+   func_gl_gnulib_m4code_5264294aa0a5557541b53c8c741f7f31 ()
+   {
+     if ! $gl_gnulib_enabled_5264294aa0a5557541b53c8c741f7f31; then
++      func_gl_gnulib_m4code_mktime
+       gl_FUNC_MKTIME_INTERNAL
+       if test $REPLACE_MKTIME = 1; then
+         AC_LIBOBJ([mktime])
+         gl_PREREQ_MKTIME
+       fi
+       gl_gnulib_enabled_5264294aa0a5557541b53c8c741f7f31=true
+-      func_gl_gnulib_m4code_mktime
+     fi
+   }
+   func_gl_gnulib_m4code_f691f076f650964c9f5598c3ee487616 ()
+-- 
+2.12.1
+
