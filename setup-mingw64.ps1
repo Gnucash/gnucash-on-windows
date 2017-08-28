@@ -60,12 +60,12 @@ Param(
 $progressPreference = 'silentlyContinue'
 if ($x86_64) {
     $mingw_prefix = "mingw64/mingw-w64-x86_64-"
-    $mingw_path = "/mingw64/x86_64-w64-mingw64"
+    $mingw_path = "/mingw64"
     $mingw_bin = "/mingw64/bin"
 }
 else {
     $mingw_prefix = "mingw32/mingw-w64-i686-"
-    $mingw_path = "/mingw32/i686-w64-mingw32"
+    $mingw_path = "/mingw32"
     $mingw_bin = "/mingw32/bin"
 }
 
