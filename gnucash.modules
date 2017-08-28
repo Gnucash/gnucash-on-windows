@@ -275,8 +275,9 @@
 	      autogen-template="%(srcdir)s/%(autogen-sh)s &amp;&amp; %(srcdir)s/configure -\-prefix %(prefix)s %(autogenargs)s"
 	      autogenargs="-\-enable-ofx -\-enable-aqbanking -\-enable-binreloc -\-enable-dbi -\-with-dbi-dbd-dir=$PREFIX/lib/dbd"-->
  <cmake id="gnucash"
-        cmakeargs="-DCMAKE_PREFIX_PATH=c:/gcdev64/msys2 -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DHTMLHELP_DIR=$PREFIX/hh -DGTEST_ROOT=$SRCROOT/googletest/googletest -DGMOCK_ROOT=$SRCROOT/googletest/googlemock">
-   <branch repo="github" module="Gnucash/gnucash.git" revision="master"
+        cmakeargs="-G 'MSYS Makefiles' -DCMAKE_PREFIX_PATH=c:/gcdev64/msys2 -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DHTMLHELP_DIR=$PREFIX/hh -DGTEST_ROOT=$SRCROOT/googletest/googletest -DGMOCK_ROOT=$SRCROOT/googletest/googlemock"
+	use-ninja="False">
+   <branch repo="github" module="Gnucash/gnucash.git" revision="dodge-boost-filesystem"
 	   checkoutdir="gnucash-git"/>
     <dependencies>
       <dep package="libofx"/>
