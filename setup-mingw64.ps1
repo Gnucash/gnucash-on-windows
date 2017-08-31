@@ -234,7 +234,7 @@ bash-command -command "$mingw_bin/dlltool -k -d $mingw_path/lib/htmlhelp.def -l 
 
 Write-Host @"
 
-Finally we'll clone the gnucash-on-windows repository into target-dir/src and you'll be ready to build GnuCash.
+Clone the gnucash-on-windows repository into the target source directory, patch jhbuild to disable its DESTDIR dance and set up jhbuildrc with our prefixes.
 "@
 
 if (!(test-path -path "$target_dir\\src")) {
@@ -247,6 +247,9 @@ if (!(test-path -path "$target_dir\\src\\gnucash-on-windows.git")) {
    write-host "Failed to clone the gnucash-on-windows repo, exiting."
    exit
 }
+
+bash-command -command "$mingw_bin/patch < $target_dir/src/gnucash-on-windows.git/patches/jhbuild.patch"
+
 $target_unix = make-unixpath $target_dir
 $download_unix = make-unixpath $download_dir
 
