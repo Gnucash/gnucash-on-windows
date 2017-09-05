@@ -19,6 +19,8 @@
 	      href="http://devel.aqbanking.de/svn/"/>
   <repository type="git" name="github"
 	      href="git://github.com/"/>
+  <repository type="tarball" name="github-tar"
+	      href="https://github.com/"/>
   <repository type="system" name="system"/>
 
   <systemmodule id="webkitgtk-3.0">
@@ -165,7 +167,9 @@
   </autotools>
 
   <autotools id="xmlsec">
-    <branch module="lsh123/xmlsec" repo="github" tag="xmlsec-1_2_20"/>
+    <branch module="lsh123/xmlsec/archive/xmlsec-1_2_20.tar.gz"
+	    repo="github-tar" version="1.2.20"
+	    checkoutdir="xmlsec-xmlsec-1_2_20"/>
     <dependencies>
       <dep package="openssl"/>
     </dependencies>
