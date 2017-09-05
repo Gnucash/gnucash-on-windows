@@ -104,12 +104,12 @@ function bash-command() {
 	write-host "Shell program not found, aborting."
 	return
     }
-#   write-host "Running bash command ""$command"""
+    write-host "Running bash command ""$command"""
     Start-Process -FilePath "$target_dir\msys2\usr\bin\bash.exe" -ArgumentList "-c ""export PATH=/usr/bin; $command""" -NoNewWindow -Wait
 }
 
 function make-unixpath([string]$path) {
-    $path -replace  "^([A-Z]):", '/$1' -replace "\\", '/'
+    $path -replace  "^([A-Z]):", '/$1' -replace "\\", '/' -replace "//", '/'  -replace "\(", '\(' -replace "\)", '\)' -replace " ", '\ '
 }
 
 # Install MSYS2 for the current machine's architechture.
@@ -223,15 +223,21 @@ Write-Host @"
 Next we'll install the HTML Help Workshop includes and libraries into our MinGW directory.
 "@
 
-if (!$installed_hh) {
-   $installed_hh = get-item -path "hkcu:\SOFTWARE\Microsoft\HTML Help Workshop" | foreach-object{$_.GetValue("InstallDir")}
+if (!(test-path -path "$target_dir/msys2/$mingw_path/include/htmlhelp.h")) {
+    if (!$installed_hh) {
+	$installed_hh = get-item -path "hkcu:\SOFTWARE\Microsoft\HTML Help Workshop" | foreach-object{$_.GetValue("InstallDir")}
+    }
+    $target_unix = make-unixpath -path $target_dir
+    $installed_hh = make-unixpath -path $installed_hh
+    bash-command -command "cp $installed_hh/include/htmlhelp.h $mingw_path/include"
+
+    bash-command -command "$mingw_bin/gendef $hhctrl_ocx - > $mingw_path/lib/htmlhelp.def"
+    bash-command -command "$mingw_bin/dlltool -k -d $mingw_path/lib/htmlhelp.def -l $mingw_path/lib/libhtmlhelp.a"
+    if (!(test-path -path "$target_dir/msys2/$mingw_path/include/htmlhelp.h")) {
+	Write-Host "HTML Help Workshop isn't correctly installed."
+	exit
+    }
 }
-$installed_hh = make-unixpath -path $installed_hh
-bash-command -command "cp '$installed_hh/include/htmlhelp.h' '$mingw_path/include'"
-
-bash-command -command "$mingw_bin/gendef $hhctrl_ocx - > $mingw_path/lib/htmlhelp.def 2>> /errors"
-bash-command -command "$mingw_bin/dlltool -k -d $mingw_path/lib/htmlhelp.def -l $mingw_path/lib/libhtmlhelp.a >> /errors 2>&1"
-
 Write-Host @"
 
 Clone the gnucash-on-windows repository into the target source directory, patch jhbuild to disable its DESTDIR dance and set up jhbuildrc with our prefixes.
@@ -248,7 +254,8 @@ if (!(test-path -path "$target_dir\\src\\gnucash-on-windows.git")) {
    exit
 }
 
-bash-command -command "$mingw_bin/patch < $target_dir/src/gnucash-on-windows.git/patches/jhbuild.patch"
+bash-command -command "$mingw_bin/patch -i $target_dir/src/gnucash-on-windows.git/patches/jhbuild.patch"
+bash-command -command "$mingw_bin/patch -i $target_dir/src/gnucash-on-windows.git/patches/FindSWIG.patch"
 
 $target_unix = make-unixpath $target_dir
 $download_unix = make-unixpath $download_dir
