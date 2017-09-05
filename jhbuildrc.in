@@ -51,6 +51,7 @@ add_to_path_var('PATH', os.path.join(_basedir, 'msys2', 'mingw32', 'bin'))
 
 os.environ['SRCROOT'] = checkoutroot
 os.environ['PREFIX'] = prefix
+os.environ['MSYS2ROOT'] = os.path.join(_basedir, msys2)
 #os.environ['GUILE_LOAD_PATH'] = os.path.join(prefix, 'share', 'guile', '2.0')
 #os.environ['GUILE_LOAD_BINARY_PATH'] = os.path.join(prefix, 'lib', 'guile', '2.0', 'ccache')
 autogenargs = "--build=i686-w64-mingw32"
