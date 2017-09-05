@@ -254,8 +254,8 @@ if (!(test-path -path "$target_dir\\src\\gnucash-on-windows.git")) {
    exit
 }
 
-bash-command -command "$mingw_bin/patch -i $target_dir/src/gnucash-on-windows.git/patches/jhbuild.patch"
-bash-command -command "$mingw_bin/patch -i $target_dir/src/gnucash-on-windows.git/patches/FindSWIG.patch"
+bash-command -command "/usr/bin/patch -d/ -p0 -i $target_dir/src/gnucash-on-windows.git/patches/jhbuild.patch"
+bash-command -command "/usr/bin/patch -d/ -p0 -i $target_dir/src/gnucash-on-windows.git/patches/FindSWIG.patch"
 
 $target_unix = make-unixpath $target_dir
 $download_unix = make-unixpath $download_dir
