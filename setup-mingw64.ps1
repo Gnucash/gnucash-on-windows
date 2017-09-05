@@ -218,6 +218,9 @@ bash-command -command "pacman -S $msys_devel --noconfirm --needed"
 bash-command -command "pacman -S $mingw_toolchain --noconfirm --needed"
 bash-command -command "pacman -S  $mingw_deps --noconfirm --needed"
 
+$target_unix = make-unixpath $target_dir
+$download_unix = make-unixpath $download_dir
+
 Write-Host @"
 
 Next we'll install the HTML Help Workshop includes and libraries into our MinGW directory.
@@ -227,7 +230,6 @@ if (!(test-path -path "$target_dir/msys2/$mingw_path/include/htmlhelp.h")) {
     if (!$installed_hh) {
 	$installed_hh = get-item -path "hkcu:\SOFTWARE\Microsoft\HTML Help Workshop" | foreach-object{$_.GetValue("InstallDir")}
     }
-    $target_unix = make-unixpath -path $target_dir
     $installed_hh = make-unixpath -path $installed_hh
     bash-command -command "cp $installed_hh/include/htmlhelp.h $mingw_path/include"
 
@@ -254,11 +256,8 @@ if (!(test-path -path "$target_dir\\src\\gnucash-on-windows.git")) {
    exit
 }
 
-bash-command -command "/usr/bin/patch -d/ -p0 -i $target_dir/src/gnucash-on-windows.git/patches/jhbuild.patch"
-bash-command -command "/usr/bin/patch -d/ -p0 -i $target_dir/src/gnucash-on-windows.git/patches/FindSWIG.patch"
-
-$target_unix = make-unixpath $target_dir
-$download_unix = make-unixpath $download_dir
+bash-command -command "/usr/bin/patch -d/ -p0 -i $target_unix/src/gnucash-on-windows.git/patches/jhbuild.patch"
+bash-command -command "/usr/bin/patch -d/ -p0 -i $target_unix/src/gnucash-on-windows.git/patches/FindSWIG.patch"
 
 $jhbuildrc = get-content "$target_dir\\src\\gnucash-on-windows.git\\jhbuildrc.in" |
  %{$_ -replace "@-BASE_DIR-@", "$target_unix"} |
