@@ -267,7 +267,10 @@
     </dependencies>
   </autotools>
 
-  <cmake id="googletest" cmakeargs="-G 'MSYS Makefiles' -DBUILD_GMOCK=OFF">
+  <cmake id="googletest"
+	 cmakeargs="-G 'MSYS Makefiles' -DBUILD_GMOCK=OFF"
+	 skip-install="True"
+	 use-ninja="False">
     <branch module="google/googletest" repo="github" tag="release-1.8.0"/>
   </cmake>
 
