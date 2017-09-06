@@ -84,8 +84,8 @@ function make-unixpath([string]$path) {
     $path -replace  "^([A-Z]):", '/$1' -replace "\\", '/'
 }
 
-$gnc_config_h = "$target_dir\build\gnucash-git\src\config.h"
-$gnc_vcsinfo_h = "$target_dir\build\gnucash-git\src\core-utils\gnc-vcs-info.h"
+$gnc_config_h = "$target_dir\build\gnucash-git\common\config.h"
+$gnc_vcsinfo_h = "$target_dir\build\gnucash-git\libgnucash\core-utils\gnc-vcs-info.h"
 
 $major_version = version_item -tag "GNUCASH_MAJOR_VERSION" -path $gnc_config_h
 $minor_version = version_item -tag "GNUCASH_MINOR_VERSION" -path $gnc_config_h
