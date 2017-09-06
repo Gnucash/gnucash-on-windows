@@ -1,6 +1,6 @@
---- /usr/lib/python2.7/site-packages/jhbuild/modtypes/cmake.py	2017-06-01 12:26:10.000000000 -0700
-+++ /usr/lib/python2.7/site-packages/jhbuild/modtypes/cmake.py	2017-08-31 10:46:42.719250200 -0700
-@@ -159,11 +159,9 @@
+--- /usr/lib/python2.7/site-packages/jhbuild/modtypes/cmake.py~	2017-09-05 16:58:18.206528300 -0700
++++ /usr/lib/python2.7/site-packages/jhbuild/modtypes/cmake.py	2017-09-05 16:59:24.172738500 -0700
+@@ -159,10 +159,9 @@
          if self.use_ninja:
              self.ensure_ninja_binary()
              extra_env = self.extra_env or {}
@@ -8,21 +8,37 @@
              buildscript.execute(self.ninja_binary + ' install', cwd=builddir, extra_env=extra_env)
          else:
 -            self.make(buildscript, 'install DESTDIR={}'.format(destdir))
--        self.process_install(buildscript, self.get_revision())
 +            self.make(buildscript, 'install')
+         self.process_install(buildscript, self.get_revision())
      do_install.depends = [PHASE_BUILD]
  
-     def xml_tag_and_attrs(self):
---- /usr/lib/python2.7/site-packages/jhbuild/modtypes/autotools.py	2017-06-01 12:26:10.000000000 -0700
-+++ /usr/lib/python2.7/site-packages/jhbuild/modtypes/autotools.py	2017-08-31 11:00:39.148673100 -0700
-@@ -309,9 +309,7 @@
-                 packagedb.uninstall(self.name)
+--- /usr/lib/python2.7/site-packages/jhbuild/modtypes/__init__.py~	2017-06-01 12:15:14.000000000 -0700
++++ /usr/lib/python2.7/site-packages/jhbuild/modtypes/__init__.py	2017-09-05 17:44:27.556524900 -0700
+@@ -313,14 +313,16 @@
+         save_broken_tree = False
+         broken_name = destdir + '-broken'
+         destdir_prefix = os.path.join(destdir, stripped_prefix)
+-        new_contents = fileutils.accumulate_dirtree_contents(destdir_prefix)
++        new_contents = []
+         errors = []
++        num_copied = 0
+         if os.path.isdir(destdir_prefix):
+             destdir_install = True
+             logging.info(_('Moving temporary DESTDIR %r into build prefix') % (destdir, ))
+             num_copied = self._process_install_files(destdir, destdir_prefix,
+                                                      buildscript.config.prefix,
+                                                      errors)
++            new_contents = fileutils.accumulate_dirtree_contents(destdir_prefix)
  
-         buildscript.set_action(_('Installing'), self)
--        destdir = self.prepare_installroot(buildscript)
--        self.make(buildscript, self.makeinstallargs or 'install', makeargs='DESTDIR={}'.format(destdir))
--        self.process_install(buildscript, self.get_revision())
-+        self.make(buildscript, self.makeinstallargs or 'install')
+             # Now the destdir should have a series of empty directories:
+             # $JHBUILD_PREFIX/_jhbuild/root-foo/$JHBUILD_PREFIX
+@@ -345,7 +347,8 @@
+             # Even if there are some files outside the DESTDIR, count that as success for now; we just warn
+             install_succeeded = True
+         else:
+-            save_broken_tree = True
++            install_succeeded = True
++#            save_broken_tree = True
  
-     do_install.depends = [PHASE_BUILD]
-     do_install.error_phases = [PHASE_CONFIGURE]
+         if save_broken_tree:
+             if os.path.exists(broken_name):
