@@ -84,12 +84,12 @@ bash-command -command "echo $time_stamp > $log_unix"
 #bash-command -command "scp $target_unix/$log_file $hostname/$log_dir/"
 
 # Update MinGW-w64
-bash-command -command "pacman -Su --noconfirm >> $log_unix 2>&1"
+bash-command -command "pacman -Su --noconfirm > >(tee -a $log_unix) 2>&1"
 
 # Update the gnucash-on-windows repository
 #bash-command -command "cd $script_unix && git reset --hard && git pull --rebase"
 # Build the latest GnuCash and all dependencies not installed via mingw64
-bash-command -command "jhbuild -f $script_unix/jhbuildrc build gnucash >> $log_unix 2>&1"
+bash-command -command "jhbuild --no-interact -f $script_unix/jhbuildrc build gnucash > >(tee -a $log_unix) 2>&1"
 #Build the installer
 & $script_dir\bundle-mingw64.ps1 -target_dir $target_dir 2>&1 | Out-File -FilePath $log_file -Append -Encoding UTF8
 $time_stamp = get-date -format "Build Ended yyyy-MM-dd HH:mm:ss"
