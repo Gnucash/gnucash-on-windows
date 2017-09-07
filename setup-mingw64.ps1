@@ -62,11 +62,13 @@ if ($x86_64) {
     $mingw_prefix = "mingw64/mingw-w64-x86_64-"
     $mingw_path = "/mingw64"
     $mingw_bin = "/mingw64/bin"
+    $env:MSYSTEM = "MINGW64"
 }
 else {
     $mingw_prefix = "mingw32/mingw-w64-i686-"
     $mingw_path = "/mingw32"
     $mingw_bin = "/mingw32/bin"
+    $env:MSYSTEM = "MINGW32"
 }
 
 if (!(test-path -path $target_dir)) {

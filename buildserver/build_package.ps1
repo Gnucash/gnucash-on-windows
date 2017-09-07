@@ -53,6 +53,7 @@ if (!$target_dir) {
 }
 
 $progressPreference = 'silentlyContinue'
+$env:MSYSTEM = 'MINGW32'
 
 function bash-command() {
     param ([string]$command = "")
@@ -61,7 +62,7 @@ function bash-command() {
 	return
     }
     #write-host "Running bash command ""$command"""
-    Start-Process -FilePath "$target_dir\msys2\usr\bin\bash.exe" -ArgumentList "-c ""export PATH=/usr/bin; $command""" -NoNewWindow -Wait
+    Start-Process -FilePath "$target_dir\msys2\usr\bin\bash.exe" -ArgumentList "-lc ""$command""" -NoNewWindow -Wait
 }
 
 function make-unixpath([string]$path) {
