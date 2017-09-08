@@ -89,7 +89,7 @@ $log_unix = make-unixpath -path $log_file
 bash-command -command "echo $time_stamp > $log_unix"
 #copy the file to the download server so that everyone can see we've started
 if ($hostname) {
-    bash-command -command "scp $target_unix/$log_file $hostname/$log_dir/"
+    bash-command -command "scp $log_unix $hostname/$log_dir/"
 }
 
 # Update MinGW-w64
