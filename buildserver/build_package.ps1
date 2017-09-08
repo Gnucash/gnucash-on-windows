@@ -61,7 +61,7 @@ if (!$target_dir) {
 
 $progressPreference = 'silentlyContinue'
 $env:MSYSTEM = 'MINGW32'
-
+$env:TERM = 'dumb' #Prevent escape codes in the log.
 function bash-command() {
     param ([string]$command = "")
     if (!(test-path -path $target_dir\msys2\usr\bin\bash.exe)) {
