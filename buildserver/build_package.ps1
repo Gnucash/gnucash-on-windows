@@ -89,7 +89,7 @@ $time_stamp = get-date -format "yyyy-MM-dd HH:mm:ss"
 bash-command -command "echo Build Started $time_stamp > $log_unix"
 #copy the file to the download server so that everyone can see we've started
 if ($hostname) {
-    bash-command -command "scp $log_unix $hostname/$log_dir/"
+    bash-command -command "scp -p $log_unix $hostname/$log_dir/"
 }
 
 # Update MinGW-w64
@@ -105,6 +105,6 @@ $time_stamp = get-date -format "yyyy-MM-dd HH:mm:ss"
 bash-command -command "echo Build Ended $time_stamp >> $log_unix"
 # Copy the transcript and installer to the download server and delete them.
 if ($hostname) {
-    bash-command -command "scp $log_unix $hostname/$log_dir/"
-    bash-command -command "scp $target_unix/gnucash*setup.exe $hostname/master"
+    bash-command -command "scp -p $log_unix $hostname/$log_dir/"
+    bash-command -command "scp -p $target_unix/gnucash*setup.exe $hostname/master"
 }
