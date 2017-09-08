@@ -82,11 +82,11 @@ $target_unix = make-unixpath -path $target_dir
 $log_dir = "build-logs"
 
 #Make sure that there's no running transcript, then start one:
-$start_time = get-date -format "yyyy-MM-dd-HH-mm-ss"
-$time_stamp = get-date -format "Build Begun yyyy-MM-dd HH:mm:ss"
-$log_file = "$target_dir\gnucash-build-log-$start_time.log"
+$time_stamp = get-date -format "yyyy-MM-dd-HH-mm-ss"
+$log_file = "$target_dir\gnucash-build-log-$time_stamp.log"
 $log_unix = make-unixpath -path $log_file
-bash-command -command "echo $time_stamp > $log_unix"
+$time_stamp = get-date -format "yyyy-MM-dd HH:mm:ss"
+bash-command -command "echo Build Started $time_stamp > $log_unix"
 #copy the file to the download server so that everyone can see we've started
 if ($hostname) {
     bash-command -command "scp $log_unix $hostname/$log_dir/"
@@ -101,8 +101,8 @@ bash-command -command "pacman -Su --noconfirm > >(tee -a $log_unix) 2>&1"
 bash-command -command "jhbuild --no-interact -f $script_unix/jhbuildrc build gnucash > >(tee -a $log_unix) 2>&1"
 #Build the installer
 & $script_dir\bundle-mingw64.ps1 -target_dir $target_dir 2>&1 | Out-File -FilePath $log_file -Append -Encoding UTF8
-$time_stamp = get-date -format "Build Ended yyyy-MM-dd HH:mm:ss"
-bash-command -command "echo $time_stamp >> $log_unix"
+$time_stamp = get-date -format "yyyy-MM-dd HH:mm:ss"
+bash-command -command "echo Build Ended $time_stamp >> $log_unix"
 # Copy the transcript and installer to the download server and delete them.
 if ($hostname) {
     bash-command -command "scp $log_unix $hostname/$log_dir/"
