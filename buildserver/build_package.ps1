@@ -48,7 +48,7 @@ Optional. A ssh compatible server specification (which means [user@]hostname:bas
 
 [CmdletBinding()]
 Param(
-    [Parameter()] [string]$target_dir
+    [Parameter()] [string]$target_dir,
     [Parameter()] [string]$hostname
 )
 
