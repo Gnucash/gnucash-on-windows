@@ -40,10 +40,17 @@ Administrator privileges.
 
 Optional. The root path to the build environment. Defaults to the root of the script's path, e.g. if the script's path is C:\gcdev64\src\gnucash-on-windows.git\bundle-mingw64.ps1 the default target_dir will be C:\gcdev64.
 
+.PARAMETER hostname
+
+Optional. A ssh compatible server specification (which means [user@]hostname:basedirectory) to which the build artifacts will be uploaded. If omitted no upload will be attempted. Note for this to work you must be able to connect to the given hostname.
+
 #>
 
 [CmdletBinding()]
-Param([Parameter()] [string]$target_dir)
+Param(
+    [Parameter()] [string]$target_dir
+    [Parameter()] [string]$hostname
+)
 
 $script_dir = Split-Path $script:MyInvocation.MyCommand.Path | Split-Path
 $root_dir = Split-Path $script_dir | Split-Path
@@ -71,7 +78,7 @@ function make-unixpath([string]$path) {
 $script_unix = make-unixpath -path $script_dir
 $target_unix = make-unixpath -path $target_dir
 
-$hostname = "upload@code.gnucash.org:public_html/win32"
+#$hostname = "upload@code.gnucash.org:public_html/win32"
 $log_dir = "build-logs"
 
 #Make sure that there's no running transcript, then start one:
@@ -81,7 +88,9 @@ $log_file = "$target_dir\gnucash-build-log-$start_time.log"
 $log_unix = make-unixpath -path $log_file
 bash-command -command "echo $time_stamp > $log_unix"
 #copy the file to the download server so that everyone can see we've started
-#bash-command -command "scp $target_unix/$log_file $hostname/$log_dir/"
+if ($hostname) {
+    bash-command -command "scp $target_unix/$log_file $hostname/$log_dir/"
+}
 
 # Update MinGW-w64
 bash-command -command "pacman -Su --noconfirm > >(tee -a $log_unix) 2>&1"
@@ -95,5 +104,7 @@ bash-command -command "jhbuild --no-interact -f $script_unix/jhbuildrc build gnu
 $time_stamp = get-date -format "Build Ended yyyy-MM-dd HH:mm:ss"
 bash-command -command "echo $time_stamp >> $log_unix"
 # Copy the transcript and installer to the download server and delete them.
-#bash-command "scp $log_unix $hostname/$log_dir/"
-#bash-command "scp $target_unix/gnucash*setup.exe $hostname/master"
+if ($hostname) {
+    bash-command -command "scp $log_unix $hostname/$log_dir/"
+    bash-command -command "scp $target_unix/gnucash*setup.exe $hostname/master"
+}
