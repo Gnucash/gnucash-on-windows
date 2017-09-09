@@ -63,12 +63,14 @@ if ($x86_64) {
     $mingw_path = "/mingw64"
     $mingw_bin = "/mingw64/bin"
     $env:MSYSTEM = "MINGW64"
+    $arch = "mingw64"
 }
 else {
     $mingw_prefix = "mingw32/mingw-w64-i686-"
     $mingw_path = "/mingw32"
     $mingw_bin = "/mingw32/bin"
     $env:MSYSTEM = "MINGW32"
+    $arch = "mingw32"
 }
 
 if (!(test-path -path $target_dir)) {
@@ -264,6 +266,7 @@ bash-command -command "/usr/bin/patch -d/ -p0 -i $target_unix/src/gnucash-on-win
 $jhbuildrc = get-content "$target_dir\\src\\gnucash-on-windows.git\\jhbuildrc.in" |
  %{$_ -replace "@-BASE_DIR-@", "$target_unix"} |
  %{$_ -replace "@-DOWNLOAD_DIR-@", "$download_unix"}
+ %{$_ -replace "@-ARCH-@", "$arch"}
  [IO.File]::WriteAllLines("$target_dir\\src\\gnucash-on-windows.git\\jhbuildrc", $jhbuildrc)
 
 Write-Host @"
