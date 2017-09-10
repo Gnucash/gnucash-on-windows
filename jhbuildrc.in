@@ -34,47 +34,49 @@ _basedir = "@-BASE_DIR-@"
 _download_dir = "@-DOWNLOAD_DIR-@"
 _arch = "@-ARCH-@"
 if os.environ.has_key('TARGET'):
-    (project, branch) = os.environ['TARGET'].split('-')
-    _basedir = os.path.join(_basedir, project)
+    (_project, _branch) = os.environ['TARGET'].split('-')
 else:
-    branch = 'master'
-
+    _project = 'gnucash'
+    _branch = 'master'
+_projectdir = os.path.join(_basedir, _project, _branch)
 _config_dir = os.path.dirname(os.path.realpath(__file__))
-prefix = os.path.join(_basedir, 'inst')
-checkoutroot = os.path.join(_basedir, 'src')
-buildroot = os.path.join(_basedir, 'build')
+prefix = os.path.join(_projectdir, 'inst')
+checkoutroot = os.path.join(_projectdir, 'src')
+buildroot = os.path.join(_projectdir, 'build')
 tarballdir = os.path.join(_download_dir)
 moduleset = os.path.join(_config_dir, 'gnucash.modules')
 
-_mingw_includes = os.path.join(_basedir, 'msys2', $_arch, 'include')
-_mingw_libs = os.path.join(_basedir, 'msys2', $_arch, 'lib')
+_mingw_includes = os.path.join(_basedir, 'msys2', _arch, 'include')
+_mingw_libs = os.path.join(_basedir, 'msys2', _arch, 'lib')
 _usr_include = os.path.join('/usr', 'include')
 _usr_lib = os.path.join('/usr', 'lib')
 environ_append('CPPFLAGS', '-I%s -I%s' % (_mingw_includes, _usr_include))
 environ_append('LDFLAGS', '-L%s -L%s' % (_mingw_libs, _usr_lib))
 add_to_path_var('PKG_CONFIG_PATH', os.path.join(_mingw_libs, 'pkgconfig'))
-add_to_path_var('PATH', os.path.join(_basedir, 'msys2', $_arch, 'bin'))
+add_to_path_var('PATH', os.path.join(_basedir, 'msys2', _arch, 'bin'))
 
 os.environ['SRCROOT'] = checkoutroot
 os.environ['PREFIX'] = prefix
 os.environ['MSYS2ROOT'] = os.path.join(_basedir, 'msys2')
 #os.environ['GUILE_LOAD_PATH'] = os.path.join(prefix, 'share', 'guile', '2.0')
 #os.environ['GUILE_LOAD_BINARY_PATH'] = os.path.join(prefix, 'lib', 'guile', '2.0', 'ccache')
-if ($_arch == 'mingw32':
+if _arch == 'mingw32':
     autogenargs = "--build=i686-w64-mingw32"
 else:
     autogenargs = "--build=x86_64-w64-mingw64"
 
 #autogenargs = 'CPPFLAGS="-I%s"' % _sys_includes
 
-if $branch in ('master', 'unstable'):
-    modules = ["meta-gnucash"]
-    branches['gnucash'] = (None, $branch)
+if _branch in ('master', 'unstable'):
+    modules = ["meta-gnucash-git"]
+    branches['gnucash-git'] = (None, _branch)
 else:
     modules = ["meta-gnucash"]
 append_autogenargs("libofx", "--with-opensp-includes=" + prefix + "/include/OpenSP --with-opensp-libs=" + prefix + "/lib")
 append_autogenargs("libdbi-drivers","--with-dbi-incdir=" + prefix + "/include --with-dbi-libdir=" + prefix + "/lib")
-module_makeargs["aqbanking"]="-j1"
+module_makeargs["aqbanking"]="-j 1"
+module_makeargs["gnucash"]="-j 1"
+module_makeargs["gnucash-git"]="-j 1"
 
 module_extra_env["gwenhywfar"]={'CPPFLAGS':_popen('pkg-config --cflags gtk+-2.0'), 'LDFLAGS':_popen('pkg-config --libs gtk+-2.0')}
 module_extra_env["gnucash"]={'ACLOCAL_FLAGS':'-I' + os.path.join('/mingw32', 'share', 'aclocal')}
