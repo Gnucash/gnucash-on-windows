@@ -87,7 +87,7 @@ $log_dir = "build-logs"
 
 #Make sure that there's no running transcript, then start one:
 $time_stamp = get-date -format "yyyy-MM-dd-HH-mm-ss"
-$log_file = "$target_dir\gnucash-build-log-$time_stamp.log"
+$log_file = "$target_dir\build-$branch-$time_stamp.log"
 $log_unix = make-unixpath -path $log_file
 $time_stamp = get-date -format "yyyy-MM-dd HH:mm:ss"
 bash-command -command "echo Build Started $time_stamp > $log_unix"
