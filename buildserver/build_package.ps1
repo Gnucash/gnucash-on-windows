@@ -103,14 +103,20 @@ bash-command -command "pacman -Su --noconfirm > >(tee -a $log_unix) 2>&1"
 #bash-command -command "cd $script_unix && git reset --hard && git pull --rebase"
 # Build the latest GnuCash and all dependencies not installed via mingw64
 bash-command -command "jhbuild --no-interact -f $script_unix/jhbuildrc build > >(tee -a $log_unix) 2> >(tee -a $log_unix)"
+$new_file = test-path -path $target_dir\$package\$branch\inst\bin\gnucash.exe -NewerThan $time_stamp
+if ($new_file) {
 #Build the installer
-$is_git = ($branch.CompareTo("master") -or $branch.CompareTo("unstable"))
-bash-command -command "echo 'Creating GnuCash installer.' > >(tee -a $log_unix)"
-& $script_dir\bundle-mingw64.ps1 -target_dir $target_dir\$package\$branch -git_build $is_git 2>&1 | Tee-Object -FilePath $log_file -Append
+    $is_git = ($branch.CompareTo("master") -or $branch.CompareTo("unstable"))
+    bash-command -command "echo 'Creating GnuCash installer.' > >(tee -a $log_unix)"
+    & $script_dir\bundle-mingw64.ps1 -target_dir $target_dir\$package\$branch -git_build $is_git 2>&1 | Tee-Object -FilePath $log_file -Append
+}
 $time_stamp = get-date -format "yyyy-MM-dd HH:mm:ss"
 bash-command -command "echo Build Ended $time_stamp >> $log_unix"
+
 # Copy the transcript and installer to the download server and delete them.
 if ($hostname) {
-    bash-command -command "scp -p $log_unix $hostname/$log_dir/"
-    bash-command -command "scp -p $target_unix/gnucash*setup.exe $hostname/master"
+	bash-command -command "scp -p $log_unix $hostname/$log_dir/"
+    if ($new_file) {
+	bash-command -command "scp -p $target_unix/gnucash*setup.exe $hostname/master"
+    }
 }
