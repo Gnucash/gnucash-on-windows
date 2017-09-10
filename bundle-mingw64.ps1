@@ -40,16 +40,13 @@ Optional. The root path to the build environment. Defaults to the root of the sc
 
 [CmdletBinding()]
 Param(
-  [Parameter()] [string]$target_dir,
-  [Parameter()] [bool]$git_build
+    [Parameter(Mandatory=$true)] [string]$root_dir,
+    [Parameter(Mandatory=$true)] [string]$target_dir,
+    [Parameter(Mandatory=$true)] [string]$package,
+    [Parameter(Mandatory=$true)] [bool]$git_build
 )
 
 $script_dir = Split-Path $script:MyInvocation.MyCommand.Path
-$root_dir = Split-Path $script_dir | Split-Path
-$package = "gnucash"
-if (!$target_dir) {
-    $target_dir = $root_dir
-}
 
 $progressPreference = 'silentlyContinue'
 
@@ -75,12 +72,12 @@ function version_item([string]$tag, [string]$path) {
 
 function bash-command() {
     param ([string]$command = "")
-    if (!(test-path -path $target_dir\msys2\usr\bin\bash.exe)) {
+    if (!(test-path -path $root_dir\msys2\usr\bin\bash.exe)) {
 	write-host "Shell program not found, aborting."
-	return
+	exit
     }
     #write-host "Running bash command ""$command"""
-    Start-Process -FilePath "$target_dir\msys2\usr\bin\bash.exe" -ArgumentList "-c ""export PATH=/usr/bin; $command""" -NoNewWindow -Wait
+    Start-Process -FilePath "$root_dir\msys2\usr\bin\bash.exe" -ArgumentList "-c ""export PATH=/usr/bin; $command""" -NoNewWindow -Wait
 }
 
 function make-unixpath([string]$path) {
@@ -105,13 +102,13 @@ $gwen_dir = version_item -tag "SO_EFFECTIVE " -path "$inst_dir\include\gwenhywfa
 # of backslashes is due to bash and sed eating them. It results in a
 # single backslash in the output file. Inno Setup doesn't understand
 # forward slashes as path delimiters.
-
+$root = %{$root_dir -replace "\\", "\\\\\\\\"}
 $target = %{$target_dir -replace "\\", "\\\\\\\\"}
 $script = %{$script_dir -replace "\\", "\\\\\\\\"}
 $issue_in = make-unixpath -path  $script_dir\inno_setup\gnucash-mingw64.iss
 $issue_out = make-unixpath -path $target_dir\gnucash.iss
 $proc = bash-command("sed  < $issue_in > $issue_out \
-  -e ""s#@MINGW_DIR@#$target\\\\\\\\msys2\\\\\\\\mingw$mingw_ver#g"" \
+  -e ""s#@MINGW_DIR@#$root\\\\\\\\msys2\\\\\\\\mingw$mingw_ver#g"" \
   -e ""s#@INST_DIR@#$target\\\\\\\\inst#g"" \
   -e ""s#@-gwenhywfar_so_effective-@#$gwen_ver#g"" \
   -e ""s#@-aqbanking_so_effective-@#$aqb_Dir#g"" \

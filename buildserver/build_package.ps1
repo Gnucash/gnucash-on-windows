@@ -108,7 +108,7 @@ if ($new_file) {
 #Build the installer
     $is_git = ($branch.CompareTo("master") -or $branch.CompareTo("unstable"))
     bash-command -command "echo 'Creating GnuCash installer.' > >(tee -a $log_unix)"
-    & $script_dir\bundle-mingw64.ps1 -target_dir $target_dir\$package\$branch -git_build $is_git 2>&1 | Tee-Object -FilePath $log_file -Append
+    & $script_dir\bundle-mingw64.ps1 -root_dir $target_dir -target_dir $target_dir\$package\$branch -package $package -git_build $is_git 2>&1 | Tee-Object -FilePath $log_file -Append
 }
 $time_stamp = get-date -format "yyyy-MM-dd HH:mm:ss"
 bash-command -command "echo Build Ended $time_stamp >> $log_unix"
