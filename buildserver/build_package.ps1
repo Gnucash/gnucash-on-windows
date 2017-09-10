@@ -48,6 +48,8 @@ Optional. A ssh compatible server specification (which means [user@]hostname:bas
 
 [CmdletBinding()]
 Param(
+    [Parameter(Mandatory=$true)]
+    [validatePattern("(master|unstable|release)")][string]$branch,
     [Parameter()] [string]$target_dir,
     [Parameter()] [string]$hostname
 )
@@ -62,6 +64,8 @@ if (!$target_dir) {
 $progressPreference = 'silentlyContinue'
 $env:MSYSTEM = 'MINGW32'
 $env:TERM = 'dumb' #Prevent escape codes in the log.
+$env:TARGET = "$package-$branch"
+
 function bash-command() {
     param ([string]$command = "")
     if (!(test-path -path $target_dir\msys2\usr\bin\bash.exe)) {
@@ -98,9 +102,11 @@ bash-command -command "pacman -Su --noconfirm > >(tee -a $log_unix) 2>&1"
 # Update the gnucash-on-windows repository
 #bash-command -command "cd $script_unix && git reset --hard && git pull --rebase"
 # Build the latest GnuCash and all dependencies not installed via mingw64
-bash-command -command "jhbuild --no-interact -f $script_unix/jhbuildrc build gnucash > >(tee -a $log_unix) 2>&1"
+bash-command -command "jhbuild --no-interact -f $script_unix/jhbuildrc build > >(tee -a $log_unix) 2> >(tee -a $log_unix)"
 #Build the installer
-& $script_dir\bundle-mingw64.ps1 -target_dir $target_dir 2>&1 | Out-File -FilePath $log_file -Append -Encoding UTF8
+$is_git = ($branch.CompareTo("master") -or $branch.CompareTo("unstable"))
+bash-command -command "echo 'Creating GnuCash installer.' > >(tee -a $log_unix)"
+& $script_dir\bundle-mingw64.ps1 -target_dir $target_dir\$package\$branch -git_build $is_git 2>&1 | Tee-Object -FilePath $log_file -Append
 $time_stamp = get-date -format "yyyy-MM-dd HH:mm:ss"
 bash-command -command "echo Build Ended $time_stamp >> $log_unix"
 # Copy the transcript and installer to the download server and delete them.

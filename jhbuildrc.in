@@ -33,6 +33,11 @@ def add_to_path_var(var, path):
 _basedir = "@-BASE_DIR-@"
 _download_dir = "@-DOWNLOAD_DIR-@"
 _arch = "@-ARCH-@"
+if os.environ.has_key('TARGET'):
+    (project, branch) = os.environ['TARGET'].split('-')
+    _basedir = os.path.join(_basedir, project)
+else:
+    branch = 'master'
 
 _config_dir = os.path.dirname(os.path.realpath(__file__))
 prefix = os.path.join(_basedir, 'inst')
@@ -40,7 +45,6 @@ checkoutroot = os.path.join(_basedir, 'src')
 buildroot = os.path.join(_basedir, 'build')
 tarballdir = os.path.join(_download_dir)
 moduleset = os.path.join(_config_dir, 'gnucash.modules')
-modules = ["meta-gnucash"]
 
 _mingw_includes = os.path.join(_basedir, 'msys2', $_arch, 'include')
 _mingw_libs = os.path.join(_basedir, 'msys2', $_arch, 'lib')
@@ -63,6 +67,11 @@ else:
 
 #autogenargs = 'CPPFLAGS="-I%s"' % _sys_includes
 
+if $branch in ('master', 'unstable'):
+    modules = ["meta-gnucash"]
+    branches['gnucash'] = (None, $branch)
+else:
+    modules = ["meta-gnucash"]
 append_autogenargs("libofx", "--with-opensp-includes=" + prefix + "/include/OpenSP --with-opensp-libs=" + prefix + "/lib")
 append_autogenargs("libdbi-drivers","--with-dbi-incdir=" + prefix + "/include --with-dbi-libdir=" + prefix + "/lib")
 module_makeargs["aqbanking"]="-j1"

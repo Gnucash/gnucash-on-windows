@@ -39,7 +39,10 @@ Optional. The root path to the build environment. Defaults to the root of the sc
 #>
 
 [CmdletBinding()]
-Param([Parameter()] [string]$target_dir)
+Param(
+  [Parameter()] [string]$target_dir,
+  [Parameter()] [bool]$git_build
+)
 
 $script_dir = Split-Path $script:MyInvocation.MyCommand.Path
 $root_dir = Split-Path $script_dir | Split-Path
@@ -123,7 +126,16 @@ $vcs_rev = version_item -tag "GNUCASH_SCM_REV" -path $gnc_vcsinfo_h | %{$_ -repl
 
 $date = get-date -format "yyyy-MM-dd"
 $setup_result =  "$target_dir\gnucash-$package_version-setup.exe"
-$final_file = "$target_dir\gnucash-$package_version-$date-git-$vcs_rev-setup.exe"
+$final_file = ""
+if ($git_build) {
+  $final_file = "$target_dir\gnucash-$package_version-$date-git-$vcs_rev-setup.exe"
+  }
+else {
+  $final_file = "$target_dir\gnucash-$package_version-setup.exe"
+}
+
+write-host "Running Inno Setup to create $final_file."
+
 if (test-path -path $setup_result) {
     remove-item -path $setup_result
 }

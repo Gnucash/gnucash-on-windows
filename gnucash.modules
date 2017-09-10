@@ -278,10 +278,25 @@
     <branch module="google/googletest" repo="github" tag="release-1.8.0"/>
   </cmake>
 
-   <!--autotools id="gnucash"
-	      autogen-template="%(srcdir)s/%(autogen-sh)s &amp;&amp; %(srcdir)s/configure -\-prefix %(prefix)s %(autogenargs)s"
-	      autogenargs="-\-enable-ofx -\-enable-aqbanking -\-enable-binreloc -\-enable-dbi -\-with-dbi-dbd-dir=$PREFIX/lib/dbd"-->
  <cmake id="gnucash"
+        cmakeargs="-G 'MSYS Makefiles' -DCMAKE_FIND_ROOT_PATH=$MSYS2ROOT -DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DHTMLHELP_DIR=$PREFIX/hh -DGTEST_ROOT=$SRCROOT/googletest/googletest -DGMOCK_ROOT=$SRCROOT/googletest/googlemock"
+	use-ninja="False">
+   <branch repo="sourceforge" module="gnucash/unstable/gnucash-2.7.0.tar.bz2"
+	   version="2.7.0"/>
+    <dependencies>
+      <dep package="libofx"/>
+      <dep package="aqbanking"/>
+      <dep package="libdbi-drivers"/>
+      <!--dep package="shared-mime-info"/-->
+      <!--dep package="iso-codes"/-->
+      <dep package="guile2"/>
+      <!--dep package="swig"/-->
+      <dep package="boost"/>
+      <dep package="googletest"/>
+    </dependencies>
+ </cmake>
+
+ <cmake id="gnucash-git"
         cmakeargs="-G 'MSYS Makefiles' -DCMAKE_FIND_ROOT_PATH=$MSYS2ROOT -DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DHTMLHELP_DIR=$PREFIX/hh -DGTEST_ROOT=$SRCROOT/googletest/googletest -DGMOCK_ROOT=$SRCROOT/googletest/googlemock"
 	use-ninja="False">
    <branch repo="github" module="Gnucash/gnucash.git" revision="master"
@@ -297,7 +312,6 @@
       <dep package="boost"/>
       <dep package="googletest"/>
     </dependencies>
-   <!--/autotools-->
  </cmake>
 
   <autotools id="gnucash-docs-git" autogenargs="--disable-scrollkeeper"
@@ -313,9 +327,16 @@
   <autotools id="gnucash-docs" autogenargs="--disable-scrollkeeper"
 	    autogen-template="%(srcdir)s/%(autogen-sh)s &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s %(autogenargs)s"
 	    makeargs=" html" makeinstallargs="install-html" >
-    <branch  module="gnucash/gnucash-docs/gnucash-docs-2.6.16.tar.gz"
-	     version="2.6.16" repo="sourceforge"/>
+    <branch  module="gnucash/gnucash-docs/gnucash-docs-2.7.0.tar.gz"
+	     version="2.7.0" repo="sourceforge"/>
   </autotools>
+
+  <metamodule id="meta-gnucash-git">
+    <dependencies>
+      <dep package="gnucash-git"/>
+      <dep package="gnucash-docs-git"/>
+    </dependencies>
+  </metamodule>
 
   <metamodule id="meta-gnucash">
     <dependencies>
