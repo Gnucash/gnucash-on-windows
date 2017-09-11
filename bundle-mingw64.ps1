@@ -142,3 +142,4 @@ if ((test-path -path $setup_result) -and (test-path -path $final_file)) {
     remove-item $final_file
 }
 rename-item -path $setup_result $final_file
+return $final_file
