@@ -90,6 +90,8 @@ $time_stamp = get-date -format "yyyy-MM-dd-HH-mm-ss"
 $log_file = "$target_dir\build-$branch-$time_stamp.log"
 $log_unix = make-unixpath -path $log_file
 $time_stamp = get-date -format "yyyy-MM-dd HH:mm:ss"
+
+bash-command -command "cd $script_unix && git pull"
 bash-command -command "echo Build Started $time_stamp > $log_unix"
 #copy the file to the download server so that everyone can see we've started
 if ($hostname) {
