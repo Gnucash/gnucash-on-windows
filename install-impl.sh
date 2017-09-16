@@ -1439,6 +1439,7 @@ function inst_gnucash_using_cmake() {
                -D CMAKE_MAKE_PROGRAM=${_CMAKE_MAKE_PROGRAM} \
                -D GNC_DBD_DIR=${_LIBDBI_DRIVERS_UDIR}/lib/dbd \
 	       -D HTMLHELP_DIR=${_HH_UDIR} \
+               -D GIT_EXECUTABLE=${GIT_DIR}/bin/git.exe \
                ${_REPOS_UDIR}
           ${_CMAKE_MAKE_PROGRAM} install
      qpopd
