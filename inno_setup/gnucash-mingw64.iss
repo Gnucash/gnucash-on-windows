@@ -65,7 +65,7 @@ Filename: "{app}\bin\guile.cmd"; Flags: runhidden
 Source: "@INST_DIR@\bin\*"; DestDir: "{app}\bin"; Flags: recursesubdirs ignoreversion; Components: main
 Source: "@INST_DIR@\etc\*"; DestDir: "{app}\etc"; Flags: recursesubdirs; Components: main
 Source: "@INST_DIR@\etc\@PACKAGE@\environment"; DestDir: "{app}\etc\@PACKAGE@"; Components: main; AfterInstall: MyAfterInstallEnvironment()
-; Note: The above AfterInstall function will adapt the 
+; Note: The above AfterInstall function will adapt the
 ; environment config file on-the-fly by the Pascal script below.
 Source: "@INST_DIR@\lib\*"; DestDir: "{app}\lib"; Flags: recursesubdirs; Components: main
 Source: "@INST_DIR@\lib\gnucash\scm\ccache\2.0\*"; DestDir: "{app}\lib\gnucash\scm\ccache\2.0"; Flags: recursesubdirs; Components: main
@@ -75,7 +75,16 @@ Source: "@INST_DIR@\lib\aqbanking\*"; DestDir: "{app}\lib\aqbanking"; Excludes: 
 Source: "@INST_DIR@\lib\gwenhywfar\*"; DestDir: "{app}\lib\gwenhywfar"; Excludes: "*.dll.a"; Flags: recursesubdirs; Components: main
 ;; We don't have anything in libexec anymore at the moment
 ;Source: "@INST_DIR@\libexec\*"; DestDir: "{app}\libexec"; Flags: recursesubdirs; Components: main
-Source: "@INST_DIR@\share\*"; DestDir: "{app}\share"; Flags: recursesubdirs; Components: main
+;; Retrieve all of the share directories for the package and its dependencies
+Source: "@INST_DIR@\share\@PACKAGE@\*"; DestDir: "{app}\share\@PACKAGE@"; Flags: recursesubdirs; Components: main
+Source: "@INST_DIR@\share\aqbanking\*"; DestDir: "{app}\share\aqbanking"; Flags: recursesubdirs; Components: main
+Source: "@INST_DIR@\share\gwenhywfar\*"; DestDir: "{app}\share\gwenhywfar"; Flags: recursesubdirs; Components: main
+Source: "@INST_DIR@\share\chipcard\*"; DestDir: "{app}\share\chipcard"; Flags: recursesubdirs; Components: main
+Source: "@INST_DIR@\share\ktoblzcheck\*"; DestDir: "{app}\share\ktoblzcheck"; Flags: recursesubdirs; Components: main
+Source: "@INST_DIR@\share\guile\*"; DestDir: "{app}\share\guile"; Flags: recursesubdirs; Components: main
+Source: "@INST_DIR@\share\glib-2.0\*"; DestDir: "{app}\share\glib-2.0"; Flags: recursesubdirs; Components: main
+Source: "@INST_DIR@\share\libofx\*"; DestDir: "{app}\share\libofx"; Flags: recursesubdirs; Components: main
+Source: "@INST_DIR@\share\OpenSP\*"; DestDir: "{app}\share\OpenSP"; Flags: recursesubdirs; Components: main
 
 ;; The translations
 ;Source: "@INST_DIR@\share\locale\*"; DestDir: "{app}\share\locale"; Flags: recursesubdirs; Components: translations
@@ -83,7 +92,7 @@ Source: "@INST_DIR@\share\*"; DestDir: "{app}\share"; Flags: recursesubdirs; Com
 ;; The account templates
 ;Source: "@INST_DIR@\share\@PACKAGE@\accounts\*"; DestDir: "{app}\share\@PACKAGE@\accounts"; Flags: recursesubdirs; Components: templates
 
-; And all the documentation
+; And all the @PACKAGE@ documentation
 Source: "@INST_DIR@\share\doc\@PACKAGE@\README"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
 Source: "@INST_DIR@\share\doc\@PACKAGE@\README.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
 Source: "@INST_DIR@\share\doc\@PACKAGE@\README-de.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
@@ -94,6 +103,7 @@ Source: "@INST_DIR@\share\doc\@PACKAGE@\README-zh_TW.win32-bin.txt"; DestDir: "{
 Source: "@INST_DIR@\share\doc\@PACKAGE@\COPYING"; DestDir: "{app}\doc\@PACKAGE@"; Flags: ignoreversion; Components: main
 Source: "@INST_DIR@\share\doc\@PACKAGE@\AUTHORS"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
 Source: "@INST_DIR@\share\doc\@PACKAGE@\ChangeLog"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
+Source: "@INST_DIR@\share\doc\@PACKAGE@-docs\*"; DestDir: "{app}\share\@PACKAGE@\help"; Flags: recursesubdirs; Components: main
 
 ;;;; The second section retrieves the dependencies that we need from MinGW.
 ;; Required DLLs
@@ -184,6 +194,10 @@ Source: "@MINGW_DIR@\bin\zlib1.dll"; DestDir: "{app}\bin"; Components: main
 
 Source: "@MINGW_DIR@\share\icons\*"; DestDir: "{app}\share\icons"; Flags: recursesubdirs; Components: main
 Source: "@MINGW_DIR@\share\locale\*"; Destdir: "{app}\share\locale"; Flags: recursesubdirs; Components: main
+Source: "@MINGW_DIR@\share\themes\*"; DestDir: "{app}\share\themes"; Flags: recursesubdirs; Components: main
+Source: "@MINGW_DIR@\share\xml\iso-codes\*"; DestDir: "{app}\share\xml\iso-codes"; Flags: recursesubdirs; Components: main
+Source: "@MINGW_DIR@\share\xml\fontconfig\*"; DestDir: "{app}\share\xml\fontconfig"; Flags: recursesubdirs; Components: main
+
 Source: "@MINGW_DIR@\etc\gtk-2.0\*"; Destdir: "{app}\etc\gtk-2.0"; Flags: recursesubdirs; Components: main
 Source: "@MINGW_DIR@\etc\gtk-3.0\*"; Destdir: "{app}\etc\gtk-3.0"; Flags: recursesubdirs; Components: main
 ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
