@@ -84,8 +84,14 @@ function make-unixpath([string]$path) {
     $path -replace  "^([A-Z]):", '/$1' -replace "\\", '/'
 }
 
-$gnc_config_h = "$target_dir\build\gnucash-git\common\config.h"
-$gnc_vcsinfo_h = "$target_dir\build\gnucash-git\libgnucash\core-utils\gnc-vcs-info.h"
+if ($git_build) {
+  $gnucash = "gnucash-git"
+}
+else {
+  $gnucash = get-childitem -path $target_dir\build | where-object {$_.Name -match "gnucash-[0-9.]+"} | select-object -last 1
+}
+
+$gnc_config_h = "$target_dir\build\$gnucash\common\config.h"
 
 $major_version = version_item -tag "GNUCASH_MAJOR_VERSION" -path $gnc_config_h
 $minor_version = version_item -tag "GNUCASH_MINOR_VERSION" -path $gnc_config_h
@@ -119,12 +125,13 @@ $proc = bash-command("sed  < $issue_in > $issue_out \
   -e ""s#@GNUCASH_MICRO_VERSION@#$micro_version#g"" \
   -e ""s#@GC_WIN_REPOS_DIR@#$script#g"" ")
 
-$vcs_rev = version_item -tag "GNUCASH_SCM_REV" -path $gnc_vcsinfo_h | %{$_ -replace """", ""}
 
 $date = get-date -format "yyyy-MM-dd"
 $setup_result =  "$target_dir\gnucash-$package_version-setup.exe"
 $final_file = ""
 if ($git_build) {
+  $gnc_vcsinfo_h = "$target_dir\build\gnucash-git\libgnucash\core-utils\gnc-vcs-info.h"
+  $vcs_rev = version_item -tag "GNUCASH_SCM_REV" -path $gnc_vcsinfo_h | %{$_ -replace """", ""}
   $final_file = "$target_dir\gnucash-$package_version-$date-git-$vcs_rev-setup.exe"
   }
 else {
@@ -138,8 +145,10 @@ if (test-path -path $setup_result) {
 }
 & ${env:ProgramFiles(x86)}\inno\iscc /Q $target_dir\gnucash.iss
 
-if ((test-path -path $setup_result) -and (test-path -path $final_file)) {
+if ($git_build) {
+  if ((test-path -path $setup_result) -and (test-path -path $final_file)) {
     remove-item $final_file
+  }
+  rename-item -path $setup_result $final_file
 }
-rename-item -path $setup_result $final_file
 return $final_file

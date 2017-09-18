@@ -49,7 +49,7 @@ Optional. A ssh compatible server specification (which means [user@]hostname:bas
 [CmdletBinding()]
 Param(
     [Parameter(Mandatory=$true)]
-    [validatePattern("(master|unstable|release)")][string]$branch,
+    [validatePattern("(master|unstable|releases)")][string]$branch,
     [Parameter()] [string]$target_dir,
     [Parameter()] [string]$hostname
 )
@@ -108,13 +108,12 @@ bash-command -command "jhbuild --no-interact -f $script_unix/jhbuildrc build > >
 $new_file = test-path -path $target_dir\$package\$branch\inst\bin\gnucash.exe -NewerThan $time_stamp
 if ($new_file) {
 #Build the installer
-    $is_git = ($branch.CompareTo("master") -or $branch.CompareTo("unstable"))
+    $is_git = ($branch.CompareTo("master") -eq 0) -or ($branch.CompareTo("unstable") -eq 0)
     bash-command -command "echo 'Creating GnuCash installer.' > >(tee -a $log_unix)"
     $setup_file = & $script_dir\bundle-mingw64.ps1 -root_dir $target_dir -target_dir $target_dir\$package\$branch -package $package -git_build $is_git 2>&1 | Tee-Object -FilePath $log_file -Append
     $setup_file = make-unixpath -path $setup_file
+    write-host "Created GnuCash Setup File $setup_file"
 }
-
-write-host "Created GnuCash Setup File $setup_file"
 
 $time_stamp = get-date -format "yyyy-MM-dd HH:mm:ss"
 bash-command -command "echo Build Ended $time_stamp >> $log_unix"
@@ -123,6 +122,6 @@ bash-command -command "echo Build Ended $time_stamp >> $log_unix"
 if ($hostname) {
 	bash-command -command "scp -p $log_unix $hostname/$log_dir/"
     if ($new_file) {
-	bash-command -command "scp -p $setup_file $hostname/master"
+	bash-command -command "scp -p $setup_file $hostname/$branch"
     }
 }

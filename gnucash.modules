@@ -341,7 +341,7 @@
   <metamodule id="meta-gnucash">
     <dependencies>
       <dep package="gnucash"/>
-      <dep package="gnucash-docs"/>
+      <dep package="gnucash-docs-git"/>
     </dependencies>
   </metamodule>
 
