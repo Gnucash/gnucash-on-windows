@@ -1437,6 +1437,7 @@ function inst_gnucash_using_cmake() {
                -D CMAKE_PREFIX_PATH=${_GLOBAL_UDIR} \
                -D PERL_EXECUTABLE=${_MSYS_UDIR}/bin/perl \
                -D CMAKE_MAKE_PROGRAM=${_CMAKE_MAKE_PROGRAM} \
+               -D WITH_AQBANKING=ON \
                -D GNC_DBD_DIR=${_LIBDBI_DRIVERS_UDIR}/lib/dbd \
 	       -D HTMLHELP_DIR=${_HH_UDIR} \
                -D GIT_EXECUTABLE=${GIT_DIR}/bin/git.exe \
