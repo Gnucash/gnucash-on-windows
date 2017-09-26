@@ -95,6 +95,7 @@ Source: "@INST_DIR@\share\OpenSP\*"; DestDir: "{app}\share\OpenSP"; Flags: recur
 ; And all the @PACKAGE@ documentation
 Source: "@INST_DIR@\share\doc\@PACKAGE@\README"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
 Source: "@INST_DIR@\share\doc\@PACKAGE@\README.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
+Source: "@INST_DIR@\share\doc\@PACKAGE@\README-ca.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
 Source: "@INST_DIR@\share\doc\@PACKAGE@\README-de.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
 Source: "@INST_DIR@\share\doc\@PACKAGE@\README-fr.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
 Source: "@INST_DIR@\share\doc\@PACKAGE@\README-it.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
@@ -505,6 +506,7 @@ end;
 
 [Languages]
 Name: "en"; MessagesFile: "compiler:Default.isl"
+Name: "ca"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\Catalan.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-ca.win32-bin.txt"
 Name: "de"; MessagesFile: "compiler:Languages\German.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-de.win32-bin.txt"
 Name: "el"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\Greek-4-5.1.11.isl"
 Name: "fr"; MessagesFile: "compiler:Languages\French.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-fr.win32-bin.txt"
@@ -559,6 +561,7 @@ IconComment_Uninstall=Uninstall the Finance Manager GnuCash
 
 ;; List of Code pages, used in gnucash.cmd
 LanguageCodePage=1252
+ca.LanguageCodePage=1252
 de.LanguageCodePage=1252
 el.LanguageCodePage=1253
 fr.LanguageCodePage=1252
@@ -568,6 +571,38 @@ nl.LanguageCodePage=1252
 pt_BR.LanguageCodePage=1252
 zh_CN.LanguageCodePage=936
 zh_TW.LanguageCodePage=950
+
+;; ;;;;;;;;;;;;;;;;;;;;;
+;; Catalan translation
+
+ca.FullInstall=Instal·lació completa
+ca.CustomInstall=Instal·lació personalitzada
+ca.CreateDesktopIcon=Crear una icona a l'escriptori
+ca.CreateMenuLink=Crear una drecera al menú d'inici
+ca.RunPrg=Executar el GnuCash ara
+ca.AdditionalIcons=Crear les següents icones
+ca.StatusMsgFirewall=Instal·lació de les regles del tallafocs de Windows
+
+ca.MainFiles=Programa GnuCash
+ca.TranslFiles=Traducció catalana
+ca.TemplFiles=Model d'estructura de comptes
+
+ca.IconComment_GnuCash=GnuCash, el gestor de finances OpenSource
+ca.IconName_README=Mostra el LLEGIU-ME del GnuCash
+ca.IconComment_README=Mostra el fitxer LLEGIU-ME
+ca.IconFilename_README=README-ca.win32-bin.txt
+ca.IconName_FAQ=GnuCash FAQ - Preguntes freqüents (en línia, en anglès)
+ca.IconName_Bugzilla=Informar d'un error al GnuCash (en línia, en anglès)
+ca.IconName_InstallFQ=Instal·lar les cotitzacions en línia per al GnuCash
+ca.IconComment_InstallFQ=Instal·leu el mòdul perl necessari Finance-Quote per a la recuperació de preus en línia. Requereix ActivePerl o Strawberry Perl 5.8 o posterior
+ca.IconName_Theme=Selecció del tema GnuCash
+ca.IconName_Uninstall=Desinstal·lar GnuCash
+ca.IconComment_Uninstall=Desinstal·lar el gestor de finances GnuCash
+
+ca.AIWP_Title=S'ha trobat una altra instal·lació
+ca.AIWP_Description=%1 actualment està instal·lat en aquesta computadora
+ca.AIWP_Message=Aquesta instal·lació anterior s'ha d'eliminar abans de continuar.%n%nSi no voleu això, feu clic a »Cancel·la« ara per cancel·lar la instal·lació actual.%n%nFeu clic a »Següent« per eliminar %1 i continuar amb la instal·lació.%n%nNota: Només es retirarà el programa, no les vostres dades financeres.
+
 
 ;; ;;;;;;;;;;;;;;;;;;;;
 ;; German translation
