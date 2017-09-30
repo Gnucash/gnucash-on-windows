@@ -253,7 +253,7 @@ if (!(test-path -path "$target_dir\\src")) {
   New-Item $target_dir\\src -type directory
 }
 if (!(test-path -path "$target_dir\\src\\gnucash-on-windows.git")) {
-  bash-command -command "git clone https://github.com/gnucash/gnucash-on-windows.git $target_dir/src/gnucash-on-windows.git"
+  bash-command -command "git clone https://github.com/gnucash/gnucash-on-windows.git $target_unix/src/gnucash-on-windows.git"
 }
 if (!(test-path -path "$target_dir\\src\\gnucash-on-windows.git")) {
    write-host "Failed to clone the gnucash-on-windows repo, exiting."
