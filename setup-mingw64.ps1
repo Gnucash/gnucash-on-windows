@@ -265,7 +265,7 @@ bash-command -command "/usr/bin/patch -d/ -p0 -i $target_unix/src/gnucash-on-win
 
 $jhbuildrc = get-content "$target_dir\\src\\gnucash-on-windows.git\\jhbuildrc.in" |
  %{$_ -replace "@-BASE_DIR-@", "$target_unix"} |
- %{$_ -replace "@-DOWNLOAD_DIR-@", "$download_unix"}
+ %{$_ -replace "@-DOWNLOAD_DIR-@", "$download_unix"} |
  %{$_ -replace "@-ARCH-@", "$arch"}
  [IO.File]::WriteAllLines("$target_dir\\src\\gnucash-on-windows.git\\jhbuildrc", $jhbuildrc)
 
