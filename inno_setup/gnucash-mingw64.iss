@@ -202,6 +202,7 @@ Source: "@MINGW_DIR@\share\xml\fontconfig\*"; DestDir: "{app}\share\xml\fontconf
 
 Source: "@MINGW_DIR@\etc\gtk-2.0\*"; Destdir: "{app}\etc\gtk-2.0"; Flags: recursesubdirs; Components: main
 Source: "@MINGW_DIR@\etc\gtk-3.0\*"; Destdir: "{app}\etc\gtk-3.0"; Flags: recursesubdirs; Components: main
+Source: "@MINGW_DIR@\etc\fonts\*"; DestDir: "{app}\etc\fonts"; Flags: recursesubdirs; Components: main
 ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Define the registry keys Setup should create (HKLM = HKEY_LOCAL_MACHINE)
 ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
