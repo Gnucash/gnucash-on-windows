@@ -417,49 +417,6 @@ Sub Welcome
 End Sub
     
 
-' Download a file over http
-Sub HTTPDownload( myURL, myPath )
-' This Sub downloads the FILE specified in myURL to the path specified in myPath.
-'
-' myURL must always end with a file name
-' myPath may be a directory or a file name; in either case the directory must exist
-'
-' Based on a script written by Rob van der Woude
-' http://www.robvanderwoude.com
-
-    ' Standard housekeeping
-    Dim i, objFile, objHTTP, strFile, strMsg
-
-    ' Check if the specified target file or folder exists,
-    ' and build the fully qualified path of the target file
-    If objFso.FolderExists( myPath ) Then
-        strFile = objFso.BuildPath( myPath, Mid( myURL, InStrRev( myURL, "/" ) + 1 ) )
-    ElseIf objFso.FolderExists( Left( myPath, InStrRev( myPath, "\" ) - 1 ) ) Then
-        strFile = myPath
-    Else
-        stdout.WriteLine "ERROR: Target folder not found."
-        AbortScript
-    End If
-
-    ' Create or open the target file
-    Set objFile = objFso.OpenTextFile( strFile, ForWriting, True )
-
-    ' Create an HTTP object
-    Set objHTTP = CreateObject( "MSXML2.ServerXMLHTTP" )
-
-    ' Download the specified URL
-    objHTTP.Open "GET", myURL, False
-    objHTTP.Send
-
-    ' Write the downloaded byte stream to the target file
-    For i = 1 To LenB( objHTTP.ResponseBody )
-        objFile.Write Chr( AscB( MidB( objHTTP.ResponseBody, i, 1 ) ) )
-    Next
-
-    ' Close the target file
-    objFile.Close( )
-End Sub
-
 ' Download a binary type file over http
 Sub HTTPDownloadBinaryFile( myURL, myPath )
 ' This Sub downloads the FILE specified in myURL to the path specified in myPath.
