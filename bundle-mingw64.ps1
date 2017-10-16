@@ -131,7 +131,7 @@ $setup_result =  "$target_dir\gnucash-$package_version-setup.exe"
 $final_file = ""
 if ($git_build) {
   $gnc_vcsinfo_h = "$target_dir\build\gnucash-git\libgnucash\core-utils\gnc-vcs-info.h"
-  $vcs_rev = version_item -tag "GNUCASH_SCM_REV" -path $gnc_vcsinfo_h | %{$_ -replace """", ""}
+  $vcs_rev = version_item -tag "GNC_VCS_REV" -path $gnc_vcsinfo_h | %{$_ -replace """", ""}
   $final_file = "$target_dir\gnucash-$package_version-$date-git-$vcs_rev-setup.exe"
   }
 else {
