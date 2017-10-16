@@ -85,6 +85,8 @@ Source: "@INST_DIR@\share\guile\*"; DestDir: "{app}\share\guile"; Flags: recurse
 Source: "@INST_DIR@\share\glib-2.0\*"; DestDir: "{app}\share\glib-2.0"; Flags: recursesubdirs; Components: main
 Source: "@INST_DIR@\share\libofx\*"; DestDir: "{app}\share\libofx"; Flags: recursesubdirs; Components: main
 Source: "@INST_DIR@\share\OpenSP\*"; DestDir: "{app}\share\OpenSP"; Flags: recursesubdirs; Components: main
+Source: "@INST_DIR@\share\icons\hicolor\*"; DestDir: "{app}\share\icons\hicolor"; Flags: recursesubdirs; Components: main
+Source: "@INST_DIR@\share\glib-2.0\schemas\*"; DestDir: "{app}\share\glib-2.0\schemas"; Flags: recursesubdirs; Components: main
 
 ;; The translations
 ;Source: "@INST_DIR@\share\locale\*"; DestDir: "{app}\share\locale"; Flags: recursesubdirs; Components: translations
@@ -104,7 +106,8 @@ Source: "@INST_DIR@\share\doc\@PACKAGE@\README-zh_TW.win32-bin.txt"; DestDir: "{
 Source: "@INST_DIR@\share\doc\@PACKAGE@\COPYING"; DestDir: "{app}\doc\@PACKAGE@"; Flags: ignoreversion; Components: main
 Source: "@INST_DIR@\share\doc\@PACKAGE@\AUTHORS"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
 Source: "@INST_DIR@\share\doc\@PACKAGE@\ChangeLog"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
-Source: "@INST_DIR@\share\doc\@PACKAGE@-docs\*"; DestDir: "{app}\share\@PACKAGE@\help"; Flags: recursesubdirs; Components: main
+Source: "@INST_DIR@\share\doc\@PACKAGE@-docs\*.chm"; DestDir: "{app}\share\@PACKAGE@\help"; Flags: recursesubdirs; Components: main
+Source: "@INST_DIR@\share\doc\@PACKAGE@-docs\*.hhmap"; DestDir: "{app}\share\@PACKAGE@\help"; Flags: recursesubdirs; Components: main
 
 ;;;; The second section retrieves the dependencies that we need from MinGW.
 ;; Required DLLs
@@ -164,6 +167,7 @@ Source: "@MINGW_DIR@\bin\libicudt*.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libicuin*.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libicuuc*.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libidn-11.dll"; DestDir: "{app}\bin"; Components: main
+Source: "@MINGW_DIR@\bin\libidn2-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libintl-8.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libjavascriptcoregtk-3.0-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libjpeg-8.dll"; DestDir: "{app}\bin"; Components: main
