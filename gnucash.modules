@@ -314,7 +314,7 @@
     </dependencies>
  </cmake>
 
-  <autotools id="gnucash-docs-git" autogenargs="--disable-scrollkeeper"
+  <autotools id="gnucash-docs-git"
 	    autogen-template="%(srcdir)s/%(autogen-sh)s &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s %(autogenargs)s"
 	    makeargs="chm" makeinstallargs="install-chm" >
     <branch  repo="github" module="Gnucash/gnucash-docs.git" revision="master"
@@ -324,7 +324,7 @@
     </dependencies>
   </autotools>
 
-  <autotools id="gnucash-docs" autogenargs="--disable-scrollkeeper"
+  <autotools id="gnucash-docs"
 	    autogen-template="%(srcdir)s/%(autogen-sh)s &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s %(autogenargs)s"
 	    makeargs="chm" makeinstallargs="install-chm" >
     <branch  module="gnucash/gnucash-docs/gnucash-docs-2.7.0.tar.gz"
@@ -341,7 +341,7 @@
   <metamodule id="meta-gnucash">
     <dependencies>
       <dep package="gnucash"/>
-      <dep package="gnucash-docs"/>
+      <dep package="gnucash-docs-git"/>
     </dependencies>
   </metamodule>
 
