@@ -125,7 +125,6 @@ $proc = bash-command("sed  < $issue_in > $issue_out \
   -e ""s#@GNUCASH_MICRO_VERSION@#$micro_version#g"" \
   -e ""s#@GC_WIN_REPOS_DIR@#$script#g"" ")
 
-
 $date = get-date -format "yyyy-MM-dd"
 $setup_result =  "$target_dir\gnucash-$package_version-setup.exe"
 $final_file = ""
@@ -137,6 +136,14 @@ if ($git_build) {
 else {
   $final_file = "$target_dir\gnucash-$package_version-setup.exe"
 }
+
+$mingw_dir = "$root_dir\msys2\mingw$mingw_ver"
+$schema_dir = "share\glib-2.0\schemas"
+$target_schema_dir = "$target_dir\inst\$schema_dir"
+copy-item $mingw_dir\$schema_dir\org.gtk.Settings.* $target_schema_dir
+$target_schema_unix = make-unixpath -path $target_schema_dir
+$schema_compiler = make-unixpath -path "$mingw_dir\bin\glib-compile-schemas"
+bash-command("$schema_compiler $target_schema_unix")
 
 write-host "Running Inno Setup to create $final_file."
 
