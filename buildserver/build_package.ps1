@@ -66,6 +66,10 @@ $env:MSYSTEM = 'MINGW32'
 $env:TERM = 'dumb' #Prevent escape codes in the log.
 $env:TARGET = "$package-$branch"
 
+if ($PSVersionTable.PSVersion.Major -ge 3) {
+    $PSDefaultParameterValues['*:Encoding'] = 'utf8'
+    }
+
 function bash-command() {
     param ([string]$command = "")
     if (!(test-path -path $target_dir\msys2\usr\bin\bash.exe)) {

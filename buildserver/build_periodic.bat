@@ -11,4 +11,4 @@ c:\gcdev\mingw\msys\1.0\bin\sh.exe --login c:\gcdev\gnucash-on-windows.git\build
 rem maintenance branch build (daily)
 c:\gcdev-maint\mingw\msys\1.0\bin\sh.exe --login c:\gcdev-maint\gnucash-on-windows.git\buildserver\build_periodic.sh
 rem Development build (daily)
-c:\gcdev\mingw\msys\1.0\bin\sh.exe --login c:\gcdev\gnucash-on-windows.git\buildserver\build_periodic.sh
+rem This doesn't work any more. c:\gcdev\mingw\msys\1.0\bin\sh.exe --login c:\gcdev\gnucash-on-windows.git\buildserver\build_periodic.sh
