@@ -91,6 +91,10 @@ else {
   $gnucash = get-childitem -path $target_dir\build | where-object {$_.Name -match "gnucash-[0-9.]+"} | select-object -last 1
 }
 
+if ($PSVersionTable.PSVersion.Major -ge 3) {
+    $PSDefaultParameterValues['*:Encoding'] = 'utf8'
+    }
+
 $gnc_config_h = "$target_dir\build\$gnucash\common\config.h"
 
 $major_version = version_item -tag "GNUCASH_MAJOR_VERSION" -path $gnc_config_h
