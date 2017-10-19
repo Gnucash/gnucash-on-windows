@@ -90,7 +90,7 @@ function Install-Package([string]$url, [string]$download_file,
 {
     if (!(test-path -path $download_file)) {
 	write-host "Downloading $download_file from $url"
-	invoke-webrequest -uri $url -outfile $download_file
+	(New-Object System.Net.WebClient).DownloadFile($url, $download_file)
     }
 
     write-host "Installing $download_dir\$setup_cmd $setup_args"
