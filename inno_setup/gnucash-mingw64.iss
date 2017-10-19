@@ -417,7 +417,7 @@ begin
   { Create the guile.cmd file; #10 is the linefeed character and #13 CR }
 
   FileName := appdir + '\bin\guile.cmd' ;
-  FileString := 'set GUILE_LOAD_PATH=' + pkgdatadir + '\scm;' + appdir + '\share\guile\1.8;%GUILE_LOAD_PATH%'#13#10 ;
+  FileString := 'set GUILE_LOAD_PATH=' + pkgdatadir + '\scm;' + appdir + '\share\guile\2.0;%GUILE_LOAD_PATH%'#13#10 ;
   FileString := FileString + 'start guile.exe %*'#13#10 ;
 
   { Save the final file }
