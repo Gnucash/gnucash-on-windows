@@ -108,7 +108,7 @@ function bash-command() {
 	write-host "Shell program not found, aborting."
 	return
     }
-    write-host "Running bash command ""$command"""
+    #write-host "Running bash command ""$command"""
     Start-Process -FilePath "$target_dir\msys2\usr\bin\bash.exe" -ArgumentList "-c ""export PATH=/usr/bin; $command""" -NoNewWindow -Wait
 }
 
