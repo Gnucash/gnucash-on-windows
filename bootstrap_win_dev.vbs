@@ -482,20 +482,20 @@ End Function
 
 
 ' Make sure we run in a console (so output is visible)
-' Based on a code snipped found here
-' http://ask.metafilter.com/79481/vbscript-printing-to-command-line
+' Blatantly copied from
+' https://stackoverflow.com/questions/4692542/force-a-vbs-to-run-using-cscript-instead-of-wscript
 Sub CheckStartMode
-    ' Returns the running executable as upper case from the last \ symbol
-    strStartExe = UCase( Mid( wscript.fullname, instrRev(wscript.fullname, "\") + 1 ) )
-
-    If Not strStartExe = "CSCRIPT.EXE" Then
-        ' This wasn't launched with cscript.exe, so relaunch using cscript.exe explicitly!
-        ' wscript.scriptfullname is the full path to the actual script
-
-        set oSh = CreateObject("wscript.shell")
-        oSh.Run "cscript.exe """ & wscript.scriptfullname & """"
-        wscript.quit
-
+    Dim Arg, Str
+    If Not LCase( Right( WScript.FullName, 12 ) ) = "\cscript.exe" Then
+        For Each Arg In WScript.Arguments
+            If InStr( Arg, " " ) Then Arg = """" & Arg & """"
+            Str = Str & " " & Arg
+        Next
+        CreateObject( "WScript.Shell" ).Run _
+            "cscript //nologo """ & _
+            WScript.ScriptFullName & _
+            """ " & Str
+        WScript.Quit
     End If
 End Sub
 
