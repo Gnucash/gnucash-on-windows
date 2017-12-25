@@ -20,7 +20,8 @@
 <#
 .SYNOPSIS
 
-Prepares a MinGW-w64 development environment from scratch.
+Prepares a MinGW-w64 development environment from scratch
+or enhances one already existing on the system.
 
 .DESCRIPTION
 
@@ -43,6 +44,11 @@ none is provided the environment will be created at C:\gcdev64.
 Optional. A path to which to download installers. Defaults to
 target_dir\downloads.
 
+.PARAMETER msys2_root
+
+Optional. The root path of an already installed MSys2 environment. 
+E.g. C:\msys64.
+
 .PARAMETER x86_64
 
 Optional. A switch value.If true the toolchain will build x86_64
@@ -54,8 +60,11 @@ binaries; if false it will build i686 binaries. Defaults to false.
 Param(
 	[Parameter()] [string]$target_dir = "c:\\gcdev64",
 	[Parameter()] [string]$download_dir = "$target_dir\\downloads",
+	[Parameter()] [string]$msys2_root = "$target_dir\\msys2",
 	[Parameter()] [switch]$x86_64
 )
+
+$bash_path = "$msys2_root\\usr\\bin\\bash.exe"
 
 $progressPreference = 'silentlyContinue'
 if ($x86_64) {
@@ -104,12 +113,12 @@ function Install-Package([string]$url, [string]$download_file,
 
 function bash-command() {
     param ([string]$command = "")
-    if (!(test-path -path $target_dir\msys2\usr\bin\bash.exe)) {
+    if (!(test-path -path $bash_path)) {
 	write-host "Shell program not found, aborting."
 	return
     }
     #write-host "Running bash command ""$command"""
-    Start-Process -FilePath "$target_dir\msys2\usr\bin\bash.exe" -ArgumentList "-c ""export PATH=/usr/bin; $command""" -NoNewWindow -Wait
+    Start-Process -FilePath "$bash_path" -ArgumentList "-c ""export PATH=/usr/bin; $command""" -NoNewWindow -Wait
 }
 
 function make-unixpath([string]$path) {
@@ -118,7 +127,7 @@ function make-unixpath([string]$path) {
 
 # Install MSYS2 for the current machine's architechture.
 
-if (!(test-path -path $target_dir\msys2\usr\bin\bash.exe)) {
+if (!(test-path -path $bash_path)) {
     $mingw64_installer32 = "http://repo.msys2.org/distrib/i686/msys2-i686-20161025.exe"
     $mingw64_installer64 = "http://repo.msys2.org/distrib/x86_64/msys2-x86_64-20161025.exe"
 
@@ -147,10 +156,10 @@ Controller.prototype.FinishedPageCallback = function() {
 
     $setup_script = "$target_dir\input.qs"
     set-content -path $setup_script -value $msys_setup_args | out-null
-    install-package -url $mingw64_installer -download_file $mingw64_installer_file -install_dir "$target_dir/msys2" -setup_cmd "msys2.exe" -setup_args "--script $setup_script"
+    install-package -url $mingw64_installer -download_file $mingw64_installer_file -install_dir "$msys2_root" -setup_cmd "msys2.exe" -setup_args "--script $setup_script"
 #    remove-item $setup_script
 }
-if (!(test-path -path $target_dir\msys2\usr\bin\bash.exe)) {
+if (!(test-path -path $bash_path)) {
     write-host "Failed to install MSys2, aborting."
     exit
 }
@@ -182,7 +191,7 @@ if (!(test-path -path ${env:ProgramFiles(x86)}\inno)) {
 }
 
 #if MSys2 isn't already installed, install it.
-if (!(test-path -path $target_dir\msys2\usr\bin\bash.exe)) {
+if (!(test-path -path $bash_path)) {
    Write-Host @"
 Updating the new installation. A bash window will open. In that window accept the proposed installation and close the window when the update completes.
 
@@ -230,7 +239,8 @@ Write-Host @"
 Next we'll install the HTML Help Workshop includes and libraries into our MinGW directory.
 "@
 
-if (!(test-path -path "$target_dir/msys2/$mingw_path/include/htmlhelp.h")) {
+$htmlhelp_h = "$msys2_root/$mingw_path/include/htmlhelp.h"
+if (!(test-path -path $htmlhelp_h)) {
     if (!$installed_hh) {
 	$installed_hh = get-item -path "hkcu:\SOFTWARE\Microsoft\HTML Help Workshop" | foreach-object{$_.GetValue("InstallDir")}
     }
@@ -239,7 +249,7 @@ if (!(test-path -path "$target_dir/msys2/$mingw_path/include/htmlhelp.h")) {
 
     bash-command -command "$mingw_bin/gendef $hhctrl_ocx - > $mingw_path/lib/htmlhelp.def"
     bash-command -command "$mingw_bin/dlltool -k -d $mingw_path/lib/htmlhelp.def -l $mingw_path/lib/libhtmlhelp.a"
-    if (!(test-path -path "$target_dir/msys2/$mingw_path/include/htmlhelp.h")) {
+    if (!(test-path -path $htmlhelp_h)) {
 	Write-Host "HTML Help Workshop isn't correctly installed."
 	exit
     }
@@ -270,6 +280,8 @@ $jhbuildrc = get-content "$target_dir\\src\\gnucash-on-windows.git\\jhbuildrc.in
  [IO.File]::WriteAllLines("$target_dir\\src\\gnucash-on-windows.git\\jhbuildrc", $jhbuildrc)
 
 Write-Host @"
+
+
 Your build environment is now ready to use. Open an MSys2/Mingw32 shell from the start menu, cd to your target directory, and run
 jhbuild -f src/gnucash-on-windows.git/jhbuildrc build
 
