@@ -46,7 +46,6 @@ Name: "{group}\{cm:IconName_README}"; Filename: "{app}\doc\@PACKAGE@\{cm:IconFil
 Name: "{group}\{cm:IconName_FAQ}"; Filename: "http://wiki.gnucash.org/wiki/FAQ"; Tasks: menuicon
 Name: "{group}\{cm:IconName_Bugzilla}"; Filename: "http://bugzilla.gnome.org/enter_bug.cgi?product=GnuCash"; Tasks: menuicon
 Name: "{group}\{cm:IconName_InstallFQ}"; Filename: "{app}\bin\install-fq-mods.cmd"; WorkingDir: "{app}\bin"; Comment: "{cm:IconComment_InstallFQ}"; Tasks: menuicon
-Name: "{group}\{cm:IconName_Theme}"; Filename: "{app}\bin\gtk2_prefs.exe"; WorkingDir: "{app}\bin"; Tasks: menuicon
 Name: "{group}\{cm:IconName_Uninstall}"; Filename: "{uninstallexe}"; Comment: "{cm:IconComment_Uninstall}"; Tasks: menuicon
 
 Name: "{commondesktop}\GnuCash"; Filename: "{app}\bin\@PACKAGE@.exe"; WorkingDir: "{code:GetDocPath}"; Comment: "{cm:IconComment_GnuCash}"; IconFilename: "{app}\share\@PACKAGE@\pixmaps\gnucash-icon.ico"; Tasks: desktopicon
