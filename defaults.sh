@@ -348,20 +348,20 @@ set_default LIBOFX_DIR $GLOBAL_DIR\\libofx
 set_default LIBOFX_PATCH `pwd`/libofx-0.9.8.patch
 
 ## online banking: gwenhywfar+aqbanking
-GWENHYWFAR_VERSION="4.17.0"
+GWENHYWFAR_VERSION="4.18.0"
 ## NB: Dummy means dummy! The important value in the following url is
 ## the release number, not the file name at the end!
-set_default GWENHYWFAR_URL "https://www.aquamaniac.de/sites/download/download.php?package=01&release=205&file=01&dummy=gwenhywfar-4.17.0.tar.gz"
+set_default GWENHYWFAR_URL "https://www.aquamaniac.de/sites/download/download.php?package=01&release=206&file=01&dummy=gwenhywfar-${GWENHYWFAR_VERSION}.tar.gz"
 set_default GWENHYWFAR_DIR $GLOBAL_DIR\\gwenhywfar
 
-KTOBLZCHECK_VERSION="1.48"
+KTOBLZCHECK_VERSION="1.49"
 set_default KTOBLZCHECK_URL "$SF_MIRROR/ktoblzcheck/ktoblzcheck-${KTOBLZCHECK_VERSION}.tar.gz"
 # ktoblzcheck is being installed into GWENHYWFAR_DIR
 
-AQBANKING_VERSION="5.6.12"
+AQBANKING_VERSION="5.7.6beta"
 ## NB: Dummy means dummy! The important value in the following url is
 ## the release number, not the file name at the end!
-set_default AQBANKING_URL "https://www.aquamaniac.de/sites/download/download.php?package=03&release=208&file=01&dummy=aqbanking-5.6.12.tar.gz"
+set_default AQBANKING_URL "https://www.aquamaniac.de/sites/download/download.php?package=03&release=215&file=01&dummy=aqbanking-${AQBANKING_VERSION}.tar.gz"
 set_default AQBANKING_DIR $GLOBAL_DIR\\aqbanking
 set_default AQB_PATCH ""
 
