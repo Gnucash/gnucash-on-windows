@@ -142,8 +142,8 @@
   </autotools>
 
   <autotools id="gwenhywfar" autogen-sh="configure"
-	     autogenargs="--with-guis=gtk2 --enable-local-install --disable-binreloc --disable-ssl">
-    <branch module="gnucash/Dependencies/gwenhywfar-4.17.0.tar.gz" version="4.17.0"
+	     autogenargs="--with-guis='' --enable-local-install --disable-binreloc --disable-ssl">
+    <branch module="gnucash/Dependencies/gwenhywfar-4.18.0.tar.gz" version="4.18.0"
 	    repo="sourceforge">
     </branch>
     <dependencies>
@@ -153,7 +153,7 @@
   </autotools>
 
   <autotools id="gwenhywfar-svn" autogen-template="make -fMakefile.cvs &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s --libdir %(libdir)s %(autogenargs)s"
-	     autogenargs="--with-guis=gtk2 --enable-local-install --disable-binreloc --disable-ssl">
+	     autogenargs="--with-guis='' --enable-local-install --disable-binreloc --disable-ssl">
     <branch module="gwenhywfar" repo="aquamaniac"/>
     <dependencies>
       <dep package="gcrypt"/>

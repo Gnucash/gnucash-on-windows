@@ -78,6 +78,5 @@ module_makeargs["aqbanking"]="-j 1"
 module_makeargs["gnucash"]="-j 1"
 module_makeargs["gnucash-git"]="-j 1"
 
-module_extra_env["gwenhywfar"]={'CPPFLAGS':_popen('pkg-config --cflags gtk+-2.0'), 'LDFLAGS':_popen('pkg-config --libs gtk+-2.0')}
 module_extra_env["gnucash"]={'ACLOCAL_FLAGS':'-I' + os.path.join('/mingw32', 'share', 'aclocal')}
 
