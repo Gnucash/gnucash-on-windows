@@ -16,7 +16,7 @@ AppUpdatesURL=http://www.gnucash.org
 VersionInfoVersion=@PACKAGE_VERSION@
 DefaultDirName={pf}\@PACKAGE@
 DefaultGroupName=GnuCash
-LicenseFile=@INST_DIR@\share\doc\@PACKAGE@\COPYING
+LicenseFile=@INST_DIR@\share\doc\@PACKAGE@\LICENSE
 Compression=lzma
 MinVersion=5.0
 PrivilegesRequired=poweruser
@@ -102,7 +102,7 @@ Source: "@INST_DIR@\share\doc\@PACKAGE@\README-fr.win32-bin.txt"; DestDir: "{app
 Source: "@INST_DIR@\share\doc\@PACKAGE@\README-it.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
 Source: "@INST_DIR@\share\doc\@PACKAGE@\README-zh_CN.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
 Source: "@INST_DIR@\share\doc\@PACKAGE@\README-zh_TW.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
-Source: "@INST_DIR@\share\doc\@PACKAGE@\COPYING"; DestDir: "{app}\doc\@PACKAGE@"; Flags: ignoreversion; Components: main
+Source: "@INST_DIR@\share\doc\@PACKAGE@\LICENSE"; DestDir: "{app}\doc\@PACKAGE@"; Flags: ignoreversion; Components: main
 Source: "@INST_DIR@\share\doc\@PACKAGE@\AUTHORS"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
 Source: "@INST_DIR@\share\doc\@PACKAGE@\ChangeLog"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
 Source: "@INST_DIR@\share\doc\@PACKAGE@-docs\*.chm"; DestDir: "{app}\share\@PACKAGE@\help"; Flags: recursesubdirs; Components: main
