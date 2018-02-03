@@ -278,7 +278,7 @@ End If
 
 ' Set up gnucash git repository
 ' -----------------------------
-strGCbin = REPOS_DIR & "\src\bin\gnucash-bin.c"
+strGCbin = REPOS_DIR & "\gnucash\gnucash-bin.c"
 stdout.WriteLine "Checking if " & REPOS_DIR
 stdout.Write "         is a GnuCash git repository... "
 If objFso.FolderExists(REPOS_DIR & "\.git") And objFso.FileExists(strGCbin) Then
