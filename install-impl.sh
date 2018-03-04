@@ -280,6 +280,9 @@ function inst_aqbanking() {
     then
         echo "AqBanking ${AQBANKING_VERSION} already installed in $_AQBANKING_UDIR. skipping."
     else
+        # Mingw's wget isn't clever enough to find alternative dns names in certificates
+        # So it won't find that git.aquamaniacs.de (the cert CN) is equivalent to www.aquamaniacs.de
+        WGET_EXTRA_OPTIONS="--no-check-certificate"
         wget_unpacked $AQBANKING_URL $DOWNLOAD_DIR $TMP_DIR
         assert_one_dir $TMP_UDIR/aqbanking-*
         qpushd $TMP_UDIR/aqbanking-*
@@ -647,6 +650,9 @@ function inst_gwenhywfar() {
 #        INSTALLED_GWEN=`${PKG_CONFIG} --modversion gwenhywfar`
 #        echo "GWENHYWFAR installed version ${INSTALLED_GWEN} doesn't match required version ${GWENHYWFAR_VERSION}"
 #        exit
+        # Mingw's wget isn't clever enough to find alternative dns names in certificates
+        # So it won't find that git.aquamaniacs.de (the cert CN) is equivalent to www.aquamaniacs.de
+        WGET_EXTRA_OPTIONS="--no-check-certificate"
         wget_unpacked $GWENHYWFAR_URL $DOWNLOAD_DIR $TMP_DIR
         assert_one_dir $TMP_UDIR/gwenhywfar-*
         qpushd $TMP_UDIR/gwenhywfar-*
