@@ -216,7 +216,7 @@ $toolchain = "binutils cmake crt-git gcc gcc-libs gdb headers-git libmangle-git 
 
 
 # Note that webkitgtk3 will pull in gtk3 automatically.
-$deps = "webkitgtk3 boost iso-codes shared-mime-info libmariadbclient postgresql libgnomecanvas ninja ncurses"
+$deps = "webkitgtk3 boost iso-codes shared-mime-info libmariadbclient postgresql ninja ncurses"
 
 Write-Host @"
 
