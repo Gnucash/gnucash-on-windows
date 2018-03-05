@@ -117,6 +117,7 @@ Source: "@INST_DIR@\share\doc\@PACKAGE@-docs\*.hhmap"; DestDir: "{app}\share\@PA
 ;;lib/dbd/libdbdpgsql.dll: libpq.dll, ssleay32.dll, libeay32.dll
 
 Source: "@MINGW_DIR@\bin\libatk-1.0-0.dll"; DestDir: "{app}\bin"; Components: main
+Source: "@MINGW_DIR@\bin\libboost_date_time-mt.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libboost_locale-mt.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libboost_regex-mt.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libboost_system-mt.dll"; DestDir: "{app}\bin"; Components: main
