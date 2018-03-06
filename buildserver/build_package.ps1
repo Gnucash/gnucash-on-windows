@@ -105,6 +105,24 @@ if ($hostname) {
 # Update MinGW-w64
 bash-command -command "pacman -Su --noconfirm > >(tee -a $log_unix) 2>&1"
 
+#GnuCash build still behaves badly if it finds its old build products. Clean them out.
+if ($branch -eq "releases") {
+    $module = get-childitem -path $target_dir\$package\$branch\build -filter gnucash-* -exclude gnucash-docs* -name -directory | sort-object -descending | select -f 1
+    $install_manifest = "$target_dir\$package\$branch\build\$module\install_manifest.txt"
+}
+else {
+    $install_manifest = "$target_dir\$package\$branch\build\gnucash-git\install_manifest.txt"
+}
+
+if (test-path -path $install_manifest) {
+    get-content $install_manifest | remove-item
+    remove-item $install_manifest
+    if ($branch -eq "releases") { # Force a release build even if nothing has changed.
+	remove-item $target_dir\$package\$branch\inst\_jhbuild\info\gnucash
+	remove-item $target_dir\$package\$branch\inst\_jhbuild\manifests\gnucash
+    }
+}
+
 # Update the gnucash-on-windows repository
 #bash-command -command "cd $script_unix && git reset --hard && git pull --rebase"
 # Build the latest GnuCash and all dependencies not installed via mingw64
