@@ -57,16 +57,16 @@ add_to_path_var('PATH', os.path.join(_basedir, 'msys2', _arch, 'bin'))
 
 
 if _arch == 'mingw32':
-    mingw_base='/mingw32'
+    _mingw_base='/mingw32'
 else:
-    mingw_base='/mingw64'
+    _mingw_base='/mingw64'
 
 os.environ['SRCROOT'] = checkoutroot
 os.environ['PREFIX'] = prefix
 os.environ['MSYS2ROOT'] = os.path.join(_basedir, 'msys2')
 #os.environ['GUILE_LOAD_PATH'] = os.path.join(prefix, 'share', 'guile', '2.0')
 #os.environ['GUILE_LOAD_BINARY_PATH'] = os.path.join(prefix, 'lib', 'guile', '2.0', 'ccache')
-os.environ['XDG_DATA_DIRS'] = '/usr/local/share:/usr/share:' + mingw_base + '/share'
+os.environ['GETTEXTDATADIRS'] = os.path.join(_mingw_base, 'share', 'gettext')
 
 if _arch == 'mingw32':
     autogenargs = "--build=i686-w64-mingw32"
@@ -86,6 +86,6 @@ module_makeargs["aqbanking"]="-j 1"
 module_makeargs["gnucash"]="-j 1"
 module_makeargs["gnucash-git"]="-j 1"
 
-module_extra_env["gnucash"]={'ACLOCAL_FLAGS':'-I' + os.path.join(mingw_base, 'share', 'aclocal')}
+module_extra_env["gnucash"]={'ACLOCAL_FLAGS':'-I' + os.path.join(_mingw_base, 'share', 'aclocal')}
 module_extra_env["gwenhywfar"]={'CFLAGS':'-O0'}
 
