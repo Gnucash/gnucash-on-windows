@@ -282,7 +282,7 @@ $jhbuildrc = get-content "$target_dir\\src\\gnucash-on-windows.git\\jhbuildrc.in
 Write-Host @"
 
 
-Your build environment is now ready to use. Open an MSys2/Mingw32 shell from the start menu, cd to your target directory, and run
+Your build environment is now ready to use. Open an MSys2/$arch shell from the start menu, cd to $target_unix, and run
 jhbuild -f src/gnucash-on-windows.git/jhbuildrc build
 
 Note that the build will not work with the plain MSys2 shell!
