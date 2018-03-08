@@ -166,10 +166,10 @@
 	    repo="sourceforge"/>
   </autotools>
 
-  <autotools id="xmlsec">
-    <branch module="lsh123/xmlsec/archive/xmlsec-1_2_20.tar.gz"
-	    repo="github-tar" version="1.2.20"
-	    checkoutdir="xmlsec-xmlsec-1_2_20"/>
+  <autotools id="xmlsec" autogenargs="--disable-x509">
+    <branch module="lsh123/xmlsec/archive/xmlsec-1_2_25.tar.gz"
+	    repo="github-tar" version="1.2.25"
+	    checkoutdir="xmlsec-xmlsec-1_2_25"/>
     <dependencies>
       <dep package="openssl"/>
     </dependencies>
