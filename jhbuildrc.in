@@ -45,28 +45,22 @@ checkoutroot = os.path.join(_projectdir, 'src')
 buildroot = os.path.join(_projectdir, 'build')
 tarballdir = os.path.join(_download_dir)
 moduleset = os.path.join(_config_dir, 'gnucash.modules')
-
-_mingw_includes = os.path.join(_basedir, 'msys2', _arch, 'include')
-_mingw_libs = os.path.join(_basedir, 'msys2', _arch, 'lib')
+_mingw_base = os.path.join(_basedir, 'msys2', _arch)
+_mingw_includes = os.path.join(_mingw_base, 'include')
+_mingw_libs = os.path.join(_mingw_base, 'lib')
 _usr_include = os.path.join('/usr', 'include')
 _usr_lib = os.path.join('/usr', 'lib')
 environ_append('CPPFLAGS', '-I%s -I%s' % (_mingw_includes, _usr_include))
 environ_append('LDFLAGS', '-L%s -L%s' % (_mingw_libs, _usr_lib))
 add_to_path_var('PKG_CONFIG_PATH', os.path.join(_mingw_libs, 'pkgconfig'))
-add_to_path_var('PATH', os.path.join(_basedir, 'msys2', _arch, 'bin'))
-
-
-if _arch == 'mingw32':
-    _mingw_base='/mingw32'
-else:
-    _mingw_base='/mingw64'
+add_to_path_var('PATH', os.path.join(_mingw_base, 'bin'))
 
 os.environ['SRCROOT'] = checkoutroot
 os.environ['PREFIX'] = prefix
 os.environ['MSYS2ROOT'] = os.path.join(_basedir, 'msys2')
 #os.environ['GUILE_LOAD_PATH'] = os.path.join(prefix, 'share', 'guile', '2.0')
 #os.environ['GUILE_LOAD_BINARY_PATH'] = os.path.join(prefix, 'lib', 'guile', '2.0', 'ccache')
-os.environ['GETTEXTDATADIRS'] = os.path.join(_mingw_base, 'share', 'gettext')
+os.environ['GETTEXTDATADIR'] = os.path.join(_mingw_base, 'share', 'gettext')
 
 if _arch == 'mingw32':
     autogenargs = "--build=i686-w64-mingw32"
