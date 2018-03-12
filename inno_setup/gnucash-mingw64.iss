@@ -126,6 +126,7 @@ Source: "@MINGW_DIR@\bin\libboost_thread-mt.dll"; DestDir: "{app}\bin"; Componen
 Source: "@MINGW_DIR@\bin\libbz2-1.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libcairo-2.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libcairo-gobject-2.dll"; DestDir: "{app}\bin"; Components: main
+Source: "@MINGW_DIR@\bin\libcroco-0.6-3.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libdbus-1-3.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libdbus-glib-1-2.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libeay32.dll"; DestDir: "{app}\bin"; Components: main
