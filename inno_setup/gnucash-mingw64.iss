@@ -33,8 +33,8 @@ Name: "custom"; Description: "{cm:CustomInstall}"; Flags: iscustom
 
 [Components]
 Name: "main"; Description: "{cm:MainFiles}"; Types: full custom; Flags: fixed
-;Name: "translations"; Description: "{cm:TranslFiles}"; Types: full
-;Name: "templates"; Description: "{cm:TemplFiles}"; Types: full
+Name: "translations"; Description: "{cm:TranslFiles}"; Types: full
+Name: "templates"; Description: "{cm:TemplFiles}"; Types: full
 
 [Tasks]
 Name: desktopicon; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
@@ -88,10 +88,10 @@ Source: "@INST_DIR@\share\icons\hicolor\*"; DestDir: "{app}\share\icons\hicolor"
 Source: "@INST_DIR@\share\glib-2.0\schemas\*"; DestDir: "{app}\share\glib-2.0\schemas"; Flags: recursesubdirs; Components: main
 
 ;; The translations
-;Source: "@INST_DIR@\share\locale\*"; DestDir: "{app}\share\locale"; Flags: recursesubdirs; Components: translations
+Source: "@INST_DIR@\share\locale\*"; DestDir: "{app}\share\locale"; Flags: recursesubdirs; Components: translations
 ;
 ;; The account templates
-;Source: "@INST_DIR@\share\@PACKAGE@\accounts\*"; DestDir: "{app}\share\@PACKAGE@\accounts"; Flags: recursesubdirs; Components: templates
+Source: "@INST_DIR@\share\@PACKAGE@\accounts\*"; DestDir: "{app}\share\@PACKAGE@\accounts"; Flags: recursesubdirs; Components: templates
 
 ; And all the @PACKAGE@ documentation
 Source: "@INST_DIR@\share\doc\@PACKAGE@\README"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
