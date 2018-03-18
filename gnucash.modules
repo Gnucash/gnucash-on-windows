@@ -15,8 +15,10 @@
 	      href="http://www.gnucash.org/pub/gnucash/sources/"/>
   <repository type="git" name="git.gnucash.org"
 	      href="http://git.gnucash.org/"/>
-  <repository type="svn" name="aquamaniac"
-	      href="http://devel.aqbanking.de/svn/"/>
+  <repository type="git" name="aquamaniac"
+              href="https://git.aquamaniac.de/git/"/>
+  <repository type="tarball" name="aqbanking"
+              href="https://www.aquamaniac.de/sites/download/"/>
   <repository type="git" name="github"
 	      href="git://github.com/"/>
   <repository type="tarball" name="github-tar"
@@ -142,9 +144,8 @@
   </autotools>
 
   <autotools id="gwenhywfar" autogen-sh="configure"
-	     autogenargs="--with-guis='' --enable-local-install --disable-binreloc --disable-ssl">
-    <branch module="gnucash/Dependencies/gwenhywfar-4.18.0.tar.gz" version="4.18.0"
-	    repo="sourceforge">
+	     autogenargs="--with-guis='gtk3' --enable-local-install --disable-binreloc --disable-ssl">
+    <branch module="download.php?package=01&amp;release=208&amp;file=02&amp;dummy=gwenhywfar-4.20.0.tar.gz" version="4.20.0" repo="aqbanking" checkoutdir="gwenhywfar-4.20.0">
     </branch>
     <dependencies>
       <dep package="gcrypt"/>
@@ -152,7 +153,7 @@
     </dependencies>
   </autotools>
 
-  <autotools id="gwenhywfar-svn" autogen-template="make -fMakefile.cvs &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s --libdir %(libdir)s %(autogenargs)s"
+  <autotools id="gwenhywfar-git" autogen-template="make -fMakefile.cvs &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s --libdir %(libdir)s %(autogenargs)s"
 	     autogenargs="--with-guis='' --enable-local-install --disable-binreloc --disable-ssl">
     <branch module="gwenhywfar" repo="aquamaniac"/>
     <dependencies>
@@ -177,8 +178,7 @@
 
   <autotools id="aqbanking" autogen-sh="autoreconf" makeargs="-j1"
 	     autogenargs="--enable-local-install">
-    <branch module="gnucash/Dependencies/aqbanking-5.6.12.tar.gz" version="5.6.12"
-	    repo="sourceforge">
+    <branch module="download.php?package=03&amp;release=217&amp;file=02&amp;dummy=aqbanking-5.7.8.tar.gz" repo="aqbanking" version="5.7.8" checkoutdir="aqbanking-5.7.8">
     </branch>
     <dependencies>
       <dep package="gwenhywfar"/>
@@ -189,7 +189,7 @@
     </dependencies>
   </autotools>
 
-  <autotools id="aqbanking-svn"
+  <autotools id="aqbanking-git"
 	     autogenargs='--enable-local-install"'
 	     autogen-template="make -fMakefile.cvs &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s --libdir %(libdir)s %(autogenargs)s" >
      <branch module="aqbanking" repo="aquamaniac" >
