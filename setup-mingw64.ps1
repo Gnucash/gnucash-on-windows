@@ -270,8 +270,8 @@ if (!(test-path -path "$target_dir\\src\\gnucash-on-windows.git")) {
    exit
 }
 
-bash-command -command "/usr/bin/patch -d/ -p0 -i $target_unix/src/gnucash-on-windows.git/patches/jhbuild.patch"
-bash-command -command "/usr/bin/patch -d/ -p0 -i $target_unix/src/gnucash-on-windows.git/patches/FindSWIG.patch"
+bash-command -command "/usr/bin/patch -t -d/ -p0 -i $target_unix/src/gnucash-on-windows.git/patches/jhbuild.patch"
+bash-command -command "/usr/bin/patch -t -d/ -p0 -i $target_unix/src/gnucash-on-windows.git/patches/FindSWIG.patch"
 
 $jhbuildrc = get-content "$target_dir\\src\\gnucash-on-windows.git\\jhbuildrc.in" |
  %{$_ -replace "@-BASE_DIR-@", "$target_unix"} |

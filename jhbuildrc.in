@@ -74,10 +74,13 @@ if _branch in ('master', 'unstable'):
     branches['gnucash-git'] = (None, _branch)
 else:
     modules = ["meta-gnucash"]
+
+_gtk_cflags = _popen("pkg-config --cflags gtk+-3.0")
+_gtk_ldflags= _popen("pkg-config --libs gtk+-3.0")
 append_autogenargs("libofx", "--with-opensp-includes=" + prefix + "/include/OpenSP --with-opensp-libs=" + prefix + "/lib")
 append_autogenargs("libdbi-drivers","--with-dbi-incdir=" + prefix + "/include --with-dbi-libdir=" + prefix + "/lib")
 module_makeargs["aqbanking"]="-j 1"
 
 module_extra_env["gnucash"]={'ACLOCAL_FLAGS':'-I' + os.path.join(_mingw_base, 'share', 'aclocal')}
-module_extra_env["gwenhywfar"]={'CFLAGS':'-O0'}
+module_extra_env["gwenhywfar"]={'CFLAGS': _gtk_cflags, 'LDFLAGS': _gtk_ldflags}
 
