@@ -1,0 +1,44 @@
+From d3870968869c022b4af18f45198d2a6d2296fac9 Mon Sep 17 00:00:00 2001
+From: John Ralls <jralls@ceridwen.us>
+Date: Sun, 25 Mar 2018 14:45:55 -0700
+Subject: [PATCH] Fix signature mismatch in abgui.c.
+
+---
+ src/libs/aqbanking/gui/abgui.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/src/libs/aqbanking/gui/abgui.c b/src/libs/aqbanking/gui/abgui.c
+index f4a4407..aa51cb2 100644
+--- a/src/libs/aqbanking/gui/abgui.c
++++ b/src/libs/aqbanking/gui/abgui.c
+@@ -238,10 +238,10 @@ int AB_Gui_CheckCert(GWEN_GUI *gui,
+ 
+ 
+ 
+-int AB_Gui_ReadDialogPrefs(GWEN_GUI *gui,
+-			   const char *groupName,
+-			   const char *altName,
+-			   GWEN_DB_NODE **pDb) {
++int GWENHYWFAR_CB AB_Gui_ReadDialogPrefs(GWEN_GUI *gui,
++                                         const char *groupName,
++                                         const char *altName,
++                                         GWEN_DB_NODE **pDb) {
+   AB_GUI *xgui;
+ 
+   assert(gui);
+@@ -282,9 +282,9 @@ int AB_Gui_ReadDialogPrefs(GWEN_GUI *gui,
+ 
+ 
+ 
+-int AB_Gui_WriteDialogPrefs(GWEN_GUI *gui,
+-			    const char *groupName,
+-			    GWEN_DB_NODE *db) {
++int GWENHYWFAR_CB AB_Gui_WriteDialogPrefs(GWEN_GUI *gui,
++                                          const char *groupName,
++                                          GWEN_DB_NODE *db) {
+   AB_GUI *xgui;
+ 
+   assert(gui);
+-- 
+2.2.2
+
