@@ -146,7 +146,6 @@
   <autotools id="gwenhywfar" autogen-sh="configure"
 	     autogenargs="--with-guis='gtk3' --enable-local-install --disable-binreloc --disable-ssl">
     <branch module="download.php?package=01&amp;release=208&amp;file=02&amp;dummy=gwenhywfar-4.20.0.tar.gz" version="4.20.0" repo="aqbanking" checkoutdir="gwenhywfar-4.20.0">
-            <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/Fix-signature-mismatch-in-abgui.c.patch" strip='1'/>
     </branch>
     <dependencies>
       <dep package="gcrypt"/>
@@ -180,6 +179,7 @@
   <autotools id="aqbanking" autogen-sh="autoreconf" makeargs="-j1"
 	     autogenargs="--enable-local-install">
     <branch module="download.php?package=03&amp;release=217&amp;file=02&amp;dummy=aqbanking-5.7.8.tar.gz" repo="aqbanking" version="5.7.8" checkoutdir="aqbanking-5.7.8">
+            <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/Fix-signature-mismatch-in-abgui.c.patch" strip='1'/>
     </branch>
     <dependencies>
       <dep package="gwenhywfar"/>
@@ -282,8 +282,8 @@
  <cmake id="gnucash"
         cmakeargs="-G 'MSYS Makefiles' -DCMAKE_FIND_ROOT_PATH=$MSYS2ROOT -DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DHTMLHELP_DIR=$PREFIX/hh -DGTEST_ROOT=$SRCROOT/googletest/googletest -DGMOCK_ROOT=$SRCROOT/googletest/googlemock"
 	use-ninja="False">
-   <branch repo="sourceforge" module="gnucash/unstable/gnucash-2.7.8.tar.bz2"
-	   version="2.7.8"/>
+   <branch repo="sourceforge" module="gnucash/stable/gnucash-3.0.tar.bz2"
+	   version="3.0"/>
     <dependencies>
       <dep package="libofx"/>
       <dep package="aqbanking"/>
