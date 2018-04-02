@@ -126,7 +126,6 @@ $proc = bash-command("sed  < $issue_in > $issue_out \
   -e ""s#@PACKAGE@#$package#g"" \
   -e ""s#@GNUCASH_MAJOR_VERSION@#$major_version#g"" \
   -e ""s#@GNUCASH_MINOR_VERSION@#$minor_version#g"" \
-  -e ""s#@GNUCASH_MICRO_VERSION@#$micro_version#g"" \
   -e ""s#@GC_WIN_REPOS_DIR@#$script#g"" ")
 
 $date = get-date -format "yyyy-MM-dd"

@@ -245,7 +245,6 @@ Root: HKLM; Subkey: "Software\GnuCash\Version"; ValueType: none; Flags: uninsdel
 Root: HKLM; Subkey: "Software\GnuCash\Version"; ValueType: string; ValueName: "Version"; ValueData: "@PACKAGE_VERSION@"; Flags: uninsdeletevalue
 Root: HKLM; Subkey: "Software\GnuCash\Version"; ValueType: dword; ValueName: "VersionMajor"; ValueData: "@GNUCASH_MAJOR_VERSION@"; Flags: uninsdeletevalue
 Root: HKLM; Subkey: "Software\GnuCash\Version"; ValueType: dword; ValueName: "VersionMinor"; ValueData: "@GNUCASH_MINOR_VERSION@"; Flags: uninsdeletevalue
-Root: HKLM; Subkey: "Software\GnuCash\Version"; ValueType: dword; ValueName: "VersionMicro"; ValueData: "@GNUCASH_MICRO_VERSION@"; Flags: uninsdeletevalue
 
 ; Additionally, we have to install the paths for gwenhywfar
 Root: HKLM; Subkey: "Software\Gwenhywfar"; ValueType: none; Flags: uninsdeletekeyifempty
