@@ -99,8 +99,7 @@ $gnc_config_h = "$target_dir\build\$gnucash\common\config.h"
 
 $major_version = version_item -tag "GNUCASH_MAJOR_VERSION" -path $gnc_config_h
 $minor_version = version_item -tag "GNUCASH_MINOR_VERSION" -path $gnc_config_h
-$micro_version = version_item -tag "GNUCASH_MICRO_VERSION" -path $gnc_config_h
-$package_version = "$major_version.$minor_version.$micro_version"
+$package_version = "$major_version.$minor_version"
 $inst_dir = "$target_dir\inst"
 $mingw_ver = bitness("$inst_dir\bin\gnucash.exe")
 $aqb_dir = version_item -tag "SO_EFFECTIVE "-path "$inst_dir\include\aqbanking5\aqbanking\version.h"
@@ -129,15 +128,15 @@ $proc = bash-command("sed  < $issue_in > $issue_out \
   -e ""s#@GC_WIN_REPOS_DIR@#$script#g"" ")
 
 $date = get-date -format "yyyy-MM-dd"
-$setup_result =  "$target_dir\gnucash-$package_version-setup.exe"
+$setup_result =  "$target_dir\gnucash-$package_version.setup.exe"
 $final_file = ""
 if ($git_build) {
   $gnc_vcsinfo_h = "$target_dir\build\gnucash-git\libgnucash\core-utils\gnc-vcs-info.h"
   $vcs_rev = version_item -tag "GNC_VCS_REV" -path $gnc_vcsinfo_h | %{$_ -replace """", ""}
-  $final_file = "$target_dir\gnucash-$package_version-$date-git-$vcs_rev-setup.exe"
+  $final_file = "$target_dir\gnucash-$package_version-$date-git-$vcs_rev.setup.exe"
   }
 else {
-  $final_file = "$target_dir\gnucash-$package_version-setup.exe"
+  $final_file = "$target_dir\gnucash-$package_version.setup.exe"
 }
 
 $mingw_dir = "$root_dir\msys2\mingw$mingw_ver"
