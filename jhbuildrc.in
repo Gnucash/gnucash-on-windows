@@ -70,11 +70,11 @@ else:
 
 #autogenargs = 'CPPFLAGS="-I%s"' % _sys_includes
 
-if _branch in ('master', 'unstable'):
+if _branch == 'releases':
+    modules = ["meta-gnucash"]
+else:
     modules = ["meta-gnucash-git"]
     branches['gnucash-git'] = (None, _branch)
-else:
-    modules = ["meta-gnucash"]
 
 _gtk_cflags = _popen("pkg-config --cflags gtk+-3.0")
 _gtk_ldflags= _popen("pkg-config --libs gtk+-3.0")

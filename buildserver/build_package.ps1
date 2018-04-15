@@ -130,7 +130,7 @@ bash-command -command "jhbuild --no-interact -f $script_unix/jhbuildrc build > >
 $new_file = test-path -path $target_dir\$package\$branch\inst\bin\gnucash.exe -NewerThan $time_stamp
 if ($new_file) {
 #Build the installer
-    $is_git = ($branch.CompareTo("master") -eq 0) -or ($branch.CompareTo("unstable") -eq 0)
+    $is_git = ($branch.CompareTo("releases") -ne 0)
     bash-command -command "echo 'Creating GnuCash installer.' > >(tee -a $log_unix)"
     $setup_file = & $script_dir\bundle-mingw64.ps1 -root_dir $target_dir -target_dir $target_dir\$package\$branch -package $package -git_build $is_git 2>&1 | Tee-Object -FilePath $log_file -Append
     $setup_file = make-unixpath -path $setup_file
