@@ -223,7 +223,9 @@
 
   <autotools id="libofx" autogen-sh='autoreconf'>
     <branch repo="sourceforge" module="libofx/libofx-0.9.10.tar.gz"
-	    version="0.9.10"/>
+	    version="0.9.10">
+      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/libofx-tempfile.patch" strip='1'/>
+    </branch>
     <dependencies>
       <dep package="OpenSP"/>
     </dependencies>

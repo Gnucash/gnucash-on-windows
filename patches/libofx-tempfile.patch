@@ -1,0 +1,60 @@
+--- a/lib/ofx_preproc.cpp	2013-04-17 20:09:11 +0000
++++ b/lib/ofx_preproc.cpp	2013-10-14 09:00:31 +0000
+@@ -109,11 +109,15 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
+     }
+ 
+     mkTempFileName("libofxtmpXXXXXX", tmp_filename, sizeof(tmp_filename));
+ 
+     message_out(DEBUG, "ofx_proc_file(): Creating temp file: " + string(tmp_filename));
++#ifdef OS_WIN32
++    tmp_file_fd = mkstemp_win32(tmp_filename);
++#else
+     tmp_file_fd = mkstemp(tmp_filename);
++#endif
+     if (tmp_file_fd)
+     {
+       tmp_file.open(tmp_filename);
+       if (!tmp_file)
+       {
+@@ -308,11 +312,11 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
+ #ifdef HAVE_ICONV
+             size_t inbytesleft = strlen(s_buffer.c_str());
+             size_t outbytesleft = inbytesleft * 2 - 1;
+             iconv_buffer = (char*) malloc (inbytesleft * 2);
+             memset(iconv_buffer, 0, inbytesleft * 2);
+-#if defined(OS_WIN32) || defined(__sun)
++#if defined(__sun)
+             const char * inchar = (const char *)s_buffer.c_str();
+ #else
+             char * inchar = (char *)s_buffer.c_str();
+ #endif
+             char * outchar = iconv_buffer;
+--- a/lib/win32.cpp	Wed Mar 30 15:30:50 2011
++++ b/lib/win32.cpp	Sun Mar 29 15:07:27 2015
+@@ -25,11 +25,11 @@
+ 
+ 
+ 
+ #ifdef OS_WIN32
+ 
+-int mkstemp(char *tmpl)
++int mkstemp_win32(char *tmpl)
+ {
+   int fd = -1;
+   int len;
+   char *nf;
+   int i;
+--- a/lib/win32.hh	Wed Mar 30 15:30:50 2011
++++ b/lib/win32.hh	Sun Mar 29 16:26:58 2015
+@@ -21,11 +21,11 @@
+ #endif
+ 
+ 
+ #ifdef OS_WIN32
+ 
+-int mkstemp(char *tmpl);
++int mkstemp_win32(char *tmpl);
+ 
+ 
+ #endif
+ 
