@@ -209,7 +209,6 @@ Source: "@MINGW_DIR@\lib\postgresql\*.dll"; DestDir: "{app}\lib\postgreql"; Comp
 Source: "@MINGW_DIR@\lib\sqlite3.21.0\sqlite3210.dll"; DestDir: "{app}\lib\sqlite3.21.0"; Components: main
 
 Source: "@MINGW_DIR@\share\icons\*"; DestDir: "{app}\share\icons"; Flags: recursesubdirs; Components: main
-Source: "@MINGW_DIR@\share\locale\*"; Destdir: "{app}\share\locale"; Flags: recursesubdirs; Components: main
 Source: "@MINGW_DIR@\share\themes\*"; DestDir: "{app}\share\themes"; Flags: recursesubdirs; Components: main
 Source: "@MINGW_DIR@\share\xml\iso-codes\*"; DestDir: "{app}\share\xml\iso-codes"; Flags: recursesubdirs; Components: main
 Source: "@MINGW_DIR@\share\xml\fontconfig\*"; DestDir: "{app}\share\xml\fontconfig"; Flags: recursesubdirs; Components: main

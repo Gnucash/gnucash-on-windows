@@ -147,6 +147,21 @@ $target_schema_unix = make-unixpath -path $target_schema_dir
 $schema_compiler = make-unixpath -path "$mingw_dir\bin\glib-compile-schemas"
 bash-command("$schema_compiler $target_schema_unix")
 
+
+# Inno-setup isn't able to easily pick out particular message catalogs from $mingw_dir/share/locale, so copy the ones we want to $inst_dir\share\locale.
+
+$source_locale_dir = "$mingw_dir\share\locale\"
+$inst_locale_dir = "$inst_dir\share\locale"
+foreach ($msgcat in "gtk30.mo","iso_4217.mo") {
+    foreach ($dir in get-childitem -Directory $source_locale_dir) {
+	$source_path = "$source_locale_dir\$dir\LC_MESSAGES"
+	$inst_path = "$inst_locale_dir\$dir\LC_MESSAGES"
+	if ((test-path $source_path) -and (test-path "$source_path\$msgcat") -and (test-path $inst_path)) {
+	    copy-item "$source_path\$msgcat" -Destination $inst_path -recurse
+	}
+    }
+}
+
 write-host "Running Inno Setup to create $final_file."
 
 if (test-path -path $setup_result) {
