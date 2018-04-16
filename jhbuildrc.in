@@ -80,6 +80,7 @@ _gtk_ldflags= _popen("pkg-config --libs gtk+-3.0")
 append_autogenargs("libofx", "--with-opensp-includes=" + prefix + "/include/OpenSP --with-opensp-libs=" + prefix + "/lib")
 append_autogenargs("libdbi-drivers","--with-dbi-incdir=" + prefix + "/include --with-dbi-libdir=" + prefix + "/lib")
 module_makeargs["aqbanking"]="-j 1"
+module_cmakeargs["gnucash-git"]="-DSWIG_DIR=" + os.path.join(_mingw_base, 'share', 'swig', '3.0.12')
 module_makeargs["gnucash"]="-j 1"
 module_makeargs["gnucash-git"]="-j 1"
 
