@@ -6,7 +6,7 @@
      mkTempFileName("libofxtmpXXXXXX", tmp_filename, sizeof(tmp_filename));
  
      message_out(DEBUG, "ofx_proc_file(): Creating temp file: " + string(tmp_filename));
-+#ifdef OS_WIN32
++#ifdef __WIN32__
 +    tmp_file_fd = mkstemp_win32(tmp_filename);
 +#else
      tmp_file_fd = mkstemp(tmp_filename);
@@ -22,7 +22,7 @@
              size_t outbytesleft = inbytesleft * 2 - 1;
              iconv_buffer = (char*) malloc (inbytesleft * 2);
              memset(iconv_buffer, 0, inbytesleft * 2);
--#if defined(OS_WIN32) || defined(__sun)
+-#if defined(__WIN32__) || defined(__sun)
 +#if defined(__sun)
              const char * inchar = (const char *)s_buffer.c_str();
  #else
@@ -35,7 +35,7 @@
  
  
  
- #ifdef OS_WIN32
+ #ifdef __WIN32__
  
 -int mkstemp(char *tmpl)
 +int mkstemp_win32(char *tmpl)
@@ -50,7 +50,7 @@
  #endif
  
  
- #ifdef OS_WIN32
+ #ifdef __WIN32__
  
 -int mkstemp(char *tmpl);
 +int mkstemp_win32(char *tmpl);
