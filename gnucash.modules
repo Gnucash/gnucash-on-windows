@@ -330,8 +330,8 @@
   <autotools id="gnucash-docs"
 	    autogen-template="%(srcdir)s/%(autogen-sh)s &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s %(autogenargs)s"
 	    makeargs="chm" makeinstallargs="install-chm" >
-    <branch  module="gnucash/gnucash-docs/gnucash-docs-3.0.tar.gz"
-	     version="3.0" repo="sourceforge"/>
+    <branch  module="gnucash/gnucash-docs/gnucash-docs-3.1.tar.gz"
+	     version="3.1" repo="sourceforge"/>
   </autotools>
 
   <metamodule id="meta-gnucash-git">
