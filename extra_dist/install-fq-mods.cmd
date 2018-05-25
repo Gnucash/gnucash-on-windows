@@ -116,7 +116,7 @@ REM ----------------------------------------------------------------------------
 echo.
 echo * Run gnc-fq-helper
 echo.
-echo (yahoo "AMZN") | perl -w gnc-fq-helper
+echo (alphavantage "AMZN") | perl -w gnc-fq-helper
 if %errorlevel% neq 0 goto error
 
 REM ----------------------------------------------------------------------------
@@ -134,5 +134,6 @@ echo.
 
 REM ----------------------------------------------------------------------------
 :end
+endlocal
 pause
 
