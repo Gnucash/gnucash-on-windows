@@ -533,7 +533,7 @@ Name: "ja"; MessagesFile: "compiler:Languages\Japanese.isl"
 Name: "lv"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\Latvian5.5.0.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-lv.win32-bin.txt"
 Name: "nl"; MessagesFile: "compiler:Languages\Dutch.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-nl.win32-bin.txt"
 Name: "pt_BR"; MessagesFile: "compiler:Languages\BrazilianPortuguese.isl"
-Name: "zh_CN"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\ChineseSimp-5.5.3.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-zh_CN.win32-bin.txt"
+Name: "zh_CN"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\ChineseSimplified-5.5.3.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-zh_CN.win32-bin.txt"
 Name: "zh_TW"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\ChineseTrad-5.5.3.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-zh_TW.win32-bin.txt"
 
 ;; See http://www.jrsoftware.org/files/istrans/ for a complete list of
