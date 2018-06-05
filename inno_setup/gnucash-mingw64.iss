@@ -530,16 +530,16 @@ Name: "el"; MessagesFile: "compiler:Languages\Greek.isl"
 Name: "fr"; MessagesFile: "compiler:Languages\French.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-fr.win32-bin.txt"
 Name: "it"; MessagesFile: "compiler:Languages\Italian.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-it.win32-bin.txt"
 Name: "ja"; MessagesFile: "compiler:Languages\Japanese.isl"
-Name: "lv"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\Latvian-1-5.1.11.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-lv.win32-bin.txt"
+Name: "lv"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\Latvian5.5.0.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-lv.win32-bin.txt"
 Name: "nl"; MessagesFile: "compiler:Languages\Dutch.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-nl.win32-bin.txt"
 Name: "pt_BR"; MessagesFile: "compiler:Languages\BrazilianPortuguese.isl"
-Name: "zh_CN"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\ChineseSimp-12-5.1.11.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-zh_CN.win32-bin.txt"
-Name: "zh_TW"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\ChineseTrad-2-5.1.11.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-zh_TW.win32-bin.txt"
+Name: "zh_CN"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\ChineseSimp-5.5.3.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-zh_CN.win32-bin.txt"
+Name: "zh_TW"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\ChineseTrad-5.5.3.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-zh_TW.win32-bin.txt"
 
-;; The following language files are available as well, in alphabetical
-;; order: Basque, BrazilianPortuguese, Catalan, Czech, Danish, Dutch,
-;; Finnish, Hungarian, Italian, Norwegian, Polish, Portuguese,
-;; Russian, Slovak, Slovenian, Spanish
+;; See http://www.jrsoftware.org/files/istrans/ for a complete list of
+;; Inno Setup translations. Unofficial translations must be downloaded
+;; and added to this repository as is done with Latvian and Chinese above.
+;; Unofficial translations should be updated when Inno Setup is.
 
 ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; These are only for improved text messages
