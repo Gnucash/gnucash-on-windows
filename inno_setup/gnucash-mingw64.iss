@@ -1,4 +1,4 @@
-; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+﻿; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Input configuration for the Inno Setup Compiler
 ; Copyright (c) 2004-2005 Christian Stimming <stimming@tuhh.de>
 ; Copyright 2017 John Ralls <jralls@ceridwen.us>
@@ -530,11 +530,11 @@ Name: "el"; MessagesFile: "compiler:Languages\Greek.isl"
 Name: "fr"; MessagesFile: "compiler:Languages\French.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-fr.win32-bin.txt"
 Name: "it"; MessagesFile: "compiler:Languages\Italian.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-it.win32-bin.txt"
 Name: "ja"; MessagesFile: "compiler:Languages\Japanese.isl"
-Name: "lv"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\Latvian5.5.0.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-lv.win32-bin.txt"
+Name: "lv"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\Latvian-5.5.0.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-lv.win32-bin.txt"
 Name: "nl"; MessagesFile: "compiler:Languages\Dutch.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-nl.win32-bin.txt"
 Name: "pt_BR"; MessagesFile: "compiler:Languages\BrazilianPortuguese.isl"
 Name: "zh_CN"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\ChineseSimplified-5.5.3.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-zh_CN.win32-bin.txt"
-Name: "zh_TW"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\ChineseTrad-5.5.3.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-zh_TW.win32-bin.txt"
+Name: "zh_TW"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\ChineseTraditional-5.5.3.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-zh_TW.win32-bin.txt"
 
 ;; See http://www.jrsoftware.org/files/istrans/ for a complete list of
 ;; Inno Setup translations. Unofficial translations must be downloaded
