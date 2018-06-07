@@ -1,4 +1,4 @@
-﻿﻿; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+﻿; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Input configuration for the Inno Setup Compiler
 ; Copyright (c) 2004-2005 Christian Stimming <stimming@tuhh.de>
 ;
