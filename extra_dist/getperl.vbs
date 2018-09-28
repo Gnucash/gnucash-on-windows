@@ -9,13 +9,13 @@ Dim fso: Set fso = CreateObject("Scripting.FileSystemObject")
 Dim tempFolder: tempFolder = fso.GetSpecialFolder(TemporaryFolder)
 
 strHDLocation = Wscript.Arguments.Item(0)
+strVersion = "5.28.0.1"
 
 ' Set your settings
-    strFileURL    = "http://strawberryperl.com/download/5.18.2.2/strawberry-perl-5.18.2.2-32bit.msi"
+    strFileURL    = "http://strawberryperl.com/download/" & strVersion & "/strawberry-perl-" & strVersion & "-32bit.msi"
 
     Wscript.Echo "   copying " & strFileURL
     Wscript.Echo "   to "  & strHDLocation
-     
 
 ' Fetch the file
     Set objXMLHTTP = CreateObject("MSXML2.XMLHTTP")
