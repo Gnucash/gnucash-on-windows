@@ -107,6 +107,22 @@ if %errorlevel% neq 0 goto error
 
 REM ----------------------------------------------------------------------------
 echo.
+echo * Check environment variable ALPHAVANTAGE_API_KEY
+echo.
+
+echo.  ***
+echo.  *** You need an API key (from https://www.alphavantage.co)
+echo.  ***   to run the Perl module Finance::Quote.
+echo.  ***
+echo.  *** Make it available to GnuCash by
+if not [%ALPHAVANTAGE_API_KEY%] == [] set "done=(done) "
+echo.  ***    - setting the environment variable ALPHAVANTAGE_API_KEY %done%or
+echo.  ***    - starting GnuCash and adding the Alpha Vantage api key in
+echo.  ***        Edit-^>Preferences-^>Online Quotes
+echo.  ***
+
+REM ----------------------------------------------------------------------------
+echo.
 echo * Run gnc-fq-check
 echo.
 perl -w gnc-fq-check
@@ -116,7 +132,7 @@ REM ----------------------------------------------------------------------------
 echo.
 echo * Run gnc-fq-helper
 echo.
-echo (yahoo "AMZN") | perl -w gnc-fq-helper
+echo (alphavantage "AMZN") | perl -w gnc-fq-helper
 if %errorlevel% neq 0 goto error
 
 REM ----------------------------------------------------------------------------
@@ -134,5 +150,6 @@ echo.
 
 REM ----------------------------------------------------------------------------
 :end
+endlocal
 pause
 
