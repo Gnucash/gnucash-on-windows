@@ -511,14 +511,14 @@ begin
   try
     // first try to expand the {userdocs} folder; if this raises that
     // internal exception, you'll fall down to the except block where
-    // you expand the {allusersprofile}
+    // you expand the {%allusersprofile}
     Folder := ExpandConstant('{userdocs}');
     // the {userdocs} folder expanding succeded, so let's test if the
-    // folder exists and if not, expand {allusersprofile}
+    // folder exists and if not, expand {%allusersprofile}
     if not DirExists(Folder) then
-      Folder := ExpandConstant('{allusersprofile}');
+      Folder := ExpandConstant('{%allusersprofile}');
   except
-    Folder := ExpandConstant('{allusersprofile}');
+    Folder := ExpandConstant('{%allusersprofile}');
   end;
   // return the result
   Result := Folder;
