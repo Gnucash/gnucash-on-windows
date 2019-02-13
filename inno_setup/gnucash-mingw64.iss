@@ -79,7 +79,6 @@ Source: "@INST_DIR@\share\@PACKAGE@\*"; DestDir: "{app}\share\@PACKAGE@"; Flags:
 Source: "@INST_DIR@\share\aqbanking\*"; DestDir: "{app}\share\aqbanking"; Flags: recursesubdirs; Components: main
 Source: "@INST_DIR@\share\gwenhywfar\*"; DestDir: "{app}\share\gwenhywfar"; Flags: recursesubdirs; Components: main
 Source: "@INST_DIR@\share\chipcard\*"; DestDir: "{app}\share\chipcard"; Flags: recursesubdirs; Components: main
-Source: "@INST_DIR@\share\ktoblzcheck\*"; DestDir: "{app}\share\ktoblzcheck"; Flags: recursesubdirs; Components: main
 Source: "@INST_DIR@\share\guile\*"; DestDir: "{app}\share\guile"; Flags: recursesubdirs; Components: main
 Source: "@INST_DIR@\share\glib-2.0\*"; DestDir: "{app}\share\glib-2.0"; Flags: recursesubdirs; Components: main
 Source: "@INST_DIR@\share\libofx\*"; DestDir: "{app}\share\libofx"; Flags: recursesubdirs; Components: main

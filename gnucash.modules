@@ -162,11 +162,6 @@
     </dependencies>
   </autotools>
 
-  <autotools id="ktoblzcheck" autogen-sh="configure">
-    <branch module="ktoblzcheck/ktoblzcheck-1.47.tar.gz" version="1.47"
-	    repo="sourceforge"/>
-  </autotools>
-
   <autotools id="xmlsec" autogenargs="--disable-x509">
     <branch module="lsh123/xmlsec/archive/xmlsec-1_2_25.tar.gz"
 	    repo="github-tar" version="1.2.25"
@@ -184,7 +179,6 @@
     <dependencies>
       <dep package="gwenhywfar"/>
       <dep package="gmp"/>
-      <dep package="ktoblzcheck"/>
       <dep package="xmlsec"/>
       <dep package="libchipcard"/>
     </dependencies>
@@ -199,7 +193,6 @@
       <dep package="libofx"/>
       <dep package="gwenhywfar-svn"/>
       <dep package="gmp"/>
-      <dep package="ktoblzcheck"/>
       <dep package="xmlsec"/>
       <dep package="libchipcard"/>
     </dependencies>

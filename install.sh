@@ -42,8 +42,6 @@ register_env_var INTLTOOL_PERL " "
 register_env_var LIBDBI_CPPFLAGS " "
 register_env_var LIBDBI_LDFLAGS " "
 register_env_var LIBXSLT_LDFLAGS " "
-register_env_var KTOBLZCHECK_CPPFLAGS " "
-register_env_var KTOBLZCHECK_LDFLAGS " "
 register_env_var PATH ":"
 register_env_var PCRE_CPPFLAGS " "
 register_env_var PCRE_LDFLAGS " "
@@ -91,7 +89,6 @@ add_step inst_opensp
 add_step inst_libofx
 ## Online banking:
 add_step inst_gwenhywfar
-add_step inst_ktoblzcheck
 add_step inst_aqbanking
 add_step inst_libdbi
 

@@ -354,10 +354,6 @@ GWENHYWFAR_VERSION="4.18.0"
 set_default GWENHYWFAR_URL "https://www.aquamaniac.de/sites/download/download.php?package=01&release=206&file=01&dummy=gwenhywfar-${GWENHYWFAR_VERSION}.tar.gz"
 set_default GWENHYWFAR_DIR $GLOBAL_DIR\\gwenhywfar
 
-KTOBLZCHECK_VERSION="1.49"
-set_default KTOBLZCHECK_URL "$SF_MIRROR/ktoblzcheck/ktoblzcheck-${KTOBLZCHECK_VERSION}.tar.gz"
-# ktoblzcheck is being installed into GWENHYWFAR_DIR
-
 AQBANKING_VERSION="5.7.6beta"
 ## NB: Dummy means dummy! The important value in the following url is
 ## the release number, not the file name at the end!

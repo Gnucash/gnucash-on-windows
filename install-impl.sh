@@ -290,8 +290,8 @@ function inst_aqbanking() {
                 patch -p1 < $AQB_PATCH
             fi
 
-            _AQ_CPPFLAGS="-I${_LIBOFX_UDIR}/include ${KTOBLZCHECK_CPPFLAGS} ${GNOME_CPPFLAGS} ${GNUTLS_CPPFLAGS} -I${_GWENHYWFAR_UDIR}/include/gwenhywfar4"
-            _AQ_LDFLAGS="-L${_LIBOFX_UDIR}/lib ${KTOBLZCHECK_LDFLAGS} ${GNOME_LDFLAGS} ${GNUTLS_LDFLAGS}"
+            _AQ_CPPFLAGS="-I${_LIBOFX_UDIR}/include ${GNOME_CPPFLAGS} ${GNUTLS_CPPFLAGS} -I${_GWENHYWFAR_UDIR}/include/gwenhywfar4"
+            _AQ_LDFLAGS="-L${_LIBOFX_UDIR}/lib ${GNOME_LDFLAGS} ${GNUTLS_LDFLAGS}"
             if test x$CROSS_COMPILE = xyes; then
                 XMLMERGE="xmlmerge"
             else
@@ -701,33 +701,6 @@ function inst_isocodes() {
         qpopd
         quiet [ -f ${_ISOCODES_UDIR}/share/pkgconfig/iso-codes.pc ] || die "isocodes not installed correctly"
         rm -rf ${TMP_UDIR}/iso-codes-*
-    fi
-}
-
-function inst_ktoblzcheck() {
-    setup Ktoblzcheck
-    # Out of convenience ktoblzcheck is being installed into
-    # GWENHYWFAR_DIR
-    add_to_env "-I${_GWENHYWFAR_UDIR}/include" KTOBLZCHECK_CPPFLAGS
-    add_to_env "-L${_GWENHYWFAR_UDIR}/lib" KTOBLZCHECK_LDFLAGS
-    if quiet ${PKG_CONFIG} --exact-version=${KTOBLZCHECK_VERSION} ktoblzcheck
-    then
-        echo "Ktoblzcheck ${KTOBLZCHECK_VERSION} already installed in $_GWENHYWFAR_UDIR. skipping."
-    else
-        wget_unpacked $KTOBLZCHECK_URL $DOWNLOAD_DIR $TMP_DIR
-        assert_one_dir $TMP_UDIR/ktoblzcheck-*
-        qpushd $TMP_UDIR/ktoblzcheck-*
-            # circumvent binreloc bug, http://trac.autopackage.org/ticket/28
-            ./configure ${HOST_XCOMPILE} \
-                --prefix=${_GWENHYWFAR_UDIR} \
-                --disable-binreloc \
-                --disable-python
-            make
-#            [ "$CROSS_COMPILE" != "yes" ] && make check
-            make install
-        qpopd
-        ${PKG_CONFIG} --exists ktoblzcheck || die "Ktoblzcheck not installed correctly"
-        rm -rf ${TMP_UDIR}/ktoblzcheck-*
     fi
 }
 
@@ -1482,8 +1455,8 @@ function inst_gnucash() {
             ${AQBANKING_OPTIONS} \
             --enable-binreloc \
             --enable-locale-specific-tax \
-            CPPFLAGS="${REGEX_CPPFLAGS} ${GNOME_CPPFLAGS} ${GUILE_CPPFLAGS} ${LIBDBI_CPPFLAGS} ${KTOBLZCHECK_CPPFLAGS} ${HH_CPPFLAGS} ${LIBSOUP_CPPFLAGS} -D_WIN32 ${EXTRA_CFLAGS}" \
-            LDFLAGS="${REGEX_LDFLAGS} ${GNOME_LDFLAGS} ${GUILE_LDFLAGS} ${LIBDBI_LDFLAGS} ${KTOBLZCHECK_LDFLAGS} ${HH_LDFLAGS} -L${_SQLITE3_UDIR}/lib -L${_ENCHANT_UDIR}/lib -L${_LIBXSLT_UDIR}/lib" \
+            CPPFLAGS="${REGEX_CPPFLAGS} ${GNOME_CPPFLAGS} ${GUILE_CPPFLAGS} ${LIBDBI_CPPFLAGS} ${HH_CPPFLAGS} ${LIBSOUP_CPPFLAGS} -D_WIN32 ${EXTRA_CFLAGS}" \
+            LDFLAGS="${REGEX_LDFLAGS} ${GNOME_LDFLAGS} ${GUILE_LDFLAGS} ${LIBDBI_LDFLAGS} ${HH_LDFLAGS} -L${_SQLITE3_UDIR}/lib -L${_ENCHANT_UDIR}/lib -L${_LIBXSLT_UDIR}/lib" \
             PKG_CONFIG_PATH="${PKG_CONFIG_PATH}"
 
         make

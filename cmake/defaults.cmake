@@ -355,10 +355,6 @@ SET (GWENHYWFAR_VERSION "4.15.3")
 set (GWENHYWFAR_URL "http://www2.aquamaniac.de/sites/download/download.php?package=01&release=201&file=01&dummy gwenhywfar-4.15.3.tar.gz")
 set (GWENHYWFAR_DIR ${GLOBAL_DIR}/gwenhywfar)
 
-SET (KTOBLZCHECK_VERSION "1.48")
-set (KTOBLZCHECK_URL "${SF_MIRROR}/ktoblzcheck/ktoblzcheck-${KTOBLZCHECK_VERSION}.tar.gz")
-# ktoblzcheck is being installed into GWENHYWFAR_DIR
-
 SET (AQBANKING_VERSION "5.6.10")
 ## NB: Dummy means dummy! The important value in the following url is
 ## the release number, not the file name at the end!

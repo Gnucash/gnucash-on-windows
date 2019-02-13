@@ -34,7 +34,6 @@ add_step dist_goffice
 add_step dist_libofx
 add_step dist_gnutls
 add_step dist_gwenhywfar
-add_step dist_ktoblzcheck
 add_step dist_aqbanking
 add_step dist_libdbi
 add_step dist_webkit

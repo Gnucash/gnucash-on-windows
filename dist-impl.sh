@@ -176,12 +176,6 @@ function dist_isocodes() {
     cp -a $_ISOCODES_UDIR/share/{locale,xml} $_DIST_UDIR/share
 }
 
-function dist_ktoblzcheck() {
-    setup ktoblzcheck
-    # dll is already copied in dist_gwenhywfar
-    cp -a ${_GWENHYWFAR_UDIR}/share/ktoblzcheck ${_DIST_UDIR}/share
-}
-
 function dist_libdbi() {
     setup LibDBI
     cp -a ${_SQLITE3_UDIR}/bin/* ${_DIST_UDIR}/bin
