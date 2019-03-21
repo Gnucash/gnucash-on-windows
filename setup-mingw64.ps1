@@ -214,6 +214,7 @@ $devel = "asciidoc autoconf autoconf2.13 autogen automake-wrapper automake1.10 a
 
 $toolchain = "binutils cmake crt-git gcc gcc-libs gdb headers-git libmangle-git libtool libwinpthread-git make pkg-config tools-git winpthreads-git"
 
+$clang_toolchain = "clang libc++ libc++abi lld libunwind clang-tools-extra compiler-rt"
 
 # Note that webkitgtk3 will pull in gtk3 automatically.
 $deps = "webkitgtk3 boost iso-codes shared-mime-info libmariadbclient postgresql ninja ncurses"
