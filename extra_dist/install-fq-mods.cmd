@@ -2,14 +2,6 @@
 setlocal
 
 REM ----------------------------------------------------------------------------
-if not exist ssleay32.dll (
-  echo.
-  echo Did not find ssleay32.dll in current directory.
-  echo Please start this cmd file in the bin directory created by the setup.exe.
-  goto error
-)
-
-REM ----------------------------------------------------------------------------
 echo.
 echo * Check Perl
 echo.
