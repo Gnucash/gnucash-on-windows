@@ -246,13 +246,20 @@ if (!(test-path -path $htmlhelp_h)) {
 	$installed_hh = get-item -path "hkcu:\SOFTWARE\Microsoft\HTML Help Workshop" | foreach-object{$_.GetValue("InstallDir")}
     }
     $installed_hh = make-unixpath -path $installed_hh
-    bash-command -command "cp $installed_hh/include/htmlhelp.h $mingw_path/include"
+    if (!installed_hh) {
+	Write-Host @"
+****** ERROR ****
+There was an error installing HTML Help Workshop. This will prevent building the documentation. If you didn't before, run setup-mingw64.ps1 in a PowerShell instance with Administrative priviledge. If you did that already, you may need to install HTML Help Workshop by hand.
+****************
+"@
+    } else {
+	bash-command -command "cp $installed_hh/include/htmlhelp.h $mingw_path/include"
 
-    bash-command -command "$mingw_bin/gendef $hhctrl_ocx - > $mingw_path/lib/htmlhelp.def"
-    bash-command -command "$mingw_bin/dlltool -k -d $mingw_path/lib/htmlhelp.def -l $mingw_path/lib/libhtmlhelp.a"
+	bash-command -command "$mingw_bin/gendef $hhctrl_ocx - > $mingw_path/lib/htmlhelp.def"
+	bash-command -command "$mingw_bin/dlltool -k -d $mingw_path/lib/htmlhelp.def -l $mingw_path/lib/libhtmlhelp.a"
+    }
     if (!(test-path -path $htmlhelp_h)) {
 	Write-Host "HTML Help Workshop isn't correctly installed."
-	exit
     }
 }
 Write-Host @"
