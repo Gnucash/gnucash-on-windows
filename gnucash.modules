@@ -119,11 +119,9 @@
   </autotools>
 
   <!-- Unfortunately in addition to needing a few patches this hangs when it tries to compile Scheme. -->
-  <autotools id="guile2" autogen-sh="autoreconf" autogenargs="--without-threads">
-    <branch repo="ftp.gnu.org" module="guile/guile-2.0.14.tar.gz"
-	    version="2.0.14">
-      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/guile-2.0.14-mingw64-fixups.patch" strip="1"/>
-      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/guile-2.0.14-Fix-mktime-test.patch" strip="1"/>
+  <autotools id="guile2" autogen-sh="configure" autogenargs="--disable-rpath --enable-networking --enable-nls --enable-posix --enable-regex --with-threads --with-modules --disable-static">
+    <branch repo="sourceforge" module="gnucash/Dependencies/guile-2.2.4+mingw.tar.bz2"
+	    version="2.2.4+mingw">
     </branch>
     <dependencies>
       <dep package="libunistring"/>

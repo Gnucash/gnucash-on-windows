@@ -67,8 +67,8 @@ Source: "@INST_DIR@\etc\@PACKAGE@\environment"; DestDir: "{app}\etc\@PACKAGE@"; 
 ; Note: The above AfterInstall function will adapt the
 ; environment config file on-the-fly by the Pascal script below.
 Source: "@INST_DIR@\lib\*"; DestDir: "{app}\lib"; Flags: recursesubdirs; Components: main
-Source: "@INST_DIR@\lib\gnucash\scm\ccache\2.0\*"; DestDir: "{app}\lib\gnucash\scm\ccache\2.0"; Flags: recursesubdirs; Components: main
-Source: "@INST_DIR@\lib\guile\2.0\ccache\*"; DestDir: "{app}\lib\guile\2.0\ccache"; Flags: recursesubdirs; Components: main
+Source: "@INST_DIR@\lib\gnucash\scm\ccache\2.2\*"; DestDir: "{app}\lib\gnucash\scm\ccache\2.2"; Flags: recursesubdirs; Components: main
+Source: "@INST_DIR@\lib\guile\2.2\ccache\*"; DestDir: "{app}\lib\guile\2.2\ccache"; Flags: recursesubdirs; Components: main
 Source: "@INST_DIR@\lib\dbd\*.dll"; DestDir: "{app}\lib"; Components: main
 Source: "@INST_DIR@\lib\aqbanking\*"; DestDir: "{app}\lib\aqbanking"; Excludes: "*.dll.a"; Flags: recursesubdirs; Components: main
 Source: "@INST_DIR@\lib\gwenhywfar\*"; DestDir: "{app}\lib\gwenhywfar"; Excludes: "*.dll.a"; Flags: recursesubdirs; Components: main
@@ -215,7 +215,6 @@ Source: "@MINGW_DIR@\share\themes\*"; DestDir: "{app}\share\themes"; Flags: recu
 Source: "@MINGW_DIR@\share\xml\iso-codes\*"; DestDir: "{app}\share\xml\iso-codes"; Flags: recursesubdirs; Components: main
 Source: "@MINGW_DIR@\share\xml\fontconfig\*"; DestDir: "{app}\share\xml\fontconfig"; Flags: recursesubdirs; Components: main
 
-Source: "@MINGW_DIR@\etc\gtk-2.0\*"; Destdir: "{app}\etc\gtk-2.0"; Flags: recursesubdirs; Components: main
 Source: "@MINGW_DIR@\etc\gtk-3.0\*"; Destdir: "{app}\etc\gtk-3.0"; Flags: recursesubdirs; Components: main
 Source: "@MINGW_DIR@\etc\fonts\*"; DestDir: "{app}\etc\fonts"; Flags: recursesubdirs; Components: main
 
@@ -431,7 +430,7 @@ begin
   { Create the guile.cmd file; #10 is the linefeed character and #13 CR }
 
   FileName := appdir + '\bin\guile.cmd' ;
-  FileString := 'set GUILE_LOAD_PATH=' + pkgdatadir + '\scm;' + appdir + '\share\guile\2.0;%GUILE_LOAD_PATH%'#13#10 ;
+  FileString := 'set GUILE_LOAD_PATH=' + pkgdatadir + '\scm;' + appdir + '\share\guile\2.2;%GUILE_LOAD_PATH%'#13#10 ;
   FileString := FileString + 'start guile.exe %*'#13#10 ;
 
   { Save the final file }
@@ -476,7 +475,7 @@ begin
       { Adapt GUILE_LOAD_PATH parameter and prevent cygwin interference in SCHEME_LIBRARY_PATH }
       if (Pos('GUILE_LOAD_PATH', EnvStrList[iLineCounter]) = 1) then
       begin
-        StringChangeEx(EnvStrList[iLineCounter], '{GUILE_LOAD_PATH}', '{GNC_HOME}/share/guile/2.0;{GUILE_LOAD_PATH}', True);
+        StringChangeEx(EnvStrList[iLineCounter], '{GUILE_LOAD_PATH}', '{GNC_HOME}/share/guile/2.2;{GUILE_LOAD_PATH}', True);
 
         EnvStrList[iLineCounter] := EnvStrList[iLineCounter] + #13#10 + '# Clear SCHEME_LIBRARY_PATH to prevent interference from other guile installations (like cygwin)' + #13#10;
         EnvStrList[iLineCounter] := EnvStrList[iLineCounter] + 'SCHEME_LIBRARY_PATH=' + #13#10;
