@@ -173,7 +173,7 @@ $html_help_workshop_installer = "htmlhelp.exe"
 $installed_hh = get-item -path "hkcu:\SOFTWARE\Microsoft\HTML Help Workshop" | foreach-object{$_.GetValue("InstallDir")}
 
 if (! (($installed_hh) -and (test-path -path $installed_hh))) {
-  install-package -url $html_help_workshop_url -download_file "$download_dir\\$html_help_workshop_installer" -install_dir ${env:ProgramFiles(x86)} -setup_cmd $html_help_installer
+  install-package -url $html_help_workshop_url -download_file "$download_dir\\$html_help_workshop_installer" -install_dir ${env:ProgramFiles(x86)} -setup_cmd $html_help_workshop_installer
 }
 $hhctrl_ocx = "c:\Windows\System32\hhctrl.ocx"
 if (!(test-path -path $hhctrl_ocx)) {
@@ -273,7 +273,7 @@ if (!(test-path -path $htmlhelp_h)) {
 	$installed_hh = get-item -path "hkcu:\SOFTWARE\Microsoft\HTML Help Workshop" | foreach-object{$_.GetValue("InstallDir")}
     }
     $installed_hh = make-unixpath -path $installed_hh
-    if (!installed_hh) {
+    if (!$installed_hh) {
 	Write-Host @"
 ****** ERROR ****
 There was an error installing HTML Help Workshop. This will prevent building the documentation. If you didn't before, run setup-mingw64.ps1 in a PowerShell instance with Administrative priviledge. If you did that already, you may need to install HTML Help Workshop by hand.
