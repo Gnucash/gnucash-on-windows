@@ -80,6 +80,7 @@ $arch_long = "mingw-w64-$arch_code"
 $mingw_prefix = "$arch/$arch_long-"
 $mingw_path = "/$arch"
 $mingw_bin = "$mingw_path/bin"
+$mingw_url_prefix = "http://repo.msys2.org/mingw/$arch_code/$arch_long-"
 $env:MSYSTEM = $arch.ToUpper()
 
 if (!(test-path -path $target_dir)) {
@@ -216,8 +217,34 @@ $toolchain = "binutils cmake crt-git gcc gcc-libs gdb headers-git libmangle-git 
 
 $clang_toolchain = "clang libc++ libc++abi lld libunwind clang-tools-extra compiler-rt"
 
+# webkitgtk3 was removed from the pacman database but the package is still available via direct url
+# so we install it from that url directly.
+# Note webkitgtk3 depends on icu. Icu updates require dependent packages to be rebuilt to work with the new version.
+# However as there won't be any webkitgtk3 updates, we have to peg icu to the version the last webkitgtk3
+# was built with. That also impacts other icu dependent packages: boost and harfbuzz. As we peg icu
+# we equally need to peg these two.
 # Note that webkitgtk3 will pull in gtk3 automatically.
-$deps = "webkitgtk3 boost iso-codes shared-mime-info libmariadbclient postgresql ninja ncurses"
+
+Write-Host @"
+
+Now we'll install webkitgtk3 via direct url as it's no longer in the pacman database. With this we install a couple of other packages that are pegged to fixed version numbers due to how icu forces package dependencies. If the window doesn't close on its own then close it and re-run the script when it finishes.
+"@
+$direct_deps = "webkitgtk3-2.4.11-6-any.pkg.tar.xz boost-1.67.0-2-any.pkg.tar.xz harfbuzz-1.8.4-1-any.pkg.tar.xz icu-61.1-1-any.pkg.tar.xz"
+$mingw_direct_deps = make-pkgnames -prefix $mingw_url_prefix -items $direct_deps
+bash-command -command "pacman -U $mingw_direct_deps --noconfirm --needed"
+
+# Tell pacman to no longer update these manually installed packages
+$ignorefile = @"
+IgnorePkg   = mingw-w64-i686-icu
+IgnorePkg   = mingw-w64-i686-boost
+IgnorePkg   = mingw-w64-i686-harfbuzz
+IgnorePkg   = mingw-w64-i686-webkitgtk3
+"@
+[IO.File]::WriteAllLines( (join-path $target_dir (join-path "msys2" (join-path "etc" (join-path "pacman.d" "gnucash-ignores.pacman")))), $ignorefile)
+bash-command -command "perl -ibak -pe 'BEGIN{undef $/;} s#[[]options[]]\R(Include = [^\R]*\R)?#[options]\nInclude = /etc/pacman.d/gnucash-ignores.pacman\n#smg' /etc/pacman.conf"
+
+# Install the remaining dependencies.
+$deps = "iso-codes shared-mime-info libmariadbclient postgresql ninja ncurses"
 
 Write-Host @"
 
@@ -230,7 +257,7 @@ $mingw_deps = make-pkgnames -prefix $mingw_prefix -items $deps
 
 bash-command -command "pacman -S $msys_devel --noconfirm --needed"
 bash-command -command "pacman -S $mingw_toolchain --noconfirm --needed"
-bash-command -command "pacman -S  $mingw_deps --noconfirm --needed"
+bash-command -command "pacman -S $mingw_deps --noconfirm --needed"
 
 $target_unix = make-unixpath $target_dir
 $download_unix = make-unixpath $download_dir
