@@ -1,6 +1,6 @@
- diff -u /mingw32/share/cmake-3.10/Modules/FindSWIG.cmake~ /mingw32/share/cmake-3.10/Modules/FindSWIG.cmake
---- /mingw32/share/cmake-3.12/Modules/FindSWIG.cmake    2017-08-10 06:36:32.000000000 -0700
-+++ /mingw32/share/cmake-3.12/Modules/FindSWIG.cmake     2017-09-05 10:34:59.692229400 -0700
+ diff -u /mingw32/share/cmake-3.14/Modules/FindSWIG.cmake~ /mingw32/share/cmake-3.14/Modules/FindSWIG.cmake
+--- /mingw32/share/cmake-3.14/Modules/FindSWIG.cmake    2017-08-10 06:36:32.000000000 -0700
++++ /mingw32/share/cmake-3.14/Modules/FindSWIG.cmake     2017-09-05 10:34:59.692229400 -0700
 @@ -41,7 +41,7 @@
      endif()
    else()
