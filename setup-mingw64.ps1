@@ -68,19 +68,19 @@ $bash_path = "$msys2_root\\usr\\bin\\bash.exe"
 
 $progressPreference = 'silentlyContinue'
 if ($x86_64) {
-    $mingw_prefix = "mingw64/mingw-w64-x86_64-"
-    $mingw_path = "/mingw64"
-    $mingw_bin = "/mingw64/bin"
-    $env:MSYSTEM = "MINGW64"
     $arch = "mingw64"
+    $arch_code = "x86_64"
 }
 else {
-    $mingw_prefix = "mingw32/mingw-w64-i686-"
-    $mingw_path = "/mingw32"
-    $mingw_bin = "/mingw32/bin"
-    $env:MSYSTEM = "MINGW32"
     $arch = "mingw32"
+    $arch_code = "i686"
 }
+
+$arch_long = "mingw-w64-$arch_code"
+$mingw_prefix = "$arch/$arch_long-"
+$mingw_path = "/$arch"
+$mingw_bin = "$mingw_path/bin"
+$env:MSYSTEM = $arch.ToUpper()
 
 if (!(test-path -path $target_dir)) {
     new-item "$target_dir" -type directory
