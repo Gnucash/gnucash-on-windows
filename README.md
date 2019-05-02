@@ -25,7 +25,8 @@ If you don't routinely run PowerShell scripts on your computer you will need to 
 
 In a PowerShell session run ```path/to/setup-mingw64.ps1```; the path will depend on your browser settings but if you have a default setup then it's ```~/Downloads/setup-mingw64.ps1```.
 
-###setup-mingw64 Options
+### setup-mingw64 Options
+
 ```setup-mingw64.ps1``` takes four optional arguments:
 * **-target_dir**: The full path to where the MinGW-W64 environment will be created. **Default**: ```C:\gcdev64```. The default requires Administrative privileges to create. If you use a directory in your home directory instead then you will not require Admin privileges.
 
@@ -52,7 +53,7 @@ These create terminal emulation sessions running the Bash shell with the environ
 
 Once you've built GnuCash all the way through you can get a build-and-run environment by starting a MinGW shell and running ```TARGET=gnucash-maint jhbuild -f jhbuildrc shell``` from the ```gnucash-on-windows.git``` directory.
 
-```cd $PREFIX/../build/gnucash-git``` to get to the build directory and ```$PREFIX/../src/gnucash-git``` to get to the local repo.
+```cd $PREFIX/../build/gnucash-git``` to get to the build directory and ```cd $PREFIX/../src/gnucash-git``` to get to the local repo.
 
 To install the gdb debugger run ```pacman -Su gdb```. You need not be in a jhbuild shell.
 
@@ -60,18 +61,29 @@ To install the gdb debugger run ```pacman -Su gdb```. You need not be in a jhbui
 
 1. Start a Powershell session.
 1. Change to the installation directory ```cd C:\gcdev64\src\gnucash-on-windows.git```
-1. run ```bundle-mingw64.ps1 -root_dir C:\gcdev64 -target_dir C:\gcdev64\gnucash\maint -package maint -git_build $true```
+1. run
+```
+bundle-mingw64.ps1 -root_dir C:\gcdev64 -target_dir C:\gcdev64\gnucash\maint -package maint -git_build $true
+```
 
 That will create a date-stamped and versioned ```gnucash-xxx-setup.exe``` in ```C:\gcdev64\gnucash\maint```. You'll need to adjust paths and versions accordingly if you changed **target_dir** when you ran ```setup-mingw64.ps1``` or built ```master``` instead of maint.
+
+### bundle-mingw64.ps1 Parameters
+
+All Parameters are required and have no defaults.
+* **-root_dir** The root directory of the installation, corresponds to **target_dir** for ```setup-mingw64.ps1```.
+* **-target_dir** The directory where the source, build, and installation directories are. This is normally **target_dir**```\gnucash\branch``` with branch being either ```master```, ```maint```, or ```release```.
+* **-package**: The thing we're bundling. Always ```gnucash```.
+* **-git_build**: ```$true``` if GnuCash was built from git, ```$false``` otherwise. Only use ```$false``` for release builds.
 
 ## Buildserver
 
 This repository includes a script, ```buildserver\build_package.ps1``` that combines building and bundling GnuCash and uploading the result to a distribution webserver into a single command. It's intended for automated nightly build scripts.
 
 ### build_package.ps1 options
-* **branch**: ```maint```, ```master```, or ```release```. The last builds the release configured in gnucash.modules from the release tarball.
-* **target_dir**: The **target_dir** configured into ```setup-mingw64.ps1```.
-* **hostname**: The upload URI. Optional. If set the script will attempt to scp the gnucash-xxx-setup.exe and the build log to hard-coded subdirectories under this URI. The user running the script must have correctly configured ssh to connect to the URI with a key; there's no provision for password authentication.
+* **-branch**: ```maint```, ```master```, or ```release```. The last builds the release configured in gnucash.modules from the release tarball.
+* **-target_dir**: The **target_dir** configured into ```setup-mingw64.ps1```.
+* **-hostname**: The upload URI. Optional. If set the script will attempt to scp the gnucash-xxx-setup.exe and the build log to hard-coded subdirectories under this URI. The user running the script must have correctly configured ssh to connect to the URI with a key; there's no provision for password authentication.
 
 ## Other files:
 * ```jhbuildrc.in``` Template jhbuild configuration file, converted to ```jhbuildrc``` by ```setup-mingw64.ps1``` with the **target_dir**.
