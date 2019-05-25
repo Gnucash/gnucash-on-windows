@@ -217,6 +217,12 @@ $toolchain = "binutils cmake crt-git gcc gcc-libs gdb headers-git libmangle-git 
 
 $clang_toolchain = "clang libc++ libc++abi lld libunwind clang-tools-extra compiler-rt"
 
+# Install the system and toolchain:
+$msys_devel = make-pkgnames -prefix "msys/" -items $devel
+bash-command -command "pacman -S $msys_devel --noconfirm --needed"
+$mingw_toolchain = make-pkgnames -prefix $mingw_prefix -items $toolchain
+bash-command -command "pacman -S $mingw_toolchain --noconfirm --needed"
+
 # webkitgtk3 was removed from the pacman database but the package is still available via direct url
 # so we install it from that url directly.
 # Note webkitgtk3 depends on icu. Icu updates require dependent packages to be rebuilt to work with the new version.
@@ -251,12 +257,7 @@ Write-Host @"
 Now we'll install the dependencies. Accept the installation as usual. About half-way through it will stop with a message about fontconfig. Just type "Return" at it and it will resume after a minute or two (be patient!) and complete the installation.
 "@
 
-$msys_devel = make-pkgnames -prefix "msys/" -items $devel
-$mingw_toolchain = make-pkgnames -prefix $mingw_prefix -items $toolchain
 $mingw_deps = make-pkgnames -prefix $mingw_prefix -items $deps
-
-bash-command -command "pacman -S $msys_devel --noconfirm --needed"
-bash-command -command "pacman -S $mingw_toolchain --noconfirm --needed"
 bash-command -command "pacman -S $mingw_deps --noconfirm --needed"
 
 $target_unix = make-unixpath $target_dir
