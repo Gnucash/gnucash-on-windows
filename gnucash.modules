@@ -207,7 +207,7 @@
 	     autogen-template='/bin/bash -c "pushd %(srcdir)s &amp;&amp; ./autoinit.sh &amp;&amp; popd &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s  %(autogenargs)s"'>
     <branch repo="sourceforge" module="openjade/OpenSP-1.5.2.tar.gz"
 	    version='1.5.2'>
-      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/opensp-1.5.2.patch" strip='1'/>
+      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/opensp-1.5.2.patch" strip='1'/>
       <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/OpenSP-1.5.2-non-posix-functions.patch" strip='1'/>
     </branch>
   </autotools>
@@ -247,7 +247,7 @@
   <autotools id="libdbi" autogen-sh="autoreconf" autogenargs="--disable-docs">
     <branch repo="sourceforge" module="libdbi/libdbi-0.8.4.tar.gz"
 	    version="0.8.4">
-      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/libdbi-0.8.3.patch" strip="1"/>
+      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/libdbi-0.8.3.patch" strip="1"/>
     </branch>
   </autotools>
 
@@ -255,7 +255,7 @@
 	     autogenargs='--disable-docs --with-sqlite3 --with-sqlite3-dir="/mingw32" --with-pgsql --with-pgsql-dir="/mingw32" --with-mysql --with-mysql-dir="/mingw32" '>
     <branch repo="sourceforge" version="0.8.3"
 	    module="libdbi-drivers/libdbi-drivers-0.8.3-1.tar.gz">
-      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/libdbi-drivers-errno.patch" strip="1"/>
+      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/patches/libdbi-drivers-errno.patch" strip="1"/>
       <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/libdbi-drivers-linkage.patch" strip="1"/>
     </branch>
     <dependencies>
