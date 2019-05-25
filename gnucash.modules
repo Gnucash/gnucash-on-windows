@@ -255,7 +255,7 @@
 	     autogenargs='--disable-docs --with-sqlite3 --with-sqlite3-dir="/mingw32" --with-pgsql --with-pgsql-dir="/mingw32" --with-mysql --with-mysql-dir="/mingw32" '>
     <branch repo="sourceforge" version="0.8.3"
 	    module="libdbi-drivers/libdbi-drivers-0.8.3-1.tar.gz">
-      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/patches/libdbi-drivers-errno.patch" strip="1"/>
+      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/libdbi-drivers-errno.patch" strip="1"/>
       <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/libdbi-drivers-linkage.patch" strip="1"/>
     </branch>
     <dependencies>
