@@ -118,7 +118,6 @@
     </dependencies>
   </autotools>
 
-  <!-- Unfortunately in addition to needing a few patches this hangs when it tries to compile Scheme. -->
   <autotools id="guile2" autogen-sh="configure" autogenargs="--disable-rpath --enable-networking --enable-nls --enable-posix --enable-regex --with-threads --with-modules --disable-static">
     <branch repo="sourceforge" module="gnucash/Dependencies/guile-2.2.4+mingw.tar.bz2"
 	    version="2.2.4+mingw">
@@ -172,7 +171,7 @@
   <autotools id="aqbanking" autogen-sh="autoreconf" makeargs="-j1"
 	     autogenargs="--enable-local-install">
     <branch module="download.php?package=03&amp;release=217&amp;file=02&amp;dummy=aqbanking-5.7.8.tar.gz" repo="aqbanking" version="5.7.8" checkoutdir="aqbanking-5.7.8">
-            <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/Fix-signature-mismatch-in-abgui.c.patch" strip='1'/>
+            <patch file="Fix-signature-mismatch-in-abgui.c.patch" strip='1'/>
     </branch>
     <dependencies>
       <dep package="gwenhywfar"/>
@@ -207,8 +206,8 @@
 	     autogen-template='/bin/bash -c "pushd %(srcdir)s &amp;&amp; ./autoinit.sh &amp;&amp; popd &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s  %(autogenargs)s"'>
     <branch repo="sourceforge" module="openjade/OpenSP-1.5.2.tar.gz"
 	    version='1.5.2'>
-      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/opensp-1.5.2.patch" strip='1'/>
-      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/OpenSP-1.5.2-non-posix-functions.patch" strip='1'/>
+      <patch file="opensp-1.5.2.patch" strip='1'/>
+      <patch file="OpenSP-1.5.2-non-posix-functions.patch" strip='1'/>
     </branch>
   </autotools>
 
@@ -247,7 +246,7 @@
   <autotools id="libdbi" autogen-sh="autoreconf" autogenargs="--disable-docs">
     <branch repo="sourceforge" module="libdbi/libdbi-0.8.4.tar.gz"
 	    version="0.8.4">
-      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/libdbi-0.8.3.patch" strip="1"/>
+      <patch file="libdbi-0.8.3.patch" strip="1"/>
     </branch>
   </autotools>
 
@@ -255,8 +254,8 @@
 	     autogenargs='--disable-docs --with-sqlite3 --with-sqlite3-dir="/mingw32" --with-pgsql --with-pgsql-dir="/mingw32" --with-mysql --with-mysql-dir="/mingw32" '>
     <branch repo="sourceforge" version="0.8.3"
 	    module="libdbi-drivers/libdbi-drivers-0.8.3-1.tar.gz">
-      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/libdbi-drivers-errno.patch" strip="1"/>
-      <patch file="https://raw.githubusercontent.com/Gnucash/gnucash-on-windows/master/patches/libdbi-drivers-linkage.patch" strip="1"/>
+      <patch file="libdbi-drivers-errno.patch" strip="1"/>
+      <patch file="libdbi-drivers-linkage.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="libdbi"/>
