@@ -307,7 +307,7 @@ if (!(test-path -path "$target_dir\\src\\gnucash-on-windows.git")) {
 }
 
 bash-command -command "/usr/bin/patch -f -d/ -p0 -i $target_unix/src/gnucash-on-windows.git/patches/jhbuild.patch"
-bash-command -command "/usr/bin/patch -f -d $(dirname $(/usr/bin/find /$arch/share/cmake* -name FindSWIG.cmake) ) -p2 -i $target_unix/src/gnucash-on-windows.git/patches/FindSWIG.patch"
+bash-command -command "/usr/bin/patch -f -d `$(dirname `$(/usr/bin/find /$arch/share/cmake* -name FindSWIG.cmake) ) -p1 -i $target_unix/src/gnucash-on-windows.git/patches/FindSWIG.patch"
 
 $jhbuildrc = get-content "$target_dir\\src\\gnucash-on-windows.git\\jhbuildrc.in" |
  %{$_ -replace "@-BASE_DIR-@", "$target_unix"} |
