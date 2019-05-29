@@ -119,7 +119,7 @@
   </autotools>
 
   <autotools id="guile2" autogen-sh="configure" autogenargs="--disable-rpath --enable-networking --enable-nls --enable-posix --enable-regex --with-threads --with-modules --disable-static">
-    <branch repo="sourceforge" module="gnucash/Dependencies/guile-2.2.4.71-cf330.tar.bz2"
+    <branch repo="sourceforge" module="gnucash/Dependencies/guile-2.2.4.71-cf330.tar.xz"
 	    version=" 2.2.4.71-cf330">
     </branch>
     <dependencies>
