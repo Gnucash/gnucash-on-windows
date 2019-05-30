@@ -250,7 +250,7 @@ IgnorePkg   = mingw-w64-i686-webkitgtk3
 bash-command -command "perl -ibak -pe 'BEGIN{undef $/;} s#[[]options[]]\R(Include = [^\R]*\R)?#[options]\nInclude = /etc/pacman.d/gnucash-ignores.pacman\n#smg' /etc/pacman.conf"
 
 # Install the remaining dependencies.
-$deps = "iso-codes shared-mime-info libmariadbclient postgresql ninja ncurses"
+$deps = "iso-codes shared-mime-info libmariadbclient postgresql ninja pdcurses"
 
 Write-Host @"
 
