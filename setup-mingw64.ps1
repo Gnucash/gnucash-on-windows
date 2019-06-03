@@ -46,13 +46,19 @@ target_dir\downloads.
 
 .PARAMETER msys2_root
 
-Optional. The root path of an already installed MSys2 environment. 
+Optional. The root path of an already installed MSys2 environment.
 E.g. C:\msys64.
 
 .PARAMETER x86_64
 
-Optional. A switch value.If true the toolchain will build x86_64
+Optional. A switch value. If true the toolchain will build x86_64
 binaries; if false it will build i686 binaries. Defaults to false.
+
+.PARAMETER preferred_mirror
+
+Optional. A URI to a preferred repository mirror for both the
+development environment setup and for the MSys2 package manager.
+Defaults to http://repo.msys2.org
 
 #>
 
@@ -61,7 +67,8 @@ Param(
 	[Parameter()] [string]$target_dir = "c:\\gcdev64",
 	[Parameter()] [string]$download_dir = "$target_dir\\downloads",
 	[Parameter()] [string]$msys2_root = "$target_dir\\msys2",
-	[Parameter()] [switch]$x86_64
+	[Parameter()] [switch]$x86_64,
+	[Parameter()] [string]$preferred_mirror = "http://repo.msys2.org"
 )
 
 $bash_path = "$msys2_root\\usr\\bin\\bash.exe"
@@ -80,7 +87,8 @@ $arch_long = "mingw-w64-$arch_code"
 $mingw_prefix = "$arch/$arch_long-"
 $mingw_path = "/$arch"
 $mingw_bin = "$mingw_path/bin"
-$mingw_url_prefix = "http://repo.msys2.org/mingw/$arch_code/$arch_long-"
+$preferred_mirror = $preferred_mirror.TrimEnd('/')
+$mingw_url_prefix = "$preferred_mirror/mingw/$arch_code/$arch_long-"
 $env:MSYSTEM = $arch.ToUpper()
 
 if (!(test-path -path $target_dir)) {
@@ -129,8 +137,8 @@ function make-unixpath([string]$path) {
 # Install MSYS2 for the current machine's architechture.
 
 if (!(test-path -path $bash_path)) {
-    $mingw64_installer32 = "http://repo.msys2.org/distrib/i686/msys2-i686-20180531.exe"
-    $mingw64_installer64 = "http://repo.msys2.org/distrib/x86_64/msys2-x86_64-20180531.exe"
+    $mingw64_installer32 = "$preferred_mirror/distrib/i686/msys2-i686-20180531.exe"
+    $mingw64_installer64 = "$preferred_mirror/distrib/x86_64/msys2-x86_64-20180531.exe"
 
     $mingw64_installer_file = "$download_dir\msys2.exe"
     $mingw64_installer = If ([IntPtr]::size -eq 4) {$mingw64_installer32} Else {$mingw64_installer64}
@@ -163,6 +171,21 @@ Controller.prototype.FinishedPageCallback = function() {
 if (!(test-path -path $bash_path)) {
     write-host "Failed to install MSys2, aborting."
     exit
+}
+
+# prepend preferred_mirror to pacman mirrorlists
+if ($PSBoundParameters.ContainsKey('preferred_mirror')) {
+    $mirror_beacon = '# This and the next line are managed by GnuCash bootstrap: setup-mingw64.ps1'
+    $mirrorconf_list = ( '[mingw32]', 'mingw/i686'),
+                       ( '[mingw64]', 'mingw/x86_64'),
+                       ( '[msys]',    'msys/$arch')
+    $pacmanconf_path = "$msys2_root\etc\pacman.conf"
+    $pacmanconf = (Get-Content -Path "$pacmanconf_path" -Raw) -creplace "(?m)^${mirror_beacon}\r?\nServer = .+\r?\n",''
+    foreach ($mirrorconf in $mirrorconf_list) {
+        $mirror_prepend = "$($mirrorconf[0])`n$mirror_beacon`nServer = $preferred_mirror/$($mirrorconf[1])`n"
+        $pacmanconf = $pacmanconf -creplace ([System.Text.RegularExpressions.Regex]::Escape($mirrorconf[0]) + '.*\r?\n'),$mirror_prepend
+    }
+    Set-Content -NoNewline -Value $pacmanconf -Path "$pacmanconf_path"
 }
 
 # Install Html Help Workshop
@@ -198,7 +221,7 @@ Updating the new installation. A bash window will open. In that window accept th
 
 There will be a second update.
 "@
-   bash-command -command "pacman -Syuu --noconfirm"
+   bash-command -command "pacman -Syyuu --noconfirm"
 }
 
 #Update the system.
@@ -207,7 +230,7 @@ Write-Host @"
 Updating the installation. Accept the proposed changes. If the window doesn't close on its own then close it and re-run the script when it finishes.
 "@
 
-bash-command -command "pacman -Syuu --noconfirm"
+bash-command -command "pacman -Syyuu --noconfirm"
 
 # Set up aliases for the parts of msys-devtools and mingw-w64-toolchain that
 # we need:
@@ -246,7 +269,7 @@ IgnorePkg   = mingw-w64-i686-boost
 IgnorePkg   = mingw-w64-i686-harfbuzz
 IgnorePkg   = mingw-w64-i686-webkitgtk3
 "@
-[IO.File]::WriteAllLines( (join-path $target_dir (join-path "msys2" (join-path "etc" (join-path "pacman.d" "gnucash-ignores.pacman")))), $ignorefile)
+[IO.File]::WriteAllLines( "$msys2_root\etc\pacman.d\gnucash-ignores.pacman", $ignorefile)
 bash-command -command "perl -ibak -pe 'BEGIN{undef $/;} s#[[]options[]]\R(Include = [^\R]*\R)?#[options]\nInclude = /etc/pacman.d/gnucash-ignores.pacman\n#smg' /etc/pacman.conf"
 
 # Install the remaining dependencies.
