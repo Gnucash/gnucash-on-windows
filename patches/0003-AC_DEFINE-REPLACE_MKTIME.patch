@@ -1,0 +1,67 @@
+From 28dbcca3e1e75a709ce780788951e7ca413843b7 Mon Sep 17 00:00:00 2001
+From: John Ralls <jralls@ceridwen.us>
+Date: Mon, 27 May 2019 12:01:29 -0700
+Subject: [PATCH 3/3] AC_DEFINE REPLACE_MKTIME
+
+Using it to control redefinition of mktime() and inclusion of mktime.c
+in  timegm.c.
+
+The former prevents duplicate definitions from mktime.c and the C
+runtime. The latter prevents duplicate definitions when both mktime.c
+and timegm.c are built.
+---
+ lib/mktime.c | 2 ++
+ lib/timegm.c | 2 ++
+ m4/mktime.m4 | 2 ++
+ 3 files changed, 6 insertions(+)
+
+diff --git a/lib/mktime.c b/lib/mktime.c
+index 2efd44a22..588d4d139 100644
+--- a/lib/mktime.c
++++ b/lib/mktime.c
+@@ -462,6 +462,7 @@ __mktime_internal (struct tm *tp,
+ static mktime_offset_t localtime_offset;
+ 
+ /* Convert *TP to a time_t value.  */
++#if REPLACE_MKTIME
+ time_t
+ mktime (struct tm *tp)
+ {
+@@ -476,6 +477,7 @@ mktime (struct tm *tp)
+ 
+   return __mktime_internal (tp, __localtime_r, &localtime_offset);
+ }
++#endif
+ 
+ #ifdef weak_alias
+ weak_alias (mktime, timelocal)
+diff --git a/lib/timegm.c b/lib/timegm.c
+index 35bc67dc1..949f4b7ad 100644
+--- a/lib/timegm.c
++++ b/lib/timegm.c
+@@ -39,4 +39,6 @@ timegm (struct tm *tmp)
+   return __mktime_internal (tmp, __gmtime_r, &gmtime_offset);
+ }
+ 
++#if ! REPLACE_MKTIME
+ #include "mktime.c"
++#endif
+diff --git a/m4/mktime.m4 b/m4/mktime.m4
+index d594ddc58..ec7299f08 100644
+--- a/m4/mktime.m4
++++ b/m4/mktime.m4
+@@ -244,9 +244,11 @@ main ()
+ 
+   if test $gl_cv_func_working_mktime = no; then
+     REPLACE_MKTIME=1
++    AC_DEFINE([REPLACE_MKTIME], [1], [System mktime is defective or missing.])
+   else
+     REPLACE_MKTIME=0
+   fi
++
+ ])
+ 
+ AC_DEFUN([gl_FUNC_MKTIME_INTERNAL], [
+-- 
+2.21.0
+

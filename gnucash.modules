@@ -119,8 +119,12 @@
   </autotools>
 
   <autotools id="guile2" autogen-sh="configure" autogenargs="--disable-rpath --enable-networking --enable-nls --enable-posix --enable-regex --with-threads --with-modules --disable-static">
-    <branch repo="sourceforge" module="gnucash/Dependencies/guile-2.2.4.71-28dbc.tar.xz"
-	    version=" 2.2.4.71-28dbc">
+    <branch repo="sourceforge" module="gnucash/Dependencies/guile-2.2.4.68-65d98.tar.xz"
+	    version=" 2.2.4.68-65d98">
+      <patch file="0001-Fix-build-on-MinGW-w64.patch" strip="1"/>
+      <patch file="0002-MinGW-Don-t-break-build-when-including-libguile.h.patch" strip="1"/>
+      <patch file="0003-AC_DEFINE-REPLACE_MKTIME.patch" strip="1"/>
+
     </branch>
     <dependencies>
       <dep package="libunistring"/>
