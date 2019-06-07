@@ -577,18 +577,18 @@ IconName_Theme=Select GnuCash Theme
 IconName_Uninstall=Uninstall GnuCash
 IconComment_Uninstall=Uninstall the Finance Manager GnuCash
 
-;; List of Code pages, used in gnucash.cmd
-LanguageCodePage=1252
-ca.LanguageCodePage=1252
-de.LanguageCodePage=1252
-el.LanguageCodePage=1253
-fr.LanguageCodePage=1252
-it.LanguageCodePage=1252
-ja.LanguageCodePage=932
-nl.LanguageCodePage=1252
-pt_BR.LanguageCodePage=1252
-zh_CN.LanguageCodePage=936
-zh_TW.LanguageCodePage=950
+;; List of Code pages
+LanguageCodePage=0
+ca.LanguageCodePage=0
+de.LanguageCodePage=0
+el.LanguageCodePage=0
+fr.LanguageCodePage=0
+it.LanguageCodePage=0
+ja.LanguageCodePage=0
+nl.LanguageCodePage=0
+pt_BR.LanguageCodePage=0
+zh_CN.LanguageCodePage=0
+zh_TW.LanguageCodePage=0
 
 ;; ;;;;;;;;;;;;;;;;;;;;;
 ;; Catalan translation
