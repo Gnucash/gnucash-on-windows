@@ -67,8 +67,9 @@ Source: "@INST_DIR@\etc\@PACKAGE@\environment"; DestDir: "{app}\etc\@PACKAGE@"; 
 ; Note: The above AfterInstall function will adapt the
 ; environment config file on-the-fly by the Pascal script below.
 Source: "@INST_DIR@\lib\*"; DestDir: "{app}\lib"; Flags: recursesubdirs; Components: main
-Source: "@INST_DIR@\lib\gnucash\scm\ccache\2.2\*"; DestDir: "{app}\lib\gnucash\scm\ccache\2.2"; Flags: recursesubdirs; Components: main
-Source: "@INST_DIR@\lib\guile\2.2\ccache\*"; DestDir: "{app}\lib\guile\2.2\ccache"; Flags: recursesubdirs; Components: main
+; Deprecated installation location for gnucash guile scripts. Can be removed after we're done with gnucash 3.x
+Source: "@INST_DIR@\lib\gnucash\scm\ccache\2.2\*"; DestDir: "{app}\lib\gnucash\scm\ccache\2.2"; Flags: recursesubdirs skipifsourcedoesntexist; Components: main
+Source: "@INST_DIR@\lib\guile\2.2\*"; DestDir: "{app}\lib\guile\2.2"; Flags: recursesubdirs; Components: main
 Source: "@INST_DIR@\lib\dbd\*.dll"; DestDir: "{app}\lib"; Components: main
 Source: "@INST_DIR@\lib\aqbanking\*"; DestDir: "{app}\lib\aqbanking"; Excludes: "*.dll.a"; Flags: recursesubdirs; Components: main
 Source: "@INST_DIR@\lib\gwenhywfar\*"; DestDir: "{app}\lib\gwenhywfar"; Excludes: "*.dll.a"; Flags: recursesubdirs; Components: main
