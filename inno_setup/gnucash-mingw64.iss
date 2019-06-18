@@ -529,6 +529,7 @@ Name: "ca"; MessagesFile: "compiler:Languages\Catalan.isl"; InfoAfterFile: "@INS
 Name: "de"; MessagesFile: "compiler:Languages\German.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-de.win32-bin.txt"
 Name: "el"; MessagesFile: "compiler:Languages\Greek.isl"
 Name: "fr"; MessagesFile: "compiler:Languages\French.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-fr.win32-bin.txt"
+Name: "hr"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\Croatian-5.5.3.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-hr.win32-bin.txt"
 Name: "it"; MessagesFile: "compiler:Languages\Italian.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-it.win32-bin.txt"
 Name: "ja"; MessagesFile: "compiler:Languages\Japanese.isl"
 Name: "lv"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\Latvian-5.5.0.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-lv.win32-bin.txt"
@@ -584,6 +585,7 @@ ca.LanguageCodePage=0
 de.LanguageCodePage=0
 el.LanguageCodePage=0
 fr.LanguageCodePage=0
+hr.LanguageCodePage=0
 it.LanguageCodePage=0
 ja.LanguageCodePage=0
 nl.LanguageCodePage=0
@@ -708,6 +710,40 @@ fr.IconComment_InstallFQ=Installation du module Finance-Quote requis pour le té
 fr.IconName_Theme=Selection du style GnuCash
 fr.IconName_Uninstall=Dé-installer GnuCash
 fr.IconComment_Uninstall=Désinstalle le gestionnaire financier GnuCash
+
+
+;; ;;;;;;;;;;;;;;;;;;;;
+;; Croatian translation
+
+; *** "Select Components" wizard page
+hr.FullInstall=Kompletna instalacija
+hr.CustomInstall=Prilagođena instalacija
+hr.CreateDesktopIcon=Stvori ikonu na radnoj površini
+hr.CreateMenuLink=Stvori poveznicu u izborniku Start
+hr.RunPrg=Pokreni GnuCash
+hr.AdditionalIcons=Stvori ove ikone:
+hr.StatusMsgFirewall=Instaliranje pravila vatrozida Windowsa …
+; *** "Another install" wizard page
+; %1 in the following messages will be replaced with the application name and version, like "GnuCash 2.3.15"
+hr.AIWP_Title=Nađena je jedna druga instalacija
+hr.AIWP_Description=%1 je trenutačno instaliran na ovom računalu
+hr.AIWP_Message=Ovu raniju instalaciju moraš ukloniti prije nego što nastaviš s instaliranjem.%n%nAko to ne želiš, klikni "Odustani" i prekinut ćeš ovo instaliranje.%n%nKlikni "Dalje" ako želiš ukloniti %1 i nastaviti s instaliranjem.%n%nNapomena: Uklonit će se samo program, ne i tvoji financijski podaci.
+
+hr.MainFiles=GnuCash program
+hr.TranslFiles=Hrvatski prijevod
+hr.TemplFiles=Predlošci kontnih planova
+
+hr.IconComment_GnuCash=GnuCash – slobodan računovodstveni program
+hr.IconName_README=Prikaži GnuCash README
+hr.IconComment_README=Prikaži informativnu README-datoteku
+hr.IconFilename_README=README-hr.win32-bin.txt
+hr.IconName_FAQ=Često postavljana pitanja o GnuCashu (web stranica na engleskom)
+hr.IconName_Bugzilla=Prijavi grešku (web stranica na engleskom)
+hr.IconName_InstallFQ=Instaliraj dohvaćanje internetskih tečajeva za GnuCash
+hr.IconComment_InstallFQ=Instaliraj potreban perl modul Finance-Quote za dohvaćanje tečajeva putem interneta. Zahtijeva ActivePerl ili Strawberry Perl 5.8 ili noviji
+hr.IconName_Theme=Odaberi GnuCashovu temu
+hr.IconName_Uninstall=Deinstaliraj GnuCash
+hr.IconComment_Uninstall=Deinstaliraj računovodstveni program GnuCash
 
 
 ;; ;;;;;;;;;;;;;;;;;;;;;
