@@ -1,0 +1,11 @@
+--- a/Makefile.in	2019-08-08 15:42:36.000000000 -0700
++++ b/Makefile.in	2019-08-12 14:57:37.642988300 -0700
+@@ -1212,7 +1212,7 @@
+ clean-local: clean-local-check
+ .PHONY: clean-local
+ clean-local-check:
+-	rm -rf apidoc gwenhywfar4
++	rm -rf apidoc
+ 
+ listdoc.h: $(top_builddir)/admin/mklistdoc
+ 	admin/mklistdoc -v -I $(top_srcdir)/src/base `find "$(top_builddir)/gwenhywfar4/gwenhywfar" -name "*.h" | LC_ALL=C sort` >listdoc.h

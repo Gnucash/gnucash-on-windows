@@ -76,13 +76,11 @@ else:
     branches['gnucash-git'] = (None, _branch)
     branches['gnucash-docs-git'] = (None, _branch)
 
-_gtk_cflags = _popen("pkg-config --cflags gtk+-3.0")
-_gtk_ldflags= _popen("pkg-config --libs gtk+-3.0")
 append_autogenargs("libofx", "--with-opensp-includes=" + prefix + "/include/OpenSP --with-opensp-libs=" + prefix + "/lib")
 append_autogenargs("libdbi-drivers","--with-dbi-incdir=" + prefix + "/include --with-dbi-libdir=" + prefix + "/lib")
 module_makeargs["aqbanking"]="-j 1"
 
 module_extra_env["gnucash"]={'GUILE_LOAD_PATH':os.path.join(prefix, 'share', 'guile', '2.2'), 'GUILE_LOAD_COMPILED_PATH':os.path.join(prefix, 'lib', 'guile', '2.2', 'ccache')}
 module_extra_env["gnucash-git"]={'GUILE_LOAD_PATH':os.path.join(prefix, 'share', 'guile', '2.2'), 'GUILE_LOAD_COMPILED_PATH':os.path.join(prefix, 'lib', 'guile', '2.2', 'ccache')}
-module_extra_env["gwenhywfar"]={'CFLAGS': _gtk_cflags, 'LDFLAGS': _gtk_ldflags}
+module_extra_env["gwenhywfar"]={'PKG_CONFIG': os.path.join('/', _arch, 'bin', 'pkg-config')}
 
