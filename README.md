@@ -83,7 +83,7 @@ This repository includes a script, ```buildserver\build_package.ps1``` that comb
 ### build_package.ps1 options
 * **-branch**: ```maint```, ```master```, or ```release```. The last builds the release configured in gnucash.modules from the release tarball.
 * **-target_dir**: The **target_dir** configured into ```setup-mingw64.ps1```.
-* **-hostname**: The upload URI. Optional. If set the script will attempt to scp the gnucash-xxx-setup.exe and the build log to hard-coded subdirectories under this URI. The user running the script must have correctly configured ssh to connect to the URI with a key; there's no provision for password authentication.
+* **-hostname**: The upload URI. Optional. If set the script will attempt to rsync the gnucash-xxx-setup.exe and the build log to hard-coded subdirectories under this URI. The user running the script must have correctly configured ssh to connect to the URI with a key; there's no provision for password authentication.
 
 ## Other files:
 * ```jhbuildrc.in``` Template jhbuild configuration file, converted to ```jhbuildrc``` by ```setup-mingw64.ps1``` with the **target_dir**.
