@@ -99,7 +99,7 @@ bash-command -command "cd $script_unix && git pull"
 bash-command -command "echo Build Started $time_stamp > $log_unix"
 #copy the file to the download server so that everyone can see we've started
 if ($hostname) {
-    bash-command -command "scp -p $log_unix $hostname/$log_dir/"
+    bash-command -command "$script_unix/buildserver/upload_build_log.sh $log_unix $hostname $log_dir $branch"
 }
 
 # Update MinGW-w64
@@ -142,7 +142,7 @@ bash-command -command "echo Build Ended $time_stamp >> $log_unix"
 
 # Copy the transcript and installer to the download server and delete them.
 if ($hostname) {
-	bash-command -command "scp -p $log_unix $hostname/$log_dir/"
+    bash-command -command "$script_unix/buildserver/upload_build_log.sh $log_unix $hostname $log_dir $branch"
     if ($new_file) {
 	bash-command -command "scp -p $setup_file $hostname/$branch"
     }
