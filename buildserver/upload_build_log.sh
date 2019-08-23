@@ -23,7 +23,7 @@ function create_remote_dir()
         # For this hack $base_dir is just an arbitrary existing directory
         # It doesn't matter which one
         # No files will be copied from it anyway because of the exclude parameter
-        rsync -a --exclude='*' "$base_dir"/ "$1"
+        rsync -e ssh -a --exclude='*' "$base_dir"/ "$1"
     fi
 }
 
@@ -37,7 +37,7 @@ then
         # the final remote directory to store it
         # So let's just store it in the top-level so we have a trace
         # of the build start or very early failures
-        rsync -a "$log_file" "$host"/build-logs
+        rsync -e ssh -a "$log_file" "$host"/build-logs
     else
         # Now the subdirectory to store the log file is is known
         # In addition group per month to simplify navigation even more
@@ -46,14 +46,14 @@ then
         create_remote_dir "$host"/build-logs/$remote_branch_dir
         create_remote_dir "$host"/build-logs/$remote_branch_dir/$month_part
 
-        rsync -a "$log_file" "$host"/build-logs/$remote_branch_dir/$month_part
+        rsync -e ssh -a "$log_file" "$host"/build-logs/$remote_branch_dir/$month_part
 
         # Finally remove the initially start build log uploaded earlier
         # Disable fatal error handling though to prevent the complete script from exiting
         # if no early build log exists
         echo "Removing initial startup build log uploaded earlier"
         set +ex
-        rsync -rv --delete --include="$(basename $log_file)" --exclude='*' "$base_dir"/ "$host"/build-logs/
+        rsync -e ssh -rv --delete --include="$(basename $log_file)" --exclude='*' "$base_dir"/ "$host"/build-logs/
         set -ex
     fi
 fi

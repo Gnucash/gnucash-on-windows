@@ -144,6 +144,6 @@ bash-command -command "echo Build Ended $time_stamp >> $log_unix"
 if ($hostname) {
     bash-command -command "$script_unix/buildserver/upload_build_log.sh $log_unix $hostname $log_dir $branch"
     if ($new_file) {
-	bash-command -command "rsync -a $setup_file $hostname/$branch"
+	bash-command -command "rsync -e ssh -a $setup_file $hostname/$branch"
     }
 }
