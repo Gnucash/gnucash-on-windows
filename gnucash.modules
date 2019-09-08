@@ -146,7 +146,8 @@
 
   <autotools id="gwenhywfar" autogen-sh="configure"
 	     autogenargs="--with-guis='gtk3' --enable-local-install --disable-binreloc --disable-ssl">
-    <branch module="108/gwenhywfar-4.20.2.tar.gz" version="4.20.2" repo="aqbanking" />
+    <branch module="108/gwenhywfar-4.20.2.tar.gz" version="4.20.2"
+            repo="aqbanking" />
     <dependencies>
       <dep package="gcrypt"/>
       <dep package="gnutls"/>
@@ -274,8 +275,8 @@
  <cmake id="gnucash"
         cmakeargs="-G 'MSYS Makefiles' -DCMAKE_FIND_ROOT_PATH=$MSYS2ROOT -DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DHTMLHELP_DIR=$PREFIX/hh -DGTEST_ROOT=$SRCROOT/googletest/googletest -DGMOCK_ROOT=$SRCROOT/googletest/googlemock -DCOMPILE_GSCHEMAS=OFF"
 	use-ninja="False">
-   <branch repo="sourceforge" module="project/gnucash/gnucash%20%28stable%29/3.6/gnucash-3.6.tar.bz2"
-	   version="3.6"/>
+   <branch module="project/gnucash/gnucash%20%28stable%29/3.7/gnucash-3.7.tar.bz2"
+	   repo="sourceforge" version="3.7"/>
     <dependencies>
       <dep package="libofx"/>
       <dep package="aqbanking"/>
@@ -320,8 +321,8 @@
   <autotools id="gnucash-docs"
 	    autogen-template="%(srcdir)s/%(autogen-sh)s &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s %(autogenargs)s"
 	    makeargs="chm" makeinstallargs="install-chm" >
-    <branch  module="project/gnucash/gnucash%20%28stable%29/3.6/gnucash-docs-3.5.tar.gz"
-	     version="3.6" repo="sourceforge"/>
+    <branch  module="project/gnucash/gnucash%20%28stable%29/3.7/gnucash-docs-3.7.tar.gz"
+	     version="3.7" repo="sourceforge"/>
   </autotools>
 
   <metamodule id="meta-gnucash-git">
