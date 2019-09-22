@@ -126,7 +126,7 @@ if (test-path -path $install_manifest) {
 # Update the gnucash-on-windows repository
 #bash-command -command "cd $script_unix && git reset --hard && git pull --rebase"
 # Build the latest GnuCash and all dependencies not installed via mingw64
-bash-command -command "jhbuild --no-interact -f $script_unix/jhbuildrc build --clean > >(tee -a $log_unix) 2> >(tee -a $log_unix)"
+bash-command -command "jhbuild --no-interact -f $script_unix/jhbuildrc build --clean > >(tee -a $log_unix) 2>&1"
 $new_file = test-path -path $target_dir\$package\$branch\inst\bin\gnucash.exe -NewerThan $time_stamp
 if ($new_file) {
 #Build the installer
