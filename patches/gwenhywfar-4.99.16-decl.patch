@@ -1,0 +1,13 @@
+--- a/src/sio/syncio_tls.c	2019-09-20 11:59:23.000000000 -0700
++++ b/src/sio/syncio_tls.c	2019-09-21 18:12:03.751296700 -0700
+@@ -123,7 +123,9 @@
+ 
+ 
+ 
+-int GWEN_SyncIo_Tls_Internal_CheckCert(GWEN_SYNCIO *sio, const GWEN_SSLCERTDESCR *cert)
++GWENHYWFAR_CB int
++GWEN_SyncIo_Tls_Internal_CheckCert(GWEN_SYNCIO *sio,
++				       const GWEN_SSLCERTDESCR *cert)
+ {
+   GWEN_SYNCIO_TLS *xio;
+ 

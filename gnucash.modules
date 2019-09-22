@@ -137,6 +137,7 @@
   <autotools id="libchipcard" autogen-sh="configure" autogenargs="--enable-local-install">
     <branch module="138/libchipcard-5.1.3beta.tar.gz" version="5.1.3beta"
             repo="aqbanking">
+      <patch file="libchipcard-5.1.3.decl.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="gcrypt"/>
@@ -146,8 +147,11 @@
 
   <autotools id="gwenhywfar" autogen-sh="configure"
 	     autogenargs="--with-guis='gtk3' --enable-local-install --disable-binreloc --disable-ssl">
-    <branch module="136/gwenhywfar-4.99.15beta.tar.gz" version="4.99.15beta"
-            repo="aqbanking" />
+    <branch module="140/gwenhywfar-4.99.16beta.tar.gz" version="4.99.16beta"
+            repo="aqbanking" >
+      <patch file="gwenhywfar-4.99.16-clean.patch" strip="1"/>
+      <patch file="gwenhywfar-4.99.16-decl.patch" strip="1"/>
+    </branch>
     <dependencies>
       <dep package="gcrypt"/>
       <dep package="gnutls"/>
@@ -174,7 +178,8 @@
 
   <autotools id="aqbanking" autogen-sh="autoreconf" makeargs="-j1"
 	     autogenargs="--enable-local-install">
-    <branch module="134/aqbanking-5.99.30beta.tar.gz" repo="aqbanking" version="5.99.30beta" >
+    <branch module="145/aqbanking-5.99.33beta.tar.gz" repo="aqbanking" version="5.99.33beta" >
+      <patch file="aqbanking-5.99-strndup.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="gwenhywfar"/>

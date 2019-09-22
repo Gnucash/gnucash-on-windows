@@ -1,0 +1,13 @@
+--- a/src/lib/client/cards/zkacard/zkacard.c	2019-02-05 12:29:41.000000000 -0800
++++ b/src/lib/client/cards/zkacard/zkacard.c	2019-09-22 08:59:23.775111300 -0700
+@@ -769,8 +769,8 @@
+ 
+   return LC_Client_ResultOk;
+ }
+-
+-LC_CLIENT_RESULT CHIPCARD_CB LC_ZkaCard__SeccosSearchRecord(LC_CARD *card,
++CHIPCARD_API
++LC_CLIENT_RESULT LC_ZkaCard__SeccosSearchRecord(LC_CARD *card,
+                                                             uint32_t flags,
+                                                             int recNum,
+                                                             const char *searchPattern,
