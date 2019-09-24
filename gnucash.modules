@@ -180,6 +180,7 @@
 	     autogenargs="--enable-local-install">
     <branch module="145/aqbanking-5.99.33beta.tar.gz" repo="aqbanking" version="5.99.33beta" >
       <patch file="aqbanking-5.99-strndup.patch" strip="1"/>
+      <patch file="aqbanking-5.99.33beta-mconsole.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="gwenhywfar"/>
