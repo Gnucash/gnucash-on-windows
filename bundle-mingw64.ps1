@@ -32,9 +32,21 @@ You may need to allow running scripts on your computer and depending
 on where the target_dir is you may need to run the script with
 Administrator privileges.
 
+.PARAMETER root_dir
+
+Mandatory. The root path to the build environment. Typically C:\gcdev64.
+
 .PARAMETER target_dir
 
-Optional. The root path to the build environment. Defaults to the root of the script's path, e.g. if the script's path is C:\gcdev64\src\gnucash-on-windows.git\bundle-mingw64.ps1 the default target_dir will be C:\gcdev64.
+Mandatory. The base path to where the build to be packaged is located. This is typically $root_dir\gnucash\$branch, for example C:\gcdev64\gnucash\maint
+
+.PARAMETER package
+
+Mandatory. The name of the package to bundle. This is currently only used by the Inno installer builder for things like the registry group to add values to.
+
+.PARAMETER package
+
+Mandatory. Boolean to indicate whether or not this is a git build.
 
 #>
 
