@@ -93,11 +93,14 @@ $target_unix = make-unixpath -path $target_dir
 $log_dir = "build-logs"
 
 #Make sure that there's no running transcript, then start one:
-$time_stamp = get-date -format "yyyy-MM-dd-HH-mm-ss"
-$log_file = "$target_dir\build-$branch-$time_stamp.log"
+$time_stamp_file = get-date -format "yyyy-MM-dd-HH-mm-ss"
+$yyyy_mm_dir = get-date -format "yyyy-MM"
+$log_dir_full = "$target_dir\win32\$log_dir\$branch\$yyyy_mm_dir"
+$log_file = "$log_dir_full\build-$branch-$time_stamp_file.log"
 $log_unix = make-unixpath -path $log_file
-$time_stamp = get-date -format "yyyy-MM-dd HH:mm:ss"
+New-Item -ItemType Directory -Force -Path "$log_dir_full" | Out-Null
 
+$time_stamp = get-date -format "yyyy-MM-dd HH:mm:ss"
 Write-Output "Build Started $time_stamp" | Tee-Object -FilePath $log_file
 git.exe -C $script_unix pull 2>&1 | Tee-Object -FilePath $log_file -Append
 #copy the file to the download server so that everyone can see we've started
@@ -137,6 +140,11 @@ if ($new_file) {
     $is_git = ($branch.CompareTo("releases") -ne 0)
     Write-Output "Creating GnuCash installer." | Tee-Object -FilePath $log_file -Append
     $setup_file = & $script_dir\bundle-mingw64.ps1 -root_dir $target_dir -target_dir $target_dir\$package\$branch -package $package -git_build $is_git 2>&1 | Tee-Object -FilePath $log_file -Append
+    $destination_dir="$target_dir\win32\$branch"
+    New-Item -ItemType Directory -Force -Path "$destination_dir" | Out-Null
+    Move-Item -Path "$setup_file" -Destination "$destination_dir"
+    $pkg_name = Split-Path -Path "$setup_file" -Leaf
+    $setup_file = "$destination_dir\$pkg_name"
     $setup_file = make-unixpath -path $setup_file
     Write-Output "Created GnuCash Setup File $setup_file" | Tee-Object -FilePath $log_file -Append
 }
