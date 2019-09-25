@@ -146,7 +146,7 @@ if ($new_file) {
     if ($setup_file_valid) {
         $destination_dir="$target_dir\win32\$branch"
         New-Item -ItemType Directory -Force -Path "$destination_dir" | Out-Null
-        Move-Item -Path "$setup_file" -Destination "$destination_dir"
+        Move-Item -Path "$setup_file" -Destination "$destination_dir" -Force
         $pkg_name = Split-Path -Path "$setup_file" -Leaf
         $setup_file = "$destination_dir\$pkg_name"
         Write-Output "Created GnuCash Setup File $setup_file" | Tee-Object -FilePath $log_file -Append
