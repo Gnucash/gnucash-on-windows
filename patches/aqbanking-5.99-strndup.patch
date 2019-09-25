@@ -1,6 +1,6 @@
 --- a/src/libs/plugins/backends/aqfints/transportlayer/transport.c	2019-09-21 08:53:32.000000000 -0700
 +++ b/src/libs/plugins/backends/aqfints/transportlayer/transport.c	2019-09-22 10:34:04.486430000 -0700
-@@ -17,6 +17,24 @@
+@@ -17,6 +17,26 @@
  /* code headers */
  
  /* macro functions */
@@ -22,70 +22,8 @@
 +  }
 +}
 +
++#define strndup my_strndup
++
  GWEN_INHERIT_FUNCTIONS(AQFINTS_TRANSPORT)
  
  
-@@ -200,7 +218,8 @@
-   if (p2==NULL) {
-     DBG_ERROR(AQFINTS_LOGDOMAIN, "Bad data (missing second '+')");
-     return GWEN_ERROR_BAD_DATA;
--  } /* read message size */ copiedString=strndup(p1, (p2-p1));
-+  } /* read message size */
-+  copiedString=my_strndup(p1, (p2-p1));
-   assert(copiedString);
-   if (1!=sscanf(p1, "%d", &msgSize)) {
-     DBG_ERROR(AQFINTS_LOGDOMAIN, "Bad size field [%s]", copiedString);
---- a/src/libs/plugins/imexporters/xml/xml.c	2019-09-21 08:53:32.000000000 -0700
-+++ b/src/libs/plugins/imexporters/xml/xml.c	2019-09-22 10:38:02.321923600 -0700
-@@ -31,9 +31,23 @@
- 
- static AB_TRANSACTION *dbToTransaction(AB_IMEXPORTER *ie, GWEN_DB_NODE *db);
- static void handleTransactionDetails(AB_TRANSACTION *t, const char *sDetails);
-+static char *my_strndup(const char *src, size_t n)
-+{
-+  int len;
- 
-+  len=strlen(src);
-+  if (len<n)
-+    return strdup(src);
-+  else {
-+    char *cpy;
- 
--
-+    cpy=(char *) malloc(n+1);
-+    assert(cpy);
-+    memmove(cpy, src, n);
-+    cpy[n]=0;
-+    return cpy;
-+  }
-+}
- 
- AB_IMEXPORTER *AB_ImExporterXML_new(AB_BANKING *ab)
- {
-@@ -592,7 +606,7 @@
-   if (s>sStart) {
-     char *sCopy;
- 
--    sCopy=strndup(sStart, s-sStart);
-+    sCopy=my_strndup(sStart, s-sStart);
-     assert(sCopy);
-     AB_Transaction_SetTransactionKey(t, sCopy);
-     free(sCopy);
-@@ -609,7 +623,7 @@
-     char *sCopy;
-     int num=0;
- 
--    sCopy=strndup(sStart, s-sStart);
-+    sCopy=my_strndup(sStart, s-sStart);
-     assert(sCopy);
-     if (1!=sscanf(sCopy, "%d", &num)) {
-       DBG_WARN(AQBANKING_LOGDOMAIN, "Transaction details with invalid code (2nd element) in \"%s\", ignoring", sDetails);
-@@ -629,7 +643,7 @@
-   if (s>sStart) {
-     char *sCopy;
- 
--    sCopy=strndup(sStart, s-sStart);
-+    sCopy=my_strndup(sStart, s-sStart);
-     assert(sCopy);
-     AB_Transaction_SetPrimanota(t, sCopy);
-     free(sCopy);
