@@ -134,19 +134,28 @@ if (test-path -path $install_manifest) {
 #git.exe -C $script_unix pull --rebase 2>&1 | Tee-Object -FilePath $log_file -Append
 # Build the latest GnuCash and all dependencies not installed via mingw64
 bash.exe -lc "jhbuild --no-interact -f $script_unix/jhbuildrc build --clean 2>&1" | Tee-Object -FilePath $log_file -Append
+
+$setup_file_valid = False
 $new_file = test-path -path $target_dir\$package\$branch\inst\bin\gnucash.exe -NewerThan $time_stamp
 if ($new_file) {
 #Build the installer
     $is_git = ($branch.CompareTo("releases") -ne 0)
     Write-Output "Creating GnuCash installer." | Tee-Object -FilePath $log_file -Append
     $setup_file = & $script_dir\bundle-mingw64.ps1 -root_dir $target_dir -target_dir $target_dir\$package\$branch -package $package -git_build $is_git 2>&1 | Tee-Object -FilePath $log_file -Append
-    $destination_dir="$target_dir\win32\$branch"
-    New-Item -ItemType Directory -Force -Path "$destination_dir" | Out-Null
-    Move-Item -Path "$setup_file" -Destination "$destination_dir"
-    $pkg_name = Split-Path -Path "$setup_file" -Leaf
-    $setup_file = "$destination_dir\$pkg_name"
-    $setup_file = make-unixpath -path $setup_file
-    Write-Output "Created GnuCash Setup File $setup_file" | Tee-Object -FilePath $log_file -Append
+    $setup_file_valid = Test-Path -Path "$setup_file"
+    if ($setup_file_valid) {
+        $destination_dir="$target_dir\win32\$branch"
+        New-Item -ItemType Directory -Force -Path "$destination_dir" | Out-Null
+        Move-Item -Path "$setup_file" -Destination "$destination_dir"
+        $pkg_name = Split-Path -Path "$setup_file" -Leaf
+        $setup_file = "$destination_dir\$pkg_name"
+        Write-Output "Created GnuCash Setup File $setup_file" | Tee-Object -FilePath $log_file -Append
+    }
+    else {
+        Write-Output "An error occurred while creating the GnuCash installer:" | Tee-Object -FilePath $log_file -Append
+        Write-Output "$setup_file" | Tee-Object -FilePath $log_file -Append
+    }
+
 }
 
 $time_stamp = get-date -format "yyyy-MM-dd HH:mm:ss"
@@ -155,7 +164,7 @@ Write-Output "Build Ended $time_stamp" | Tee-Object -FilePath $log_file -Append
 # Copy the transcript and installer to the download server and delete them.
 if ($hostname) {
     bash.exe -lc "$script_unix/buildserver/upload_build_log.sh $log_unix $hostname $log_dir $branch 2>&1"
-    if ($new_file) {
+    if ($setup_file_valid) {
         bash.exe -lc "rsync.exe -e ssh -a $setup_file $hostname/$branch 2>&1"
     }
 }
