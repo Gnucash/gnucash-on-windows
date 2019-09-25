@@ -114,8 +114,8 @@ $minor_version = version_item -tag "GNUCASH_MINOR_VERSION" -path $gnc_config_h
 $package_version = "$major_version.$minor_version"
 $inst_dir = "$target_dir\inst"
 $mingw_ver = bitness("$inst_dir\bin\gnucash.exe")
-$aqb_dir = version_item -tag "SO_EFFECTIVE "-path "$inst_dir\include\aqbanking5\aqbanking\version.h"
-$gwen_dir = version_item -tag "SO_EFFECTIVE " -path "$inst_dir\include\gwenhywfar4\gwenhywfar\version.h"
+$aqb_dir = version_item -tag "SO_EFFECTIVE "-path "$inst_dir\include\aqbanking6\aqbanking\version.h"
+$gwen_dir = version_item -tag "SO_EFFECTIVE " -path "$inst_dir\include\gwenhywfar5\gwenhywfar\version.h"
 
 # We must use sed under bash in order to preserve the UTF-8 encoding
 # with Unix line endings; PowerShell wants to re-code the output as
@@ -131,8 +131,8 @@ $issue_out = make-unixpath -path $target_dir\gnucash.iss
 $proc = bash-command("sed  < $issue_in > $issue_out \
   -e ""s#@MINGW_DIR@#$root\\\\\\\\msys2\\\\\\\\mingw$mingw_ver#g"" \
   -e ""s#@INST_DIR@#$target\\\\\\\\inst#g"" \
-  -e ""s#@-gwenhywfar_so_effective-@#$gwen_ver#g"" \
-  -e ""s#@-aqbanking_so_effective-@#$aqb_Dir#g"" \
+  -e ""s#@-gwenhywfar_so_effective-@#$gwen_dir#g"" \
+  -e ""s#@-aqbanking_so_effective-@#$aqb_dir#g"" \
   -e ""s#@PACKAGE_VERSION@#$package_version#g"" \
   -e ""s#@PACKAGE@#$package#g"" \
   -e ""s#@GNUCASH_MAJOR_VERSION@#$major_version#g"" \
