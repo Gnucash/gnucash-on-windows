@@ -178,7 +178,7 @@
 
   <autotools id="aqbanking" autogen-sh="autoreconf" makeargs="-j1"
 	     autogenargs="--enable-local-install">
-    <branch module="145/aqbanking-5.99.33beta.tar.gz" repo="aqbanking" version="5.99.33beta" >
+    <branch module="157/aqbanking-5.99.34beta.tar.gz" repo="aqbanking" version="5.99.34beta" >
       <patch file="aqbanking-5.99-strndup.patch" strip="1"/>
       <patch file="aqbanking-5.99.33beta-mconsole.patch" strip="1"/>
     </branch>
