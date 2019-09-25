@@ -165,6 +165,7 @@ Write-Output "Build Ended $time_stamp" | Tee-Object -FilePath $log_file -Append
 if ($hostname) {
     bash.exe -lc "$script_unix/buildserver/upload_build_log.sh $log_unix $hostname $log_dir $branch 2>&1"
     if ($setup_file_valid) {
+        $setup_file = make-unixpath -path $setup_file
         bash.exe -lc "rsync.exe -e ssh -a $setup_file $hostname/$branch 2>&1"
     }
 }
