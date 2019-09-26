@@ -65,19 +65,22 @@ $progressPreference = 'silentlyContinue'
 $env:MSYSTEM = 'MINGW32'
 $env:TERM = 'dumb' #Prevent escape codes in the log.
 $env:TARGET = "$package-$branch"
+# This allows us to run Msys2 commands such as bash.exe directly
+$Env:Path = "$Env:Path;$target_dir\msys2\usr\bin"
 
 if ($PSVersionTable.PSVersion.Major -ge 3) {
     $PSDefaultParameterValues['*:Encoding'] = 'utf8'
-    }
+}
+
+if (!(test-path -path $target_dir\msys2\usr\bin\bash.exe)) {
+    Write-Output "Shell program not found, aborting."
+    Exit 1
+}
 
 function bash-command() {
     param ([string]$command = "")
-    if (!(test-path -path $target_dir\msys2\usr\bin\bash.exe)) {
-	write-host "Shell program not found, aborting."
-	return
-    }
-    #write-host "Running bash command ""$command"""
-    Start-Process -FilePath "$target_dir\msys2\usr\bin\bash.exe" -ArgumentList "-lc ""$command""" -NoNewWindow -Wait
+    #Write-Output "Running bash command ""$command"""
+    bash.exe -lc "$command 2>&1"
 }
 
 function make-unixpath([string]$path) {
@@ -90,20 +93,23 @@ $target_unix = make-unixpath -path $target_dir
 $log_dir = "build-logs"
 
 #Make sure that there's no running transcript, then start one:
-$time_stamp = get-date -format "yyyy-MM-dd-HH-mm-ss"
-$log_file = "$target_dir\build-$branch-$time_stamp.log"
+$time_stamp_file = get-date -format "yyyy-MM-dd-HH-mm-ss"
+$yyyy_mm_dir = get-date -format "yyyy-MM"
+$log_dir_full = "$target_dir\win32\$log_dir\$branch\$yyyy_mm_dir"
+$log_file = "$log_dir_full\build-$branch-$time_stamp_file.log"
 $log_unix = make-unixpath -path $log_file
-$time_stamp = get-date -format "yyyy-MM-dd HH:mm:ss"
+New-Item -ItemType Directory -Force -Path "$log_dir_full" | Out-Null
 
-bash-command -command "cd $script_unix && git pull"
-bash-command -command "echo Build Started $time_stamp > $log_unix"
+$time_stamp = get-date -format "yyyy-MM-dd HH:mm:ss"
+Write-Output "Build Started $time_stamp" | Tee-Object -FilePath $log_file
+git.exe -C $script_unix pull 2>&1 | Tee-Object -FilePath $log_file -Append
 #copy the file to the download server so that everyone can see we've started
 if ($hostname) {
-    bash-command -command "$script_unix/buildserver/upload_build_log.sh $log_unix $hostname $log_dir $branch"
+    bash.exe -lc "$script_unix/buildserver/upload_build_log.sh $log_unix $hostname $log_dir $branch"
 }
 
 # Update MinGW-w64
-bash-command -command "pacman -Su --noconfirm > >(tee -a $log_unix) 2>&1"
+pacman.exe -Su --noconfirm 2>&1 | Tee-Object -FilePath $log_file -Append
 
 #GnuCash build still behaves badly if it finds its old build products. Clean them out.
 if ($branch -eq "releases") {
@@ -124,26 +130,42 @@ if (test-path -path $install_manifest) {
 }
 
 # Update the gnucash-on-windows repository
-#bash-command -command "cd $script_unix && git reset --hard && git pull --rebase"
+#git.exe -C $script_unix reset --hard 2>&1 | Tee-Object -FilePath $log_file -Append
+#git.exe -C $script_unix pull --rebase 2>&1 | Tee-Object -FilePath $log_file -Append
 # Build the latest GnuCash and all dependencies not installed via mingw64
-bash-command -command "jhbuild --no-interact -f $script_unix/jhbuildrc build --clean > >(tee -a $log_unix) 2> >(tee -a $log_unix)"
+bash.exe -lc "jhbuild --no-interact -f $script_unix/jhbuildrc build --clean 2>&1" | Tee-Object -FilePath $log_file -Append
+
+$setup_file_valid = False
 $new_file = test-path -path $target_dir\$package\$branch\inst\bin\gnucash.exe -NewerThan $time_stamp
 if ($new_file) {
 #Build the installer
     $is_git = ($branch.CompareTo("releases") -ne 0)
-    bash-command -command "echo 'Creating GnuCash installer.' > >(tee -a $log_unix)"
+    Write-Output "Creating GnuCash installer." | Tee-Object -FilePath $log_file -Append
     $setup_file = & $script_dir\bundle-mingw64.ps1 -root_dir $target_dir -target_dir $target_dir\$package\$branch -package $package -git_build $is_git 2>&1 | Tee-Object -FilePath $log_file -Append
-    $setup_file = make-unixpath -path $setup_file
-    write-host "Created GnuCash Setup File $setup_file"
+    $setup_file_valid = Test-Path -Path "$setup_file"
+    if ($setup_file_valid) {
+        $destination_dir="$target_dir\win32\$branch"
+        New-Item -ItemType Directory -Force -Path "$destination_dir" | Out-Null
+        Move-Item -Path "$setup_file" -Destination "$destination_dir" -Force
+        $pkg_name = Split-Path -Path "$setup_file" -Leaf
+        $setup_file = "$destination_dir\$pkg_name"
+        Write-Output "Created GnuCash Setup File $setup_file" | Tee-Object -FilePath $log_file -Append
+    }
+    else {
+        Write-Output "An error occurred while creating the GnuCash installer:" | Tee-Object -FilePath $log_file -Append
+        Write-Output "$setup_file" | Tee-Object -FilePath $log_file -Append
+    }
+
 }
 
 $time_stamp = get-date -format "yyyy-MM-dd HH:mm:ss"
-bash-command -command "echo Build Ended $time_stamp >> $log_unix"
+Write-Output "Build Ended $time_stamp" | Tee-Object -FilePath $log_file -Append
 
 # Copy the transcript and installer to the download server and delete them.
 if ($hostname) {
-    bash-command -command "$script_unix/buildserver/upload_build_log.sh $log_unix $hostname $log_dir $branch"
-    if ($new_file) {
-	bash-command -command "rsync -e ssh -a $setup_file $hostname/$branch"
+    bash.exe -lc "$script_unix/buildserver/upload_build_log.sh $log_unix $hostname $log_dir $branch 2>&1"
+    if ($setup_file_valid) {
+        $setup_file = make-unixpath -path $setup_file
+        bash.exe -lc "rsync.exe -e ssh -a $setup_file $hostname/$branch 2>&1"
     }
 }

@@ -135,8 +135,9 @@
   </autotools>
 
   <autotools id="libchipcard" autogen-sh="configure" autogenargs="--enable-local-install">
-    <branch module="gnucash/Dependencies/libchipcard-5.0.4.tar.gz" version="5.0.4"
-            repo="sourceforge">
+    <branch module="138/libchipcard-5.1.3beta.tar.gz" version="5.1.3beta"
+            repo="aqbanking">
+      <patch file="libchipcard-5.1.3.decl.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="gcrypt"/>
@@ -146,7 +147,7 @@
 
   <autotools id="gwenhywfar" autogen-sh="configure"
 	     autogenargs="--with-guis='gtk3' --enable-local-install --disable-binreloc --disable-ssl">
-    <branch module="108/gwenhywfar-4.20.2.tar.gz" version="4.20.2"
+    <branch module="156/gwenhywfar-4.99.17rc1.tar.gz" version="4.99.17rc1"
             repo="aqbanking" />
     <dependencies>
       <dep package="gcrypt"/>
@@ -174,7 +175,8 @@
 
   <autotools id="aqbanking" autogen-sh="autoreconf" makeargs="-j1"
 	     autogenargs="--enable-local-install">
-    <branch module="107/aqbanking-5.8.2.tar.gz" repo="aqbanking" version="5.8.2" >
+    <branch module="157/aqbanking-5.99.34beta.tar.gz" repo="aqbanking" version="5.99.34beta" >
+      <patch file="aqbanking-5.99-strndup.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="gwenhywfar"/>
@@ -273,7 +275,7 @@
   </cmake>
 
  <cmake id="gnucash"
-        cmakeargs="-G 'MSYS Makefiles' -DCMAKE_FIND_ROOT_PATH=$MSYS2ROOT -DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DHTMLHELP_DIR=$PREFIX/hh -DGTEST_ROOT=$SRCROOT/googletest/googletest -DGMOCK_ROOT=$SRCROOT/googletest/googlemock -DCOMPILE_GSCHEMAS=OFF"
+        cmakeargs="-G 'MSYS Makefiles' -DCMAKE_FIND_ROOT_PATH=$MSYS2ROOT -DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DGTEST_ROOT=$SRCROOT/googletest/googletest -DGMOCK_ROOT=$SRCROOT/googletest/googlemock -DCOMPILE_GSCHEMAS=OFF"
 	use-ninja="False">
    <branch module="project/gnucash/gnucash%20%28stable%29/3.7/gnucash-3.7.tar.bz2"
 	   repo="sourceforge" version="3.7"/>
@@ -291,7 +293,7 @@
  </cmake>
 
  <cmake id="gnucash-git"
-        cmakeargs="-G 'MSYS Makefiles' -DCMAKE_FIND_ROOT_PATH=$MSYS2ROOT -DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DHTMLHELP_DIR=$PREFIX/hh -DGTEST_ROOT=$SRCROOT/googletest/googletest -DGMOCK_ROOT=$SRCROOT/googletest/googlemock -DCOMPILE_GSCHEMAS=OFF -DCMAKE_BUILD_TYPE=Debug"
+        cmakeargs="-G 'MSYS Makefiles' -DCMAKE_FIND_ROOT_PATH=$MSYS2ROOT -DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DGTEST_ROOT=$SRCROOT/googletest/googletest -DGMOCK_ROOT=$SRCROOT/googletest/googlemock -DCOMPILE_GSCHEMAS=OFF -DCMAKE_BUILD_TYPE=Debug"
 	use-ninja="False">
    <branch repo="github" module="Gnucash/gnucash.git" revision="master"
 	   checkoutdir="gnucash-git"/>

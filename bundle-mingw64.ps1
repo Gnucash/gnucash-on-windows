@@ -32,9 +32,21 @@ You may need to allow running scripts on your computer and depending
 on where the target_dir is you may need to run the script with
 Administrator privileges.
 
+.PARAMETER root_dir
+
+Mandatory. The root path to the build environment. Typically C:\gcdev64.
+
 .PARAMETER target_dir
 
-Optional. The root path to the build environment. Defaults to the root of the script's path, e.g. if the script's path is C:\gcdev64\src\gnucash-on-windows.git\bundle-mingw64.ps1 the default target_dir will be C:\gcdev64.
+Mandatory. The base path to where the build to be packaged is located. This is typically $root_dir\gnucash\$branch, for example C:\gcdev64\gnucash\maint
+
+.PARAMETER package
+
+Mandatory. The name of the package to bundle. This is currently only used by the Inno installer builder for things like the registry group to add values to.
+
+.PARAMETER package
+
+Mandatory. Boolean to indicate whether or not this is a git build.
 
 #>
 
@@ -102,8 +114,8 @@ $minor_version = version_item -tag "GNUCASH_MINOR_VERSION" -path $gnc_config_h
 $package_version = "$major_version.$minor_version"
 $inst_dir = "$target_dir\inst"
 $mingw_ver = bitness("$inst_dir\bin\gnucash.exe")
-$aqb_dir = version_item -tag "SO_EFFECTIVE "-path "$inst_dir\include\aqbanking5\aqbanking\version.h"
-$gwen_dir = version_item -tag "SO_EFFECTIVE " -path "$inst_dir\include\gwenhywfar4\gwenhywfar\version.h"
+$aqb_dir = version_item -tag "SO_EFFECTIVE "-path "$inst_dir\include\aqbanking6\aqbanking\version.h"
+$gwen_dir = version_item -tag "SO_EFFECTIVE " -path "$inst_dir\include\gwenhywfar5\gwenhywfar\version.h"
 
 # We must use sed under bash in order to preserve the UTF-8 encoding
 # with Unix line endings; PowerShell wants to re-code the output as
@@ -119,8 +131,8 @@ $issue_out = make-unixpath -path $target_dir\gnucash.iss
 $proc = bash-command("sed  < $issue_in > $issue_out \
   -e ""s#@MINGW_DIR@#$root\\\\\\\\msys2\\\\\\\\mingw$mingw_ver#g"" \
   -e ""s#@INST_DIR@#$target\\\\\\\\inst#g"" \
-  -e ""s#@-gwenhywfar_so_effective-@#$gwen_ver#g"" \
-  -e ""s#@-aqbanking_so_effective-@#$aqb_Dir#g"" \
+  -e ""s#@-gwenhywfar_so_effective-@#$gwen_dir#g"" \
+  -e ""s#@-aqbanking_so_effective-@#$aqb_dir#g"" \
   -e ""s#@PACKAGE_VERSION@#$package_version#g"" \
   -e ""s#@PACKAGE@#$package#g"" \
   -e ""s#@GNUCASH_MAJOR_VERSION@#$major_version#g"" \
