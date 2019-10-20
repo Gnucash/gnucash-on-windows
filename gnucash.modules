@@ -147,7 +147,7 @@
 
   <autotools id="gwenhywfar" autogen-sh="configure"
 	     autogenargs="--with-guis='gtk3' --enable-local-install --disable-binreloc --disable-ssl">
-    <branch module="202/gwenhywfar-4.99.22rc6.tar.gz" version="4.99.22rc6"
+    <branch module="210/gwenhywfar-4.99.24rc8.tar.gz" version="4.99.24rc8"
             repo="aqbanking">
     </branch>
     <dependencies>
@@ -176,7 +176,7 @@
 
   <autotools id="aqbanking" autogen-sh="autoreconf" makeargs="-j1"
 	     autogenargs="--enable-local-install">
-    <branch module="203/aqbanking-5.99.40beta.tar.gz" repo="aqbanking" version="5.99.40beta" >
+    <branch module="211/aqbanking-5.99.42beta.tar.gz" repo="aqbanking" version="5.99.42beta" >
     </branch>
     <dependencies>
       <dep package="gwenhywfar"/>
