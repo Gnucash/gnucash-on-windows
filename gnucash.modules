@@ -141,6 +141,7 @@
     <dependencies>
       <dep package="gcrypt"/>
       <dep package="gnutls"/>
+      <dep package="gwenhywfar"/>
     </dependencies>
   </autotools>
 
