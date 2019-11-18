@@ -82,7 +82,6 @@ module_makeargs["aqbanking"]="-j 1"
 
 module_extra_env["gnucash"]={'GUILE_LOAD_PATH':os.path.join(prefix, 'share', 'guile', '2.2'), 'GUILE_LOAD_COMPILED_PATH':os.path.join(prefix, 'lib', 'guile', '2.2', 'ccache')}
 module_extra_env["gnucash-git"]={'GUILE_LOAD_PATH':os.path.join(prefix, 'share', 'guile', '2.2'), 'GUILE_LOAD_COMPILED_PATH':os.path.join(prefix, 'lib', 'guile', '2.2', 'ccache')}
-module_extra_env["gwenhywfar"]={'PKG_CONFIG': os.path.join('/', _arch, 'bin', 'pkg-config')}
 
 if _branch == 'master':
     module_cmakeargs["gnucash-git"]=('-DGTEST_ROOT=$SRCROOT/googletest')
