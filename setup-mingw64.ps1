@@ -137,8 +137,8 @@ function make-unixpath([string]$path) {
 # Install MSYS2 for the current machine's architechture.
 
 if (!(test-path -path $bash_path)) {
-    $mingw64_installer32 = "$preferred_mirror/distrib/i686/msys2-i686-20180531.exe"
-    $mingw64_installer64 = "$preferred_mirror/distrib/x86_64/msys2-x86_64-20180531.exe"
+    $mingw64_installer32 = "$preferred_mirror/distrib/i686/msys2-i686-20190524.exe"
+    $mingw64_installer64 = "$preferred_mirror/distrib/x86_64/msys2-x86_64-20190524.exe"
 
     $mingw64_installer_file = "$download_dir\msys2.exe"
     $mingw64_installer = If ([IntPtr]::size -eq 4) {$mingw64_installer32} Else {$mingw64_installer64}
