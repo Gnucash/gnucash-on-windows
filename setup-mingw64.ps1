@@ -231,6 +231,7 @@ Updating the installation. Accept the proposed changes. If the window doesn't cl
 "@
 
 bash-command -command "pacman -Syyuu --noconfirm"
+bash-command -command "pacman -Syyuu --noconfirm"
 
 # Set up aliases for the parts of msys-devtools and mingw-w64-toolchain that
 # we need:
@@ -246,29 +247,23 @@ bash-command -command "pacman -S $msys_devel --noconfirm --needed"
 $mingw_toolchain = make-pkgnames -prefix $mingw_prefix -items $toolchain
 bash-command -command "pacman -S $mingw_toolchain --noconfirm --needed"
 
-# webkitgtk3 was removed from the pacman database but the package is still available via direct url
-# so we install it from that url directly.
-# Note webkitgtk3 depends on icu. Icu updates require dependent packages to be rebuilt to work with the new version.
-# However as there won't be any webkitgtk3 updates, we have to peg icu to the version the last webkitgtk3
-# was built with. That also impacts other icu dependent packages: boost and harfbuzz. As we peg icu
-# we equally need to peg these two.
-# Note that webkitgtk3 will pull in gtk3 automatically.
-
+# The mingw-w64-webkitgtk3 package is no longer supported by the msys2
+# project so we have our own build on SourceForge.
 Write-Host @"
-
-Now we'll install webkitgtk3 via direct url as it's no longer in the pacman database. With this we install a couple of other packages that are pegged to fixed version numbers due to how icu forces package dependencies. If the window doesn't close on its own then close it and re-run the script when it finishes.
+Now we'll install a pre-built webkitgtk3 package we've created and placed in the GnuCash project on SourceForge. It will install several more dependencies from Mingw-w64's repository.
 "@
-$direct_deps = "webkitgtk3-2.4.11-6-any.pkg.tar.xz boost-1.67.0-2-any.pkg.tar.xz harfbuzz-1.8.4-1-any.pkg.tar.xz icu-61.1-1-any.pkg.tar.xz"
-$mingw_direct_deps = make-pkgnames -prefix $mingw_url_prefix -items $direct_deps
-bash-command -command "pacman -U $mingw_direct_deps --noconfirm --needed"
+$sourceforge_url = "https://downloads.sourceforge.net/gnucash/Dependencies/"
+$signing_keyfile = "jralls_public_signing_key.asc"
+$key_url = $sourceforge_url + $signing_keyfile
+$key_id = "C1F4DE993CF5835F"
+$webkit = "$arch_long-webkitgtk3-2.4.11-999.1-any.pkg.tar.xz"
+$webkit_url = $sourceforge_url + $webkit
+bash-command -command "wget $key_url"
+bash-command -command "pacman-key --add $signing_keyfile"
+bash-command -command "pacman-key --lsign $key_id"
+bash-command -command "pacman -U $webkit_url --noconfirm --needed"
 
-# Tell pacman to no longer update these manually installed packages
-$ignorefile = @"
-IgnorePkg   = mingw-w64-i686-icu
-IgnorePkg   = mingw-w64-i686-boost
-IgnorePkg   = mingw-w64-i686-harfbuzz
-IgnorePkg   = mingw-w64-i686-webkitgtk3
-"@
+$ignorefile = ""
 [IO.File]::WriteAllLines( "$msys2_root\etc\pacman.d\gnucash-ignores.pacman", $ignorefile)
 bash-command -command "perl -ibak -pe 'BEGIN{undef $/;} s#[[]options[]]\R(Include = [^\R]*\R)?#[options]\nInclude = /etc/pacman.d/gnucash-ignores.pacman\n#smg' /etc/pacman.conf"
 
