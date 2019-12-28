@@ -276,8 +276,8 @@
 
  <cmake id="gnucash"
         cmakeargs="-DCMAKE_FIND_ROOT_PATH=$MSYS2ROOT -DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DGTEST_ROOT=$SRCROOT/googletest/googletest -DGMOCK_ROOT=$SRCROOT/googletest/googlemock">
-   <branch module="project/gnucash/gnucash%20%28stable%29/3.7/gnucash-3.7.tar.bz2"
-	   repo="sourceforge" version="3.7"/>
+   <branch module="project/gnucash/gnucash%20%28stable%29/3.8/gnucash-3.8.tar.bz2"
+	   repo="sourceforge" version="3.8"/>
     <dependencies>
       <dep package="libofx"/>
       <dep package="aqbanking"/>
@@ -321,8 +321,8 @@
   <autotools id="gnucash-docs"
 	    autogen-template="%(srcdir)s/%(autogen-sh)s &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s %(autogenargs)s"
 	    makeargs="chm" makeinstallargs="install-chm" >
-    <branch  module="project/gnucash/gnucash%20%28stable%29/3.7/gnucash-docs-3.7.tar.gz"
-	     version="3.7" repo="sourceforge"/>
+    <branch  module="project/gnucash/gnucash%20%28stable%29/3.8/gnucash-docs-3.8.tar.gz"
+	     version="3.8" repo="sourceforge"/>
   </autotools>
 
   <metamodule id="meta-gnucash-git">
