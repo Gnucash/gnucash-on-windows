@@ -112,7 +112,7 @@ Source: "@INST_DIR@\share\doc\@PACKAGE@-docs\*.hhmap"; DestDir: "{app}\share\@PA
 ;; Required DLLs
 ;; gnucash.exe: libglib-2.0-0.dll, libgtk-3-0.dll, ligdk-3-0.dll, libatk-1.0-dll, libgobject-2.0-0.dll, libintl-8.dll, libcairo-gobject-2.dll, libcairo-2.dll, libfontconfig-1.0.dll, libfreetype-6.dll, libpixman-1-0.dll, libpng16-16.dll, zlib1.dll, libgdk-pixbuf-2.0-0.dll, libgio-2.0-0.dll, libgmodule-2.0-0.dll, libpango-1.0-0.dll, libpangocairo-1.0-0.dll, libpangowin32-1.0-0.dll, libpangoft2-1.0-0.dll, libharfbuzz-0.dll, libfribidi-0.dll, libiconv-2.dll, libwinpthread-1.dll, libsystre-0.dll, libxml2-2.dll, libxslt-1.dll, libboost_regex-mt.dll, libicuuc57.dll, libicudt57.dll, libtre-5.dll, libffi-6.dll, libgmp-10.dll, libltdl-7.dll
 ;; AQBanking: libgcrypt-20.dll, libgnutls-30.dll, libwinpthread-1.0.dll, libgmp-10.dll, libhogweed-5.dll, libidn-11.dll, libintl-8.dll, libnettle-7.dll, libp11-kit-0.dll, libtasn1-6.dll, zlib1.dll, libgpg-error-0.dll, libiconv-2.dll, libintl-8.dll, libgtk-win32-2.0-0.dll
-;; libwebkit: libenchant.dll, libgeoclue-0.dll, libgstapp-1.0-0.dll, libgstaudio-1.0-0.dll, libgstbase-1.0-0.dll, libgstfft-1.0-0.dll, libgstpbutils-1.0-0.dll, libgstpbutils-1.0-0.dll, libgstreamer-1.0-0.dll, libgstvideo-1.0-0.dll, libharfbuzz-icu-0.dll, liborc-0.4-0.dll, libgsttag-1.0-0.dll, libgraphite2.dll, libicuin57.dll, liicuuc57.dll, libicudt57.dll, libsoup-2.4-1.dll, libsqlite3-0.dll, libwebp-7.dll
+;; libwebkit: libbrotlicommon.dll, libbrotlidec.dll libharfbuzz-icu-0.dll, liborc-0.4-0.dll, libgsttag-1.0-0.dll, libgraphite2.dll, libicudt65.dll, libicuin65.dll, liicuuc65.dll, libicudt.dll, libsoup-2.4-1.dll, libsqlite3-0.dll, libssp-0.dll, libstdc__-6.dll, libunistring-2.dll, libwebp-7.dll
 ;;lib/dbd/libdbdmysql.dll: mariadb.dll, libeay32.dll, ssleay32.dll
 ;;lib/dbd/libdbdpgsql.dll: libpq.dll, ssleay32.dll, libeay32.dll
 
@@ -124,6 +124,8 @@ Source: "@MINGW_DIR@\bin\libboost_system-mt.dll"; DestDir: "{app}\bin"; Componen
 Source: "@MINGW_DIR@\bin\libboost_filesystem-mt.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libboost_thread-mt.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libbz2-1.dll"; DestDir: "{app}\bin"; Components: main
+Source: "@MINGW_DIR@\bin\libbrotlidec.dll"; DestDir: "{app}\bin"; Components: main
+Source: "@MINGW_DIR@\bin\libbrotlicommon.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libcairo-2.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libcairo-gobject-2.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libcroco-0.6-3.dll"; DestDir: "{app}\bin"; Components: main
@@ -131,7 +133,6 @@ Source: "@MINGW_DIR@\bin\libcrypto-1_1.dll"; DestDir: "{app}\bin"; Components: m
 Source: "@MINGW_DIR@\bin\libdatrie-1.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libdbus-1-3.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libdbus-glib-1-2.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libenchant-2.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libepoxy-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libexpat-1.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libffi-6.dll"; DestDir: "{app}\bin"; Components: main
@@ -140,9 +141,7 @@ Source: "@MINGW_DIR@\bin\libfreetype-6.dll"; DestDir: "{app}\bin"; Components: m
 Source: "@MINGW_DIR@\bin\libfribidi-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libgcrypt-20.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libgdk-3-0.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libgdk-win32-2.0-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libgdk_pixbuf-2.0-0.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libgeoclue-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libgio-2.0-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libglib-2.0-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libgmodule-2.0-0.dll"; DestDir: "{app}\bin"; Components: main
@@ -151,17 +150,7 @@ Source: "@MINGW_DIR@\bin\libgnutls-30.dll"; DestDir: "{app}\bin"; Components: ma
 Source: "@MINGW_DIR@\bin\libgobject-2.0-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libgpg-error-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libgraphite2.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libgstapp-1.0-0.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libgstaudio-1.0-0.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libgstbase-1.0-0.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libgstfft-1.0-0.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libgstpbutils-1.0-0.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libgstpbutils-1.0-0.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libgstreamer-1.0-0.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libgsttag-1.0-0.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libgstvideo-1.0-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libgtk-3-0.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libgtk-win32-2.0-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libharfbuzz-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libharfbuzz-icu-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libhogweed-5.dll"; DestDir: "{app}\bin"; Components: main
@@ -182,8 +171,8 @@ Source: "@MINGW_DIR@\bin\libpango-1.0-0.dll"; DestDir: "{app}\bin"; Components: 
 Source: "@MINGW_DIR@\bin\libpangocairo-1.0-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libpangoft2-1.0-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libpangowin32-1.0-0.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libpixman-1-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libpcre-1.dll"; DestDir: "{app}\bin"; Components: main
+Source: "@MINGW_DIR@\bin\libpixman-1-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libpng16-16.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libpq.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libpsl-5.dll"; DestDir: "{app}\bin"; Components: main
@@ -191,10 +180,13 @@ Source: "@MINGW_DIR@\bin\librsvg-2-2.dll"; DestDir: "{app}\bin"; Components: mai
 Source: "@MINGW_DIR@\bin\libsoup-2.4-1.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libsqlite3-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libssl-1_1.dll"; DestDir: "{app}\bin"; Components: main
+Source: "@MINGW_DIR@\bin\libssp-0.dll"; DestDir: "{app}\bin"; Components: main
+Source: "@MINGW_DIR@\bin\libstdc++-6.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libsystre-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libtasn1-6.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libthai-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libtre-5.dll"; DestDir: "{app}\bin"; Components: main
+Source: "@MINGW_DIR@\bin\libunistring-2.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libwebp-7.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libwebkitgtk-3.0-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libwinpthread-1.dll"; DestDir: "{app}\bin"; Components: main
@@ -209,7 +201,6 @@ Source: "@MINGW_DIR@\bin\gspawn-win32-helper-console.exe"; DestDir: "{app}\bin";
 Source: "@MINGW_DIR@\lib\gdk-pixbuf-2.0\2.10.0\loaders\*.dll"; DestDir: "{app}\lib\gdk-pixbuf-2.0\2.10.0\loaders"; Components: main
 Source: "@MINGW_DIR@\lib\gdk-pixbuf-2.0\2.10.0\loaders.cache"; DestDir: "{app}\lib\gdk-pixbuf-2.0\2.10.0\"; Components: main
 Source: "@MINGW_DIR@\lib\postgresql\*.dll"; DestDir: "{app}\lib\postgreql"; Components: main
-Source: "@MINGW_DIR@\lib\sqlite3.25.3\sqlite3253.dll"; DestDir: "{app}\lib\sqlite3.21.0"; Components: main
 
 Source: "@MINGW_DIR@\share\icons\*"; DestDir: "{app}\share\icons"; Flags: recursesubdirs; Components: main
 Source: "@MINGW_DIR@\share\themes\*"; DestDir: "{app}\share\themes"; Flags: recursesubdirs; Components: main
