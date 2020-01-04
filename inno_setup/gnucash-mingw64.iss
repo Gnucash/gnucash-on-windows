@@ -52,7 +52,6 @@ Name: "{commondesktop}\GnuCash"; Filename: "{app}\bin\@PACKAGE@.exe"; WorkingDir
 
 [Run]
 Filename: "{app}\bin\@PACKAGE@.exe"; Description: "{cm:RunPrg}"; WorkingDir: "{code:GetDocPath}"; OnlyBelowVersion: 0,6; Flags: postinstall skipifsilent
-Filename: "{app}\bin\guile.cmd"; Flags: runhidden
 
 ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Here we configure the included files and the place of their
@@ -265,7 +264,6 @@ Root: HKLM; Subkey: "Software\AqBanking\Paths"; ValueType: string; ValueName: "c
 ; Delete the created config script on uninstall
 ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 [UninstallDelete]
-Type: files; Name: "{app}\bin\guile.cmd"
 Type: files; Name: "{app}\etc\@PACKAGE@\environment"
 Type: filesandordirs; Name: "{app}\share\guile"
 Type: dirifempty; Name: "{app}\etc\@PACKAGE@"
@@ -407,30 +405,6 @@ begin
     StringChange(Result, ':\', '\');
   end;
   StringChange(Result, '\', '/');
-end;
-
-procedure MyAfterInstallConfig();
-var
-  FileName, FileString, appdir, libdir, pkglibdir, pkgdatadir: String;
-  Res: Boolean;
-begin
-
-  { Get the installation-specific paths }
-  appdir := ExpandConstant('{app}');
-  pkgdatadir := appdir + '\share\@PACKAGE@';
-
-  { Create the guile.cmd file; #10 is the linefeed character and #13 CR }
-
-  FileName := appdir + '\bin\guile.cmd' ;
-  FileString := 'set GUILE_LOAD_PATH=' + pkgdatadir + '\scm;' + appdir + '\share\guile\2.2;%GUILE_LOAD_PATH%'#13#10 ;
-  FileString := FileString + 'start guile.exe %*'#13#10 ;
-
-  { Save the final file }
-
-  Res := SaveStringToFile(FileName, FileString, False);
-  if Res = False then
-    MsgBox('Error on saving '+FileName+' for completing the installation', mbInformation, MB_OK);
-
 end;
 
 function BackslashPath(const S: String): String;
