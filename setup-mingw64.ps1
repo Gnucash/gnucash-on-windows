@@ -239,7 +239,6 @@ $devel = "asciidoc autoconf autoconf2.13 autogen automake-wrapper automake1.10 a
 
 $toolchain = "binutils cmake crt-git gcc gcc-libs gdb headers-git libmangle-git libtool libwinpthread-git make pkg-config tools-git winpthreads-git"
 
-$clang_toolchain = "clang libc++ libc++abi lld libunwind clang-tools-extra compiler-rt"
 
 # Install the system and toolchain:
 $msys_devel = make-pkgnames -prefix "msys/" -items $devel
