@@ -52,7 +52,6 @@ Name: "{commondesktop}\GnuCash"; Filename: "{app}\bin\@PACKAGE@.exe"; WorkingDir
 
 [Run]
 Filename: "{app}\bin\@PACKAGE@.exe"; Description: "{cm:RunPrg}"; WorkingDir: "{code:GetDocPath}"; OnlyBelowVersion: 0,6; Flags: postinstall skipifsilent
-Filename: "{app}\bin\guile.cmd"; Flags: runhidden
 
 ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Here we configure the included files and the place of their
@@ -220,8 +219,8 @@ Source: "@GC_WIN_REPOS_DIR@\extra_dist\*"; DestDir: "{app}\bin"; Flags: recurses
 Root: HKCR; Subkey: ".gnucash"; ValueType: string; ValueName: ""; ValueData: "GnuCash.Financial.Data"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: ".gnucash"; ValueType: string; ValueName: "Content Type"; ValueData: "application/x-gnucash"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "GnuCash.Financial.Data"; ValueType: string; ValueName: ""; ValueData: "GnuCash Financial Data"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "GnuCash.Financial.Data\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\share\@PACKAGE@\pixmaps\gnucash-icon.ico,0" 
-Root: HKCR; Subkey: "GnuCash.Financial.Data\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\@PACKAGE@.exe"" ""%1""" 
+Root: HKCR; Subkey: "GnuCash.Financial.Data\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\share\@PACKAGE@\pixmaps\gnucash-icon.ico,0"
+Root: HKCR; Subkey: "GnuCash.Financial.Data\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\@PACKAGE@.exe"" ""%1"""
 
 Root: HKLM; Subkey: "Software\GnuCash"; ValueType: none; Flags: uninsdeletekeyifempty
 Root: HKLM; Subkey: "Software\GnuCash\Paths"; ValueType: none; Flags: uninsdeletekeyifempty
@@ -265,7 +264,6 @@ Root: HKLM; Subkey: "Software\AqBanking\Paths"; ValueType: string; ValueName: "c
 ; Delete the created config script on uninstall
 ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 [UninstallDelete]
-Type: files; Name: "{app}\bin\guile.cmd"
 Type: files; Name: "{app}\etc\@PACKAGE@\environment"
 Type: filesandordirs; Name: "{app}\share\guile"
 Type: dirifempty; Name: "{app}\etc\@PACKAGE@"
@@ -409,30 +407,6 @@ begin
   StringChange(Result, '\', '/');
 end;
 
-procedure MyAfterInstallConfig();
-var
-  FileName, FileString, appdir, libdir, pkglibdir, pkgdatadir: String;
-  Res: Boolean;
-begin
-
-  { Get the installation-specific paths }
-  appdir := ExpandConstant('{app}');
-  pkgdatadir := appdir + '\share\@PACKAGE@';
-
-  { Create the guile.cmd file; #10 is the linefeed character and #13 CR }
-
-  FileName := appdir + '\bin\guile.cmd' ;
-  FileString := 'set GUILE_LOAD_PATH=' + pkgdatadir + '\scm;' + appdir + '\share\guile\2.2;%GUILE_LOAD_PATH%'#13#10 ;
-  FileString := FileString + 'start guile.exe %*'#13#10 ;
-
-  { Save the final file }
-
-  Res := SaveStringToFile(FileName, FileString, False);
-  if Res = False then
-    MsgBox('Error on saving '+FileName+' for completing the installation', mbInformation, MB_OK);
-
-end;
-
 function BackslashPath(const S: String): String;
 begin
   { Convert c:\soft to c:/soft }
@@ -454,7 +428,7 @@ begin
 
   { Get the installation-specific paths }
   EnvFile := ExpandConstant(CurrentFileName);
-  EtcDir := ExtractFileDir(EnvFile); 
+  EtcDir := ExtractFileDir(EnvFile);
 
   { Load the current contents of the environment file }
   Res := LoadStringsFromFile(EnvFile, EnvStrList);
@@ -740,7 +714,7 @@ hr.IconComment_Uninstall=Deinstaliraj računovodstveni program GnuCash
 ;; ;;;;;;;;;;;;;;;;;;;;;
 ;; Italian translation
 
-; *** Pagina di "Selezione dei componenti" 
+; *** Pagina di "Selezione dei componenti"
 it.FullInstall=Installazione completa
 it.CustomInstall=Installazione personalizzata
 it.CreateDesktopIcon=Crea un'icona sul desktop
