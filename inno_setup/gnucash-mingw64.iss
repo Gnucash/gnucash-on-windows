@@ -130,8 +130,6 @@ Source: "@MINGW_DIR@\bin\libcairo-gobject-2.dll"; DestDir: "{app}\bin"; Componen
 Source: "@MINGW_DIR@\bin\libcroco-0.6-3.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libcrypto-1_1.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libdatrie-1.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libdbus-1-3.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libdbus-glib-1-2.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libepoxy-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libexpat-1.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libffi-6.dll"; DestDir: "{app}\bin"; Components: main
@@ -164,7 +162,6 @@ Source: "@MINGW_DIR@\bin\libjpeg-8.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libltdl-7.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\liblzma-5.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libnettle-7.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\liborc-0.4-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libp11-kit-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libpango-1.0-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libpangocairo-1.0-0.dll"; DestDir: "{app}\bin"; Components: main
