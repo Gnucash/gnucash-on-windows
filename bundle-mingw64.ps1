@@ -109,8 +109,8 @@ if ($PSVersionTable.PSVersion.Major -ge 3) {
 
 $gnc_config_h = "$target_dir\build\$gnucash\common\config.h"
 
-$major_version = version_item -tag "GNUCASH_MAJOR_VERSION" -path $gnc_config_h
-$minor_version = version_item -tag "GNUCASH_MINOR_VERSION" -path $gnc_config_h
+$major_version = version_item -tag "PROJECT_VERSION_MAJOR" -path $gnc_config_h
+$minor_version = version_item -tag "PROJECT_VERSION_MINOR" -path $gnc_config_h
 $package_version = "$major_version.$minor_version"
 $inst_dir = "$target_dir\inst"
 $mingw_ver = bitness("$inst_dir\bin\gnucash.exe")
