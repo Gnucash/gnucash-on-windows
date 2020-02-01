@@ -275,7 +275,7 @@
   </cmake>
 
  <cmake id="gnucash"
-        cmakeargs="-DCMAKE_FIND_ROOT_PATH=$MSYS2ROOT -DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DGTEST_ROOT=$SRCROOT/googletest/googletest -DGMOCK_ROOT=$SRCROOT/googletest/googlemock">
+        cmakeargs="-DCMAKE_FIND_ROOT_PATH=$MSYS2ROOT -DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DGTEST_ROOT=$SRCROOT/googletest/googletest -DGMOCK_ROOT=$SRCROOT/googletest/googlemock -DALLOW_OLD_GETTEXT=ON">
    <branch module="project/gnucash/gnucash%20%28stable%29/3.8/gnucash-3.8.tar.bz2"
 	   repo="sourceforge" version="3.8"/>
     <dependencies>
@@ -292,7 +292,7 @@
  </cmake>
 
  <cmake id="gnucash-git"
-        cmakeargs="-DCMAKE_FIND_ROOT_PATH=$MSYS2ROOT -DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DGTEST_ROOT=$SRCROOT/googletest/googletest -DGMOCK_ROOT=$SRCROOT/googletest/googlemock -DCMAKE_BUILD_TYPE=Debug">
+        cmakeargs="-DCMAKE_FIND_ROOT_PATH=$MSYS2ROOT -DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DGTEST_ROOT=$SRCROOT/googletest/googletest -DGMOCK_ROOT=$SRCROOT/googletest/googlemock -DALLOW_OLD_GETTEXT=ON -DCMAKE_BUILD_TYPE=Debug">
    <branch repo="github" module="Gnucash/gnucash.git" revision="master"
 	   checkoutdir="gnucash-git"/>
     <dependencies>
