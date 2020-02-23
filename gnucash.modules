@@ -308,7 +308,8 @@
     </dependencies>
  </cmake>
 
-  <cmake id="gnucash-docs-git">
+ <cmake id="gnucash-docs-git"
+        use-ninja="False"> <!-- Can't use ninja for now. See https://bugs.gnucash.org/show_bug.cgi?id=797622 -->
     <branch  repo="github" module="Gnucash/gnucash-docs.git" revision="master"
 	   checkoutdir="gnucash-docs-git"/>
     <dependencies>
