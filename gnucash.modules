@@ -176,7 +176,7 @@
 
   <autotools id="aqbanking" autogen-sh="autoreconf" makeargs="-j1"
 	     autogenargs="--enable-local-install">
-    <branch module="269/aqbanking-6.1.2.tar.gz" repo="aqbanking" version="6.1.2" >
+    <branch module="279/aqbanking-6.1.3.tar.gz" repo="aqbanking" version="6.1.3" >
     </branch>
     <dependencies>
       <dep package="gwenhywfar"/>
