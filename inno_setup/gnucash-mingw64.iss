@@ -132,7 +132,7 @@ Source: "@MINGW_DIR@\bin\libcrypto-1_1.dll"; DestDir: "{app}\bin"; Components: m
 Source: "@MINGW_DIR@\bin\libdatrie-1.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libepoxy-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libexpat-1.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libffi-6.dll"; DestDir: "{app}\bin"; Components: main
+Source: "@MINGW_DIR@\bin\libffi-7.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libfontconfig-1.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libfreetype-6.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libfribidi-0.dll"; DestDir: "{app}\bin"; Components: main
