@@ -1,16 +1,45 @@
+diff --git a/docs/Makefile.am b/docs/Makefile.am
+index a89ba76c..4b196026 100644
+--- a/docs/Makefile.am
++++ b/docs/Makefile.am
+@@ -27,9 +27,9 @@ docs-copy:
+ 		if [ z"$(srcdir)" != z"$(builddir)" -a z"`uname`" != z"Darwin" ]; \
+ 		then \
+ 		    $(CP) -ru $(srcdir)/*.html $(srcdir)/*.ico $(srcdir)/images $(builddir)/  ; \
+-		    chmod u+w $(builddir)/*.html ; \
+-		    chmod u+w $(builddir)/*.ico ; \
+-		    chmod -R u+w $(builddir)/images ; \
++		    (chmod u+w $(builddir)/*.html || true) ; \
++		    (chmod u+w $(builddir)/*.ico || true) ; \
++		    (chmod -R u+w $(builddir)/images || true) ; \
+ 		fi \
+ 	)
+ 
+@@ -94,8 +94,8 @@ endif
+ clean-local:
+ 	-rm -f *.stamp
+ 	( if [ z"$(srcdir)" != z"$(builddir)" ] ; then \
+-		chmod -R u+w $(builddir)/images && rm -rf $(builddir)/images ; \
+-		chmod -R u+w $(builddir)/src && rm -rf $(builddir)/src ; \
++		(chmod -R u+w $(builddir)/images || true) && rm -rf $(builddir)/images ; \
++		(chmod -R u+w $(builddir)/src || true) && rm -rf $(builddir)/src ; \
+ 		(for i in `find $(builddir) -name "*.html" -print` ; do \
+ 			echo "Removing files '$$i' ... " ; \
+ 			chmod -R u+w $$i && rm -f $$i ; \
 diff --git a/docs/api/Makefile.am b/docs/api/Makefile.am
-index a1ffd3a7..e88ea929 100644
+index a1ffd3a7..dcf093d1 100644
 --- a/docs/api/Makefile.am
 +++ b/docs/api/Makefile.am
-@@ -268,9 +268,8 @@ clean-local:
+@@ -268,9 +268,9 @@ clean-local:
  	-rm -rf $(SOURCE_CODE_DIR) $(EXAMPLES_DIR) $(SCAN_DIR)/*.txt $(SGML_DIR) $(GTKDOC_MKDB_OUTPUT_DIR)
  	-rm -f *.stamp *.types index.sgml
  	@( if [ z"$(builddir)" != z"$(srcdir)" ] ; then \
 -    	chmod -R u+w $(builddir)/src && rm -rf $(builddir)/src ; \
 -    	chmod -R u+w $(builddir)/images && rm -rf $(builddir)/images ; \
 -    	chmod -R u+w $(builddir)/*.png && rm -rf $(builddir)/*.png ; \
-+	find $(builddir) -name 'src' -o -name 'images' -o -name '*.png' -exec chmod u+w '{}' ';' ; \
-+	rm -rf $(builddir)/src $(builddir)/images $(builddir)/*.png ; \
++    	(chmod -R u+w $(builddir)/src || true) && rm -rf $(builddir)/src ; \
++    	(chmod -R u+w $(builddir)/images || true) && rm -rf $(builddir)/images ; \
++    	(chmod -R u+w $(builddir)/*.png || true) && rm -rf $(builddir)/*.png ; \
  	 fi ; )
  
  distclean-local: clean-local
