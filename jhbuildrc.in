@@ -71,6 +71,8 @@ else:
 
 if _branch == 'releases':
     modules = ["meta-gnucash"]
+elif _branch == 'unstable':
+    modules = ['meta-gnucash-unstable']
 else:
     modules = ["meta-gnucash-git"]
     branches['gnucash-git'] = (None, _branch)
@@ -81,7 +83,8 @@ append_autogenargs("libdbi-drivers","--with-dbi-incdir=" + prefix + "/include --
 module_makeargs["aqbanking"]="-j 1"
 
 module_extra_env["gnucash"]={'GUILE_LOAD_PATH':os.path.join(prefix, 'share', 'guile', '2.2'), 'GUILE_LOAD_COMPILED_PATH':os.path.join(prefix, 'lib', 'guile', '2.2', 'ccache')}
+module_extra_env["gnucash-unstable"]={'GUILE_LOAD_PATH':os.path.join(prefix, 'share', 'guile', '2.2'), 'GUILE_LOAD_COMPILED_PATH':os.path.join(prefix, 'lib', 'guile', '2.2', 'ccache')}
 module_extra_env["gnucash-git"]={'GUILE_LOAD_PATH':os.path.join(prefix, 'share', 'guile', '2.2'), 'GUILE_LOAD_COMPILED_PATH':os.path.join(prefix, 'lib', 'guile', '2.2', 'ccache')}
 
-if _branch == 'master':
+if _branch in ('master', 'unstable'):
     module_cmakeargs["gnucash-git"]=('-DGTEST_ROOT=$SRCROOT/googletest')

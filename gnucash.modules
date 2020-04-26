@@ -293,6 +293,23 @@
     </dependencies>
  </cmake>
 
+ <cmake id="gnucash-unstable"
+        cmakeargs="-DCMAKE_FIND_ROOT_PATH=$MSYS2ROOT -DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DGTEST_ROOT=$SRCROOT/googletest/googletest -DGMOCK_ROOT=$SRCROOT/googletest/googlemock -DALLOW_OLD_GETTEXT=ON">
+   <branch module="project/gnucash/gnucash%20%28unstable%29/3.901/gnucash-3.901.tar.bz2"
+	   repo="sourceforge" version="3.901"/>
+    <dependencies>
+      <dep package="libofx"/>
+      <dep package="aqbanking"/>
+      <dep package="libdbi-drivers"/>
+      <!--dep package="shared-mime-info"/-->
+      <!--dep package="iso-codes"/-->
+      <dep package="guile2"/>
+      <!--dep package="swig"/-->
+      <dep package="boost"/>
+      <dep package="googletest"/>
+    </dependencies>
+ </cmake>
+
  <cmake id="gnucash-git"
         cmakeargs="-DCMAKE_FIND_ROOT_PATH=$MSYS2ROOT -DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DGTEST_ROOT=$SRCROOT/googletest/googletest -DGMOCK_ROOT=$SRCROOT/googletest/googlemock -DALLOW_OLD_GETTEXT=ON -DCMAKE_BUILD_TYPE=Debug">
    <branch repo="github" module="Gnucash/gnucash.git" revision="master"
@@ -327,6 +344,13 @@
 	     version="3.10" repo="sourceforge"/>
   </autotools>
 
+  <autotools id="gnucash-unstable-docs"
+	    autogen-template="%(srcdir)s/%(autogen-sh)s &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s %(autogenargs)s"
+	    makeargs="chm" makeinstallargs="install-chm" >
+    <branch  module="project/gnucash/gnucash%20%28unstable%29/3.901/gnucash-docs-3.901.tar.gz"
+	     version="3.901" repo="sourceforge"/>
+  </autotools>
+
   <metamodule id="meta-gnucash-git">
     <dependencies>
       <dep package="gnucash-git"/>
@@ -337,7 +361,14 @@
   <metamodule id="meta-gnucash">
     <dependencies>
       <dep package="gnucash"/>
-      <dep package="gnucash-docs-git"/>
+      <dep package="gnucash-docs"/>
+    </dependencies>
+  </metamodule>
+
+  <metamodule id="meta-gnucash-unstable">
+    <dependencies>
+      <dep package="gnucash-unstable"/>
+      <dep package="gnucash-unstable-docs"/>
     </dependencies>
   </metamodule>
 
