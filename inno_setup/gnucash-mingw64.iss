@@ -491,7 +491,7 @@ Name: "ca"; MessagesFile: "compiler:Languages\Catalan.isl"; InfoAfterFile: "@INS
 Name: "de"; MessagesFile: "compiler:Languages\German.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-de.win32-bin.txt"
 Name: "el"; MessagesFile: "compiler:Languages\Greek.isl"
 Name: "fr"; MessagesFile: "compiler:Languages\French.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-fr.win32-bin.txt"
-Name: "hr"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\Croatian-5.5.3.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-hr.win32-bin.txt"
+Name: "hr"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\Croatian-6.0.3.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-hr.win32-bin.txt"
 Name: "it"; MessagesFile: "compiler:Languages\Italian.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-it.win32-bin.txt"
 Name: "ja"; MessagesFile: "compiler:Languages\Japanese.isl"
 Name: "lv"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\Latvian-5.5.0.isl"; InfoAfterFile: "@INST_DIR@\share\doc\@PACKAGE@\README-lv.win32-bin.txt"
