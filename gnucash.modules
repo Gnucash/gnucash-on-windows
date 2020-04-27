@@ -295,8 +295,8 @@
 
  <cmake id="gnucash-unstable"
         cmakeargs="-DCMAKE_FIND_ROOT_PATH=$MSYS2ROOT -DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DGTEST_ROOT=$SRCROOT/googletest/">
-   <branch module="project/gnucash/gnucash%20%28unstable%29/3.901/gnucash-3.901.tar.bz2"
-	   repo="sourceforge" version="3.901"/>
+   <branch module="project/gnucash/gnucash%20%28unstable%29/3.902/gnucash-3.902.tar.bz2"
+	   repo="sourceforge" version="3.902"/>
     <dependencies>
       <dep package="libofx"/>
       <dep package="aqbanking"/>
@@ -347,8 +347,8 @@
   <autotools id="gnucash-unstable-docs"
 	    autogen-template="%(srcdir)s/%(autogen-sh)s &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s %(autogenargs)s"
 	    makeargs="chm" makeinstallargs="install-chm" >
-    <branch  module="project/gnucash/gnucash%20%28unstable%29/3.901/gnucash-docs-3.901.tar.gz"
-	     version="3.901" repo="sourceforge"/>
+    <branch  module="project/gnucash/gnucash%20%28unstable%29/3.902/gnucash-docs-3.902.tar.gz"
+	     version="3.902" repo="sourceforge"/>
   </autotools>
 
   <metamodule id="meta-gnucash-git">
