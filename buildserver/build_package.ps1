@@ -112,9 +112,20 @@ if ($hostname) {
 pacman.exe -Su --noconfirm 2>&1 | Tee-Object -FilePath $log_file -Append
 
 #GnuCash build still behaves badly if it finds its old build products. Clean them out.
-if ($branch -eq "releases") {
+if ($branch -in "releases", "unstable") {
     $module = get-childitem -path $target_dir\$package\$branch\build -filter gnucash-* -exclude gnucash-docs* -name -directory | sort-object -descending | select -f 1
     $install_manifest = "$target_dir\$package\$branch\build\$module\install_manifest.txt"
+    # Force a release build even if nothing has changed.
+    $build_target = "gnucash"
+    $info_dir =  "$target_dir\$package\$branch\inst\_jhbuild\info"
+    $manifest_dir =  "$target_dir\$package\$branch\inst\_jhbuild\manifests"
+    if ($branch -eq "unstable") { $build_target = "gnucash-unstable" }
+    if (test-path -Path $info_dir\$build_target) {
+	remove-item $info_dir\$build_target
+    }
+    if (test-path -Path $manifest_dir\$build_target) {
+	remove-item $manifest_dir\$build_target
+    }
 }
 else {
     $install_manifest = "$target_dir\$package\$branch\build\gnucash-git\install_manifest.txt"
@@ -123,10 +134,6 @@ else {
 if (test-path -path $install_manifest) {
     get-content $install_manifest | remove-item
     remove-item $install_manifest
-    if ($branch -eq "releases") { # Force a release build even if nothing has changed.
-	remove-item $target_dir\$package\$branch\inst\_jhbuild\info\gnucash
-	remove-item $target_dir\$package\$branch\inst\_jhbuild\manifests\gnucash
-    }
 }
 
 # Update the gnucash-on-windows repository
@@ -139,7 +146,7 @@ $setup_file_valid = False
 $new_file = test-path -path $target_dir\$package\$branch\inst\bin\gnucash.exe -NewerThan $time_stamp
 if ($new_file) {
 #Build the installer
-    $is_git = ($branch.CompareTo("releases") -ne 0)
+    $is_git = ($branch -notin "releases", "unstable")
     Write-Output "Creating GnuCash installer." | Tee-Object -FilePath $log_file -Append
     $setup_file = & $script_dir\bundle-mingw64.ps1 -root_dir $target_dir -target_dir $target_dir\$package\$branch -package $package -git_build $is_git 2>&1 | Tee-Object -FilePath $log_file -Append
     $setup_file_valid = Test-Path -Path "$setup_file"
