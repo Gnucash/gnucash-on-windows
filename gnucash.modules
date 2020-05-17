@@ -124,7 +124,7 @@
       <patch file="0001-Fix-build-on-MinGW-w64.patch" strip="1"/>
       <patch file="0002-MinGW-Don-t-break-build-when-including-libguile.h.patch" strip="1"/>
       <patch file="0003-AC_DEFINE-REPLACE_MKTIME.patch" strip="1"/>
-      <patch file="0001-MinGW-doesn't-do-signals.patch" strip="1"/>
+      <patch file="0001-MinGW-doesn-t-do-signals.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="libunistring"/>
