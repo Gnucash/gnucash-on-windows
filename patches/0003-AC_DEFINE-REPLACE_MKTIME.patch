@@ -35,17 +35,6 @@ index 2efd44a22..588d4d139 100644
  
  #ifdef weak_alias
  weak_alias (mktime, timelocal)
-diff --git a/lib/timegm.c b/lib/timegm.c
-index 35bc67dc1..949f4b7ad 100644
---- a/lib/timegm.c
-+++ b/lib/timegm.c
-@@ -39,4 +39,6 @@ timegm (struct tm *tmp)
-   return __mktime_internal (tmp, __gmtime_r, &gmtime_offset);
- }
- 
-+#if ! REPLACE_MKTIME
- #include "mktime.c"
-+#endif
 diff --git a/m4/mktime.m4 b/m4/mktime.m4
 index d594ddc58..ec7299f08 100644
 --- a/m4/mktime.m4
