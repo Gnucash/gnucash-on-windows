@@ -34,7 +34,7 @@ In a PowerShell session run ```path/to/setup-mingw64.ps1```; the path will depen
 
 * **-msyw2_root**: The base directory of the MSYS2/MinGW-W64 environment. You can reuse an existing environment, but we don't recommend changing this. **Default**:**target_dir**```\msys2```.
 
-* **-x86_64**: Setting this will build a 64-bit GnuCash. **Default**: Unset, for 32-bit builds able to run on older systems.
+* **-x86_64**: Setting this to `$true` will build a 64-bit GnuCash. **Default**: Unset (`$false`), for 32-bit builds able to run on older systems.
 
 It will take a while to complete. When it's done you'll have a new group in your Start Menu named ```MSYS2 64bit``` or ```MSYS2 32bit``` depending on the bitness of your version of Windows. Note that this is independent of whether you set the **-x86_64** option. In that group you'll find 3 selections:
 * MSYS2 MSys2
