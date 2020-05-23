@@ -86,5 +86,11 @@ module_extra_env["gnucash"]={'GUILE_LOAD_PATH':os.path.join(prefix, 'share', 'gu
 module_extra_env["gnucash-unstable"]={'GUILE_LOAD_PATH':os.path.join(prefix, 'share', 'guile', '2.2'), 'GUILE_LOAD_COMPILED_PATH':os.path.join(prefix, 'lib', 'guile', '2.2', 'ccache')}
 module_extra_env["gnucash-git"]={'GUILE_LOAD_PATH':os.path.join(prefix, 'share', 'guile', '2.2'), 'GUILE_LOAD_COMPILED_PATH':os.path.join(prefix, 'lib', 'guile', '2.2', 'ccache')}
 
+_bdw_gc_cflags = '-fcommon'
+if 'CFLAGS' in os.environ:
+    _bdw_gc_cflags = os.environ['CFLAGS'] + ' -fcommon'
+
+module_extra_env['bdw-gc']={'CFLAGS':_bdw_gc_cflags}
+
 if _branch in ('master', 'unstable'):
     module_cmakeargs["gnucash-git"]=('-DGTEST_ROOT=$SRCROOT/googletest')
