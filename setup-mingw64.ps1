@@ -235,7 +235,7 @@ bash-command -command "pacman -Syyuu --noconfirm"
 
 # Set up aliases for the parts of msys-devtools and mingw-w64-toolchain that
 # we need:
-$devel = "asciidoc autoconf autoconf2.13 autogen automake-wrapper automake1.10 automake1.11 automake1.12 automake1.13 automake1.14 automake1.15 automake1.6 automake1.7 automake1.8 automake1.9 bison diffstat diffutils dos2unix file flex gawk gettext gettext-devel gperf grep groff intltool libtool m4 make man-db pacman pactoys-git patch patchutils perl pkg-config rsync2 sed swig texinfo texinfo-tex wget xmlto git jhbuild-git texinfo"
+$devel = "asciidoc autoconf autoconf2.13 autogen automake-wrapper bison diffstat diffutils dos2unix file flex gawk gettext gettext-devel gperf grep groff intltool libtool m4 make man-db pacman pactoys-git patch patchutils perl pkg-config rsync2 sed swig texinfo texinfo-tex wget xmlto git texinfo"
 
 $toolchain = "binutils cmake crt-git gcc gcc-libs gdb headers-git libmangle-git libtool libwinpthread-git make pkg-config tools-git winpthreads-git"
 
@@ -314,8 +314,7 @@ Clone the gnucash-on-windows repository into the target source directory, patch 
 
 if (!(test-path -path "$target_dir\\src")) {
   New-Item $target_dir\\src -type directory
-}
-if (!(test-path -path "$target_dir\\src\\gnucash-on-windows.git")) {
+}if (!(test-path -path "$target_dir\\src\\gnucash-on-windows.git")) {
   bash-command -command "git clone https://github.com/gnucash/gnucash-on-windows.git $target_unix/src/gnucash-on-windows.git"
 }
 if (!(test-path -path "$target_dir\\src\\gnucash-on-windows.git")) {
@@ -323,8 +322,23 @@ if (!(test-path -path "$target_dir\\src\\gnucash-on-windows.git")) {
    exit
 }
 
-bash-command -command "/usr/bin/patch -f -d/ -p0 -i $target_unix/src/gnucash-on-windows.git/patches/jhbuild.patch"
-bash-command -command "/usr/bin/patch -f -d `$(dirname `$(/usr/bin/find /$arch/share/cmake* -name FindSWIG.cmake) ) -p1 -i $target_unix/src/gnucash-on-windows.git/patches/FindSWIG.patch"
+if (!(test-path -path "$target_dir\\src\\jhbuild.git")) {
+  bash-command -command "git clone https://gitlab.gnome.org/GNOME/jhbuild $target_unix/src/jhbuild.git"
+  bash-command -command "/usr/bin/patch -f -d $target_unix/src/jhbuild.git -p1 -i $target_unix/src/gnucash-on-windows.git/patches/jhbuild.patch"
+}
+if (!(test-path -path "$target_dir\\src\\jhbuild.git")) {
+   write-host "Failed to clone the jhbuild repo, exiting."
+   exit
+}
+if (!(test-path -path "$target_dir\\msys2\\usr\\bin\\jhbuild")) {
+    $jhbuild = get-content "$target_dir\\src\\gnucash-on-windows.git\\jhbuild.in" |
+    %{$_ -replace "@-BASE_DIR-@", "$target_unix"}
+    [IO.File]::WriteAllLines("$target_dir\\msys2\\usr\\bin\\jhbuild", $jhbuild)
+}
+
+if (!(get-childitem -path $target_dir\\msys2\\mingw32\\share -recurse -include FindSWIG.cmake.orig -name)) {
+    bash-command -command "/usr/bin/patch -b -f -d `$(dirname `$(/usr/bin/find /$arch/share/cmake* -name FindSWIG.cmake) ) -p1 -i $target_unix/src/gnucash-on-windows.git/patches/FindSWIG.patch"
+}
 
 $jhbuildrc = get-content "$target_dir\\src\\gnucash-on-windows.git\\jhbuildrc.in" |
  %{$_ -replace "@-BASE_DIR-@", "$target_unix"} |

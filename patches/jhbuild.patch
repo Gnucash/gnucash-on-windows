@@ -1,20 +1,8 @@
---- /usr/lib/python2.7/site-packages/jhbuild/modtypes/cmake.py~	2017-09-05 16:58:18.206528300 -0700
-+++ /usr/lib/python2.7/site-packages/jhbuild/modtypes/cmake.py	2017-09-05 16:59:24.172738500 -0700
-@@ -159,10 +159,9 @@
-         if self.use_ninja:
-             self.ensure_ninja_binary()
-             extra_env = self.extra_env or {}
--            extra_env['DESTDIR'] = destdir
-             buildscript.execute(self.ninja_binary + ' install', cwd=builddir, extra_env=extra_env)
-         else:
--            self.make(buildscript, 'install DESTDIR={}'.format(destdir))
-+            self.make(buildscript, 'install')
-         self.process_install(buildscript, self.get_revision())
-     do_install.depends = [PHASE_BUILD]
- 
---- /usr/lib/python2.7/site-packages/jhbuild/modtypes/__init__.py~	2017-06-01 12:15:14.000000000 -0700
-+++ /usr/lib/python2.7/site-packages/jhbuild/modtypes/__init__.py	2017-09-05 17:44:27.556524900 -0700
-@@ -313,14 +313,16 @@
+diff --git a/jhbuild/modtypes/__init__.py b/jhbuild/modtypes/__init__.py
+index 2919a9f9..8b5f915f 100644
+--- a/jhbuild/modtypes/__init__.py
++++ b/jhbuild/modtypes/__init__.py
+@@ -314,13 +314,15 @@ them into the prefix."""
          save_broken_tree = False
          broken_name = destdir + '-broken'
          destdir_prefix = os.path.join(destdir, stripped_prefix)
@@ -23,7 +11,6 @@
          errors = []
 +        num_copied = 0
          if os.path.isdir(destdir_prefix):
-             destdir_install = True
              logging.info(_('Moving temporary DESTDIR %r into build prefix') % (destdir, ))
              num_copied = self._process_install_files(destdir, destdir_prefix,
                                                       buildscript.config.prefix,
@@ -32,7 +19,7 @@
  
              # Now the destdir should have a series of empty directories:
              # $JHBUILD_PREFIX/_jhbuild/root-foo/$JHBUILD_PREFIX
-@@ -345,7 +347,8 @@
+@@ -345,7 +347,8 @@ them into the prefix."""
              # Even if there are some files outside the DESTDIR, count that as success for now; we just warn
              install_succeeded = True
          else:
@@ -42,3 +29,19 @@
  
          if save_broken_tree:
              if os.path.exists(broken_name):
+diff --git a/jhbuild/modtypes/cmake.py b/jhbuild/modtypes/cmake.py
+index 1bd44e32..4064faaa 100644
+--- a/jhbuild/modtypes/cmake.py
++++ b/jhbuild/modtypes/cmake.py
+@@ -143,9 +143,9 @@ class CMakeModule(MakeModule, NinjaModule, DownloadableModule):
+         buildscript.set_action(_('Installing'), self)
+         destdir = self.prepare_installroot(buildscript)
+         if self.use_ninja:
+-            self.ninja(buildscript, 'install', env={'DESTDIR': destdir})
++            self.ninja(buildscript, 'install')
+         else:
+-            self.make(buildscript, 'install DESTDIR={}'.format(destdir))
++            self.make(buildscript, 'install')
+         self.process_install(buildscript, self.get_revision())
+     do_install.depends = [PHASE_BUILD]
+ 
