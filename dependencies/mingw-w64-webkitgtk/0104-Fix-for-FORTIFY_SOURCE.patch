@@ -1,0 +1,13 @@
+--- webkitgtk-2.4.11/Source/autotools/SetupCompilerFlags.m4
++++ webkitgtk-2.4.11/Source/autotools/SetupCompilerFlags.m4
+@@ -58,6 +58,10 @@
+     CFLAGS="$CFLAGS -O0"
+ fi
+ 
++#This is probably the wrong place to put it, but need a library flag due to some change in mingw for the D_FORTIFY_SOURCE.
++# https://github.com/msys2/MINGW-packages/issues/5868
++LIBS="$LIBS -lssp"
++
+ # Some architectures need to add libatomic explicitly
+ AC_LANG_PUSH([C++])
+ AC_LINK_IFELSE([AC_LANG_SOURCE([[

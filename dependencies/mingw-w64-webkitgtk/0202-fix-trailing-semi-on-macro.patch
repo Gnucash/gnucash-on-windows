@@ -1,0 +1,37 @@
+--- a/Source/WebCore/dom/Document.cpp	2016-04-09 23:48:37.000000000 -0700
++++ b/Source/WebCore/dom/Document.cpp	2019-12-20 11:45:17.294655200 -0800
+@@ -3912,12 +3912,12 @@
+     unsigned i = 0;
+ 
+     UChar32 c;
+-    U16_NEXT(characters, i, length, c)
++    U16_NEXT(characters, i, length, c);
+     if (!isValidNameStart(c))
+         return false;
+ 
+     while (i < length) {
+-        U16_NEXT(characters, i, length, c)
++      U16_NEXT(characters, i, length, c);
+         if (!isValidNamePart(c))
+             return false;
+     }
+@@ -3980,7 +3980,7 @@
+     const UChar* s = qualifiedName.deprecatedCharacters();
+     for (unsigned i = 0; i < length;) {
+         UChar32 c;
+-        U16_NEXT(s, i, length, c)
++        U16_NEXT(s, i, length, c);
+         if (c == ':') {
+             if (sawColon) {
+                 ec = NAMESPACE_ERR;
+--- a/Source/WebCore/platform/graphics/SegmentedFontData.cpp	2016-04-09 23:48:37.000000000 -0700
++++ b/Source/WebCore/platform/graphics/SegmentedFontData.cpp	2019-12-19 17:01:40.264614000 -0800
+@@ -61,7 +61,7 @@
+ {
+     UChar32 c;
+     for (int i = 0; i < length; ) {
+-        U16_NEXT(characters, i, length, c)
++      U16_NEXT(characters, i, length, c);
+         if (!containsCharacter(c))
+             return false;
+     }
