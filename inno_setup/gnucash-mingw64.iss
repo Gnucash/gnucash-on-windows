@@ -110,9 +110,9 @@ Source: "@INST_DIR@\share\doc\@PACKAGE@-docs\*.hhmap"; DestDir: "{app}\share\@PA
 ;;;; The second section retrieves the dependencies that we need from MinGW.
 ;; Required DLLs
 ;; gnucash.exe: libglib-2.0-0.dll, libgtk-3-0.dll, ligdk-3-0.dll, libatk-1.0-dll, libgobject-2.0-0.dll, libintl-8.dll, libcairo-gobject-2.dll, libcairo-2.dll, libfontconfig-1.0.dll, libfreetype-6.dll, libpixman-1-0.dll, libpng16-16.dll, zlib1.dll, libgdk-pixbuf-2.0-0.dll, libgio-2.0-0.dll, libgmodule-2.0-0.dll, libpango-1.0-0.dll, libpangocairo-1.0-0.dll, libpangowin32-1.0-0.dll, libpangoft2-1.0-0.dll, libharfbuzz-0.dll, libfribidi-0.dll, libiconv-2.dll, libwinpthread-1.dll, libsystre-0.dll, libxml2-2.dll, libxslt-1.dll, libboost_regex-mt.dll, libicuuc57.dll, libicudt57.dll, libtre-5.dll, libffi-6.dll, libgmp-10.dll, libltdl-7.dll
-;; AQBanking: libgcrypt-20.dll, libgnutls-30.dll, libwinpthread-1.0.dll, libgmp-10.dll, libhogweed-5.dll, libidn-11.dll, libintl-8.dll, libnettle-7.dll, libp11-kit-0.dll, libtasn1-6.dll, zlib1.dll, libgpg-error-0.dll, libiconv-2.dll, libintl-8.dll, libgtk-win32-2.0-0.dll
+;; AQBanking: libgcrypt-20.dll, libgnutls-30.dll, libwinpthread-1.0.dll, libgmp-10.dll, libhogweed-6.dll, libidn-11.dll, libintl-8.dll, libnettle-8.dll, libp11-kit-0.dll, libtasn1-6.dll, zlib1.dll, libgpg-error-0.dll, libiconv-2.dll, libintl-8.dll, libgtk-win32-2.0-0.dll
 ;; libwebkit: libbrotlicommon.dll, libbrotlidec.dll libharfbuzz-icu-0.dll, liborc-0.4-0.dll, libgsttag-1.0-0.dll, libgraphite2.dll, libicudt65.dll, libicuin65.dll, liicuuc65.dll, libicudt.dll, libsoup-2.4-1.dll, libsqlite3-0.dll, libssp-0.dll, libstdc__-6.dll, libunistring-2.dll, libwebp-7.dll
-;;lib/dbd/libdbdmysql.dll: mariadb.dll, libeay32.dll, ssleay32.dll
+;;lib/dbd/libdbdmysql.dll: libmariadb.dll, libeay32.dll, ssleay32.dll
 ;;lib/dbd/libdbdpgsql.dll: libpq.dll, ssleay32.dll, libeay32.dll
 
 Source: "@MINGW_DIR@\bin\libatk-1.0-0.dll"; DestDir: "{app}\bin"; Components: main
@@ -151,7 +151,7 @@ Source: "@MINGW_DIR@\bin\libgraphite2.dll"; DestDir: "{app}\bin"; Components: ma
 Source: "@MINGW_DIR@\bin\libgtk-3-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libharfbuzz-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libharfbuzz-icu-0.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libhogweed-5.dll"; DestDir: "{app}\bin"; Components: main
+Source: "@MINGW_DIR@\bin\libhogweed-6.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libiconv-2.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libicudt*.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libicuin*.dll"; DestDir: "{app}\bin"; Components: main
@@ -162,7 +162,7 @@ Source: "@MINGW_DIR@\bin\libjavascriptcoregtk-3.0-0.dll"; DestDir: "{app}\bin"; 
 Source: "@MINGW_DIR@\bin\libjpeg-8.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libltdl-7.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\liblzma-5.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libnettle-7.dll"; DestDir: "{app}\bin"; Components: main
+Source: "@MINGW_DIR@\bin\libnettle-8.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libp11-kit-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libpango-1.0-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libpangocairo-1.0-0.dll"; DestDir: "{app}\bin"; Components: main
@@ -189,7 +189,7 @@ Source: "@MINGW_DIR@\bin\libwebkitgtk-3.0-0.dll"; DestDir: "{app}\bin"; Componen
 Source: "@MINGW_DIR@\bin\libwinpthread-1.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libxml2-2.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libxslt-1.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\mariadb.dll"; DestDir: "{app}\bin"; Components: main
+Source: "@MINGW_DIR@\bin\libmariadb.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\zlib1.dll"; DestDir: "{app}\bin"; Components: main
 
 Source: "@MINGW_DIR@\bin\gspawn-win32-helper.exe"; DestDir: "{app}\bin"; Components: main
