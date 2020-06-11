@@ -257,7 +257,7 @@ $key_url = $sourceforge_url + $signing_keyfile
 $key_id = "C1F4DE993CF5835F"
 $webkit = "$arch_long-webkitgtk3-2.4.11-999.3-any.pkg.tar.zst"
 $webkit_url = $sourceforge_url + $webkit
-bash-command -command "wget $key_url"
+bash-command -command "wget $key_url -O $signing_keyfile"
 bash-command -command "pacman-key --add $signing_keyfile"
 bash-command -command "pacman-key --lsign $key_id"
 bash-command -command "pacman -U $webkit_url --noconfirm --needed"
