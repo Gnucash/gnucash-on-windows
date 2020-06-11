@@ -128,7 +128,6 @@ Source: "@MINGW_DIR@\bin\libbrotlidec.dll"; DestDir: "{app}\bin"; Components: ma
 Source: "@MINGW_DIR@\bin\libbrotlicommon.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libcairo-2.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libcairo-gobject-2.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libcroco-0.6-3.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libcrypto-1_1.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libdatrie-1.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libepoxy-0.dll"; DestDir: "{app}\bin"; Components: main
