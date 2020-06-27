@@ -121,7 +121,7 @@ Source: "@MINGW_DIR@\bin\libboost_locale-mt.dll"; DestDir: "{app}\bin"; Componen
 Source: "@MINGW_DIR@\bin\libboost_regex-mt.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libboost_system-mt.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libboost_filesystem-mt.dll"; DestDir: "{app}\bin"; Components: main
-;;Source: "@MINGW_DIR@\bin\libboost_program_options-mt.dll"; DestDir: "{app}\bin"; Components: main
+Source: "@MINGW_DIR@\bin\libboost_program_options-mt.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libboost_thread-mt.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libbz2-1.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libbrotlidec.dll"; DestDir: "{app}\bin"; Components: main
