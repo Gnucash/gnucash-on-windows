@@ -323,29 +323,27 @@
     </dependencies>
  </cmake>
 
- <cmake id="gnucash-docs-git"
+  <cmake id="gnucash-docs-git"
         cmakeargs="-G'MSYS Makefiles'"
         use-ninja="False"> <!-- Can't use ninja for now. See https://bugs.gnucash.org/show_bug.cgi?id=797622 -->
     <branch  repo="github" module="Gnucash/gnucash-docs.git" revision="master"
 	   checkoutdir="gnucash-docs-git"/>
-    <dependencies>
-      <!-- dep package="scrollkeeper"/ -->
-    </dependencies>
   </cmake>
 
-  <autotools id="gnucash-docs"
-	    autogen-template="%(srcdir)s/%(autogen-sh)s &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s %(autogenargs)s"
-	    makeargs="chm" makeinstallargs="install-chm" >
+  <cmake id="gnucash-docs"
+        cmakeargs="-G'MSYS Makefiles'"
+        use-ninja="False"> <!-- Can't use ninja for now. See https://bugs.gnucash.org/show_bug.cgi?id=797622 -->
     <branch  module="project/gnucash/gnucash%20%28stable%29/4.0/gnucash-docs-4.0.tar.gz"
 	     version="4.0" repo="sourceforge"/>
-  </autotools>
+  </cmake>
 
-  <autotools id="gnucash-unstable-docs"
-	    autogen-template="%(srcdir)s/%(autogen-sh)s &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s %(autogenargs)s"
-	    makeargs="chm" makeinstallargs="install-chm" >
+  <cmake id="gnucash-unstable-docs"
+        cmakeargs="-G'MSYS Makefiles'"
+        use-ninja="False"> <!-- Can't use ninja for now. See https://bugs.gnucash.org/show_bug.cgi?id=797622 -->
     <branch  module="project/gnucash/gnucash%20%28unstable%29/3.906/gnucash-docs-3.906.tar.gz"
 	     version="3.906" repo="sourceforge"/>
-  </autotools>
+  </cmake>
+
 
   <metamodule id="meta-gnucash-git">
     <dependencies>
