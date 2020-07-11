@@ -92,5 +92,3 @@ if 'CFLAGS' in os.environ:
 
 module_extra_env['bdw-gc']={'CFLAGS':_bdw_gc_cflags}
 
-if _branch in ('master', 'unstable'):
-    module_cmakeargs["gnucash-git"]=('-DGTEST_ROOT=$SRCROOT/googletest')
