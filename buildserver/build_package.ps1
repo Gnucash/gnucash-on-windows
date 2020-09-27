@@ -66,7 +66,7 @@ $env:MSYSTEM = 'MINGW32'
 $env:TERM = 'dumb' #Prevent escape codes in the log.
 $env:TARGET = "$package-$branch"
 # This allows us to run Msys2 commands such as bash.exe directly
-$Env:Path = "$Env:Path;$target_dir\msys2\usr\bin"
+$Env:Path = "$target_dir\msys2\usr\bin;$Env:Path"
 
 if ($PSVersionTable.PSVersion.Major -ge 3) {
     $PSDefaultParameterValues['*:Encoding'] = 'utf8'
