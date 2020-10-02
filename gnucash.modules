@@ -273,7 +273,7 @@
   </cmake>
 
  <cmake id="gnucash"
-        cmakeargs="-DCMAKE_FIND_ROOT_PATH=$MSYS2ROOT -DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DGTEST_ROOT=$SRCROOT/googletest">
+        cmakeargs="-DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DGTEST_ROOT=$SRCROOT/googletest">
    <branch module="project/gnucash/gnucash%20%28stable%29/4.2/gnucash-4.2.tar.bz2"
 	   repo="sourceforge" version="4.2"/>
     <dependencies>
@@ -290,7 +290,7 @@
  </cmake>
 
  <cmake id="gnucash-unstable"
-        cmakeargs="-DCMAKE_FIND_ROOT_PATH=$MSYS2ROOT -DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DGTEST_ROOT=$SRCROOT/googletest/">
+        cmakeargs="-DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DGTEST_ROOT=$SRCROOT/googletest/">
    <branch module="project/gnucash/gnucash%20%28unstable%29/3.906/gnucash-3.906.tar.bz2"
 	   repo="sourceforge" version="3.906"/>
     <dependencies>
@@ -307,7 +307,7 @@
  </cmake>
 
  <cmake id="gnucash-git"
-        cmakeargs="-DCMAKE_FIND_ROOT_PATH=$MSYS2ROOT -DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DGTEST_ROOT=$SRCROOT/googletest/ -DCMAKE_BUILD_TYPE=Debug">
+        cmakeargs="-DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DGTEST_ROOT=$SRCROOT/googletest/ -DCMAKE_BUILD_TYPE=Debug">
    <branch repo="github" module="Gnucash/gnucash.git" revision="master"
 	   checkoutdir="gnucash-git"/>
     <dependencies>

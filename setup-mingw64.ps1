@@ -235,9 +235,9 @@ bash-command -command "pacman -Syyuu --noconfirm"
 
 # Set up aliases for the parts of msys-devtools and mingw-w64-toolchain that
 # we need:
-$devel = "asciidoc autoconf autoconf2.13 autogen automake-wrapper bison diffstat diffutils dos2unix file flex gawk gettext gettext-devel gperf grep groff intltool libtool m4 make man-db pacman pactoys-git patch patchutils perl pkg-config python2 rsync2 sed swig texinfo texinfo-tex wget xmlto git texinfo"
+$devel = "asciidoc autoconf autoconf2.13 autogen automake-wrapper bison diffstat diffutils dos2unix file flex gawk gettext gettext-devel gperf grep groff intltool libtool m4 make man-db pacman pactoys-git patch patchutils perl pkg-config python2 rsync2 sed texinfo texinfo-tex wget xmlto git texinfo"
 
-$toolchain = "binutils cmake crt-git gcc gcc-libs gdb headers-git libmangle-git libtool libwinpthread-git make pkg-config tools-git winpthreads-git"
+$toolchain = "binutils cmake crt-git gcc gcc-libs gdb headers-git libmangle-git libtool libwinpthread-git make pkg-config swig tools-git winpthreads-git"
 
 
 # Install the system and toolchain:
@@ -334,10 +334,6 @@ if (!(test-path -path "$target_dir\\msys2\\usr\\bin\\jhbuild")) {
     $jhbuild = get-content "$target_dir\\src\\gnucash-on-windows.git\\jhbuild.in" |
     %{$_ -replace "@-BASE_DIR-@", "$target_unix"}
     [IO.File]::WriteAllLines("$target_dir\\msys2\\usr\\bin\\jhbuild", $jhbuild)
-}
-
-if (!(get-childitem -path $target_dir\\msys2\\mingw32\\share -recurse -include FindSWIG.cmake.orig -name)) {
-    bash-command -command "/usr/bin/patch -b -f -d `$(dirname `$(/usr/bin/find /$arch/share/cmake* -name FindSWIG.cmake) ) -p1 -i $target_unix/src/gnucash-on-windows.git/patches/FindSWIG.patch"
 }
 
 $jhbuildrc = get-content "$target_dir\\src\\gnucash-on-windows.git\\jhbuildrc.in" |
