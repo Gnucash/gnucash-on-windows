@@ -1,6 +1,6 @@
 # Building GnuCash on Windows
 
-This repository provides a simple, repeatable means to build GnuCash 3 on Microsoft Windows using [MinGW-W64](https://mingw-w64.org/doku.php), [Gnome's jhbuild](https://wiki.gnome.org/action/show/Projects/Jhbuild?action=show&redirect=Jhbuild), and [JRSoftware's Inno Setup](http://www.jrsoftware.org/isinfo.php). It is what drives building the official All-in-One installers and what the GnuCash core development team uses to create development environments.
+This repository provides a simple, repeatable means to build GnuCash on Microsoft Windows using [MinGW-W64](https://mingw-w64.org/doku.php), [Gnome's jhbuild](https://wiki.gnome.org/action/show/Projects/Jhbuild?action=show&redirect=Jhbuild), and [JRSoftware's Inno Setup](http://www.jrsoftware.org/isinfo.php). It is what drives building the official All-in-One installers and what the GnuCash core development team uses to create development environments.
 
 ## Requirements
 
