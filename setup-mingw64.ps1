@@ -103,17 +103,19 @@ function make-pkgnames ([string]$prefix, [string]$items) {
     $items.split(" ") | foreach-object {"$prefix$_"}
 }
 
-function Install-Package([string]$url, [string]$download_file,
-	  [string]$install_dir, [string]$setup_cmd, [string]$setup_args)
+function Install-Package([string]$url, [string]$install_dir,
+			 [string]$setup_args)
 {
+    $filename = $url.Substring($url.LastIndexOf("/") + 1)
+    $download_file = "$download_dir\$filename"
     if (!(test-path -path $download_file)) {
 	write-host "Downloading $download_file from $url"
-	(New-Object System.Net.WebClient).DownloadFile($url, $download_file)
+	(New-Object System.Net.WebClient).DownloadFile($url, "$download_file")
     }
 
-    write-host "Installing $download_dir\$setup_cmd $setup_args"
+    write-host "Installing $download_file $setup_args"
     $psi = new-object "Diagnostics.ProcessStartInfo"
-    $psi.Filename = "$download_dir\$setup_cmd"
+    $psi.Filename = "$download_file"
     $psi.Arguments = "$setup_args"
     $proc = [Diagnostics.Process]::Start($psi)
     $proc.waitForExit()
@@ -140,7 +142,6 @@ if (!(test-path -path $bash_path)) {
     $mingw64_installer32 = "$preferred_mirror/distrib/i686/msys2-i686-20190524.exe"
     $mingw64_installer64 = "$preferred_mirror/distrib/x86_64/msys2-x86_64-20190524.exe"
 
-    $mingw64_installer_file = "$download_dir\msys2.exe"
     $mingw64_installer = If ([IntPtr]::size -eq 4) {$mingw64_installer32} Else {$mingw64_installer64}
     $msys_install_dir = (join-path $target_dir "msys2") -replace "\\", '/'
     $msys_setup_args = @"
@@ -165,7 +166,7 @@ Controller.prototype.FinishedPageCallback = function() {
 
     $setup_script = "$target_dir\input.qs"
     set-content -path $setup_script -value $msys_setup_args | out-null
-    install-package -url $mingw64_installer -download_file $mingw64_installer_file -install_dir "$msys2_root" -setup_cmd "msys2.exe" -setup_args "--script $setup_script"
+    install-package -url $mingw64_installer -install_dir "$msys2_root" -setup_args "--script $setup_script"
 #    remove-item $setup_script
 }
 if (!(test-path -path $bash_path)) {
