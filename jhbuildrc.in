@@ -8,7 +8,7 @@ def _popen(cmd_arg):
     cmd.stdout.close()
     devnull.close()
     if err:
-        raise RuntimeError, "Failed to close %s stream" % cmd_arg
+        raise RuntimeError("Failed to close %s stream" % cmd_arg)
     return retval
 
 def environ_append(key, value, separator=' '):
@@ -33,7 +33,7 @@ def add_to_path_var(var, path):
 _basedir = "@-BASE_DIR-@"
 _download_dir = "@-DOWNLOAD_DIR-@"
 _arch = "@-ARCH-@"
-if os.environ.has_key('TARGET'):
+if 'TARGET' in os.environ:
     (_project, _branch) = os.environ['TARGET'].split('-')
 else:
     _project = 'gnucash'
