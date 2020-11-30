@@ -492,7 +492,7 @@ Name: "ca"; MessagesFile: "compiler:Languages\Catalan.isl"; InfoAfterFile: "@GC_
 Name: "de"; MessagesFile: "compiler:Languages\German.isl"; InfoAfterFile: "@GC_WIN_REPOS_DIR@\inno_setup\README-de.win32-bin.txt"
 Name: "el"; MessagesFile: "compiler:Languages\Greek.isl"
 Name: "fr"; MessagesFile: "compiler:Languages\French.isl"; InfoAfterFile: "@GC_WIN_REPOS_DIR@\inno_setup\README-fr.win32-bin.txt"
-Name: "hr"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\Croatian-5.5.3.isl"; InfoAfterFile: "@GC_WIN_REPOS_DIR@\inno_setup\README-hr.win32-bin.txt"
+Name: "hr"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\Croatian-6.1.0.isl"; InfoAfterFile: "@GC_WIN_REPOS_DIR@\inno_setup\README-hr.win32-bin.txt"
 Name: "it"; MessagesFile: "compiler:Languages\Italian.isl"; InfoAfterFile: "@GC_WIN_REPOS_DIR@\inno_setup\README-it.win32-bin.txt"
 Name: "ja"; MessagesFile: "compiler:Languages\Japanese.isl"
 Name: "lv"; MessagesFile: "@GC_WIN_REPOS_DIR@\inno_setup\Latvian-5.5.0.isl"; InfoAfterFile: "@GC_WIN_REPOS_DIR@\inno_setup\README-lv.win32-bin.txt"
@@ -690,7 +690,7 @@ hr.StatusMsgFirewall=Instaliranje pravila vatrozida Windowsa …
 ; %1 in the following messages will be replaced with the application name and version, like "GnuCash 2.3.15"
 hr.AIWP_Title=Nađena je jedna druga instalacija
 hr.AIWP_Description=%1 je trenutačno instaliran na ovom računalu
-hr.AIWP_Message=Ovu raniju instalaciju moraš ukloniti prije nego što nastaviš s instaliranjem.%n%nAko to ne želiš, klikni "Odustani" i prekinut ćeš ovo instaliranje.%n%nKlikni "Dalje" ako želiš ukloniti %1 i nastaviti s instaliranjem.%n%nNapomena: Uklonit će se samo program, ne i tvoji financijski podaci.
+hr.AIWP_Message=Ovu raniju instalaciju moraš ukloniti prije nego što nastaviš s instaliranjem.%n%nAko to ne želiš, klikni "Prekini" i prekinut ćeš ovo instaliranje.%n%nKlikni "Dalje" ako želiš ukloniti %1 i nastaviti s instaliranjem.%n%nNapomena: Uklonit će se samo program, ne i tvoji financijski podaci.
 
 hr.MainFiles=GnuCash program
 hr.TranslFiles=Hrvatski prijevod
@@ -700,8 +700,8 @@ hr.IconComment_GnuCash=GnuCash – slobodan računovodstveni program
 hr.IconName_README=Prikaži GnuCash README
 hr.IconComment_README=Prikaži informativnu README-datoteku
 hr.IconFilename_README=README-hr.win32-bin.txt
-hr.IconName_FAQ=Često postavljana pitanja o GnuCashu (web stranica na engleskom)
-hr.IconName_Bugzilla=Prijavi grešku (web stranica na engleskom)
+hr.IconName_FAQ=Često postavljena pitanja o GnuCashu (web-stranica na engleskom)
+hr.IconName_Bugzilla=Prijavi grešku (web-stranica na engleskom)
 hr.IconName_InstallFQ=Instaliraj dohvaćanje internetskih tečajeva za GnuCash
 hr.IconComment_InstallFQ=Instaliraj potreban perl modul Finance-Quote za dohvaćanje tečajeva putem interneta. Zahtijeva ActivePerl ili Strawberry Perl 5.8 ili noviji
 hr.IconName_Theme=Odaberi GnuCashovu temu
