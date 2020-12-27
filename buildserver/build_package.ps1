@@ -140,7 +140,7 @@ if (test-path -path $install_manifest) {
 #git.exe -C $script_unix reset --hard 2>&1 | Tee-Object -FilePath $log_file -Append
 #git.exe -C $script_unix pull --rebase 2>&1 | Tee-Object -FilePath $log_file -Append
 # Build the latest GnuCash and all dependencies not installed via mingw64
-bash.exe -lc "jhbuild --no-interact -f $script_unix/jhbuildrc build --clean 2>&1" | Tee-Object -FilePath $log_file -Append
+bash.exe -lc "jhbuild --no-interact -f /c/gcdev64/src/gnucash-on-windows.git/jhbuildrc build --clean 2>&1" | Tee-Object -FilePath $log_file -Append
 
 $setup_file_valid = False
 $new_file = test-path -path $target_dir\$package\$branch\inst\bin\gnucash.exe -NewerThan $time_stamp
