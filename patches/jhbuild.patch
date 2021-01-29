@@ -45,3 +45,16 @@ index 1bd44e32..4064faaa 100644
          self.process_install(buildscript, self.get_revision())
      do_install.depends = [PHASE_BUILD]
  
+diff --git a/jhbuild/utils/systeminstall.py b/jhbuild/utils/systeminstall.py
+index 610be80d..50c56aab 100644
+--- a/jhbuild/utils/systeminstall.py
++++ b/jhbuild/utils/systeminstall.py
+@@ -45,7 +45,7 @@ def get_installed_pkgconfigs(config):
+     pkgs = []
+     for line in stdout.splitlines():
+         pkg, rest = line.split(None, 1)
+-        pkgs.append(pkg)
++        pkgs.append(pkg.lstrip('/'))
+
+     # see if we can get the versions "the easy way"
+     try:
