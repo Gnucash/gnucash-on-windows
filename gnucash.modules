@@ -143,8 +143,10 @@
 
   <autotools id="gwenhywfar" autogen-sh="configure"
              autogenargs="--with-guis='gtk3' --enable-local-install --disable-binreloc --disable-ssl PKG_CONFIG='pkg-config --dont-define-prefix'">
-    <branch module="344/gwenhywfar-5.4.1.tar.gz" version="5.4.1"
+    <branch module="348/gwenhywfar-5.5.0.tar.gz" version="5.5.0"
             repo="aqbanking">
+      <patch file="gwenhywfar-5.5.0-fix-build.patch" strip="1"/>
+      <patch file="gwenhywfar-5.5.0-GWENHYWFAR_CB.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="gcrypt"/>

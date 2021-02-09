@@ -1,0 +1,26 @@
+From 2de35501f7efec42a7593f8266a7f605b3404a3c Mon Sep 17 00:00:00 2001
+From: John Ralls <jralls@ceridwen.us>
+Date: Tue, 9 Feb 2021 16:33:57 -0800
+Subject: [PATCH] Correct type mismatch for _threadRun_cb.
+
+Fixes https://www.aquamaniac.de/rdm/issues/230
+---
+ src/os/windows/gwenthread.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/os/windows/gwenthread.c b/src/os/windows/gwenthread.c
+index 1e672cbd..b1d81abd 100644
+--- a/src/os/windows/gwenthread.c
++++ b/src/os/windows/gwenthread.c
+@@ -154,7 +154,7 @@ GWEN_THREAD_RUN_FN GWEN_Thread_SetRunFn(GWEN_THREAD *thr, GWEN_THREAD_RUN_FN fn)
+ 
+ 
+ 
+-DWORD _threadRun_cb(LPVOID lpParam)
++DWORD WINAPI _threadRun_cb(LPVOID lpParam)
+ {
+   GWEN_THREAD *thr;
+ 
+-- 
+2.24.3 (Apple Git-128)
+
