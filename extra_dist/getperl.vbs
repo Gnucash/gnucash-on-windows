@@ -12,7 +12,7 @@ strHDLocation = Wscript.Arguments.Item(0)
 strVersion = "5.32.1.1"
 
 ' Set your settings
-    strFileURL    = "http://strawberryperl.com/download/" & strVersion & "/strawberry-perl-" & strVersion & "-32bit.msi"
+    strFileURL    = "https://strawberryperl.com/download/" & strVersion & "/strawberry-perl-" & strVersion & "-32bit.msi"
 
     Wscript.Echo "   copying " & strFileURL
     Wscript.Echo "   to "  & strHDLocation
