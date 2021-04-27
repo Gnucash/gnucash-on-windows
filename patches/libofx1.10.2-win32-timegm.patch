@@ -1,0 +1,10 @@
+--- a/lib/ofx_utilities.cpp	2021-04-23 13:33:07.000000000 -0700
++++ b/lib/ofx_utilities.cpp	2021-04-27 12:03:02.591314600 -0700
+@@ -30,6 +30,7 @@
+ 
+ #ifdef __WIN32__
+ # define DIRSEP "\\"
++# define timegm(tm) _mkgmtime(tm)
+ #else
+ # define DIRSEP "/"
+ #endif

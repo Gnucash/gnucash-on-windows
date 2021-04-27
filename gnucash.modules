@@ -216,7 +216,9 @@
 
   <autotools id="libofx" autogen-sh='autoreconf'>
     <branch repo="sourceforge" module="libofx/libofx-0.10.2.tar.gz"
-	    version="0.10.2"/>
+	    version="0.10.2">
+      <patch file="libofx1.10.2-win32-timegm.patch" strip="1"/>
+    </branch>
     <dependencies>
       <dep package="OpenSP"/>
     </dependencies>
