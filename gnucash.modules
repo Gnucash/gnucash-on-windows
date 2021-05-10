@@ -15,6 +15,8 @@
 	      href="http://www.gnucash.org/pub/gnucash/sources/"/>
   <repository type="git" name="git.gnucash.org"
 	      href="http://git.gnucash.org/"/>
+  <repository type="tarball" name="xmlsec"
+	      href="http://www.aleksey.com/xmlsec/download/"/>
   <repository type="git" name="aquamaniac"
               href="https://git.aquamaniac.de/git/"/>
   <repository type="tarball" name="aqbanking"
@@ -162,10 +164,8 @@
   </autotools>
 
   <autotools id="xmlsec" >
-    <branch module="lsh123/xmlsec/archive/xmlsec-1_2_29.tar.gz"
-            repo="github-tar" version="1.2.29"
-            checkoutdir="xmlsec-xmlsec-1_2_29">
-        <patch file="xmlsec-make-clean.patch" strip="1"/>
+    <branch module="xmlsec1-1.2.32.tar.gz"
+            repo="xmlsec" version="1.2.32" >
     </branch>
     <dependencies>
       <dep package="openssl"/>
