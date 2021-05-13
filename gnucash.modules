@@ -163,7 +163,7 @@
     </dependencies>
   </autotools>
 
-  <autotools id="xmlsec" >
+  <autotools id="xmlsec" autogenargs="--without-gcrypt">
     <branch module="xmlsec1-1.2.32.tar.gz"
             repo="xmlsec" version="1.2.32" >
     </branch>
