@@ -240,8 +240,8 @@
 
 
   <cmake id="mysql">
-    <branch repo="csclub" module="Connector-C/mysql-connector-c-6.0.2.tar.gz"
-	    version="6.0.2" >
+    <branch repo="csclub" module="Connector-C/mysql-connector-c-6.1.11.tar.gz"
+	    version="6.1.11" >
     </branch>
     <dependencies>
       <dep package="cmake"/>
