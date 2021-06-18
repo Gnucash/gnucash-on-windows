@@ -234,29 +234,6 @@ Root: HKLM; Subkey: "Software\GnuCash\Version"; ValueType: string; ValueName: "V
 Root: HKLM; Subkey: "Software\GnuCash\Version"; ValueType: dword; ValueName: "VersionMajor"; ValueData: "@GNUCASH_MAJOR_VERSION@"; Flags: uninsdeletevalue
 Root: HKLM; Subkey: "Software\GnuCash\Version"; ValueType: dword; ValueName: "VersionMinor"; ValueData: "@GNUCASH_MINOR_VERSION@"; Flags: uninsdeletevalue
 
-; Additionally, we have to install the paths for gwenhywfar
-Root: HKLM; Subkey: "Software\Gwenhywfar"; ValueType: none; Flags: uninsdeletekeyifempty
-Root: HKLM; Subkey: "Software\Gwenhywfar\Paths"; ValueType: none; Flags: uninsdeletekeyifempty
-Root: HKLM; Subkey: "Software\Gwenhywfar\Paths"; ValueType: string; ValueName: "prefix"; ValueData: "{app}"; Flags: uninsdeletevalue
-Root: HKLM; Subkey: "Software\Gwenhywfar\Paths"; ValueType: string; ValueName: "libdir"; ValueData: "{app}\lib"; Flags: uninsdeletevalue
-Root: HKLM; Subkey: "Software\Gwenhywfar\Paths"; ValueType: string; ValueName: "plugindir"; ValueData: "{app}\lib\gwenhywfar\plugins\@-gwenhywfar_so_effective-@"; Flags: uninsdeletevalue
-Root: HKLM; Subkey: "Software\Gwenhywfar\Paths"; ValueType: string; ValueName: "sysconfdir"; ValueData: "{app}\etc"; Flags: uninsdeletevalue
-Root: HKLM; Subkey: "Software\Gwenhywfar\Paths"; ValueType: string; ValueName: "localedir"; ValueData: "{app}\share\locale"; Flags: uninsdeletevalue
-
-; And we also need some registry keys for aqbanking
-Root: HKLM; Subkey: "Software\Aqbanking"; ValueType: none; Flags: uninsdeletekeyifempty
-Root: HKLM; Subkey: "Software\Aqbanking\Paths"; ValueType: none; Flags: uninsdeletekeyifempty
-Root: HKLM; Subkey: "Software\Aqbanking\Paths"; ValueType: string; ValueName: "providerdir"; ValueData: "{app}\lib\aqbanking\plugins\@-aqbanking_so_effective-@\providers"; Flags: uninsdeletevalue
-Root: HKLM; Subkey: "Software\Aqbanking\Paths"; ValueType: string; ValueName: "bankinfodir"; ValueData: "{app}\lib\aqbanking\plugins\@-aqbanking_so_effective-@\bankinfo"; Flags: uninsdeletevalue
-Root: HKLM; Subkey: "Software\Aqbanking\Paths"; ValueType: string; ValueName: "importerdir"; ValueData: "{app}\lib\aqbanking\plugins\@-aqbanking_so_effective-@\imexporters"; Flags: uninsdeletevalue
-Root: HKLM; Subkey: "Software\Aqbanking\Paths"; ValueType: string; ValueName: "wizarddir"; ValueData: "{app}\lib\aqbanking\plugins\@-aqbanking_so_effective-@\wizards"; Flags: uninsdeletevalue
-Root: HKLM; Subkey: "Software\Aqbanking\Paths"; ValueType: string; ValueName: "pkgdatadir"; ValueData: "{app}\share\aqbanking"; Flags: uninsdeletevalue
-Root: HKLM; Subkey: "Software\Aqbanking\Paths"; ValueType: string; ValueName: "sysconfdir"; ValueData: "{app}\etc"; Flags: uninsdeletevalue
-Root: HKLM; Subkey: "Software\Aqbanking\Paths"; ValueType: string; ValueName: "localedir"; ValueData: "{app}\share\locale"; Flags: uninsdeletevalue
-Root: HKLM; Subkey: "Software\AqBanking\Paths"; ValueType: string; ValueName: "xmldatadir"; ValueData: "{app}\share\aqhbci\xml"; Flags: uninsdeletevalue
-Root: HKLM; Subkey: "Software\AqBanking\Paths"; ValueType: string; ValueName: "cfgmoduledir"; ValueData: "{app}\lib\aqbanking\plugins\@-aqbanking_so_effective-@\frontends\qbanking\cfgmodules"; Flags: uninsdeletevalue
-
-
 ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Delete the created config script on uninstall
 ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
