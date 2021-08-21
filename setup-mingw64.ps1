@@ -140,7 +140,7 @@ function make-unixpath([string]$path) {
 
 if (!(test-path -path $bash_path)) {
     $mingw64_installer32 = "$preferred_mirror/distrib/msys2-i686-latest.exe"
-    $mingw64_installer64 = "$preferred_mirror/distrib/x86_64/msys2-x86_64-20200903.exe"
+    $mingw64_installer64 = "$preferred_mirror/distrib/msys2-x86_64-latest.exe"
 
     $mingw64_installer = If ([IntPtr]::size -eq 4) {$mingw64_installer32} Else {$mingw64_installer64}
     $msys_install_dir = (join-path $target_dir "msys2") -replace "\\", '/'
