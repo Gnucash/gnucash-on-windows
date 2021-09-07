@@ -9,8 +9,6 @@
 	      href="http://downloads.sourceforge.net/"/>
   <repository type="tarball" name="csail"
 	      href="http://groups.csail.mit.edu/mac/ftpdir/"/>
-  <repository type="tarball" name="csclub"
-	      href="http://mirror.csclub.uwaterloo.ca/mysql/Downloads/"/>
   <repository type="tarball" name="gnucash.org"
 	      href="http://www.gnucash.org/pub/gnucash/sources/"/>
   <repository type="git" name="git.gnucash.org"
@@ -237,16 +235,6 @@
       <dep package="pcre"/>
     </dependencies>
   </autotools>
-
-
-  <cmake id="mysql">
-    <branch repo="csclub" module="Connector-C/mysql-connector-c-6.0.2.tar.gz"
-	    version="6.0.2" >
-    </branch>
-    <dependencies>
-      <dep package="cmake"/>
-    </dependencies>
-  </cmake>
 
   <autotools id="libdbi" autogen-sh="autoreconf" autogenargs="--disable-docs">
     <branch repo="sourceforge" module="libdbi/libdbi-0.8.4.tar.gz"
