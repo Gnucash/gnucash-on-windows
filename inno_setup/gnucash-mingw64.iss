@@ -8,6 +8,7 @@
 [Setup]
 ; Using the name here directly because we want it capitalized
 AppName=GnuCash
+AppVersion=@PACKAGE_VERSION@
 AppVerName=GnuCash @PACKAGE_VERSION@
 AppPublisher=GnuCash Development Team
 AppPublisherURL=http://www.gnucash.org
