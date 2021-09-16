@@ -1,0 +1,31 @@
+From 86036241d35df6570a19f932f5486d4a27dc3f02 Mon Sep 17 00:00:00 2001
+From: John Ralls <jralls@ceridwen.us>
+Date: Thu, 16 Sep 2021 16:32:30 -0700
+Subject: [PATCH] Reverse the application of gmt offset seconds to struct
+ tm::tm_sec.
+
+A positive gmt offset means that UTC is that many seconds before the
+time indicated in struct tm so the gmt offset should be subtracted
+from tm_sec not added.
+
+Fixes https://bugs.gnucash.org/show_bug.cgi?id=798267.
+---
+ lib/ofx_utilities.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/ofx_utilities.cpp b/lib/ofx_utilities.cpp
+index ced5cf9..6c8aa1e 100644
+--- a/lib/ofx_utilities.cpp
++++ b/lib/ofx_utilities.cpp
+@@ -152,7 +152,7 @@ string AppendCharStringtostring(const SGMLApplication::CharString source, string
+     float ofx_gmt_offset = atof(offset_str.c_str());
+     std::time_t temptime = std::time(nullptr);
+     static const double secs_per_hour = 3600.0;
+-    time.tm_sec += static_cast<int>(ofx_gmt_offset * secs_per_hour);
++    time.tm_sec -= static_cast<int>(ofx_gmt_offset * secs_per_hour);
+     return timegm(&time);
+   }
+ 
+-- 
+2.30.1 (Apple Git-130)
+
