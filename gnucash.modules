@@ -131,7 +131,7 @@
   </autotools>
 
   <autotools id="libchipcard" autogen-sh="configure" autogenargs="--enable-local-install PKG_CONFIG='pkg-config --dont-define-prefix'">
-    <branch module="229/libchipcard-5.1.5rc2.tar.gz" version="5.1.5rc2"
+    <branch module="382/libchipcard-5.1.6.tar.gz" version="5.1.6"
             repo="aqbanking">
     </branch>
     <dependencies>
