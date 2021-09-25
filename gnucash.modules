@@ -270,7 +270,7 @@
 	   repo="sourceforge" version="4.7"/>
     <dependencies>
       <dep package="libofx"/>
-      <dep package="aqbanking"/
+      <dep package="aqbanking"/>
       <dep package="libdbi-drivers"/>
       <!--dep package="shared-mime-info"/-->
       <!--dep package="iso-codes"/-->
