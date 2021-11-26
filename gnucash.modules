@@ -145,7 +145,7 @@
              autogenargs="--with-guis='gtk3' --enable-local-install --disable-binreloc PKG_CONFIG='pkg-config --dont-define-prefix'">
     <branch module="396/gwenhywfar-5.7.4.tar.gz" version="5.7.4"
             repo="aqbanking">
-      <patch file="gwenhywfar-5.7.7-typemaker2-Makefiles.patch" strip="1"/>
+      <patch file="gwenhywfar-5.7.4-typemaker2-Makefiles.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="gcrypt"/>
