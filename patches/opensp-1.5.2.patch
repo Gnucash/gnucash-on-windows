@@ -37,4 +37,38 @@
    switch (message.type->severity()) {
    case MessageType::info:
      formatFragment(MessageReporterMessages::infoTag, os());
+--- a/config.h.in        2022-01-09 10:42:27.485190800 -0800
++++ b/config.h.in 2022-01-09 10:53:02.416120000 -0800
+@@ -46,6 +46,9 @@
+ /* Define if the GNU gettext() function is already present or preinstalled. */
+ #undef HAVE_GETTEXT
+
++/* Define if you have the iconv() function and it works. */
++#undef HAVE_ICONV
++
+ /* define if the compiler supports explicit instantiations */
+ #undef HAVE_INSTANTIATIONS
+
+--- a/configure.in       2005-12-23 06:15:21.000000000 -0800
++++ b/configure.in        2022-01-09 10:51:18.494840900 -0800
+@@ -238,7 +238,7 @@
+ dnl Checks for libraries.
+ AC_CHECK_LIB(pthread,pthread_create,,AC_CHECK_LIB(threads,cthread_fork))
+
+-AM_GNU_GETTEXT
++AM_GNU_GETTEXT([external])
+ AM_GNU_GETTEXT_VERSION([0.14.5])
+ AC_CHECK_HEADERS(locale.h)
+ AC_DEFINE_DIR(SP_LOCALE_DIR, datadir/locale, [location of message catalogs])
+--- a/Makefile.am        2005-12-23 06:14:27.000000000 -0800
++++ b/Makefile.am 2022-01-09 10:52:48.907191300 -0800
+@@ -4,7 +4,7 @@
+
+ SUBDIRS = pubtext unicode doc \
+        include generic \
+-       intl po \
++       po \
+        lib nsgmls spent spam sgmlnorm sx spcat \
+        tests @DOCSRC@
+
 

@@ -218,6 +218,7 @@
 	    version="0.10.2">
       <patch file="libofx1.10.2-win32-timegm.patch" strip="1"/>
       <patch file="libofx-subtract-gmt-offset.patch" strip="1"/>
+      <patch file="libofx-namespace-std.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="OpenSP"/>

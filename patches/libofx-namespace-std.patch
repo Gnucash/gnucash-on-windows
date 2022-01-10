@@ -1,0 +1,2838 @@
+From 6b640979dd0f34723fe53dc6f019fdab01850996 Mon Sep 17 00:00:00 2001
+From: John Ralls <jralls@ceridwen.us>
+Date: Mon, 10 Jan 2022 10:23:01 -0800
+Subject: [PATCH] Remove all instances of using namespace std.
+
+Fixes https://github.com/libofx/libofx/issues/54
+
+See https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rs-using-directive
+While https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#Rs-using
+supports using namespace in implementation (i.e. .cpp) files, I've elected to remove
+it completely for better consistency.
+---
+ configure.ac                      |   1 -
+ lib/context.cpp                   |   4 -
+ lib/context.hh                    |   2 -
+ lib/file_preproc.cpp              |  21 +-
+ lib/messages.cpp                  |  28 +--
+ lib/messages.hh                   |   3 +-
+ lib/ofc_sgml.cpp                  |  14 +-
+ lib/ofx_aggregate.hh              |  20 +-
+ lib/ofx_container_account.cpp     |  16 +-
+ lib/ofx_container_generic.cpp     |   4 +-
+ lib/ofx_container_main.cpp        |   6 +-
+ lib/ofx_container_position.cpp    |   4 +-
+ lib/ofx_container_security.cpp    |   4 +-
+ lib/ofx_container_statement.cpp   |   4 +-
+ lib/ofx_container_transaction.cpp |  12 +-
+ lib/ofx_containers.hh             |  62 +++--
+ lib/ofx_containers_misc.cpp       |  20 +-
+ lib/ofx_preproc.cpp               |  99 ++++----
+ lib/ofx_preproc.hh                |   2 +-
+ lib/ofx_request.cpp               |  22 +-
+ lib/ofx_request.hh                |  10 +-
+ lib/ofx_request_accountinfo.cpp   |   4 +-
+ lib/ofx_request_accountinfo.hh    |   3 -
+ lib/ofx_request_statement.cpp     |   9 +-
+ lib/ofx_request_statement.hh      |   3 -
+ lib/ofx_sgml.cpp                  |  13 +-
+ lib/ofx_utilities.cpp             |  39 ++--
+ lib/ofx_utilities.hh              |  14 +-
+ ofxconnect/ofxconnect.cpp         |  16 +-
+ ofxdump/ofxdump.cpp               | 371 +++++++++++++++---------------
+ 30 files changed, 397 insertions(+), 433 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index 2fba86b..19b2c23 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -190,7 +190,6 @@ AC_MSG_CHECKING([for libosp])
+ AC_LANG_CPLUSPLUS
+ 	AC_TRY_RUN([
+ 		#include "ParserEventGeneratorKit.h"
+-		using namespace std;
+ 		class OutlineApplication : public SGMLApplication {
+ 		public:
+ 		  OutlineApplication() { }
+diff --git a/lib/context.cpp b/lib/context.cpp
+index 21a13c9..b086b45 100644
+--- a/lib/context.cpp
++++ b/lib/context.cpp
+@@ -13,10 +13,6 @@
+ #include <config.h>
+ #include "context.hh"
+ 
+-using namespace std;
+-
+-
+-
+ LibofxContext::LibofxContext()
+   : _current_file_type(OFX)
+   , _statusCallback(0)
+diff --git a/lib/context.hh b/lib/context.hh
+index c8261cf..c938b71 100644
+--- a/lib/context.hh
++++ b/lib/context.hh
+@@ -20,8 +20,6 @@
+ 
+ #include <string>
+ 
+-
+-using namespace std;
+ class LibofxContext
+ {
+ private:
+diff --git a/lib/file_preproc.cpp b/lib/file_preproc.cpp
+index 060b5f3..625db77 100644
+--- a/lib/file_preproc.cpp
++++ b/lib/file_preproc.cpp
+@@ -28,7 +28,6 @@
+ #include "context.hh"
+ #include "file_preproc.hh"
+ 
+-using namespace std;
+ const unsigned int READ_BUFFER_SIZE = 1024;
+ 
+ /* get_file_type_description returns a string description of a LibofxFileType
+@@ -70,9 +69,9 @@ int libofx_proc_file(LibofxContextPtr p_libofx_context, const char * p_filename,
+ 
+   if (p_file_type == AUTODETECT)
+   {
+-    message_out(INFO, string("libofx_proc_file(): File format not specified, autodetecting..."));
++    message_out(INFO, std::string("libofx_proc_file(): File format not specified, autodetecting..."));
+     libofx_context->setCurrentFileType(libofx_detect_file_type(p_filename));
+-    message_out(INFO, string("libofx_proc_file(): Detected file format: ") +
++    message_out(INFO, std::string("libofx_proc_file(): Detected file format: ") +
+                 libofx_get_file_format_description(LibofxImportFormatList,
+                     libofx_context->currentFileType() ));
+   }
+@@ -80,7 +79,7 @@ int libofx_proc_file(LibofxContextPtr p_libofx_context, const char * p_filename,
+   {
+     libofx_context->setCurrentFileType(p_file_type);
+     message_out(INFO,
+-                string("libofx_proc_file(): File format forced to: ") +
++                std::string("libofx_proc_file(): File format forced to: ") +
+                 libofx_get_file_format_description(LibofxImportFormatList,
+                     libofx_context->currentFileType() ));
+   }
+@@ -92,7 +91,7 @@ int libofx_proc_file(LibofxContextPtr p_libofx_context, const char * p_filename,
+   case OFC:
+     return ofx_proc_file(libofx_context, p_filename);
+   default:
+-    message_out(ERROR, string("libofx_proc_file(): Could not detect file format, or unsupported file format; aborting."));
++    message_out(ERROR, std::string("libofx_proc_file(): Could not detect file format, or unsupported file format; aborting."));
+     return -1;
+   }
+   return 0; // never reached
+@@ -101,20 +100,20 @@ int libofx_proc_file(LibofxContextPtr p_libofx_context, const char * p_filename,
+ enum LibofxFileFormat libofx_detect_file_type(const char * p_filename)
+ {
+   enum LibofxFileFormat retval = UNKNOWN;
+-  ifstream input_file;
++  std::ifstream input_file;
+   char buffer[READ_BUFFER_SIZE];
+-  string s_buffer;
++  std::string s_buffer;
+   bool type_found = false;
+ 
+   if (p_filename != NULL && strcmp(p_filename, "") != 0)
+   {
+-    message_out(DEBUG, string("libofx_detect_file_type():Opening file: ") + p_filename);
++    message_out(DEBUG, std::string("libofx_detect_file_type():Opening file: ") + p_filename);
+ 
+     input_file.open(p_filename);
+ 
+     if (!input_file)
+     {
+-      message_out(ERROR, "libofx_detect_file_type():Unable to open the input file " + string(p_filename));
++      message_out(ERROR, "libofx_detect_file_type():Unable to open the input file " + std::string(p_filename));
+       return retval;
+     }
+     else
+@@ -134,13 +133,13 @@ enum LibofxFileFormat libofx_detect_file_type(const char * p_filename)
+           input_file.clear();
+         }
+ 
+-        if (s_buffer.find("<OFX") != string::npos || s_buffer.find("<ofx") != string::npos)
++        if (s_buffer.find("<OFX") != std::string::npos || s_buffer.find("<ofx") != std::string::npos)
+         {
+           message_out(DEBUG, "libofx_detect_file_type():<OFX> tag has been found");
+           retval = OFX;
+           type_found = true;
+         }
+-        else if (s_buffer.find("<OFC>") != string::npos || s_buffer.find("<ofc>") != string::npos)
++        else if (s_buffer.find("<OFC>") != std::string::npos || s_buffer.find("<ofc>") != std::string::npos)
+         {
+           message_out(DEBUG, "libofx_detect_file_type():<OFC> tag has been found");
+           retval = OFC;
+diff --git a/lib/messages.cpp b/lib/messages.cpp
+index 2d1f68a..0836133 100644
+--- a/lib/messages.cpp
++++ b/lib/messages.cpp
+@@ -50,7 +50,7 @@ void show_line_number()
+   {
+     SGMLApplication::Location *location = new SGMLApplication::Location(entity_ptr, position);
+     if (location->lineNumber < LONG_MAX)
+-      cerr << "(Above message occurred on Line " << location->lineNumber << ", Column " << location->columnNumber << ")" << endl;
++      std::cerr << "(Above message occurred on Line " << location->lineNumber << ", Column " << location->columnNumber << ")" << std::endl;
+     delete location;
+   }
+ }
+@@ -58,7 +58,7 @@ void show_line_number()
+ /**
+    Prints a message to stdout, if the corresponding message OfxMsgType given in the parameters is enabled
+ */
+-int message_out(OfxMsgType error_type, const string message)
++int message_out(OfxMsgType error_type, const std::string message)
+ {
+ 
+ 
+@@ -67,82 +67,82 @@ int message_out(OfxMsgType error_type, const string message)
+   case DEBUG :
+     if (ofx_DEBUG_msg == true)
+     {
+-      cerr << "LibOFX DEBUG: " << message << "\n";
++      std::cerr << "LibOFX DEBUG: " << message << "\n";
+       show_line_number();
+     }
+     break;
+   case DEBUG1 :
+     if (ofx_DEBUG1_msg == true)
+     {
+-      cerr << "LibOFX DEBUG1: " << message << "\n";
++      std::cerr << "LibOFX DEBUG1: " << message << "\n";
+       show_line_number();
+     }
+     break;
+   case DEBUG2 :
+     if (ofx_DEBUG2_msg == true)
+     {
+-      cerr << "LibOFX DEBUG2: " << message << "\n";
++      std::cerr << "LibOFX DEBUG2: " << message << "\n";
+       show_line_number();
+     }
+     break;
+   case DEBUG3 :
+     if (ofx_DEBUG3_msg == true)
+     {
+-      cerr << "LibOFX DEBUG3: " << message << "\n";
++      std::cerr << "LibOFX DEBUG3: " << message << "\n";
+       show_line_number();
+     }
+     break;
+   case DEBUG4 :
+     if (ofx_DEBUG4_msg == true)
+     {
+-      cerr << "LibOFX DEBUG4: " << message << "\n";
++      std::cerr << "LibOFX DEBUG4: " << message << "\n";
+       show_line_number();
+     }
+     break;
+   case DEBUG5 :
+     if (ofx_DEBUG5_msg == true)
+     {
+-      cerr << "LibOFX DEBUG5: " << message << "\n";
++      std::cerr << "LibOFX DEBUG5: " << message << "\n";
+       show_line_number();
+     }
+     break;
+   case STATUS :
+     if (ofx_STATUS_msg == true)
+     {
+-      cerr << "LibOFX STATUS: " << message << "\n";
++      std::cerr << "LibOFX STATUS: " << message << "\n";
+       show_line_number();
+     }
+     break;
+   case INFO :
+     if (ofx_INFO_msg == true)
+     {
+-      cerr << "LibOFX INFO: " << message << "\n";
++      std::cerr << "LibOFX INFO: " << message << "\n";
+       show_line_number();
+     }
+     break;
+   case WARNING :
+     if (ofx_WARNING_msg == true)
+     {
+-      cerr << "LibOFX WARNING: " << message << "\n";
++      std::cerr << "LibOFX WARNING: " << message << "\n";
+       show_line_number();
+     }
+     break;
+   case ERROR :
+     if (ofx_ERROR_msg == true)
+     {
+-      cerr << "LibOFX ERROR: " << message << "\n";
++      std::cerr << "LibOFX ERROR: " << message << "\n";
+       show_line_number();
+     }
+     break;
+   case PARSER :
+     if (ofx_PARSER_msg == true)
+     {
+-      cerr << "LibOFX PARSER: " << message << "\n";
++      std::cerr << "LibOFX PARSER: " << message << "\n";
+       show_line_number();
+     }
+     break;
+   default:
+-    cerr << "LibOFX UNKNOWN ERROR CLASS, This is a bug in LibOFX\n";
++    std::cerr << "LibOFX UNKNOWN ERROR CLASS, This is a bug in LibOFX\n";
+     show_line_number();
+   }
+ 
+diff --git a/lib/messages.hh b/lib/messages.hh
+index acef775..83d7b29 100644
+--- a/lib/messages.hh
++++ b/lib/messages.hh
+@@ -34,8 +34,7 @@ enum OfxMsgType
+   ERROR,       /**< Error message */
+   PARSER       /**< Parser events */
+ };
+-using namespace std;
+ /// Message output function
+-int message_out(OfxMsgType type, const string message);
++int message_out(OfxMsgType type, const std::string message);
+ 
+ #endif
+diff --git a/lib/ofc_sgml.cpp b/lib/ofc_sgml.cpp
+index ea4a168..955cbb4 100644
+--- a/lib/ofc_sgml.cpp
++++ b/lib/ofc_sgml.cpp
+@@ -33,8 +33,6 @@
+ #include "ofx_containers.hh"
+ #include "ofc_sgml.hh"
+ 
+-using namespace std;
+-
+ 
+ extern SGMLApplication::OpenEntityPtr entity_ptr;
+ extern SGMLApplication::Position position;
+@@ -48,7 +46,7 @@ private:
+   OfxGenericContainer *curr_container_element; /**< The currently open object from ofx_proc_rs.cpp */
+   OfxGenericContainer *tmp_container_element;
+   bool is_data_element; /**< If the SGML element contains data, this flag is raised */
+-  string incoming_data; /**< The raw data from the SGML data element */
++  std::string incoming_data; /**< The raw data from the SGML data element */
+   LibofxContext * libofx_context;
+ public:
+   OFCApplication (LibofxContext * p_libofx_context)
+@@ -65,7 +63,7 @@ public:
+   */
+   void startElement (const StartElementEvent & event)
+   {
+-    string identifier;
++    std::string identifier;
+     CharStringtostring (event.gi, identifier);
+     message_out(PARSER, "startElement event received from OpenSP for element " + identifier);
+ 
+@@ -210,7 +208,7 @@ public:
+   */
+   void endElement (const EndElementEvent & event)
+   {
+-    string identifier;
++    std::string identifier;
+     bool end_element_for_data_element;
+ 
+     CharStringtostring (event.gi, identifier);
+@@ -282,7 +280,7 @@ public:
+   */
+   void data (const DataEvent & event)
+   {
+-    string tmp;
++    std::string tmp;
+     position = event.pos;
+     AppendCharStringtostring (event.data, incoming_data);
+     message_out(PARSER, "data event received from OpenSP, incoming_data is now: " + incoming_data);
+@@ -294,8 +292,8 @@ public:
+   */
+   void error (const ErrorEvent & event)
+   {
+-    string message;
+-    string string_buf;
++    std::string message;
++    std::string string_buf;
+     OfxMsgType error_type = ERROR;
+ 
+     position = event.pos;
+diff --git a/lib/ofx_aggregate.hh b/lib/ofx_aggregate.hh
+index c74606f..0ef7b09 100644
+--- a/lib/ofx_aggregate.hh
++++ b/lib/ofx_aggregate.hh
+@@ -22,8 +22,6 @@
+ 
+ #include <string>
+ 
+-using namespace std;
+-
+ /**
+  * \brief A single aggregate as described in the OFX 1.02 specification
+  *
+@@ -47,7 +45,7 @@ public:
+     *
+     * @param tag The tag of this aggregate
+     */
+-  OfxAggregate( const string& tag ): m_tag( tag )
++  OfxAggregate( const std::string& tag ): m_tag( tag )
+   {}
+ 
+   /**
+@@ -56,9 +54,9 @@ public:
+     * @param tag The tag of the element to be added
+     * @param data The data of the element to be added
+     */
+-  void Add( const string& tag, const string& data )
++  void Add( const std::string& tag, const std::string& data )
+   {
+-    m_contents += string("<") + tag + string(">") + data + string("\r\n");
++    m_contents += std::string("<") + tag + std::string(">") + data + std::string("\r\n");
+   }
+ 
+   /**
+@@ -67,9 +65,9 @@ public:
+     * @param tag The tag of the element to be added
+     * @param data The data of the element to be added
+     */
+-  void AddXml( const string& tag, const string& data )
++  void AddXml( const std::string& tag, const std::string& data )
+   {
+-    m_contents += string("<") + tag + string(">") + data + string("</") + tag + string(">") + string("\r\n");
++    m_contents += std::string("<") + tag + std::string(">") + data + std::string("</") + tag + std::string(">") + std::string("\r\n");
+   }
+ 
+   /**
+@@ -87,14 +85,14 @@ public:
+     *
+     * @return string form of this aggregate
+     */
+-  string Output( void ) const
++  std::string Output( void ) const
+   {
+-    return string("<") + m_tag + string(">\r\n") + m_contents + string("</") + m_tag + string(">\r\n");
++    return std::string("<") + m_tag + std::string(">\r\n") + m_contents + std::string("</") + m_tag + std::string(">\r\n");
+   }
+ 
+ private:
+-  string m_tag;
+-  string m_contents;
++  std::string m_tag;
++  std::string m_contents;
+ };
+ 
+ #endif // OFX_AGGREGATE_H
+diff --git a/lib/ofx_container_account.cpp b/lib/ofx_container_account.cpp
+index 3219d2b..0cfcd76 100644
+--- a/lib/ofx_container_account.cpp
++++ b/lib/ofx_container_account.cpp
+@@ -33,7 +33,7 @@ extern OfxMainContainer * MainContainer;
+  *                      OfxAccountContainer                                *
+  ***************************************************************************/
+ 
+-OfxAccountContainer::OfxAccountContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
++OfxAccountContainer::OfxAccountContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
+   OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
+ {
+   memset(&data, 0, sizeof(data));
+@@ -64,7 +64,7 @@ OfxAccountContainer::~OfxAccountContainer()
+       ofx_proc_account_cb (data);*/
+ }
+ 
+-void OfxAccountContainer::add_attribute(const string identifier, const string value)
++void OfxAccountContainer::add_attribute(const std::string identifier, const std::string value)
+ {
+   if ( identifier == "BANKID")
+   {
+@@ -150,19 +150,19 @@ void OfxAccountContainer::gen_account_id(void)
+ {
+   if (data.account_type == OfxAccountData::OFX_CREDITCARD)
+   {
+-    STRNCPY(data.account_id, string(data.account_id) + m_acctid + " " + m_acctkey);
+-    STRNCPY(data.account_name, string(data.account_name) + "Credit card " + m_acctid);
++    STRNCPY(data.account_id, std::string(data.account_id) + m_acctid + " " + m_acctkey);
++    STRNCPY(data.account_name, std::string(data.account_name) + "Credit card " + m_acctid);
+   }
+   else if (data.account_type == OfxAccountData::OFX_INVESTMENT)
+   {
+-    STRNCPY(data.account_id, string(data.account_id) + m_brokerid + " " + m_acctid);
+-    STRNCPY(data.account_name, string(data.account_name) + "Investment account " +
++    STRNCPY(data.account_id, std::string(data.account_id) + m_brokerid + " " + m_acctid);
++    STRNCPY(data.account_name, std::string(data.account_name) + "Investment account " +
+             m_acctid + " at broker " + m_brokerid);
+   }
+   else
+   {
+-    STRNCPY(data.account_id, string(data.account_id) + m_bankid + " " + m_branchid + " " + m_acctid);
+-    STRNCPY(data.account_name, string(data.account_name) + "Bank account " + m_acctid);
++    STRNCPY(data.account_id, std::string(data.account_id) + m_bankid + " " + m_branchid + " " + m_acctid);
++    STRNCPY(data.account_name, std::string(data.account_name) + "Bank account " + m_acctid);
+   }
+   data.account_id_valid = true;
+ }//end OfxAccountContainer::gen_account_id()
+diff --git a/lib/ofx_container_generic.cpp b/lib/ofx_container_generic.cpp
+index cc1b7ca..9334536 100644
+--- a/lib/ofx_container_generic.cpp
++++ b/lib/ofx_container_generic.cpp
+@@ -44,7 +44,7 @@ OfxGenericContainer::OfxGenericContainer(LibofxContext *p_libofx_context, OfxGen
+     message_out(DEBUG, "OfxGenericContainer(): The parent is a DummyContainer!");
+   }
+ }
+-OfxGenericContainer::OfxGenericContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier)
++OfxGenericContainer::OfxGenericContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier)
+ {
+   libofx_context = p_libofx_context;
+   parentcontainer = para_parentcontainer;
+@@ -54,7 +54,7 @@ OfxGenericContainer::OfxGenericContainer(LibofxContext *p_libofx_context, OfxGen
+     message_out(DEBUG, "OfxGenericContainer(): The parent for this " + tag_identifier + " is a DummyContainer!");
+   }
+ }
+-void OfxGenericContainer::add_attribute(const string identifier, const string value)
++void OfxGenericContainer::add_attribute(const std::string identifier, const std::string value)
+ {
+   /*If an attribute has made it all the way up to the Generic Container's add_attribute,
+     we don't know what to do with it! */
+diff --git a/lib/ofx_container_main.cpp b/lib/ofx_container_main.cpp
+index 69a2fbc..d658f27 100644
+--- a/lib/ofx_container_main.cpp
++++ b/lib/ofx_container_main.cpp
+@@ -27,7 +27,7 @@
+ #include "libofx.h"
+ #include "ofx_containers.hh"
+ 
+-OfxMainContainer::OfxMainContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
++OfxMainContainer::OfxMainContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
+   OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
+ {
+ 
+@@ -209,7 +209,7 @@ int  OfxMainContainer::gen_event()
+   return true;
+ }
+ 
+-OfxSecurityData *  OfxMainContainer::find_security(string unique_id)
++OfxSecurityData *  OfxMainContainer::find_security(std::string unique_id)
+ {
+   message_out(DEBUG, "OfxMainContainer::find_security() Begin.");
+ 
+@@ -219,7 +219,7 @@ OfxSecurityData *  OfxMainContainer::find_security(string unique_id)
+   {
+     if (((OfxSecurityContainer*)(*tmp))->data.unique_id == unique_id)
+     {
+-      message_out(DEBUG, (string)"Security " + ((OfxSecurityContainer*)(*tmp))->data.unique_id + " found.");
++      message_out(DEBUG, (std::string)"Security " + ((OfxSecurityContainer*)(*tmp))->data.unique_id + " found.");
+       retval = &((OfxSecurityContainer*)(*tmp))->data;
+     }
+     ++tmp;
+diff --git a/lib/ofx_container_position.cpp b/lib/ofx_container_position.cpp
+index 1dc585c..a88d67a 100644
+--- a/lib/ofx_container_position.cpp
++++ b/lib/ofx_container_position.cpp
+@@ -33,7 +33,7 @@ extern OfxMainContainer * MainContainer;
+  *                     OfxPositionContainer                                *
+  ***************************************************************************/
+ 
+-OfxPositionContainer::OfxPositionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
++OfxPositionContainer::OfxPositionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
+   OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
+ {
+   memset(&data, 0, sizeof(data));
+@@ -42,7 +42,7 @@ OfxPositionContainer::OfxPositionContainer(LibofxContext *p_libofx_context, OfxG
+ OfxPositionContainer::~OfxPositionContainer()
+ {
+ }
+-void OfxPositionContainer::add_attribute(const string identifier, const string value)
++void OfxPositionContainer::add_attribute(const std::string identifier, const std::string value)
+ {
+   if (identifier == "UNIQUEID")
+   {
+diff --git a/lib/ofx_container_security.cpp b/lib/ofx_container_security.cpp
+index 8863b2d..a3a6cc8 100644
+--- a/lib/ofx_container_security.cpp
++++ b/lib/ofx_container_security.cpp
+@@ -33,7 +33,7 @@ extern OfxMainContainer * MainContainer;
+  *                     OfxSecurityContainer                                *
+  ***************************************************************************/
+ 
+-OfxSecurityContainer::OfxSecurityContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
++OfxSecurityContainer::OfxSecurityContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
+   OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
+ {
+   memset(&data, 0, sizeof(data));
+@@ -54,7 +54,7 @@ OfxSecurityContainer::~OfxSecurityContainer()
+ {
+ }
+ 
+-void OfxSecurityContainer::add_attribute(const string identifier, const string value)
++void OfxSecurityContainer::add_attribute(const std::string identifier, const std::string value)
+ {
+   if (identifier == "UNIQUEID")
+   {
+diff --git a/lib/ofx_container_statement.cpp b/lib/ofx_container_statement.cpp
+index 51b4a89..bca2df3 100644
+--- a/lib/ofx_container_statement.cpp
++++ b/lib/ofx_container_statement.cpp
+@@ -33,7 +33,7 @@ extern OfxMainContainer * MainContainer;
+  *                    OfxStatementContainer                                *
+  ***************************************************************************/
+ 
+-OfxStatementContainer::OfxStatementContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
++OfxStatementContainer::OfxStatementContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
+   OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
+ {
+   memset(&data, 0, sizeof(data));
+@@ -47,7 +47,7 @@ OfxStatementContainer::~OfxStatementContainer()
+         transaction_queue.pop();
+       }*/
+ }
+-void OfxStatementContainer::add_attribute(const string identifier, const string value)
++void OfxStatementContainer::add_attribute(const std::string identifier, const std::string value)
+ {
+   if (identifier == "CURDEF")
+   {
+diff --git a/lib/ofx_container_transaction.cpp b/lib/ofx_container_transaction.cpp
+index e13c331..e6a15ac 100644
+--- a/lib/ofx_container_transaction.cpp
++++ b/lib/ofx_container_transaction.cpp
+@@ -34,7 +34,7 @@ extern OfxMainContainer * MainContainer;
+  *                      OfxTransactionContainer                            *
+  ***************************************************************************/
+ 
+-OfxTransactionContainer::OfxTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
++OfxTransactionContainer::OfxTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
+   OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
+ {
+   OfxGenericContainer * tmp_parentcontainer = parentcontainer;
+@@ -93,7 +93,7 @@ int  OfxTransactionContainer::add_to_main_tree()
+ }
+ 
+ 
+-void OfxTransactionContainer::add_attribute(const string identifier, const string value)
++void OfxTransactionContainer::add_attribute(const std::string identifier, const std::string value)
+ {
+ 
+   if (identifier == "DTPOSTED")
+@@ -168,12 +168,12 @@ void OfxTransactionContainer::add_account(OfxAccountData * account_data)
+  *                      OfxBankTransactionContainer                        *
+  ***************************************************************************/
+ 
+-OfxBankTransactionContainer::OfxBankTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
++OfxBankTransactionContainer::OfxBankTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
+   OfxTransactionContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
+ {
+   ;
+ }
+-void OfxBankTransactionContainer::add_attribute(const string identifier, const string value)
++void OfxBankTransactionContainer::add_attribute(const std::string identifier, const std::string value)
+ {
+   if ( identifier == "TRNTYPE")
+   {
+@@ -289,7 +289,7 @@ void OfxBankTransactionContainer::add_attribute(const string identifier, const s
+  *                    OfxInvestmentTransactionContainer                    *
+  ***************************************************************************/
+ 
+-OfxInvestmentTransactionContainer::OfxInvestmentTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
++OfxInvestmentTransactionContainer::OfxInvestmentTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
+   OfxTransactionContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
+ {
+   type = "INVESTMENT";
+@@ -387,7 +387,7 @@ OfxInvestmentTransactionContainer::OfxInvestmentTransactionContainer(LibofxConte
+   }
+ }
+ 
+-void OfxInvestmentTransactionContainer::add_attribute(const string identifier, const string value)
++void OfxInvestmentTransactionContainer::add_attribute(const std::string identifier, const std::string value)
+ {
+   if (identifier == "UNIQUEID")
+   {
+diff --git a/lib/ofx_containers.hh b/lib/ofx_containers.hh
+index d8a1c1f..61b142d 100644
+--- a/lib/ofx_containers.hh
++++ b/lib/ofx_containers.hh
+@@ -24,8 +24,6 @@
+ #include "tree.hh"
+ #include "context.hh"
+ 
+-using namespace std;
+-
+ /** \brief A generic container for an OFX SGML element.  Every container inherits from OfxGenericContainer.
+  *
+  A hierarchy of containers is built as the file is parsed.  The supported OFX elements all have a matching container.  The others are assigned a OfxDummyContainer, so every OFX element creates a container as the file is par Note however that containers are destroyed as soon as the corresponding SGML element is closed.
+@@ -33,14 +31,14 @@ using namespace std;
+ class OfxGenericContainer
+ {
+ public:
+-  string type;/**< The type of the object, often == tag_identifier */
+-  string tag_identifier; /**< The identifer of the creating tag */
++  std::string type;/**< The type of the object, often == tag_identifier */
++  std::string tag_identifier; /**< The identifier of the creating tag */
+   OfxGenericContainer *parentcontainer;
+   LibofxContext *libofx_context;
+ 
+   OfxGenericContainer(LibofxContext *p_libofx_context);
+   OfxGenericContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer);
+-  OfxGenericContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
++  OfxGenericContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
+ 
+   virtual ~OfxGenericContainer() {};
+ 
+@@ -50,7 +48,7 @@ public:
+    \param identifier The name of the data element
+    \param value The concatenated string of the data
+   */
+-  virtual void add_attribute(const string identifier, const string value);
++  virtual void add_attribute(const std::string identifier, const std::string value);
+   /** \brief Generate libofx.h events.
+    *
+    gen_event will call the appropriate ofx_proc_XXX_cb defined in libofx.h if one is available.
+@@ -76,8 +74,8 @@ public:
+ class OfxDummyContainer: public OfxGenericContainer
+ {
+ public:
+-  OfxDummyContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+-  void add_attribute(const string identifier, const string value);
++  OfxDummyContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
++  void add_attribute(const std::string identifier, const std::string value);
+ };
+ 
+ /** \brief A container to hold OFX SGML elements for <INV401K>
+@@ -87,8 +85,8 @@ public:
+ class OfxInv401kContainer: public OfxGenericContainer
+ {
+ public:
+-  OfxInv401kContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+-  void add_attribute(const string identifier, const string value);
++  OfxInv401kContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
++  void add_attribute(const std::string identifier, const std::string value);
+ };
+ 
+ /** \brief A container to hold a OFX SGML element for which you want the parent to process it's data elements
+@@ -99,8 +97,8 @@ class OfxPushUpContainer: public OfxGenericContainer
+ {
+ public:
+ 
+-  OfxPushUpContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+-  void add_attribute(const string identifier, const string value);
++  OfxPushUpContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
++  void add_attribute(const std::string identifier, const std::string value);
+ };
+ 
+ /** \brief Represents the <STATUS> OFX SGML entity */
+@@ -109,9 +107,9 @@ class OfxStatusContainer: public OfxGenericContainer
+ public:
+   OfxStatusData data;
+ 
+-  OfxStatusContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
++  OfxStatusContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
+   ~OfxStatusContainer();
+-  void add_attribute(const string identifier, const string value);
++  void add_attribute(const std::string identifier, const std::string value);
+ };
+ 
+ /** \brief Represents the <BALANCE>, <INVBAL> or <INV401KBAL> OFX SGML entity
+@@ -142,9 +140,9 @@ public:
+   double buying_power;
+   bool buying_power_valid;
+ 
+-  OfxBalanceContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
++  OfxBalanceContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
+   ~OfxBalanceContainer();
+-  void add_attribute(const string identifier, const string value);
++  void add_attribute(const std::string identifier, const std::string value);
+ };
+ 
+ /***************************************************************************
+@@ -159,9 +157,9 @@ class OfxStatementContainer: public OfxGenericContainer
+ public:
+   OfxStatementData data;
+ 
+-  OfxStatementContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
++  OfxStatementContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
+   ~OfxStatementContainer();
+-  void add_attribute(const string identifier, const string value);
++  void add_attribute(const std::string identifier, const std::string value);
+   virtual int add_to_main_tree();
+   virtual int gen_event();
+   void add_account(OfxAccountData * account_data);
+@@ -182,9 +180,9 @@ class OfxAccountContainer: public OfxGenericContainer
+ public:
+   OfxAccountData data;
+ 
+-  OfxAccountContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
++  OfxAccountContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
+   ~OfxAccountContainer();
+-  void add_attribute(const string identifier, const string value);
++  void add_attribute(const std::string identifier, const std::string value);
+   int add_to_main_tree();
+   virtual int gen_event();
+ private:
+@@ -206,9 +204,9 @@ class OfxSecurityContainer: public OfxGenericContainer
+ public:
+   OfxSecurityData data;
+ 
+-  OfxSecurityContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
++  OfxSecurityContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
+   ~OfxSecurityContainer();
+-  void add_attribute(const string identifier, const string value);
++  void add_attribute(const std::string identifier, const std::string value);
+   virtual int gen_event();
+   virtual int add_to_main_tree();
+ private:
+@@ -226,9 +224,9 @@ class OfxPositionContainer: public OfxGenericContainer
+ public:
+   OfxPositionData data;
+ 
+-  OfxPositionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
++  OfxPositionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
+   ~OfxPositionContainer();
+-  void add_attribute(const string identifier, const string value);
++  void add_attribute(const std::string identifier, const std::string value);
+   void add_account(OfxAccountData * account_data);
+   virtual int gen_event();
+   virtual int add_to_main_tree();
+@@ -247,9 +245,9 @@ class OfxTransactionContainer: public OfxGenericContainer
+ public:
+   OfxTransactionData data;
+ 
+-  OfxTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
++  OfxTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
+   ~OfxTransactionContainer();
+-  virtual void add_attribute(const string identifier, const string value);
++  virtual void add_attribute(const std::string identifier, const std::string value);
+   void add_account(OfxAccountData * account_data);
+ 
+   virtual int gen_event();
+@@ -265,8 +263,8 @@ private:
+ class OfxBankTransactionContainer: public OfxTransactionContainer
+ {
+ public:
+-  OfxBankTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
+-  void add_attribute(const string identifier, const string value);
++  OfxBankTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
++  void add_attribute(const std::string identifier, const std::string value);
+ };
+ 
+ /** \brief  Represents a bank or credid card transaction.
+@@ -276,9 +274,9 @@ public:
+ class OfxInvestmentTransactionContainer: public OfxTransactionContainer
+ {
+ public:
+-  OfxInvestmentTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
++  OfxInvestmentTransactionContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
+ 
+-  void add_attribute(const string identifier, const string value);
++  void add_attribute(const std::string identifier, const std::string value);
+ };
+ 
+ /***************************************************************************
+@@ -291,7 +289,7 @@ public:
+ class OfxMainContainer: public OfxGenericContainer
+ {
+ public:
+-  OfxMainContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier);
++  OfxMainContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier);
+   ~OfxMainContainer();
+   int add_container(OfxGenericContainer * container);
+   int add_container(OfxStatementContainer * container);
+@@ -300,7 +298,7 @@ public:
+   int add_container(OfxSecurityContainer * container);
+   int add_container(OfxPositionContainer * container);
+   int gen_event();
+-  OfxSecurityData * find_security(string unique_id);
++  OfxSecurityData * find_security(std::string unique_id);
+ private:
+   tree<OfxGenericContainer *> security_tree;
+   tree<OfxGenericContainer *> account_tree;
+diff --git a/lib/ofx_containers_misc.cpp b/lib/ofx_containers_misc.cpp
+index 129953a..b36fc56 100644
+--- a/lib/ofx_containers_misc.cpp
++++ b/lib/ofx_containers_misc.cpp
+@@ -38,13 +38,13 @@ extern OfxMainContainer * MainContainer;
+  *                         OfxDummyContainer                               *
+  ***************************************************************************/
+ 
+-OfxDummyContainer::OfxDummyContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
++OfxDummyContainer::OfxDummyContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
+   OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
+ {
+   type = "DUMMY";
+   message_out(INFO, "Created OfxDummyContainer to hold unsupported aggregate " + para_tag_identifier);
+ }
+-void OfxDummyContainer::add_attribute(const string identifier, const string value)
++void OfxDummyContainer::add_attribute(const std::string identifier, const std::string value)
+ {
+   message_out(DEBUG, "OfxDummyContainer for " + tag_identifier + " ignored a " + identifier + " (" + value + ")");
+ }
+@@ -53,13 +53,13 @@ void OfxDummyContainer::add_attribute(const string identifier, const string valu
+  *                         OfxPushUpContainer                              *
+  ***************************************************************************/
+ 
+-OfxPushUpContainer::OfxPushUpContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
++OfxPushUpContainer::OfxPushUpContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
+   OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
+ {
+   type = "PUSHUP";
+   message_out(DEBUG, "Created OfxPushUpContainer to hold aggregate " + tag_identifier);
+ }
+-void OfxPushUpContainer::add_attribute(const string identifier, const string value)
++void OfxPushUpContainer::add_attribute(const std::string identifier, const std::string value)
+ {
+   //message_out(DEBUG, "OfxPushUpContainer for "+tag_identifier+" will push up a "+identifier+" ("+value+") to a "+ parentcontainer->type + " container");
+   if (parentcontainer)
+@@ -70,7 +70,7 @@ void OfxPushUpContainer::add_attribute(const string identifier, const string val
+  *                         OfxStatusContainer                              *
+  ***************************************************************************/
+ 
+-OfxStatusContainer::OfxStatusContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
++OfxStatusContainer::OfxStatusContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
+   OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
+ {
+   memset(&data, 0, sizeof(data));
+@@ -91,7 +91,7 @@ OfxStatusContainer::~OfxStatusContainer()
+     delete [] data.server_message;
+ }
+ 
+-void OfxStatusContainer::add_attribute(const string identifier, const string value)
++void OfxStatusContainer::add_attribute(const std::string identifier, const std::string value)
+ {
+   ErrorMsg error_msg;
+ 
+@@ -142,7 +142,7 @@ void OfxStatusContainer::add_attribute(const string identifier, const string val
+  * OfxBalanceContainer  (does not directly abstract a object in libofx.h)  *
+  ***************************************************************************/
+ 
+-OfxBalanceContainer::OfxBalanceContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
++OfxBalanceContainer::OfxBalanceContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
+   OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
+ {
+   amount_valid = false;
+@@ -164,7 +164,7 @@ OfxBalanceContainer::~OfxBalanceContainer()
+     message_out (ERROR, "I completed a " + type + " element, but I haven't found a suitable parent to save it");
+   }
+ }
+-void OfxBalanceContainer::add_attribute(const string identifier, const string value)
++void OfxBalanceContainer::add_attribute(const std::string identifier, const std::string value)
+ {
+   if (identifier == "BALAMT" ||
+       identifier == "AVAILCASH" ||  // from <INVBAL>
+@@ -202,13 +202,13 @@ void OfxBalanceContainer::add_attribute(const string identifier, const string va
+  * so they don't corrupt the statement dates.                              *
+ ***************************************************************************/
+ 
+-OfxInv401kContainer::OfxInv401kContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, string para_tag_identifier):
++OfxInv401kContainer::OfxInv401kContainer(LibofxContext *p_libofx_context, OfxGenericContainer *para_parentcontainer, std::string para_tag_identifier):
+   OfxGenericContainer(p_libofx_context, para_parentcontainer, para_tag_identifier)
+ {
+   type = "INV401K";
+   message_out(INFO, "Created OfxInv401kContainer to hold unsupported aggregate " + para_tag_identifier);
+ }
+-void OfxInv401kContainer::add_attribute(const string identifier, const string value)
++void OfxInv401kContainer::add_attribute(const std::string identifier, const std::string value)
+ {
+   if (identifier == "DTSTART" || identifier == "DTEND" || identifier == "DTASOF")
+   {
+diff --git a/lib/ofx_preproc.cpp b/lib/ofx_preproc.cpp
+index e465497..18992af 100644
+--- a/lib/ofx_preproc.cpp
++++ b/lib/ofx_preproc.cpp
+@@ -51,7 +51,6 @@
+ #define LIBOFX_DEFAULT_INPUT_ENCODING "CP1252"
+ #define LIBOFX_DEFAULT_OUTPUT_ENCODING "UTF-8"
+ 
+-using namespace std;
+ /**
+    \brief The number of different paths to search for DTDs.
+ */
+@@ -85,8 +84,8 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
+   bool ofx_end = false;
+   bool file_is_xml = false;
+   bool used_iconv = false;
+-  ifstream input_file;
+-  ofstream tmp_file;
++  std::ifstream input_file;
++  std::ofstream tmp_file;
+   char *filenames[3];
+   char tmp_filename[256];
+   int tmp_file_fd;
+@@ -97,17 +96,17 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
+ 
+   if (p_filename != NULL && strcmp(p_filename, "") != 0)
+   {
+-    message_out(DEBUG, string("ofx_proc_file():Opening file: ") + p_filename);
++    message_out(DEBUG, std::string("ofx_proc_file():Opening file: ") + p_filename);
+ 
+     input_file.open(p_filename);
+     if (!input_file)
+     {
+-      message_out(ERROR, "ofx_proc_file():Unable to open the input file " + string(p_filename));
++      message_out(ERROR, "ofx_proc_file():Unable to open the input file " + std::string(p_filename));
+     }
+ 
+     mkTempFileName("libofxtmpXXXXXX", tmp_filename, sizeof(tmp_filename));
+ 
+-    message_out(DEBUG, "ofx_proc_file(): Creating temp file: " + string(tmp_filename));
++    message_out(DEBUG, "ofx_proc_file(): Creating temp file: " + std::string(tmp_filename));
+ #ifdef __WIN32__
+     tmp_file_fd = mkstemp_win32(tmp_filename);
+ #else
+@@ -118,27 +117,27 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
+       tmp_file.open(tmp_filename);
+       if (!tmp_file)
+       {
+-        message_out(ERROR, "ofx_proc_file():Unable to open the created temp file " + string(tmp_filename));
++        message_out(ERROR, "ofx_proc_file():Unable to open the created temp file " + std::string(tmp_filename));
+         return -1;
+       }
+     }
+     else
+     {
+-      message_out(ERROR, "ofx_proc_file():Unable to create a temp file at " + string(tmp_filename));
++      message_out(ERROR, "ofx_proc_file():Unable to create a temp file at " + std::string(tmp_filename));
+       return -1;
+     }
+ 
+     if (input_file && tmp_file)
+     {
+       std::size_t header_separator_idx;
+-      string header_name;
+-      string header_value;
+-      string ofx_encoding;
+-      string ofx_charset;
++      std::string header_name;
++      std::string header_value;
++      std::string ofx_encoding;
++      std::string ofx_charset;
+       do
+       {
+-        stringbuf buffer;
+-        string s_buffer;
++        std::stringbuf buffer;
++        std::string s_buffer;
+         input_file.get(buffer, '\n');
+         //cout<< "got: \"" << buffer<<"\"\n";
+         s_buffer = buffer.str();
+@@ -165,7 +164,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
+           }
+         }
+ 
+-        if (ofx_start == false && (s_buffer.find("<?xml") != string::npos))
++        if (ofx_start == false && (s_buffer.find("<?xml") != std::string::npos))
+         {
+           message_out(DEBUG, "ofx_proc_file(): File is an actual XML file, iconv conversion will be skipped.");
+           file_is_xml = true;
+@@ -176,12 +175,12 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
+         {
+           if (
+             (libofx_context->currentFileType() == OFX &&
+-             ((ofx_start_idx = s_buffer.find("<OFX>")) != string::npos ||
+-              (ofx_start_idx = s_buffer.find("<ofx>")) != string::npos))
++             ((ofx_start_idx = s_buffer.find("<OFX>")) != std::string::npos ||
++              (ofx_start_idx = s_buffer.find("<ofx>")) != std::string::npos))
+             ||
+             (libofx_context->currentFileType() == OFC &&
+-             ((ofx_start_idx = s_buffer.find("<OFC>")) != string::npos ||
+-              (ofx_start_idx = s_buffer.find("<ofc>")) != string::npos))
++             ((ofx_start_idx = s_buffer.find("<OFC>")) != std::string::npos ||
++              (ofx_start_idx = s_buffer.find("<ofc>")) != std::string::npos))
+           )
+           {
+             ofx_start = true;
+@@ -224,8 +223,8 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
+                 message_out(ERROR, "ofx_proc_file(): putenv failed");
+               }
+ #ifdef HAVE_ICONV
+-              string fromcode;
+-              string tocode;
++              std::string fromcode;
++              std::string tocode;
+               if (ofx_encoding.compare("USASCII") == 0)
+               {
+                 if (ofx_charset.compare("ISO-8859-1") == 0 || ofx_charset.compare("8859-1") == 0)
+@@ -266,7 +265,7 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
+           else
+           {
+             //We are still in the headers
+-            if ((header_separator_idx = s_buffer.find(':')) != string::npos)
++            if ((header_separator_idx = s_buffer.find(':')) != std::string::npos)
+             {
+               //Header processing
+               header_name.assign(s_buffer.substr(0, header_separator_idx));
+@@ -323,17 +322,17 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
+ #endif
+           }
+           //cout << s_buffer << "\n";
+-          tmp_file << s_buffer << endl;
++          tmp_file << s_buffer << std::endl;
+         }
+ 
+         if (ofx_start == true &&
+             (
+               (libofx_context->currentFileType() == OFX &&
+-               ((ofx_start_idx = s_buffer.find("</OFX>")) != string::npos ||
+-                (ofx_start_idx = s_buffer.find("</ofx>")) != string::npos))
++               ((ofx_start_idx = s_buffer.find("</OFX>")) != std::string::npos ||
++                (ofx_start_idx = s_buffer.find("</ofx>")) != std::string::npos))
+               || (libofx_context->currentFileType() == OFC &&
+-                  ((ofx_start_idx = s_buffer.find("</OFC>")) != string::npos ||
+-                   (ofx_start_idx = s_buffer.find("</ofc>")) != string::npos))
++                  ((ofx_start_idx = s_buffer.find("</OFC>")) != std::string::npos ||
++                   (ofx_start_idx = s_buffer.find("</ofc>")) != std::string::npos))
+             )
+            )
+         {
+@@ -366,10 +365,10 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
+     }
+     else
+     {
+-      message_out(ERROR, string("ofx_proc_file(): Error unknown file format for the OFX parser"));
++      message_out(ERROR, std::string("ofx_proc_file(): Error unknown file format for the OFX parser"));
+     }
+ 
+-    if ((string)filename_dtd != "" && (string)filename_openspdtd != "")
++    if ((std::string)filename_dtd != "" && (std::string)filename_openspdtd != "")
+     {
+       strncpy(filename_ofx, tmp_filename, 255); //The processed ofx file
+       filenames[0] = filename_openspdtd;
+@@ -386,12 +385,12 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
+       }
+       else
+       {
+-        message_out(ERROR, string("ofx_proc_file(): Error unknown file format for the OFX parser"));
++        message_out(ERROR, std::string("ofx_proc_file(): Error unknown file format for the OFX parser"));
+         rv = -1;
+       }
+       if (remove(tmp_filename) != 0)
+       {
+-        message_out(ERROR, "ofx_proc_file(): Error deleting temporary file " + string(tmp_filename));
++        message_out(ERROR, "ofx_proc_file(): Error deleting temporary file " + std::string(tmp_filename));
+       }
+       return rv;
+     }
+@@ -414,18 +413,18 @@ int ofx_proc_file(LibofxContextPtr ctx, const char * p_filename)
+  * of the starting <, pos_end to the position after the closing '>'
+  * If the tag doesn't have a closing '>', pos_end will be set to string::npos.
+  */
+-static string find_tag_open (string& input_string, size_t& pos_start, size_t& pos_end)
++static std::string find_tag_open (std::string& input_string, size_t& pos_start, size_t& pos_end)
+ {
+   pos_start = input_string.find ('<', pos_start);
+ 
+-  if (pos_start == string::npos)
++  if (pos_start == std::string::npos)
+   {
+-    pos_end = string::npos;
+-    return string();
++    pos_end = std::string::npos;
++    return std::string();
+   }
+ 
+   pos_end = input_string.find ('>', pos_start + 1);
+-  if (pos_end != string::npos)
++  if (pos_end != std::string::npos)
+     pos_end = pos_end + 1;
+   size_t tag_size = (pos_end - 1) - (pos_start + 1);
+   return input_string.substr(pos_start + 1, tag_size);
+@@ -436,15 +435,15 @@ static string find_tag_open (string& input_string, size_t& pos_start, size_t& po
+  * If no matching closing tag is found pos will be set to the start of the next
+  * opening or closing tag found.
+  */
+-static void find_tag_close (string& input_string, string& tag_name, size_t& pos)
++static void find_tag_close (std::string& input_string, std::string& tag_name, size_t& pos)
+ {
+   size_t start_idx = input_string.find ("</" + tag_name + ">", pos);
+ 
+-  if (start_idx == string::npos)
++  if (start_idx == std::string::npos)
+   {
+     start_idx = pos;
+     size_t end_idx;
+-    string new_tag_name = find_tag_open (input_string, start_idx, end_idx);
++    std::string new_tag_name = find_tag_open (input_string, start_idx, end_idx);
+     if (!new_tag_name.empty())
+     {
+       message_out(DEBUG, "find_tag_close() fell back to next open tag: " + new_tag_name);
+@@ -477,24 +476,24 @@ static void find_tag_close (string& input_string, string& tag_name, size_t& pos)
+    </proprietary>
+ */
+ 
+-string sanitize_proprietary_tags(string input_string)
++std::string sanitize_proprietary_tags(std::string input_string)
+ {
+   size_t last_known_good_pos = 0;
+   size_t open_tag_start_pos = last_known_good_pos;
+   size_t open_tag_end_pos;
+   size_t close_tag_end_pos;
+ 
+-  string tag_name = find_tag_open(input_string, open_tag_start_pos, open_tag_end_pos);
++  std::string tag_name = find_tag_open(input_string, open_tag_start_pos, open_tag_end_pos);
+   while (!tag_name.empty())
+   {
+     // Determine whether the current tag is proprietary.
+-    if ((tag_name.find('.') != string::npos) ||   // tag has a . in the name
++    if ((tag_name.find('.') != std::string::npos) ||   // tag has a . in the name
+         (tag_name == "CATEGORY"))                  // Chase bank started setting these in 2017
+     {
+       close_tag_end_pos = open_tag_end_pos;
+       find_tag_close (input_string, tag_name, close_tag_end_pos);
+       size_t tag_size = close_tag_end_pos - open_tag_start_pos;
+-      string prop_tag = input_string.substr(open_tag_start_pos, tag_size);
++      std::string prop_tag = input_string.substr(open_tag_start_pos, tag_size);
+       message_out(INFO, "sanitize_proprietary_tags() removed: " + prop_tag);
+       input_string.erase(open_tag_start_pos, tag_size);
+       last_known_good_pos = open_tag_start_pos;
+@@ -505,7 +504,7 @@ string sanitize_proprietary_tags(string input_string)
+     }
+     tag_name.clear();
+     open_tag_start_pos = last_known_good_pos;
+-    if (last_known_good_pos != string::npos)
++    if (last_known_good_pos != std::string::npos)
+       tag_name = find_tag_open(input_string, open_tag_start_pos, open_tag_end_pos);
+   }
+   return input_string;
+@@ -552,14 +551,14 @@ static std::string get_dtd_installation_directory()
+ */
+ std::string find_dtd(LibofxContextPtr ctx, const std::string& dtd_filename)
+ {
+-  string dtd_path_filename;
++  std::string dtd_path_filename;
+   char *env_dtd_path;
+ 
+   dtd_path_filename = reinterpret_cast<const LibofxContext*>(ctx)->dtdDir();
+   if (!dtd_path_filename.empty())
+   {
+     dtd_path_filename.append(dtd_filename);
+-    ifstream dtd_file(dtd_path_filename.c_str());
++    std::ifstream dtd_file(dtd_path_filename.c_str());
+     if (dtd_file)
+     {
+       message_out(STATUS, "find_dtd():DTD found: " + dtd_path_filename);
+@@ -573,7 +572,7 @@ std::string find_dtd(LibofxContextPtr ctx, const std::string& dtd_filename)
+   {
+     dtd_path_filename.append(DIRSEP);
+     dtd_path_filename.append(dtd_filename);
+-    ifstream dtd_file(dtd_path_filename.c_str());
++    std::ifstream dtd_file(dtd_path_filename.c_str());
+     if (dtd_file)
+     {
+       message_out(STATUS, "find_dtd():DTD found: " + dtd_path_filename);
+@@ -588,7 +587,7 @@ std::string find_dtd(LibofxContextPtr ctx, const std::string& dtd_filename)
+     dtd_path_filename.append(env_dtd_path);
+     dtd_path_filename.append(DIRSEP);
+     dtd_path_filename.append(dtd_filename);
+-    ifstream dtd_file(dtd_path_filename.c_str());
++    std::ifstream dtd_file(dtd_path_filename.c_str());
+     if (!dtd_file)
+     {
+       message_out(STATUS, "find_dtd():OFX_DTD_PATH env variable was was present, but unable to open the file " + dtd_path_filename);
+@@ -605,7 +604,7 @@ std::string find_dtd(LibofxContextPtr ctx, const std::string& dtd_filename)
+     dtd_path_filename = DTD_SEARCH_PATH[i];
+     dtd_path_filename.append(DIRSEP);
+     dtd_path_filename.append(dtd_filename);
+-    ifstream dtd_file(dtd_path_filename.c_str());
++    std::ifstream dtd_file(dtd_path_filename.c_str());
+     if (!dtd_file)
+     {
+       message_out(DEBUG, "find_dtd():Unable to open the file " + dtd_path_filename);
+@@ -624,7 +623,7 @@ std::string find_dtd(LibofxContextPtr ctx, const std::string& dtd_filename)
+   dtd_path_filename.append("dtd");
+   dtd_path_filename.append(DIRSEP);
+   dtd_path_filename.append(dtd_filename);
+-  ifstream dtd_file(dtd_path_filename.c_str());
++  std::ifstream dtd_file(dtd_path_filename.c_str());
+   if (!dtd_file)
+   {
+     message_out(DEBUG, "find_dtd(): Unable to open the file " + dtd_path_filename + ", most likely we are not in the source tree.");
+diff --git a/lib/ofx_preproc.hh b/lib/ofx_preproc.hh
+index 2feb3f2..8f2b7c5 100644
+--- a/lib/ofx_preproc.hh
++++ b/lib/ofx_preproc.hh
+@@ -27,7 +27,7 @@
+ #define OFCDTD_FILENAME "ofc.dtd"
+ 
+ ///Removes proprietary tags and comments.
+-string sanitize_proprietary_tags(string input_string);
++std::string sanitize_proprietary_tags(std::string input_string);
+ ///Find the appropriate DTD for the file version.
+ std::string find_dtd(LibofxContextPtr ctx, const std::string& dtd_filename);
+ /**
+diff --git a/lib/ofx_request.cpp b/lib/ofx_request.cpp
+index fdf6a97..e50eb1a 100644
+--- a/lib/ofx_request.cpp
++++ b/lib/ofx_request.cpp
+@@ -27,36 +27,34 @@
+ #include "libofx.h"
+ #include "ofx_request.hh"
+ 
+-using namespace std;
+-
+-string time_t_to_ofxdatetime( time_t time )
++std::string time_t_to_ofxdatetime( time_t time )
+ {
+   static char buffer[51];
+ 
+   strftime( buffer, 50, "%Y%m%d%H%M%S.000", localtime(&time) );
+   buffer[50] = 0;
+ 
+-  return string(buffer);
++  return std::string(buffer);
+ }
+ 
+-string time_t_to_ofxdate( time_t time )
++std::string time_t_to_ofxdate( time_t time )
+ {
+   static char buffer[51];
+ 
+   strftime( buffer, 50, "%Y%m%d", localtime(&time) );
+   buffer[50] = 0;
+ 
+-  return string(buffer);
++  return std::string(buffer);
+ }
+ 
+-string OfxHeader(const char *hver)
++std::string OfxHeader(const char *hver)
+ {
+   if (hver == NULL || hver[0] == 0)
+     hver = "102";
+ 
+   if (strcmp(hver, "103") == 0)
+     /* TODO: check for differences in version 102 and 103 */
+-    return string("OFXHEADER:100\r\n"
++    return std::string("OFXHEADER:100\r\n"
+                   "DATA:OFXSGML\r\n"
+                   "VERSION:103\r\n"
+                   "SECURITY:NONE\r\n"
+@@ -66,9 +64,9 @@ string OfxHeader(const char *hver)
+                   "OLDFILEUID:NONE\r\n"
+                   "NEWFILEUID:")
+            + time_t_to_ofxdatetime( time(NULL) )
+-           + string("\r\n\r\n");
++           + std::string("\r\n\r\n");
+   else
+-    return string("OFXHEADER:100\r\n"
++    return std::string("OFXHEADER:100\r\n"
+                   "DATA:OFXSGML\r\n"
+                   "VERSION:102\r\n"
+                   "SECURITY:NONE\r\n"
+@@ -78,7 +76,7 @@ string OfxHeader(const char *hver)
+                   "OLDFILEUID:NONE\r\n"
+                   "NEWFILEUID:")
+            + time_t_to_ofxdatetime( time(NULL) )
+-           + string("\r\n\r\n");
++           + std::string("\r\n\r\n");
+ }
+ 
+ OfxAggregate OfxRequest::SignOnRequest(void) const
+@@ -112,7 +110,7 @@ OfxAggregate OfxRequest::SignOnRequest(void) const
+   return signonmsgTag;
+ }
+ 
+-OfxAggregate OfxRequest::RequestMessage(const string& _msgType, const string& _trnType, const OfxAggregate& _request) const
++OfxAggregate OfxRequest::RequestMessage(const std::string& _msgType, const std::string& _trnType, const OfxAggregate& _request) const
+ {
+   OfxAggregate trnrqTag( _trnType + "TRNRQ" );
+   trnrqTag.Add( "TRNUID", time_t_to_ofxdatetime( time(NULL) ) );
+diff --git a/lib/ofx_request.hh b/lib/ofx_request.hh
+index 37d9353..c9940ff 100644
+--- a/lib/ofx_request.hh
++++ b/lib/ofx_request.hh
+@@ -24,8 +24,6 @@
+ #include "libofx.h"
+ #include "ofx_aggregate.hh"
+ 
+-using namespace std;
+-
+ /**
+  * \brief A generic request
+  *
+@@ -65,7 +63,7 @@ public:
+    *   aggregate of the xxxTRNRQ aggregate.
+    * @return The message aggregate created
+    */
+-  OfxAggregate RequestMessage(const string& msgtype, const string& trntype, const OfxAggregate& aggregate ) const;
++  OfxAggregate RequestMessage(const std::string& msgtype, const std::string& trntype, const OfxAggregate& aggregate ) const;
+ 
+ protected:
+   OfxFiLogin m_login;
+@@ -76,9 +74,9 @@ protected:
+  */
+ //@{
+ 
+-string time_t_to_ofxdatetime( time_t time );
+-string time_t_to_ofxdate( time_t time );
+-string OfxHeader(const char *hver);
++std::string time_t_to_ofxdatetime( time_t time );
++std::string time_t_to_ofxdate( time_t time );
++std::string OfxHeader(const char *hver);
+ 
+ //@}
+ 
+diff --git a/lib/ofx_request_accountinfo.cpp b/lib/ofx_request_accountinfo.cpp
+index a4d9dce..57d7fc6 100644
+--- a/lib/ofx_request_accountinfo.cpp
++++ b/lib/ofx_request_accountinfo.cpp
+@@ -26,12 +26,10 @@
+ #include "libofx.h"
+ #include "ofx_request_accountinfo.hh"
+ 
+-using namespace std;
+-
+ char* libofx_request_accountinfo( const OfxFiLogin* login )
+ {
+   OfxAccountInfoRequest strq( *login );
+-  string request = OfxHeader(login->header_version) + strq.Output();
++  std::string request = OfxHeader(login->header_version) + strq.Output();
+ 
+   unsigned size = request.size();
+   char* result = (char*)malloc(size + 1);
+diff --git a/lib/ofx_request_accountinfo.hh b/lib/ofx_request_accountinfo.hh
+index f0bbbba..ba1c315 100644
+--- a/lib/ofx_request_accountinfo.hh
++++ b/lib/ofx_request_accountinfo.hh
+@@ -20,12 +20,9 @@
+ #ifndef OFX_REQ_ACCOUNTINFO_H
+ #define OFX_REQ_ACCOUNTINFO_H
+ 
+-#include <string>
+ #include "libofx.h"
+ #include "ofx_request.hh"
+ 
+-using namespace std;
+-
+ /**
+  * \brief An account information request
+  *
+diff --git a/lib/ofx_request_statement.cpp b/lib/ofx_request_statement.cpp
+index 597eec0..e705235 100644
+--- a/lib/ofx_request_statement.cpp
++++ b/lib/ofx_request_statement.cpp
+@@ -27,12 +27,11 @@
+ #include "ofx_utilities.hh"
+ #include "ofx_request_statement.hh"
+ 
+-using namespace std;
+ 
+ char* libofx_request_statement( const OfxFiLogin* login, const OfxAccountData* account, time_t date_from )
+ {
+   OfxStatementRequest strq( *login, *account, date_from );
+-  string request = OfxHeader(login->header_version) + strq.Output();
++  std::string request = OfxHeader(login->header_version) + strq.Output();
+ 
+   unsigned size = request.size();
+   char* result = (char*)malloc(size + 1);
+@@ -141,7 +140,7 @@ OfxAggregate OfxStatementRequest::InvestmentStatementRequest(void) const
+ char* libofx_request_payment( const OfxFiLogin* login, const OfxAccountData* account, const OfxPayee* payee, const OfxPayment* payment )
+ {
+   OfxPaymentRequest strq( *login, *account, *payee, *payment );
+-  string request = OfxHeader(login->header_version) + strq.Output();
++  std::string request = OfxHeader(login->header_version) + strq.Output();
+ 
+   unsigned size = request.size();
+   char* result = (char*)malloc(size + 1);
+@@ -205,7 +204,7 @@ char* libofx_request_payment_status( const struct OfxFiLogin* login, const char*
+   ofx.Add( ofx.SignOnRequest() );
+   ofx.Add( ofx.RequestMessage("BILLPAY", "PMTINQ", pmtinqrqTag) );
+ 
+-  string request = OfxHeader() + ofx.Output();
++  std::string request = OfxHeader() + ofx.Output();
+ 
+   unsigned size = request.size();
+   char* result = (char*)malloc(size + 1);
+@@ -225,7 +224,7 @@ char* libofx_request_payment_status( const struct OfxFiLogin* login, const char*
+   ofx.Add( ofx.SignOnRequest() );
+   ofx.Add( message );
+ 
+-  string request = OfxHeader(login->header_version) + ofx.Output();
++  std::string request = OfxHeader(login->header_version) + ofx.Output();
+ 
+   unsigned size = request.size();
+   char* result = (char*)malloc(size + 1);
+diff --git a/lib/ofx_request_statement.hh b/lib/ofx_request_statement.hh
+index b16e92d..90154ca 100644
+--- a/lib/ofx_request_statement.hh
++++ b/lib/ofx_request_statement.hh
+@@ -20,12 +20,9 @@
+ #ifndef OFX_REQ_STATEMENT_H
+ #define OFX_REQ_STATEMENT_H
+ 
+-#include <string>
+ #include "libofx.h"
+ #include "ofx_request.hh"
+ 
+-using namespace std;
+-
+ /**
+  * \brief A statement request
+  *
+diff --git a/lib/ofx_sgml.cpp b/lib/ofx_sgml.cpp
+index ef3dd93..71c4303 100644
+--- a/lib/ofx_sgml.cpp
++++ b/lib/ofx_sgml.cpp
+@@ -33,7 +33,6 @@
+ #include "ofx_containers.hh"
+ #include "ofx_sgml.hh"
+ 
+-using namespace std;
+ 
+ OfxMainContainer * MainContainer = NULL;
+ extern SGMLApplication::OpenEntityPtr entity_ptr;
+@@ -48,7 +47,7 @@ private:
+   OfxGenericContainer *curr_container_element; /**< The currently open object from ofx_proc_rs.cpp */
+   OfxGenericContainer *tmp_container_element;
+   bool is_data_element; /**< If the SGML element contains data, this flag is raised */
+-  string incoming_data; /**< The raw data from the SGML data element */
++  std::string incoming_data; /**< The raw data from the SGML data element */
+   LibofxContext * libofx_context;
+ 
+ public:
+@@ -71,7 +70,7 @@ public:
+   */
+   void startElement (const StartElementEvent & event)
+   {
+-    string identifier;
++    std::string identifier;
+     CharStringtostring (event.gi, identifier);
+     message_out(PARSER, "startElement event received from OpenSP for element " + identifier);
+ 
+@@ -267,7 +266,7 @@ public:
+   */
+   void endElement (const EndElementEvent & event)
+   {
+-    string identifier;
++    std::string identifier;
+     bool end_element_for_data_element;
+ 
+     CharStringtostring (event.gi, identifier);
+@@ -363,7 +362,7 @@ public:
+   */
+   void data (const DataEvent & event)
+   {
+-    string tmp;
++    std::string tmp;
+     position = event.pos;
+     AppendCharStringtostring (event.data, incoming_data);
+     message_out(PARSER, "data event received from OpenSP, incoming_data is now: " + incoming_data);
+@@ -375,8 +374,8 @@ public:
+   */
+   void error (const ErrorEvent & event)
+   {
+-    string message;
+-    string string_buf;
++    std::string message;
++    std::string string_buf;
+     OfxMsgType error_type = ERROR;
+ 
+     position = event.pos;
+diff --git a/lib/ofx_utilities.cpp b/lib/ofx_utilities.cpp
+index e2281f0..57af871 100644
+--- a/lib/ofx_utilities.cpp
++++ b/lib/ofx_utilities.cpp
+@@ -37,7 +37,6 @@
+ #endif
+ 
+ 
+-using namespace std;
+ /**
+    Convert an OpenSP CharString directly to a C++ stream, to enable the use of cout directly for debugging.
+ */
+@@ -69,7 +68,7 @@ using namespace std;
+   return dest;
+   }*/
+ 
+-string CharStringtostring(const SGMLApplication::CharString source, string &dest)
++std::string CharStringtostring(const SGMLApplication::CharString source, std::string &dest)
+ {
+   size_t i;
+   dest.assign("");//Empty the provided string
+@@ -82,7 +81,7 @@ string CharStringtostring(const SGMLApplication::CharString source, string &dest
+   return dest;
+ }
+ 
+-string AppendCharStringtostring(const SGMLApplication::CharString source, string &dest)
++std::string AppendCharStringtostring(const SGMLApplication::CharString source, std::string &dest)
+ {
+   size_t i;
+   for (i = 0; i < source.len; i++)
+@@ -102,19 +101,19 @@ string AppendCharStringtostring(const SGMLApplication::CharString source, string
+  * @li: Specification permits timestamps with millisecond precision, but the normal C Library time functions support only second precision.
+  * @li: Many banks don't even specify a time, either by providing only an 8-character string (YYYYMMDD) or by presenting 0 for all the time values (i.e. midnight). In those cases we take that to mean that the time isn't significant and set it to a time that is nearly always the same day regardless of timezone: 10:59 UTC. This works in all timezones except -12 and +13.
+  */
+- time_t ofxdate_to_time_t(const string& ofxdate)
++ time_t ofxdate_to_time_t(const std::string& ofxdate)
+ {
+   if (ofxdate.empty())
+   {
+     message_out(ERROR, "ofxdate_to_time_t():  Unable to convert time, string is 0 length!");
+     return 0;
+   }
+-  string ofxdate_whole =
++  std::string ofxdate_whole =
+     ofxdate.substr(0, ofxdate.find_first_not_of("0123456789"));
+ 
+   if (ofxdate_whole.size() < 8)
+   {
+-    message_out(ERROR, "ofxdate_to_time_t():  Unable to convert time, string " + ofxdate + " is not in proper YYYYMMDDHHMMSS.XXX[gmt offset:tz name] format!");
++    message_out(ERROR, "ofxdate_to_time_t():  Unable to convert time, std::string " + ofxdate + " is not in proper YYYYMMDDHHMMSS.XXX[gmt offset:tz name] format!");
+     return std::time(NULL);
+   }
+ 
+@@ -143,12 +142,12 @@ string AppendCharStringtostring(const SGMLApplication::CharString source, string
+     return timegm(&time);
+   }
+ 
+-  string::size_type startidx = ofxdate.find("[");
+-  if (startidx != string::npos)
++  std::string::size_type startidx = ofxdate.find("[");
++  if (startidx != std::string::npos)
+   {
+     startidx++;
+-    string::size_type endidx = ofxdate.find(":", startidx) - 1;
+-    string offset_str = ofxdate.substr(startidx, (endidx - startidx) + 1);
++    std::string::size_type endidx = ofxdate.find(":", startidx) - 1;
++    std::string offset_str = ofxdate.substr(startidx, (endidx - startidx) + 1);
+     float ofx_gmt_offset = atof(offset_str.c_str());
+     std::time_t temptime = std::time(nullptr);
+     static const double secs_per_hour = 3600.0;
+@@ -164,19 +163,19 @@ string AppendCharStringtostring(const SGMLApplication::CharString source, string
+  * Convert a C++ string containing an amount of money as specified by the OFX standard and convert it to a double float.
+  *\note The ofx number format is the following:  "." or "," as decimal separator, NO thousands separator.
+  */
+-double ofxamount_to_double(const string ofxamount)
++double ofxamount_to_double(const std::string ofxamount)
+ {
+   //Replace commas and decimal points for atof()
+-  string::size_type idx;
+-  string tmp = ofxamount;
++  std::string::size_type idx;
++  std::string tmp = ofxamount;
+ 
+   idx = tmp.find(',');
+-  if (idx == string::npos)
++  if (idx == std::string::npos)
+   {
+     idx = tmp.find('.');
+   }
+ 
+-  if (idx != string::npos)
++  if (idx != std::string::npos)
+   {
+     tmp.replace(idx, 1, 1, ((localeconv())->decimal_point)[0]);
+   }
+@@ -187,11 +186,11 @@ double ofxamount_to_double(const string ofxamount)
+ /**
+ Many weird characters can be present inside a SGML element, as a result on the transfer protocol, or for any reason.  This function greatly enhances the reliability of the library by zapping those gremlins (backspace,formfeed,newline,carriage return, horizontal and vertical tabs) as well as removing whitespace at the beginning and end of the string.  Otherwise, many problems will occur during stringmatching.
+ */
+-string strip_whitespace(const string para_string)
++std::string strip_whitespace(const std::string para_string)
+ {
+   size_t index;
+   size_t i;
+-  string temp_string = para_string;
++  std::string temp_string = para_string;
+   if (temp_string.empty())
+     return temp_string; // so that size()-1 is allowed below
+ 
+@@ -202,18 +201,18 @@ string strip_whitespace(const string para_string)
+   for (i = 0;
+        i <= temp_string.size()
+        && temp_string.find_first_of(whitespace, i) == i
+-       && temp_string.find_first_of(whitespace, i) != string::npos;
++       && temp_string.find_first_of(whitespace, i) != std::string::npos;
+        i++);
+   temp_string.erase(0, i); //Strip leading whitespace
+ 
+   for (i = temp_string.size() - 1;
+        (i > 0)
+        && (temp_string.find_last_of(whitespace, i) == i)
+-       && (temp_string.find_last_of(whitespace, i) != string::npos);
++       && (temp_string.find_last_of(whitespace, i) != std::string::npos);
+        i--);
+   temp_string.erase(i + 1, temp_string.size() - (i + 1)); //Strip trailing whitespace
+ 
+-  while ((index = temp_string.find_first_of(abnormal_whitespace)) != string::npos)
++  while ((index = temp_string.find_first_of(abnormal_whitespace)) != std::string::npos)
+   {
+     temp_string.erase(index, 1); //Strip leading whitespace
+   };
+diff --git a/lib/ofx_utilities.hh b/lib/ofx_utilities.hh
+index ca5ae89..f0f2afa 100644
+--- a/lib/ofx_utilities.hh
++++ b/lib/ofx_utilities.hh
+@@ -21,7 +21,7 @@
+ #include <time.h>		// for time_t
+ #include <cstring>
+ #include "ParserEventGeneratorKit.h"
+-using namespace std;
++
+ /* This file contains various simple functions for type conversion & al */
+ 
+ /*wostream &operator<<(wostream &os, SGMLApplication::CharString s); */
+@@ -52,25 +52,25 @@ void STRNCPY(T& dest, const std::string& src)
+ #define ASSIGN_STRNCPY(DEST, VALUE) STRNCPY(DEST, VALUE); DEST ## _valid = true
+ 
+ ///Convert OpenSP CharString to a C++ stream
+-ostream &operator<<(ostream &os, SGMLApplication::CharString s);
++std::ostream &operator<<(std::ostream &os, SGMLApplication::CharString s);
+ 
+ ///Convert OpenSP CharString and put it in the C wchar_t string provided
+ wchar_t* CharStringtowchar_t(SGMLApplication::CharString source, wchar_t *dest);
+ 
+ ///Convert OpenSP CharString to a C++ STL string
+-string CharStringtostring(const SGMLApplication::CharString source, string &dest);
++std::string CharStringtostring(const SGMLApplication::CharString source, std::string &dest);
+ 
+ ///Append an OpenSP CharString to an existing C++ STL string
+-string AppendCharStringtostring(const SGMLApplication::CharString source, string &dest);
++std::string AppendCharStringtostring(const SGMLApplication::CharString source, std::string &dest);
+ 
+ ///Convert a C++ string containing a time in OFX format to a C time_t
+-time_t ofxdate_to_time_t(const string& ofxdate);
++time_t ofxdate_to_time_t(const std::string& ofxdate);
+ 
+ ///Convert OFX amount of money to double float
+-double ofxamount_to_double(const string ofxamount);
++double ofxamount_to_double(const std::string ofxamount);
+ 
+ ///Sanitize a string coming from OpenSP
+-string strip_whitespace(const string para_string);
++std::string strip_whitespace(const std::string para_string);
+ 
+ int mkTempFileName(const char *tmpl, char *buffer, unsigned int size);
+ 
+diff --git a/ofxconnect/ofxconnect.cpp b/ofxconnect/ofxconnect.cpp
+index 3bbca01..b918d6b 100644
+--- a/ofxconnect/ofxconnect.cpp
++++ b/ofxconnect/ofxconnect.cpp
+@@ -48,8 +48,6 @@
+ #include "nodeparser.h"
+ #include "ofxpartner.h"
+ 
+-using namespace std;
+-
+ #ifdef HAVE_LIBCURL
+ bool post(const char* request, const char* url, const char* filename)
+ {
+@@ -93,9 +91,9 @@ bool post(const char*, const char*, const char*)
+ }
+ #endif
+ 
+-ostream& operator<<(ostream& os, const vector<string>& strvect)
++ostream& operator<<(ostream& os, const std::vector<std::string>& strvect)
+ {
+-  for ( vector<string>::const_iterator it = strvect.begin(); it != strvect.end(); ++it)
++  for ( std::vector<std::string>::const_iterator it = strvect.begin(); it != strvect.end(); ++it)
+   {
+     os << (*it) << endl;
+   }
+@@ -143,7 +141,7 @@ int main (int argc, char *argv[])
+   OfxFiLogin fi;
+   memset(&fi, 0, sizeof(OfxFiLogin));
+   bool ok = true;
+-  string url;
++  std::string url;
+ 
+   if ( args_info.statement_req_given || args_info.accountinfo_req_given || args_info.payment_req_given || args_info.paymentinquiry_req_given )
+   {
+@@ -484,12 +482,12 @@ int main (int argc, char *argv[])
+ 
+   if ( args_info.allsupport_given )
+   {
+-    vector<string> banks = OfxPartner::BankNames();
+-    vector<string>::const_iterator it_bank = banks.begin();
++    std::vector<std::string> banks = OfxPartner::BankNames();
++    std::vector<std::string>::const_iterator it_bank = banks.begin();
+     while ( it_bank != banks.end() )
+     {
+-      vector<string> fipids = OfxPartner::FipidForBank(*it_bank);
+-      vector<string>::const_iterator it_fipid = fipids.begin();
++      std::vector<std::string> fipids = OfxPartner::FipidForBank(*it_bank);
++      std::vector<std::string>::const_iterator it_fipid = fipids.begin();
+       while ( it_fipid != fipids.end() )
+       {
+         if ( OfxPartner::ServiceInfo(*it_fipid).accountlist )
+diff --git a/ofxdump/ofxdump.cpp b/ofxdump/ofxdump.cpp
+index a82811f..4d882af 100644
+--- a/ofxdump/ofxdump.cpp
++++ b/ofxdump/ofxdump.cpp
+@@ -31,7 +31,6 @@
+ #include <iomanip>
+ #include <cstdlib>
+ #include <cstring>
+-#include <string>
+ #include "libofx.h"
+ #include <stdio.h>		/* for printf() */
+ #include <config.h>		/* Include config constants, e.g., VERSION TF */
+@@ -39,28 +38,26 @@
+ 
+ #include "cmdline.h" /* Gengetopt generated parser */
+ 
+-using namespace std;
+-
+ 
+ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
+ {
+   char dest_string[255];
+-  cout << "ofx_proc_security():\n";
++  std::cout << "ofx_proc_security():\n";
+   if (data.unique_id_valid == true)
+   {
+-    cout << "    Unique ID of the security: " << data.unique_id << "\n";
++    std::cout << "    Unique ID of the security: " << data.unique_id << "\n";
+   }
+   if (data.unique_id_type_valid == true)
+   {
+-    cout << "    Format of the Unique ID: " << data.unique_id_type << "\n";
++    std::cout << "    Format of the Unique ID: " << data.unique_id_type << "\n";
+   }
+   if (data.unique_id2_valid == true)
+   {
+-    cout << "    Unique ID of the underlying security: " << data.unique_id2 << "\n";
++    std::cout << "    Unique ID of the underlying security: " << data.unique_id2 << "\n";
+   }
+   if (data.unique_id2_type_valid == true)
+   {
+-    cout << "    Format of the underlying Unique ID: " << data.unique_id2_type << "\n";
++    std::cout << "    Format of the underlying Unique ID: " << data.unique_id2_type << "\n";
+   }
+   if (data.security_type_valid == true)
+   {
+@@ -76,48 +73,48 @@ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
+       strncpy(dest_string, "OTHERINFO: Other type of security", sizeof(dest_string));
+     else
+       strncpy(dest_string, "ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Security type: " << dest_string << "\n";
++    std::cout << "    Security type: " << dest_string << "\n";
+   }
+   if (data.secname_valid == true)
+   {
+-    cout << "    Name of the security: " << data.secname << "\n";
++    std::cout << "    Name of the security: " << data.secname << "\n";
+   }
+   if (data.ticker_valid == true)
+   {
+-    cout << "    Ticker symbol: " << data.ticker << "\n";
++    std::cout << "    Ticker symbol: " << data.ticker << "\n";
+   }
+   if (data.rating_valid == true)
+   {
+-    cout << "    Rating of the security: " << data.rating << "\n";
++    std::cout << "    Rating of the security: " << data.rating << "\n";
+   }
+   if (data.unitprice_valid == true)
+   {
+     if (data.security_type_valid == true
+        && data.security_type == OfxSecurityData::OFX_DEBT_SECURITY)
+-      cout << "    Price (percent of par): " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(4) << data.unitprice << "%\n";
++      std::cout << "    Price (percent of par): " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(4) << data.unitprice << "%\n";
+     else
+-      cout << "    Price of each unit of the security: " <<  setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.unitprice << "\n";
++      std::cout << "    Price of each unit of the security: " <<  std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.unitprice << "\n";
+   }
+   if (data.date_unitprice_valid == true)
+   {
+     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_unitprice)));
+-    cout << "    Date as of which the unitprice is valid: " << dest_string << "\n";
++    std::cout << "    Date as of which the unitprice is valid: " << dest_string << "\n";
+   }
+   if (data.amounts_are_foreign_currency_valid == true)
+   {
+-    cout << "    Amounts are in foreign currency: " << (data.amounts_are_foreign_currency ? "Yes" : "No") << "\n";
++    std::cout << "    Amounts are in foreign currency: " << (data.amounts_are_foreign_currency ? "Yes" : "No") << "\n";
+   }
+   if (data.currency_valid == true)
+   {
+-    cout << "    Currency: " << data.currency << "\n";
++    std::cout << "    Currency: " << data.currency << "\n";
+   }
+   if (data.currency_ratio_valid == true)
+   {
+-    cout << "    Ratio of default currency to currency: " << data.currency_ratio << "\n";
++    std::cout << "    Ratio of default currency to currency: " << data.currency_ratio << "\n";
+   }
+   if (data.memo_valid == true)
+   {
+-    cout << "    Extra security information (memo): " << data.memo << "\n";
++    std::cout << "    Extra security information (memo): " << data.memo << "\n";
+   }
+   if (data.asset_class_valid == true)
+   {
+@@ -137,15 +134,15 @@ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
+       strncpy(dest_string, "OTHER: Other", sizeof(dest_string));
+     else
+       strncpy(dest_string, "ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Asset class: " << dest_string << "\n";
++    std::cout << "    Asset class: " << dest_string << "\n";
+   }
+   if (data.fiasset_class_valid == true)
+   {
+-    cout << "    FI defined asset class: " << data.fiasset_class << "\n";
++    std::cout << "    FI defined asset class: " << data.fiasset_class << "\n";
+   }
+   if (data.par_value_valid == true)
+   {
+-    cout << "    Par value: " << data.par_value << "\n";
++    std::cout << "    Par value: " << data.par_value << "\n";
+   }
+   if (data.debt_type_valid == true)
+   {
+@@ -155,7 +152,7 @@ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
+       strncpy(dest_string, "ZERO: Zero coupon debt", sizeof(dest_string));
+     else
+       strncpy(dest_string, "ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Debt type: " << dest_string << "\n";
++    std::cout << "    Debt type: " << dest_string << "\n";
+   }
+   if (data.debt_class_valid == true)
+   {
+@@ -169,16 +166,16 @@ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
+       strncpy(dest_string, "OTHER: Other debt class", sizeof(dest_string));
+     else
+       strncpy(dest_string, "ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Debt class: " << dest_string << "\n";
++    std::cout << "    Debt class: " << dest_string << "\n";
+   }
+   if (data.coupon_rate_valid == true)
+   {
+-    cout << "    Coupon rate: " << data.coupon_rate << "%\n";
++    std::cout << "    Coupon rate: " << data.coupon_rate << "%\n";
+   }
+   if (data.date_coupon_valid == true)
+   {
+     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_coupon)));
+-    cout << "    Date for the next coupon: " << dest_string << "\n";
++    std::cout << "    Date for the next coupon: " << dest_string << "\n";
+   }
+   if (data.coupon_freq_valid == true)
+   {
+@@ -194,20 +191,20 @@ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
+       strncpy(dest_string, "OTHER: Other frequency", sizeof(dest_string));
+     else
+       strncpy(dest_string, "ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Coupon frequency: " << dest_string << "\n";
++    std::cout << "    Coupon frequency: " << dest_string << "\n";
+   }
+   if (data.call_price_valid == true)
+   {
+-    cout << "    Call price (unit price): " <<  setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.call_price << "\n";
++    std::cout << "    Call price (unit price): " <<  std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.call_price << "\n";
+   }
+   if (data.yield_to_call_valid == true)
+   {
+-    cout << "    Yield to next call (rate): " << data.yield_to_call << "%\n";
++    std::cout << "    Yield to next call (rate): " << data.yield_to_call << "%\n";
+   }
+   if (data.call_date_valid == true)
+   {
+     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.call_date)));
+-    cout << "    Date for the next call: " << dest_string << "\n";
++    std::cout << "    Date for the next call: " << dest_string << "\n";
+   }
+   if (data.call_type_valid == true)
+   {
+@@ -221,16 +218,16 @@ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
+       strncpy(dest_string, "MATURITY: Maturity", sizeof(dest_string));
+     else
+       strncpy(dest_string, "ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Call type: " << dest_string << "\n";
++    std::cout << "    Call type: " << dest_string << "\n";
+   }
+   if (data.yield_to_maturity_valid == true)
+   {
+-    cout << "    Yield to maturity (rate): " << data.yield_to_maturity << "%\n";
++    std::cout << "    Yield to maturity (rate): " << data.yield_to_maturity << "%\n";
+   }
+   if (data.maturity_date_valid == true)
+   {
+     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.maturity_date)));
+-    cout << "    Maturity date: " << dest_string << "\n";
++    std::cout << "    Maturity date: " << dest_string << "\n";
+   }
+   if (data.mutual_fund_type_valid == true)
+   {
+@@ -242,7 +239,7 @@ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
+       strncpy(dest_string, "OTHER: Other type", sizeof(dest_string));
+     else
+       strncpy(dest_string, "ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Mutual fund type: " << dest_string << "\n";
++    std::cout << "    Mutual fund type: " << dest_string << "\n";
+   if (data.stock_type_valid == true)
+   {
+     if (data.stock_type == OfxSecurityData::OFX_STOCKTYPE_COMMON)
+@@ -255,17 +252,17 @@ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
+       strncpy(dest_string, "OTHER: Other type", sizeof(dest_string));
+     else
+       strncpy(dest_string, "ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Stock type: " << dest_string << "\n";
++    std::cout << "    Stock type: " << dest_string << "\n";
+   }
+   }
+   if (data.yield_valid == true)
+   {
+-    cout << "    Current yield (rate): " << data.yield << "%\n";
++    std::cout << "    Current yield (rate): " << data.yield << "%\n";
+   }
+   if (data.yield_asof_date_valid == true)
+   {
+     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.yield_asof_date)));
+-    cout << "    Date for which current yield is valid: " << dest_string << "\n";
++    std::cout << "    Date for which current yield is valid: " << dest_string << "\n";
+   }
+   if (data.option_type_valid == true)
+   {
+@@ -275,33 +272,33 @@ int ofx_proc_security_cb(struct OfxSecurityData data, void * security_data)
+       strncpy(dest_string, "PUT: Put option", sizeof(dest_string));
+     else
+       strncpy(dest_string, "ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Option type: " << dest_string << "\n";
++    std::cout << "    Option type: " << dest_string << "\n";
+   }
+   if (data.strike_price_valid == true)
+   {
+-    cout << "    Strike price: " << data.strike_price << "\n";
++    std::cout << "    Strike price: " << data.strike_price << "\n";
+   }
+   if (data.date_expire_valid == true)
+   {
+     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_expire)));
+-    cout << "    Expiration date: " << dest_string << "\n";
++    std::cout << "    Expiration date: " << dest_string << "\n";
+   }
+   if (data.shares_per_cont_valid == true)
+   {
+-    cout << "    Shares per contract: " << data.shares_per_cont << "\n";
++    std::cout << "    Shares per contract: " << data.shares_per_cont << "\n";
+   }
+-  cout << "\n";
++  std::cout << "\n";
+   return 0;
+ }
+ 
+ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_data)
+ {
+   char dest_string[255];
+-  cout << "ofx_proc_transaction():\n";
++  std::cout << "ofx_proc_transaction():\n";
+ 
+   if (data.account_id_valid == true)
+   {
+-    cout << "    Account ID : " << data.account_id << "\n";
++    std::cout << "    Account ID : " << data.account_id << "\n";
+   }
+ 
+   if (data.transactiontype_valid == true)
+@@ -342,34 +339,34 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
+       strncpy(dest_string, "OTHER: Other", sizeof(dest_string));
+     else
+       strncpy(dest_string, "Unknown transaction type", sizeof(dest_string));
+-    cout << "    Transaction type: " << dest_string << "\n";
++    std::cout << "    Transaction type: " << dest_string << "\n";
+   }
+ 
+ 
+   if (data.date_initiated_valid == true)
+   {
+     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_initiated)));
+-    cout << "    Date initiated: " << dest_string << "\n";
++    std::cout << "    Date initiated: " << dest_string << "\n";
+   }
+   if (data.date_posted_valid == true)
+   {
+     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_posted)));
+-    cout << "    Date posted: " << dest_string << "\n";
++    std::cout << "    Date posted: " << dest_string << "\n";
+   }
+   if (data.date_funds_available_valid == true)
+   {
+     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_funds_available)));
+-    cout << "    Date funds are available: " << dest_string << "\n";
++    std::cout << "    Date funds are available: " << dest_string << "\n";
+   }
+   if (data.amount_valid == true)
+   {
+-    cout << "    Total money amount: " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.amount << "\n";
++    std::cout << "    Total money amount: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.amount << "\n";
+   }
+   if (data.units_valid == true)
+   {
+     if (data.invtransactiontype_valid)
+     {
+-      cout << "    # of units: " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(4) << data.units;
++      std::cout << "    # of units: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(4) << data.units;
+       strncpy(dest_string, " (bonds: face value; options: contracts; all others: shares)", sizeof(dest_string));
+       if (data.security_data_valid == true)
+       {
+@@ -385,28 +382,28 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
+             strncpy(dest_string, " (contracts)", sizeof(dest_string));
+         }
+       }
+-      cout << dest_string;
++      std::cout << dest_string;
+     }
+     else
+-      cout << "    # of units: " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.units;
+-    cout << "\n";
++      std::cout << "    # of units: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.units;
++    std::cout << "\n";
+   }
+   if (data.oldunits_valid == true)
+   {
+     if (data.invtransactiontype_valid)
+-      cout << "    # of units before split: " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(4) << data.oldunits << "\n";
++      std::cout << "    # of units before split: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(4) << data.oldunits << "\n";
+     else
+-      cout << "    # of units before split: " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.oldunits << "\n";
++      std::cout << "    # of units before split: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.oldunits << "\n";
+   }
+   if (data.newunits_valid == true)
+   {
+-    cout << "    # of units after split: " << setprecision(4) << data.newunits << "\n";
++    std::cout << "    # of units after split: " << std::setprecision(4) << data.newunits << "\n";
+   }
+   if (data.unitprice_valid == true)
+   {
+     if (data.invtransactiontype_valid)
+     {
+-      cout << "    Unit price: " <<  setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(4) << data.unitprice;
++      std::cout << "    Unit price: " <<  std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(4) << data.unitprice;
+       strncpy(dest_string, " (bonds: % of par; options: premium per share of underlying; all others: price per share)\n", sizeof(dest_string));
+       if (data.security_data_valid == true)
+       {
+@@ -424,52 +421,52 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
+             strncpy(dest_string, " (premium per share of underlying)\n", sizeof(dest_string));
+         }
+       }
+-      cout << dest_string;
++      std::cout << dest_string;
+     }
+     else
+-      cout << "    Unit price: " <<  setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.unitprice << "\n";
++      std::cout << "    Unit price: " <<  std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.unitprice << "\n";
+  }
+   if (data.fees_valid == true)
+   {
+-    cout << "    Fees: " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.fees << "\n";
++    std::cout << "    Fees: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.fees << "\n";
+   }
+   if (data.commission_valid == true)
+   {
+-    cout << "    Commission: " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.commission << "\n";
++    std::cout << "    Commission: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.commission << "\n";
+   }
+   if (data.amounts_are_foreign_currency_valid == true)
+   {
+-    cout << "    Amounts are in foreign currency: " << (data.amounts_are_foreign_currency ? "Yes" : "No") << "\n";
++    std::cout << "    Amounts are in foreign currency: " << (data.amounts_are_foreign_currency ? "Yes" : "No") << "\n";
+   }
+   if (data.currency_valid == true)
+   {
+-    cout << "    Currency: " << data.currency << "\n";
++    std::cout << "    Currency: " << data.currency << "\n";
+   }
+   if (data.currency_ratio_valid == true)
+   {
+-    cout << "    Ratio of default currency to currency: " << data.currency_ratio << "\n";
++    std::cout << "    Ratio of default currency to currency: " << data.currency_ratio << "\n";
+   }
+   if (data.fi_id_valid == true)
+   {
+-    cout << "    Financial institution's ID for this transaction: " << data.fi_id << "\n";
++    std::cout << "    Financial institution's ID for this transaction: " << data.fi_id << "\n";
+   }
+   if (data.fi_id_corrected_valid == true)
+   {
+-    cout << "    Financial institution ID replaced or corrected by this transaction: " << data.fi_id_corrected << "\n";
++    std::cout << "    Financial institution ID replaced or corrected by this transaction: " << data.fi_id_corrected << "\n";
+   }
+   if (data.fi_id_correction_action_valid == true)
+   {
+-    cout << "    Action to take on the corrected transaction: ";
++    std::cout << "    Action to take on the corrected transaction: ";
+     if (data.fi_id_correction_action == DELETE)
+-      cout << "DELETE\n";
++      std::cout << "DELETE\n";
+     else if (data.fi_id_correction_action == REPLACE)
+-      cout << "REPLACE\n";
++      std::cout << "REPLACE\n";
+     else
+-      cout << "ofx_proc_transaction(): This should not happen!\n";
++      std::cout << "ofx_proc_transaction(): This should not happen!\n";
+   }
+   if (data.invtransactiontype_valid == true)
+   {
+-    cout << "    Investment transaction type: ";
++    std::cout << "    Investment transaction type: ";
+     if (data.invtransactiontype == OFX_BUYDEBT)
+       strncpy(dest_string, "BUYDEBT (Buy debt security)", sizeof(dest_string));
+     else if (data.invtransactiontype == OFX_BUYMF)
+@@ -513,51 +510,51 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
+     else
+       strncpy(dest_string, "ERROR, this investment transaction type is unknown.  This is a bug in ofxdump", sizeof(dest_string));
+ 
+-    cout << dest_string << "\n";
++    std::cout << dest_string << "\n";
+   }
+   if (data.unique_id_valid == true)
+   {
+-    cout << "    Unique ID of the security being traded: " << data.unique_id << "\n";
++    std::cout << "    Unique ID of the security being traded: " << data.unique_id << "\n";
+   }
+   if (data.unique_id_type_valid == true)
+   {
+-    cout << "    Format of the Unique ID: " << data.unique_id_type << "\n";
++    std::cout << "    Format of the Unique ID: " << data.unique_id_type << "\n";
+   }
+   if (data.server_transaction_id_valid == true)
+   {
+-    cout << "    Server's transaction ID (confirmation number): " << data.server_transaction_id << "\n";
++    std::cout << "    Server's transaction ID (confirmation number): " << data.server_transaction_id << "\n";
+   }
+   if (data.check_number_valid == true)
+   {
+-    cout << "    Check number: " << data.check_number << "\n";
++    std::cout << "    Check number: " << data.check_number << "\n";
+   }
+   if (data.reference_number_valid == true)
+   {
+-    cout << "    Reference number: " << data.reference_number << "\n";
++    std::cout << "    Reference number: " << data.reference_number << "\n";
+   }
+   if (data.standard_industrial_code_valid == true)
+   {
+-    cout << "    Standard Industrial Code: " << data.standard_industrial_code << "\n";
++    std::cout << "    Standard Industrial Code: " << data.standard_industrial_code << "\n";
+   }
+   if (data.payee_id_valid == true)
+   {
+-    cout << "    Payee_id: " << data.payee_id << "\n";
++    std::cout << "    Payee_id: " << data.payee_id << "\n";
+   }
+   if (data.name_valid == true)
+   {
+-    cout << "    Name of payee or transaction description: " << data.name << "\n";
++    std::cout << "    Name of payee or transaction description: " << data.name << "\n";
+   }
+   if (data.memo_valid == true)
+   {
+-    cout << "    Extra transaction information (memo): " << data.memo << "\n";
++    std::cout << "    Extra transaction information (memo): " << data.memo << "\n";
+   }
+   if (data.accrued_interest_valid == true)
+   {
+-    cout << "    Accrued Interest: " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.accrued_interest << "\n";
++    std::cout << "    Accrued Interest: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.accrued_interest << "\n";
+   }
+   if (data.avg_cost_basis_valid == true)
+   {
+-    cout << "    Average cost basis: " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.avg_cost_basis << "\n";
++    std::cout << "    Average cost basis: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.avg_cost_basis << "\n";
+   }
+   if (data.buy_type_valid == true)
+   {
+@@ -571,29 +568,29 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
+       strncpy(dest_string, "BUYTOCLOSE: Buy to close", sizeof(dest_string));
+     else
+       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Buy type: " << dest_string << "\n";
++    std::cout << "    Buy type: " << dest_string << "\n";
+   }
+   if (data.denominator_valid == true)
+   {
+-    cout << "    Stock split ratio denominator: " << data.denominator << "\n";
++    std::cout << "    Stock split ratio denominator: " << data.denominator << "\n";
+   }
+   if (data.date_payroll_valid == true)
+   {
+     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_payroll)));
+-    cout << "    Date 401(k) funds were deducted from payroll: " << dest_string << "\n";
++    std::cout << "    Date 401(k) funds were deducted from payroll: " << dest_string << "\n";
+   }
+   if (data.date_purchase_valid == true)
+   {
+     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_purchase)));
+-    cout << "    Original purchase date of the security: " << dest_string << "\n";
++    std::cout << "    Original purchase date of the security: " << dest_string << "\n";
+   }
+   if (data.gain_valid == true)
+   {
+-    cout << "    Average cost basis: " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.gain << "\n";
++    std::cout << "    Average cost basis: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.gain << "\n";
+   }
+   if (data.cash_for_fractional_valid == true)
+   {
+-    cout << "    Average cost basis: " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.cash_for_fractional << "\n";
++    std::cout << "    Average cost basis: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.cash_for_fractional << "\n";
+   }
+   if (data.income_type_valid == true)
+   {
+@@ -609,7 +606,7 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
+       strncpy(dest_string, "MISC: Miscellaneous", sizeof(dest_string));
+     else
+       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Income type: " << dest_string << "\n";
++    std::cout << "    Income type: " << dest_string << "\n";
+   }
+   if (data.inv_401k_source_valid == true)
+   {
+@@ -629,35 +626,35 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
+       strncpy(dest_string, "OTHERNONVEST", sizeof(dest_string));
+     else
+       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Source of 401(k) money: " << dest_string << "\n";
++    std::cout << "    Source of 401(k) money: " << dest_string << "\n";
+   }
+   if (data.load_valid == true)
+   {
+-    cout << "    Load (amount): " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.load << "\n";
++    std::cout << "    Load (amount): " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.load << "\n";
+   }
+   if (data.loan_id_valid == true)
+   {
+-    cout << "    401(k) loan id: " << data.loan_id << "\n";
++    std::cout << "    401(k) loan id: " << data.loan_id << "\n";
+   }
+   if (data.loan_interest_valid == true)
+   {
+-    cout << "    401(k) loan interest (amount): " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.loan_interest << "\n";
++    std::cout << "    401(k) loan interest (amount): " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.loan_interest << "\n";
+   }
+   if (data.loan_principal_valid == true)
+   {
+-    cout << "    401(k) loan principle (amount): " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.loan_principal << "\n";
++    std::cout << "    401(k) loan principle (amount): " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.loan_principal << "\n";
+   }
+   if (data.markdown_valid == true)
+   {
+-    cout << "    Markdown (unitprice): " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.markdown << "\n";
++    std::cout << "    Markdown (unitprice): " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.markdown << "\n";
+   }
+   if (data.markup_valid == true)
+   {
+-    cout << "    Markup (unitprice): " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.markup << "\n";
++    std::cout << "    Markup (unitprice): " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.markup << "\n";
+   }
+   if (data.numerator_valid == true)
+   {
+-    cout << "    Stock split ratio numerator: " << data.numerator << "\n";
++    std::cout << "    Stock split ratio numerator: " << data.numerator << "\n";
+   }
+   if (data.opt_action_valid == true)
+   {
+@@ -669,11 +666,11 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
+       strncpy(dest_string, "EXPIRE", sizeof(dest_string));
+     else
+       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Option action: " << dest_string << "\n";
++    std::cout << "    Option action: " << dest_string << "\n";
+   }
+   if (data.penalty_valid == true)
+   {
+-    cout << "    Penalty withheld (amount): " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.penalty << "\n";
++    std::cout << "    Penalty withheld (amount): " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.penalty << "\n";
+   }
+   if (data.pos_type_valid == true)
+   {
+@@ -683,15 +680,15 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
+       strncpy(dest_string, "SHORT", sizeof(dest_string));
+     else
+       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Position Type: " << dest_string << "\n";
++    std::cout << "    Position Type: " << dest_string << "\n";
+   }
+   if (data.prior_year_contrib_valid == true)
+   {
+-    cout << "    Prior year 401(k) contribution: " << (data.prior_year_contrib ? "Yes" : "No") << "\n";
++    std::cout << "    Prior year 401(k) contribution: " << (data.prior_year_contrib ? "Yes" : "No") << "\n";
+   }
+   if (data.related_fi_tid_valid == true)
+   {
+-    cout << "    Related transaction TID: " << data.related_fi_tid << "\n";
++    std::cout << "    Related transaction TID: " << data.related_fi_tid << "\n";
+   }
+   if (data.related_type_valid == true)
+   {
+@@ -705,7 +702,7 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
+       strncpy(dest_string, "OTHER", sizeof(dest_string));
+     else
+       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Related Option Type: " << dest_string << "\n";
++    std::cout << "    Related Option Type: " << dest_string << "\n";
+   }
+   if (data.option_secured_valid == true)
+   {
+@@ -715,7 +712,7 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
+       strncpy(dest_string, "COVERED: Cash covered", sizeof(dest_string));
+     else
+       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    How is the option secured: " << dest_string << "\n";
++    std::cout << "    How is the option secured: " << dest_string << "\n";
+   }
+   if (data.sell_reason_valid == true)
+   {
+@@ -727,7 +724,7 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
+       strncpy(dest_string, "MATURITY: the debt reached maturity", sizeof(dest_string));
+     else
+       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Reason for the debt sell: " << dest_string << "\n";
++    std::cout << "    Reason for the debt sell: " << dest_string << "\n";
+   }
+   if (data.sell_type_valid == true)
+   {
+@@ -741,15 +738,15 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
+       strncpy(dest_string, "SELLTOCLOSE: Sell to close", sizeof(dest_string));
+     else
+       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Sell type: " << dest_string << "\n";
++    std::cout << "    Sell type: " << dest_string << "\n";
+   }
+   if (data.shares_per_cont_valid == true)
+   {
+-    cout << "    Shares per option contract: " << data.shares_per_cont << "\n";
++    std::cout << "    Shares per option contract: " << data.shares_per_cont << "\n";
+   }
+   if (data.state_withholding_valid == true)
+   {
+-    cout << "    State taxes withheld: " <<  setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.state_withholding << "\n";
++    std::cout << "    State taxes withheld: " <<  std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.state_withholding << "\n";
+   }
+   if (data.subacct_from_valid == true)
+   {
+@@ -763,7 +760,7 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
+       strncpy(dest_string, "OTHER", sizeof(dest_string));
+     else
+       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    From sub account type: " << dest_string << "\n";
++    std::cout << "    From sub account type: " << dest_string << "\n";
+   }
+   if (data.subacct_funding_valid == true)
+   {
+@@ -777,7 +774,7 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
+       strncpy(dest_string, "OTHER", sizeof(dest_string));
+     else
+       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Funding sub account type: " << dest_string << "\n";
++    std::cout << "    Funding sub account type: " << dest_string << "\n";
+   }
+   if (data.subacct_security_valid == true)
+   {
+@@ -791,7 +788,7 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
+       strncpy(dest_string, "OTHER", sizeof(dest_string));
+     else
+       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Security sub account type: " << dest_string << "\n";
++    std::cout << "    Security sub account type: " << dest_string << "\n";
+   }
+   if (data.subacct_to_valid == true)
+   {
+@@ -805,15 +802,15 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
+       strncpy(dest_string, "OTHER", sizeof(dest_string));
+     else
+       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    To sub account type: " << dest_string << "\n";
++    std::cout << "    To sub account type: " << dest_string << "\n";
+   }
+   if (data.taxes_valid == true)
+   {
+-    cout << "    Tax on the trade (amount): " <<  setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.taxes << "\n";
++    std::cout << "    Tax on the trade (amount): " <<  std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.taxes << "\n";
+   }
+   if (data.tax_exempt_valid == true)
+   {
+-    cout << "    Tax exempt: " << (data.tax_exempt ? "Yes" : "No") << "\n";
++    std::cout << "    Tax exempt: " << (data.tax_exempt ? "Yes" : "No") << "\n";
+   }
+   if (data.transfer_action_valid == true)
+   {
+@@ -823,7 +820,7 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
+       strncpy(dest_string, "OUT", sizeof(dest_string));
+     else
+       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Action for the transfer: " << dest_string << "\n";
++    std::cout << "    Action for the transfer: " << dest_string << "\n";
+   }
+   if (data.unit_type_valid == true)
+   {
+@@ -833,35 +830,35 @@ int ofx_proc_transaction_cb(struct OfxTransactionData data, void * transaction_d
+       strncpy(dest_string, "CURRENCY", sizeof(dest_string));
+     else
+       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Type of the Units value: " << dest_string << "\n";
++    std::cout << "    Type of the Units value: " << dest_string << "\n";
+   }
+   if (data.withholding_valid == true)
+   {
+-    cout << "    Federal tax withheld (amount): " <<  setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.withholding << "\n";
++    std::cout << "    Federal tax withheld (amount): " <<  std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.withholding << "\n";
+   }
+   if (data.security_data_valid == true)
+   {
+     ofx_proc_security_cb(*(data.security_data_ptr), NULL );
+   }
+-  cout << "\n";
++  std::cout << "\n";
+   return 0;
+ }//end ofx_proc_transaction()
+ 
+ int ofx_proc_position_cb(struct OfxPositionData data, void * position_data)
+ {
+   char dest_string[255];
+-  cout << "ofx_proc_position():\n";
++  std::cout << "ofx_proc_position():\n";
+   if (data.account_id_valid == true)
+   {
+-    cout << "    Account ID: " << data.account_id << "\n";
++    std::cout << "    Account ID: " << data.account_id << "\n";
+   }
+   if (data.unique_id_valid == true)
+   {
+-    cout << "    Unique ID of the security: " << data.unique_id << "\n";
++    std::cout << "    Unique ID of the security: " << data.unique_id << "\n";
+   }
+   if (data.unique_id_type_valid == true)
+   {
+-    cout << "    Format of the Unique ID: " << data.unique_id_type << "\n";
++    std::cout << "    Format of the Unique ID: " << data.unique_id_type << "\n";
+   }
+   if (data.heldinaccount_type_valid == true)
+   {
+@@ -875,7 +872,7 @@ int ofx_proc_position_cb(struct OfxPositionData data, void * position_data)
+       strncpy(dest_string, "OTHER: Other subaccount", sizeof(dest_string));
+     else
+       strncpy(dest_string, "ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Held in account type: " << dest_string << "\n";
++    std::cout << "    Held in account type: " << dest_string << "\n";
+   }
+   if (data.position_type_valid == true)
+   {
+@@ -885,11 +882,11 @@ int ofx_proc_position_cb(struct OfxPositionData data, void * position_data)
+       strncpy(dest_string, "LONG: Long (holder for options, long for all others)", sizeof(dest_string));
+     else
+       strncpy(dest_string, "ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Position type: " << dest_string << "\n";
++    std::cout << "    Position type: " << dest_string << "\n";
+   }
+   if (data.units_valid == true)
+   {
+-    cout << "    Units: " << setprecision(4) << data.units;
++    std::cout << "    Units: " << std::setprecision(4) << data.units;
+     strncpy(dest_string, " (bonds: face value; options: contracts; all others: shares)\n", sizeof(dest_string));
+     if (data.security_data_valid == true)
+     {
+@@ -905,13 +902,13 @@ int ofx_proc_position_cb(struct OfxPositionData data, void * position_data)
+           strncpy(dest_string, " (contracts)\n", sizeof(dest_string));
+       }
+     }
+-    cout << dest_string;
++    std::cout << dest_string;
+   }
+   if (data.unit_price_valid == true)
+   {
+     if (data.security_data_valid == true)
+     {
+-      cout << "    Unit price: " <<  setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(4) << data.unit_price;
++      std::cout << "    Unit price: " <<  std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(4) << data.unit_price;
+       strncpy(dest_string, " (bonds: % of par; options: premium per share of underlying; all others: price per share)\n", sizeof(dest_string));
+       if (data.security_data_ptr->security_type_valid == true)
+       {
+@@ -924,35 +921,35 @@ int ofx_proc_position_cb(struct OfxPositionData data, void * position_data)
+         else if (data.security_data_ptr->security_type == OfxSecurityData::OFX_OPTION_SECURITY)
+           strncpy(dest_string, " (premium per share of underlying)\n", sizeof(dest_string));
+       }
+-      cout << dest_string;
++      std::cout << dest_string;
+     }
+     else
+-      cout << "    Unit price: " <<  setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.unit_price << "\n";
++      std::cout << "    Unit price: " <<  std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.unit_price << "\n";
+   }
+   if (data.market_value_valid == true)
+   {
+-    cout << "    Market Value: " << data.market_value << "\n";
++    std::cout << "    Market Value: " << data.market_value << "\n";
+   }
+   if (data.amounts_are_foreign_currency_valid == true)
+   {
+-    cout << "    Amounts are in foreign currency: " << (data.amounts_are_foreign_currency ? "Yes" : "No") << "\n";
++    std::cout << "    Amounts are in foreign currency: " << (data.amounts_are_foreign_currency ? "Yes" : "No") << "\n";
+   }
+   if (data.currency_valid == true)
+   {
+-    cout << "    Currency: " << data.currency << "\n";
++    std::cout << "    Currency: " << data.currency << "\n";
+   }
+   if (data.currency_ratio_valid == true)
+   {
+-    cout << "    Ratio of default currency to currency: " << data.currency_ratio << "\n";
++    std::cout << "    Ratio of default currency to currency: " << data.currency_ratio << "\n";
+   }
+   if (data.date_unit_price_valid == true)
+   {
+     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_unit_price)));
+-    cout << "    Date of unit price: " << dest_string << "\n";
++    std::cout << "    Date of unit price: " << dest_string << "\n";
+   }
+   if (data.memo_valid == true)
+   {
+-    cout << "    Extra position information (memo): " << data.memo << "\n";
++    std::cout << "    Extra position information (memo): " << data.memo << "\n";
+   }
+   if (data.inv_401k_source_valid == true)
+   {
+@@ -972,134 +969,134 @@ int ofx_proc_position_cb(struct OfxPositionData data, void * position_data)
+       strncpy(dest_string, "OTHERNONVEST", sizeof(dest_string));
+     else
+       strncpy(dest_string,"ERROR: unrecognized", sizeof(dest_string));
+-    cout << "    Source of 401(k) money: " << dest_string << "\n";
++    std::cout << "    Source of 401(k) money: " << dest_string << "\n";
+   }
+   if (data.security_data_valid == true)
+   {
+     ofx_proc_security_cb(*(data.security_data_ptr), NULL );
+   }
+-  cout << "\n";
++  std::cout << "\n";
+   return 0;
+ }// end of ofx_proc_position()
+ 
+ int ofx_proc_statement_cb(struct OfxStatementData data, void * statement_data)
+ {
+   char dest_string[255];
+-  cout << "ofx_proc_statement():\n";
++  std::cout << "ofx_proc_statement():\n";
+   if (data.currency_valid == true)
+   {
+-    cout << "    Default Currency: " << data.currency << "\n";
++    std::cout << "    Default Currency: " << data.currency << "\n";
+   }
+   if (data.account_id_valid == true)
+   {
+-    cout << "    Account ID: " << data.account_id << "\n";
++    std::cout << "    Account ID: " << data.account_id << "\n";
+   }
+   if (data.date_asof_valid == true)
+   {
+     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_asof)));
+-    cout << "    Statement as-of date: " << dest_string << "\n";
++    std::cout << "    Statement as-of date: " << dest_string << "\n";
+   }
+   if (data.date_start_valid == true)
+   {
+     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_start)));
+-    cout << "    Start date of this statement: " << dest_string << "\n";
++    std::cout << "    Start date of this statement: " << dest_string << "\n";
+   }
+   if (data.date_end_valid == true)
+   {
+     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.date_end)));
+-    cout << "    End date of this statement: " << dest_string << "\n";
++    std::cout << "    End date of this statement: " << dest_string << "\n";
+   }
+   if (data.ledger_balance_valid == true)
+   {
+-    cout << "    Ledger balance: " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.ledger_balance << "\n";
++    std::cout << "    Ledger balance: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.ledger_balance << "\n";
+   }
+   if (data.ledger_balance_date_valid == true)
+   {
+     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.ledger_balance_date)));
+-    cout << "    Ledger balance date: " << dest_string << "\n";
++    std::cout << "    Ledger balance date: " << dest_string << "\n";
+   }
+   if (data.available_balance_valid == true)
+   {
+-    cout << "    Available balance: " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.available_balance << "\n";
++    std::cout << "    Available balance: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.available_balance << "\n";
+   }
+   if (data.available_balance_date_valid == true)
+   {
+     strftime(dest_string, sizeof(dest_string), "%c %Z", localtime(&(data.available_balance_date)));
+-    cout << "    Available balance date: " << dest_string << "\n";
++    std::cout << "    Available balance date: " << dest_string << "\n";
+   }
+   if (data.margin_balance_valid == true)
+   {
+-    cout << "    Margin balance: " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.margin_balance << "\n";
++    std::cout << "    Margin balance: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.margin_balance << "\n";
+   }
+   if (data.short_balance_valid == true)
+   {
+-    cout << "    Short balance: " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.short_balance << "\n";
++    std::cout << "    Short balance: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.short_balance << "\n";
+   }
+   if (data.buying_power_valid == true)
+   {
+-    cout << "    Buying power: " << setiosflags(ios::fixed) << setiosflags(ios::showpoint) << setprecision(2) << data.buying_power << "\n";
++    std::cout << "    Buying power: " << std::setiosflags(std::ios::fixed) << std::setiosflags(std::ios::showpoint) << std::setprecision(2) << data.buying_power << "\n";
+   }
+   if (data.marketing_info_valid == true)
+   {
+-    cout << "    Marketing information: " << data.marketing_info << "\n";
++    std::cout << "    Marketing information: " << data.marketing_info << "\n";
+   }
+-  cout << "\n";
++  std::cout << "\n";
+   return 0;
+ }//end ofx_proc_statement()
+ 
+ int ofx_proc_account_cb(struct OfxAccountData data, void * account_data)
+ {
+-  cout << "ofx_proc_account():\n";
++  std::cout << "ofx_proc_account():\n";
+   if (data.account_id_valid == true)
+   {
+-    cout << "    Account ID: " << data.account_id << "\n";
+-    cout << "    Account name: " << data.account_name << "\n";
++    std::cout << "    Account ID: " << data.account_id << "\n";
++    std::cout << "    Account name: " << data.account_name << "\n";
+   }
+   if (data.account_type_valid == true)
+   {
+-    cout << "    Account type: ";
++    std::cout << "    Account type: ";
+     switch (data.account_type)
+     {
+     case OfxAccountData::OFX_CHECKING :
+-      cout << "CHECKING\n";
++      std::cout << "CHECKING\n";
+       break;
+     case OfxAccountData::OFX_SAVINGS :
+-      cout << "SAVINGS\n";
++      std::cout << "SAVINGS\n";
+       break;
+     case OfxAccountData::OFX_MONEYMRKT :
+-      cout << "MONEYMRKT\n";
++      std::cout << "MONEYMRKT\n";
+       break;
+     case OfxAccountData::OFX_CREDITLINE :
+-      cout << "CREDITLINE\n";
++      std::cout << "CREDITLINE\n";
+       break;
+     case OfxAccountData::OFX_CMA :
+-      cout << "CMA\n";
++      std::cout << "CMA\n";
+       break;
+     case OfxAccountData::OFX_CREDITCARD :
+-      cout << "CREDITCARD\n";
++      std::cout << "CREDITCARD\n";
+       break;
+     case OfxAccountData::OFX_INVESTMENT :
+-      cout << "INVESTMENT\n";
++      std::cout << "INVESTMENT\n";
+       break;
+     default:
+-      cout << "ofx_proc_account() WRITEME: This is an unknown account type!";
++      std::cout << "ofx_proc_account() WRITEME: This is an unknown account type!";
+     }
+   }
+   if (data.currency_valid == true)
+   {
+-    cout << "    Default Currency: " << data.currency << "\n";
++    std::cout << "    Default Currency: " << data.currency << "\n";
+   }
+ 
+   if (data.bank_id_valid)
+-    cout << "    Bank ID: " << data.bank_id << endl;;
++    std::cout << "    Bank ID: " << data.bank_id << std::endl;;
+ 
+   if (data.branch_id_valid)
+-    cout << "    Branch ID: " << data.branch_id << endl;
++    std::cout << "    Branch ID: " << data.branch_id << std::endl;
+ 
+   if (data.account_number_valid)
+-    cout << "    Account #: " << data.account_number << endl;
++    std::cout << "    Account #: " << data.account_number << std::endl;
+ 
+-  cout << "\n";
++  std::cout << "\n";
+   return 0;
+ }//end ofx_proc_account()
+ 
+@@ -1107,38 +1104,38 @@ int ofx_proc_account_cb(struct OfxAccountData data, void * account_data)
+ 
+ int ofx_proc_status_cb(struct OfxStatusData data, void * status_data)
+ {
+-  cout << "ofx_proc_status():\n";
++  std::cout << "ofx_proc_status():\n";
+   if (data.ofx_element_name_valid == true)
+   {
+-    cout << "    Ofx entity this status is relevant to: " << data.ofx_element_name << " \n";
++    std::cout << "    Ofx entity this status is relevant to: " << data.ofx_element_name << " \n";
+   }
+   if (data.severity_valid == true)
+   {
+-    cout << "    Severity: ";
++    std::cout << "    Severity: ";
+     switch (data.severity)
+     {
+     case OfxStatusData::INFO :
+-      cout << "INFO\n";
++      std::cout << "INFO\n";
+       break;
+     case OfxStatusData::WARN :
+-      cout << "WARN\n";
++      std::cout << "WARN\n";
+       break;
+     case OfxStatusData::ERROR :
+-      cout << "ERROR\n";
++      std::cout << "ERROR\n";
+       break;
+     default:
+-      cout << "WRITEME: Unknown status severity!\n";
++      std::cout << "WRITEME: Unknown status severity!\n";
+     }
+   }
+   if (data.code_valid == true)
+   {
+-    cout << "    Code: " << data.code << ", name: " << data.name << "\n    Description: " << data.description << "\n";
++    std::cout << "    Code: " << data.code << ", name: " << data.name << "\n    Description: " << data.description << "\n";
+   }
+   if (data.server_message_valid == true)
+   {
+-    cout << "    Server Message: " << data.server_message << "\n";
++    std::cout << "    Server Message: " << data.server_message << "\n";
+   }
+-  cout << "\n";
++  std::cout << "\n";
+   return 0;
+ }
+ 
+@@ -1152,10 +1149,10 @@ int main (int argc, char *argv[])
+     exit(1) ;
+ 
+   //  if (args_info.msg_parser_given)
+-  //    cout << "The msg_parser option was given!" << endl;
++  //    std::cout << "The msg_parser option was given!" << std::endl;
+ 
+-  //  cout << "The flag is " << ( args_info.msg_parser_flag ? "on" : "off" ) <<
+-  //    "." << endl ;
++  //  std::cout << "The flag is " << ( args_info.msg_parser_flag ? "on" : "off" ) <<
++  //    "." << std::endl ;
+ 
+   ofx_PARSER_msg = bool(args_info.msg_parser_flag);
+   ofx_DEBUG_msg = bool(args_info.msg_debug_flag);
+@@ -1169,10 +1166,10 @@ int main (int argc, char *argv[])
+   if (args_info.list_import_formats_given)
+   {
+     skiphelp = true;
+-    cout << "The supported file formats for the 'input-file-format' argument are:" << endl;
++    std::cout << "The supported file formats for the 'input-file-format' argument are:" << std::endl;
+     for (int i = 0; LibofxImportFormatList[i].format != LAST; i++)
+     {
+-      cout << "     " << LibofxImportFormatList[i].description << endl;
++      std::cout << "     " << LibofxImportFormatList[i].description << std::endl;
+     }
+   }
+ 
+@@ -1195,10 +1192,10 @@ int main (int argc, char *argv[])
+     /** @todo currently, only the first file is processed as the library can't deal with more right now.*/
+     if (args_info.inputs_num  > 1)
+     {
+-      cout << "Sorry, currently, only the first file is processed as the library can't deal with more right now.  The following files were ignored:" << endl;
++      std::cout << "Sorry, currently, only the first file is processed as the library can't deal with more right now.  The following files were ignored:" << std::endl;
+       for ( unsigned i = 1 ; i < args_info.inputs_num ; ++i )
+       {
+-        cout << "file: " << args_info.inputs[i] << endl ;
++        std::cout << "file: " << args_info.inputs[i] << std::endl ;
+       }
+     }
+     return libofx_proc_file(libofx_context, args_info.inputs[0], file_format);
+-- 
+2.32.0 (Apple Git-132)
+
