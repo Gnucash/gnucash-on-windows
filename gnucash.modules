@@ -20,7 +20,7 @@
   <repository type="tarball" name="aqbanking"
               href="https://www.aquamaniac.de/rdm/attachments/download/"/>
   <repository type="git" name="github"
-	      href="git://github.com/"/>
+	      href="https://github.com/"/>
   <repository type="tarball" name="github-tar"
 	      href="https://github.com/"/>
   <repository type="system" name="system"/>
