@@ -661,7 +661,7 @@ index d8a1c1f..61b142d 100644
  {
  public:
 -  string type;/**< The type of the object, often == tag_identifier */
--  string tag_identifier; /**< The identifer of the creating tag */
+-  string tag_identifier; /**< The identifier of the creating tag */
 +  std::string type;/**< The type of the object, often == tag_identifier */
 +  std::string tag_identifier; /**< The identifier of the creating tag */
    OfxGenericContainer *parentcontainer;

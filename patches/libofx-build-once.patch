@@ -1,0 +1,14 @@
+diff --git a/ofxdump/Makefile.am b/ofxdump/Makefile.am
+index 0fb19e9..3256fcf 100644
+--- a/ofxdump/Makefile.am
++++ b/ofxdump/Makefile.am
+@@ -15,8 +15,7 @@ cmdline.c cmdline.h: cmdline.ggo Makefile
+ 
+ endif
+ 
+-ofxdump.1: ofxdump.cpp $(top_srcdir)/configure.ac
+-	$(MAKE) $(AM_MAKEFLAGS) ofxdump$(EXEEXT)
++ofxdump.1: ofxdump$(EXEEXT) $(top_srcdir)/configure.ac
+ if HAVE_HELP2MAN
+ 	$(HELP2MAN) -n 'Dump content of OFX files as human-readable text' -N --output=ofxdump.1 ./ofxdump$(EXEEXT)
+ else
