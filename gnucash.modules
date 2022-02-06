@@ -143,7 +143,7 @@
 
   <autotools id="gwenhywfar" autogen-sh="configure"
              autogenargs="--with-guis='gtk3' --enable-local-install --disable-binreloc PKG_CONFIG='pkg-config --dont-define-prefix'">
-    <branch module="402/gwenhywfar-5.8.1.tar.gz" version="5.8.1"
+    <branch module="411/gwenhywfar-5.8.2.tar.gz" version="5.8.2"
             repo="aqbanking">
       <patch file="gwenhywfar-5.7.4-typemaker2-Makefiles.patch" strip="1"/>
     </branch>
