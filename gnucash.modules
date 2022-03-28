@@ -321,8 +321,8 @@
   </cmake>
 
   <cmake id="gnucash-docs">
-    <branch  module="project/gnucash/gnucash%20%28stable%29/4.10/gnucash-docs-4.10.tar.gz"
-	     version="4.10" repo="sourceforge"/>
+    <branch  module="project/gnucash/gnucash%20%28stable%29/4.10/gnucash-docs-4.10.1.tar.gz"
+	     version="4.10.1" repo="sourceforge"/>
   </cmake>
 
   <cmake id="gnucash-unstable-docs">
