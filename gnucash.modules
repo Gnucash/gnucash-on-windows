@@ -214,8 +214,8 @@
   </autotools>
 
   <autotools id="libofx" autogen-sh='autoreconf'>
-    <branch repo="sourceforge" module="libofx/libofx-0.10.3.tar.gz"
-	    version="0.10.3">
+    <branch repo="sourceforge" module="libofx/libofx-0.10.5.tar.gz"
+	    version="0.10.5">
       <patch file="libofx-namespace-std.patch" strip="1"/>
       <patch file="libofx-build-once.patch" strip="1"/>
     </branch>
