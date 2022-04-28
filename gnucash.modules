@@ -143,9 +143,8 @@
 
   <autotools id="gwenhywfar" autogen-sh="configure"
              autogenargs="--with-guis='gtk3' --enable-local-install --disable-binreloc PKG_CONFIG='pkg-config --dont-define-prefix'">
-    <branch module="396/gwenhywfar-5.7.4.tar.gz" version="5.7.4"
+    <branch module="415/gwenhywfar-5.9.0.tar.gz" version="5.9.0"
             repo="aqbanking">
-      <patch file="gwenhywfar-5.7.4-typemaker2-Makefiles.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="gcrypt"/>
@@ -173,7 +172,7 @@
 
   <autotools id="aqbanking" autogen-sh="autoreconf" makeargs="-j1"
 	     autogenargs="--enable-local-install">
-    <branch module="394/aqbanking-6.4.0.tar.gz" repo="aqbanking" version="6.4.0">
+    <branch module="435/aqbanking-6.5.0.tar.gz" repo="aqbanking" version="6.5.0">
     </branch>
     <dependencies>
       <dep package="gwenhywfar"/>
