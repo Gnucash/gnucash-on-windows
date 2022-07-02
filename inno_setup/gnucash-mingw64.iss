@@ -189,6 +189,7 @@ Source: "@MINGW_DIR@\bin\libwebkitgtk-3.0-0.dll"; DestDir: "{app}\bin"; Componen
 Source: "@MINGW_DIR@\bin\libwinpthread-1.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libxml2-2.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libxslt-1.dll"; DestDir: "{app}\bin"; Components: main
+Source: "@MINGW_DIR@\bin\libzstd.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libmariadb.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\zlib1.dll"; DestDir: "{app}\bin"; Components: main
 
