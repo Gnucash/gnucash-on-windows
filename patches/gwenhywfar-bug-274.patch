@@ -1,0 +1,26 @@
+From 2524a27c4b765ada7b78992416e9d4fd0e5930b6 Mon Sep 17 00:00:00 2001
+From: John Ralls <jralls@ceridwen.us>
+Date: Sun, 21 Aug 2022 16:00:43 -0700
+Subject: [PATCH] Fix MAX_PATH build failure
+
+_MAX_PATH, not MAX_PATH
+---
+ src/sio/syncio_tls.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/sio/syncio_tls.c b/src/sio/syncio_tls.c
+index d5715c79..7e45ffa4 100644
+--- a/src/sio/syncio_tls.c
++++ b/src/sio/syncio_tls.c
+@@ -530,7 +530,7 @@ int GWEN_SyncIo_Tls_Prepare(GWEN_SYNCIO *sio)
+     /* try to find OpenSSL certificates */
+ # ifdef OS_WIN32
+     if (trustFileSet==0) {
+-      char defaultPath[2*MAX_PATH+1];
++      char defaultPath[2*_MAX_PATH+1];
+       const char *defaultFile = "ca-bundle.crt";
+       GWEN_STRINGLIST *paths;
+       GWEN_BUFFER *nbuf;
+-- 
+2.32.1 (Apple Git-133)
+
