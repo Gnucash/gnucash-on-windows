@@ -173,7 +173,7 @@
 
   <autotools id="aqbanking" autogen-sh="autoreconf" makeargs="-j1"
 	     autogenargs="--enable-local-install">
-    <branch module="467/aqbanking-6.5.3.tar.gz" repo="aqbanking" version="6.5.3">
+    <branch module="499/aqbanking-6.5.4.tar.gz" repo="aqbanking" version="6.5.4">
     </branch>
     <dependencies>
       <dep package="gwenhywfar"/>
@@ -307,10 +307,7 @@
       <dep package="libofx"/>
       <dep package="aqbanking"/>
       <dep package="libdbi-drivers"/>
-      <!--dep package="shared-mime-info"/-->
-      <!--dep package="iso-codes"/-->
       <dep package="guile2"/>
-      <!--dep package="swig"/-->
       <dep package="boost"/>
       <dep package="googletest"/>
     </dependencies>
