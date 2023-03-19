@@ -284,8 +284,8 @@
 
  <cmake id="gnucash-unstable"
         cmakeargs="-DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DGTEST_ROOT=$SRCROOT/googletest/">
-   <branch module="project/gnucash/gnucash%20%28unstable%29/4.903/gnucash-4.903.tar.bz2"
-	   repo="sourceforge" version="4.903"/>
+   <branch module="project/gnucash/gnucash%20%28unstable%29/4.904/gnucash-4.904.tar.bz2"
+	   repo="sourceforge" version="4.904"/>
     <dependencies>
       <dep package="libofx"/>
       <dep package="aqbanking"/>
