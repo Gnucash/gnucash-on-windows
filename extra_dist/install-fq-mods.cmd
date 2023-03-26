@@ -114,20 +114,6 @@ echo.  ***        Edit-^>Preferences-^>Online Quotes
 echo.  ***
 
 REM ----------------------------------------------------------------------------
-echo.
-echo * Run gnc-fq-check
-echo.
-perl -w gnc-fq-check
-if %errorlevel% neq 0 goto error
-
-REM ----------------------------------------------------------------------------
-echo.
-echo * Run gnc-fq-helper
-echo.
-echo (alphavantage "AMZN") | perl -w gnc-fq-helper
-if %errorlevel% neq 0 goto error
-
-REM ----------------------------------------------------------------------------
 :success
 echo.
 echo * Installation succeeded
