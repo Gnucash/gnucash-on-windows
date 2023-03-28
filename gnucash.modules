@@ -301,7 +301,7 @@
 
  <cmake id="gnucash-git"
         cmakeargs="-DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DGTEST_ROOT=$SRCROOT/googletest/ -DCMAKE_BUILD_TYPE=Debug">
-   <branch repo="github" module="Gnucash/gnucash.git" revision="master"
+   <branch repo="github" module="Gnucash/gnucash.git" revision="stable"
 	   checkoutdir="gnucash-git"/>
     <dependencies>
       <dep package="libofx"/>
@@ -314,7 +314,7 @@
  </cmake>
 
   <cmake id="gnucash-docs-git">
-    <branch  repo="github" module="Gnucash/gnucash-docs.git" revision="master"
+    <branch  repo="github" module="Gnucash/gnucash-docs.git" revision="stable"
 	   checkoutdir="gnucash-docs-git"/>
   </cmake>
 
