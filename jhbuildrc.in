@@ -37,7 +37,7 @@ if 'TARGET' in os.environ:
     (_project, _branch) = os.environ['TARGET'].split('-')
 else:
     _project = 'gnucash'
-    _branch = 'master'
+    _branch = 'stable'
 _projectdir = os.path.join(_basedir, _project, _branch)
 _config_dir = os.path.dirname(os.path.realpath(__file__))
 prefix = os.path.join(_projectdir, 'inst')

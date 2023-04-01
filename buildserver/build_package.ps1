@@ -49,7 +49,7 @@ Optional. A ssh compatible server specification (which means [user@]hostname:bas
 [CmdletBinding()]
 Param(
     [Parameter(Mandatory=$true)]
-    [validatePattern("(maint|master|unstable|releases)")][string]$branch,
+    [validatePattern("(stable|future|unstable|releases)")][string]$branch,
     [Parameter()] [string]$target_dir,
     [Parameter()] [string]$hostname
 )
