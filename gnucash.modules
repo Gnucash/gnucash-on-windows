@@ -267,8 +267,8 @@
 
  <cmake id="gnucash"
         cmakeargs="-DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DGTEST_ROOT=$SRCROOT/googletest">
-   <branch module="project/gnucash/gnucash%20%28stable%29/5.2/gnucash-5.2.tar.bz2"
-	   repo="sourceforge" version="5.2"/>
+   <branch module="project/gnucash/gnucash%20%28stable%29/5.3/gnucash-5.3.tar.bz2"
+	   repo="sourceforge" version="5.3"/>
     <dependencies>
       <dep package="libofx"/>
       <dep package="aqbanking"/>
