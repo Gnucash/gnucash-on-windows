@@ -3,8 +3,6 @@
 <?xml-stylesheet type="text/xsl" href="moduleset.xsl"?>
 <moduleset>
 
-  <repository type='tarball' name='ftp.gnu.org'
-	      href="ftp://ftp.gnu.org/gnu/"/>
   <repository type='tarball' name='sourceforge'
 	      href="http://downloads.sourceforge.net/"/>
   <repository type="tarball" name="csail"
@@ -13,8 +11,6 @@
 	      href="http://www.gnucash.org/pub/gnucash/sources/"/>
   <repository type="git" name="git.gnucash.org"
 	      href="http://git.gnucash.org/"/>
-  <repository type="tarball" name="xmlsec"
-	      href="http://www.aleksey.com/xmlsec/download/"/>
   <repository type="git" name="aquamaniac"
               href="https://git.aquamaniac.de/git/"/>
   <repository type="tarball" name="aqbanking"
@@ -27,27 +23,27 @@
 
   <systemmodule id="webkitgtk-3.0">
     <pkg-config>webkitgtk-3.0.pc</pkg-config>
-    <branch repo="system" version="2.4.11" />
+    <branch repo="system" />
   </systemmodule>
 
   <systemmodule id="shared-mime-info">
     <pkg-config>shared-mime-info.pc</pkg-config>
-    <branch repo="system" version="1.4" />
+    <branch repo="system" />
   </systemmodule>
 
   <systemmodule id="gnutls">
     <pkg-config>gnutls.pc</pkg-config>
-    <branch repo="system" version="3.5.10" />
+    <branch repo="system" />
   </systemmodule>
 
   <systemmodule id="openssl">
     <pkg-config>openssl.pc</pkg-config>
-    <branch repo="system" version="1.0.2k" />
+    <branch repo="system" />
   </systemmodule>
 
   <systemmodule id="libffi">
     <pkg-config>libffi.pc</pkg-config>
-    <branch repo="system" version="3.2.1" />
+    <branch repo="system" />
   </systemmodule>
 
   <systemmodule id="gmp">
@@ -73,12 +69,12 @@
 
   <systemmodule id="icu">
     <pkg-config>icu-i18n.pc</pkg-config>
-    <branch repo="system" version="57.1" />
+    <branch repo="system" />
   </systemmodule>
 
   <systemmodule id="iso-codes">
     <pkg-config>iso-codes.pc</pkg-config>
-    <branch repo="system" version="3.74" />
+    <branch repo="system" />
   </systemmodule>
 
   <systemmodule id="boost">
@@ -88,11 +84,13 @@
     <branch repo="system" />
   </systemmodule>
 
-  <autotools id="libunistring" autogen-sh="configure">
-    <branch repo="ftp.gnu.org" module="libunistring/libunistring-0.9.7.tar.gz"
-	    version="0.9.7">
-    </branch>
-  </autotools>
+  <systemmodule id="libunistring" >
+    <branch repo="system" />
+  </systemmodule>
+
+  <systemmodule id="xmlsec">
+    <branch repo="system"/>
+  </systemmodule>
 
   <autotools id="libatomic-ops"
              autogen-template="/bin/bash -c 'pushd %(srcdir)s &amp;&amp; ./%(autogen-sh)s &amp;&amp; popd &amp;&amp; %(srcdir)s/configure --prefix=%(prefix)s> %(autogenargs)s'"
@@ -109,21 +107,11 @@
     </dependencies>
   </autotools>
 
-  <autotools id="guile" autogen-sh="configure"
-	     autogenargs="--disable-error-on-warning">
-    <branch repo="ftp.gnu.org" module="guile/guile-1.8.8.tar.gz"
-	    version="1.8.8"/>
-    <dependencies>
-      <dep package="gmp"/>
-    </dependencies>
-  </autotools>
-
   <autotools id="guile2" autogen-sh="autoreconf" autogenargs="--disable-rpath --enable-networking --enable-nls --enable-posix --enable-regex --with-threads=no --with-modules --disable-static">
     <branch repo="sourceforge" module="gnucash/Dependencies/guile-2.2.7.3-5ef31.tar.xz"
 	    version=" 2.2.7.3-5ef31">
     </branch>
     <dependencies>
-      <dep package="libunistring"/>
       <dep package="gmp"/>
       <dep package="libffi"/>
       <dep package="bdw-gc"/>
@@ -159,15 +147,6 @@
     <dependencies>
       <dep package="gcrypt"/>
       <dep package="gnutls"/>
-    </dependencies>
-  </autotools>
-
-  <autotools id="xmlsec" autogenargs="--without-gcrypt">
-    <branch module="xmlsec1-1.2.32.tar.gz"
-            repo="xmlsec" version="1.2.32" >
-    </branch>
-    <dependencies>
-      <dep package="openssl"/>
     </dependencies>
   </autotools>
 

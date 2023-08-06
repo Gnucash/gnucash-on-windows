@@ -268,7 +268,7 @@ $ignorefile = ""
 bash-command -command "perl -ibak -pe 'BEGIN{undef $/;} s#[[]options[]]\R(Include = [^\R]*\R)?#[options]\nInclude = /etc/pacman.d/gnucash-ignores.pacman\n#smg' /etc/pacman.conf"
 
 # Install the remaining dependencies.
-$deps = "boost icu gtk3 iso-codes shared-mime-info libmariadbclient libsoup libwebp postgresql ninja pdcurses sqlite3 docbook-xsl"
+$deps = "boost icu gtk3 iso-codes shared-mime-info libmariadbclient libsoup libunistring libwebp postgresql ninja pdcurses sqlite3 docbook-xsl"
 
 Write-Host @"
 
