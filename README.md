@@ -47,7 +47,7 @@ These create terminal emulation sessions running the Bash shell with the environ
 
 1. Start an MSYS MinGW shell for the selected bitness.
 1. Change directories to the installation directory ```cd /c/gcdev64/src/gnucash-on-windows.git```. Substitute the path if you set **-target_dir** to something else. Note that in this shell you'll use ```/c``` instead of ```C:``` for the drive letter.
-1. run ```TARGET=gnucash-maint jhbuild -f jhbuildrc build``` to build the ```maint``` branch, substitute ```gnucash-master``` for ```gnucash-maint``` if you want to build the ```master``` branch.
+1. run ```TARGET=gnucash-stable jhbuild -f jhbuildrc build``` to build the ```stable``` branch. Substitute ```gnucash-release``` for ```gnucash-stable``` to build the latest release from the tarball. In the run-up to a major release there will be an unstable branch for beta testing; to build that use ```gnucash-unstable```. 
 
 ## Developing
 
