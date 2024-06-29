@@ -1,0 +1,29 @@
+--- a/src/libs/plugins/backends/aqfints/transportlayer/transport.c	2019-09-21 08:53:32.000000000 -0700
++++ b/src/libs/plugins/backends/aqfints/transportlayer/transport.c	2019-09-22 10:34:04.486430000 -0700
+@@ -17,6 +17,26 @@
+ /* code headers */
+ 
+ /* macro functions */
++static char *my_strndup(const char *src, size_t n)
++{
++  int len;
++
++  len=strlen(src);
++  if (len<n)
++    return strdup(src);
++  else {
++    char *cpy;
++
++    cpy=(char *) malloc(n+1);
++    assert(cpy);
++    memmove(cpy, src, n);
++    cpy[n]=0;
++    return cpy;
++  }
++}
++
++#define strndup my_strndup
++
+ GWEN_INHERIT_FUNCTIONS(AQFINTS_TRANSPORT)
+ 
+ 
