@@ -9,7 +9,7 @@ Dim fso: Set fso = CreateObject("Scripting.FileSystemObject")
 Dim tempFolder: tempFolder = fso.GetSpecialFolder(TemporaryFolder)
 
 strHDLocation = Wscript.Arguments.Item(0)
-strVersion = "5.32.1.1"
+strVersion = "5.38.2.2"
 
 ' Set your settings
     strFileURL    = "https://strawberryperl.com/download/" & strVersion & "/strawberry-perl-" & strVersion & "-32bit.msi"
