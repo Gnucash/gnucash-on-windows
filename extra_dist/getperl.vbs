@@ -9,7 +9,10 @@ Dim fso: Set fso = CreateObject("Scripting.FileSystemObject")
 Dim tempFolder: tempFolder = fso.GetSpecialFolder(TemporaryFolder)
 
 strHDLocation = Wscript.Arguments.Item(0)
-strVersion = "5.38.2.2"
+' Later versions are provided at github instead of strawberryperl.com
+' and this script gets a Permission Denied error from MSXML2 when
+' trying to access them.
+strVersion = "5.32.1.1"
 
 ' Set your settings
     strFileURL    = "https://strawberryperl.com/download/" & strVersion & "/strawberry-perl-" & strVersion & "-32bit.msi"
@@ -28,7 +31,7 @@ If objXMLHTTP.Status = 200 Then
    objADOStream.Open
    objADOStream.Type = 1 'adTypeBinary
 
-   objADOStream.Write objXMLHTTP.ResponseBody
+   objADOStream.Write objXMLHTTP.Responody
    objADOStream.Position = 0    'Set the stream position to the start
 
    Set objFSO = Createobject("Scripting.FileSystemObject")
