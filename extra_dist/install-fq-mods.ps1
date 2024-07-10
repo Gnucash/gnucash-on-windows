@@ -15,7 +15,7 @@ $strLogLogation = "$env:TEMP\perl-log.txt"
 
 # Minimum perl version required
 # Support is currently at 5.8.x, but 5.6 will also work.
-$perlVersion = 6
+$perlVersion = 8
 
 # Function to install and verify perl.
 function install_perl {
@@ -63,7 +63,7 @@ function chkPerlVer {
 
     if ($perlMajor -eq 5) {
         if ($perlminor -lt $perlVersion) {
-            Write-Host "`n Found perl version $perlMajor.$perlMinor, but GnuCash requires at least version 5.8."
+            Write-Host "`n Found perl version $perlMajor.$perlMinor, but GnuCash requires at least version 5.$perlVersion."
             Write-Host "Please manually install version 5.8 or above of"
             Write-Host "* ActivePerl (http://www.activestate.com/store/activeperl) or"
             Write-Host "* Strawberry Perl (http://code.google.com/p/strawberry-perl/downloads/)"
@@ -71,13 +71,6 @@ function chkPerlVer {
             Pause
             Throw
         }
-    }
-    else {
-        # Perl is always 5.x but just in case:
-        Write-Host " GnuCash requires perl verion at least 5.8.x  Please manually download."
-        Write-Host ""
-        Pause
-        Throw
     }
 }
 

@@ -46,7 +46,7 @@ Name: "{group}\GnuCash"; Filename: "{app}\bin\@PACKAGE@.exe"; WorkingDir: "{code
 Name: "{group}\{cm:IconName_README}"; Filename: "{app}\doc\@PACKAGE@\{cm:IconFilename_README}"; Comment: "{cm:IconComment_README}"; Tasks: menuicon
 Name: "{group}\{cm:IconName_FAQ}"; Filename: "http://wiki.gnucash.org/wiki/FAQ"; Tasks: menuicon
 Name: "{group}\{cm:IconName_Bugzilla}"; Filename: "https://bugs.gnucash.org/enter_bug.cgi?product=GnuCash"; Tasks: menuicon
-Name: "{group}\{cm:IconName_InstallFQ}"; Filename: "powershell.exe -ExecutionPolicy Bypass -File ""{app}\bin\install-fq-mods.ps1"""; WorkingDir: "{app}\bin"; Comment: "{cm:IconComment_InstallFQ}"; Tasks: menuicon
+Name: "{group}\{cm:IconName_InstallFQ}"; Filename: "{syswow64}/WindowsPowershell/v1.0/powershell.exe"; Parameters: "-ExecutionPolicy Bypass -File ""{app}\bin\install-fq-mods.ps1"""; WorkingDir: "{app}\bin"; Comment: "{cm:IconComment_InstallFQ}"; Tasks: menuicon
 Name: "{group}\{cm:IconName_Uninstall}"; Filename: "{uninstallexe}"; Comment: "{cm:IconComment_Uninstall}"; Tasks: menuicon
 
 Name: "{commondesktop}\GnuCash"; Filename: "{app}\bin\@PACKAGE@.exe"; WorkingDir: "{code:GetDocPath}"; Comment: "{cm:IconComment_GnuCash}"; IconFilename: "{app}\share\@PACKAGE@\pixmaps\gnucash-icon.ico"; Tasks: desktopicon
