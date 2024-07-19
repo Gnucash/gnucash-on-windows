@@ -61,17 +61,17 @@ function chkPerlVer {
     perl -e "`$ver=1000*sprintf('%0.3f', $]); exit(int(`$ver)-5000);"
     $perlMinor = $LastExitCode
 
-    if ($perlMajor -eq 5) {
-        if ($perlminor -lt $perlVersion) {
-            Write-Host "`n Found perl version $perlMajor.$perlMinor, but GnuCash requires at least version 5.$perlVersion."
-            Write-Host "Please manually install version 5.8 or above of"
-            Write-Host "* ActivePerl (http://www.activestate.com/store/activeperl) or"
-            Write-Host "* Strawberry Perl (http://code.google.com/p/strawberry-perl/downloads/)"
-            Write-Host "and add the bin directory to your Path environment variable. `n"
-            Pause
-            Throw
-        }
+
+    if ($perlminor -lt $perlVersion) {
+        Write-Host "`n Found perl version $perlMajor.$perlMinor, but GnuCash requires at least version 5.$perlVersion."
+        Write-Host "Please manually install version 5.$perlVersion or above from"
+        Write-Host "* ActivePerl (http://www.activestate.com/store/activeperl) or"
+        Write-Host "* Strawberry Perl (http://code.google.com/p/strawberry-perl/downloads/)"
+        Write-Host "and add the bin directory to your Path environment variable. `n"
+        Pause
+        Throw
     }
+
 }
 
 # Function to install the Finance::Quote Module
@@ -86,22 +86,6 @@ function install_fq_mod {
         Pause
     } 
     
-    Write-Host "  ***"
-    Write-Host "  *** You need an API key (from https://www.alphavantage.co)"
-    Write-Host "  ***   to run the Perl module Finance::Quote."
-    Write-Host "  ***"
-    Write-Host "  *** Make it available to GnuCash by"
-    if ($env:ALPHAVANTAGE_API_KEY) {
-        $done = "(done) "
-    }
-    else {
-        $done = ""
-    }
-    Write-Host "  ***    - setting the environment variable ALPHAVANTAGE_API_KEY $done or"
-    Write-Host "  ***    - starting GnuCash and adding the Alpha Vantage api key in"
-    Write-Host "  ***        Edit->Preferences->Online Quotes"
-    Write-Host "  ***`n"
-    pause
 }
 
 #----------------------------------------------------
