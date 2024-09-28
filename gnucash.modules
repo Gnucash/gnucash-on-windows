@@ -131,7 +131,7 @@
 
   <autotools id="gwenhywfar" autogen-sh="configure"
              autogenargs="--with-guis='gtk3' --enable-local-install --disable-binreloc PKG_CONFIG='pkg-config --dont-define-prefix'">
-    <branch module="518/gwenhywfar-5.11.2beta.tar.gz" version="5.11.2beta"
+    <branch module="501/gwenhywfar-5.10.2.tar.gz" version="5.10.2"
             repo="aqbanking">
     </branch>
     <dependencies>
@@ -151,7 +151,8 @@
 
   <autotools id="aqbanking" autogen-sh="autoreconf" makeargs="-j1"
 	     autogenargs="--enable-local-install">
-    <branch module="526/aqbanking-6.5.12beta.tar.gz" repo="aqbanking" version="6.5.12beta">
+    <branch module="499/aqbanking-6.5.4.tar.gz" version="6.5.4"
+            repo="aqbanking">
     </branch>
     <dependencies>
       <dep package="gwenhywfar"/>
@@ -245,8 +246,8 @@
 
  <cmake id="gnucash"
         cmakeargs="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DGTEST_ROOT=$SRCROOT/googletest">
-   <branch module="project/gnucash/gnucash%20%28stable%29/5.8/gnucash-5.8.tar.bz2"
-	   repo="sourceforge" version="5.8" checkoutdir="gnucash-5.8"/>
+   <branch module="project/gnucash/gnucash%20%28stable%29/5.9/gnucash-5.9.tar.bz2"
+	   repo="sourceforge" version="5.9" checkoutdir="gnucash-5.9"/>
     <dependencies>
       <dep package="libofx"/>
       <dep package="aqbanking"/>
@@ -297,8 +298,8 @@
   </cmake>
 
   <cmake id="gnucash-docs">
-    <branch  module="project/gnucash/gnucash%20%28stable%29/5.8/gnucash-docs-5.8.tar.gz"
-	     version="5.8" repo="sourceforge"/>
+    <branch  module="project/gnucash/gnucash%20%28stable%29/5.9/gnucash-docs-5.9.tar.gz"
+	     version="5.9" repo="sourceforge"/>
   </cmake>
 
   <cmake id="gnucash-unstable-docs">
