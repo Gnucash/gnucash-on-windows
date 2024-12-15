@@ -100,7 +100,7 @@ if ($git_build) {
   $gnucash = "gnucash-git"
 }
 else {
-  $gnucash = get-childitem -path $target_dir\build | where-object {$_.Name -match "gnucash-[0-9.]+"} | select-object -last 1
+  $gnucash = get-childitem -path $target_dir\build | where-object {$_.Name -match "gnucash-[0-9.]+"} |sort-object -Property {$_.CreationTime} | select-object -last 1
 }
 
 if ($PSVersionTable.PSVersion.Major -ge 3) {
