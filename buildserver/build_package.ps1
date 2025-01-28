@@ -102,6 +102,7 @@ New-Item -ItemType Directory -Force -Path "$log_dir_full" | Out-Null
 
 $time_stamp = get-date -format "yyyy-MM-dd HH:mm:ss"
 Write-Output "Build Started $time_stamp" | Tee-Object -FilePath $log_file
+Write-Output ":: Checking gnucash-on-windows for updates..." | Tee-Object -FilePath $log_file
 git.exe -C $script_unix pull 2>&1 | Tee-Object -FilePath $log_file -Append
 #copy the file to the download server so that everyone can see we've started
 if ($hostname) {
