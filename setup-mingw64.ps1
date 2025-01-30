@@ -191,7 +191,7 @@ if ($PSBoundParameters.ContainsKey('preferred_mirror')) {
 
 # Install Html Help Workshop
 
-$html_help_workshop_url =  "http://download.microsoft.com/download/0/a/9/0a939ef6-e31c-430f-a3df-dfae7960d564/htmlhelp.exe"
+$html_help_workshop_url =  "http://web.archive.org/web/20160201063255/http://download.microsoft.com/download/0/A/9/0A939EF6-E31C-430F-A3DF-DFAE7960D564/htmlhelp.exe"
 $html_help_workshop_installer = "htmlhelp.exe"
 
 $installed_hh = get-item -path "hkcu:\SOFTWARE\Microsoft\HTML Help Workshop" | foreach-object{$_.GetValue("InstallDir")}
