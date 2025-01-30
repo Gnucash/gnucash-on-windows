@@ -236,7 +236,7 @@ bash-command -command "pacman -Syyuu --noconfirm"
 
 # Set up aliases for the parts of msys-devtools and mingw-w64-toolchain that
 # we need:
-$devel = "asciidoc autoconf autoconf2.13 autogen automake-wrapper bison diffstat diffutils dos2unix file flex gawk gettext gettext-devel gperf grep groff intltool libtool m4 make man-db pacman pactoys-git patch patchutils perl pkg-config python rsync sed texinfo texinfo-tex wget xmlto git texinfo"
+$devel = "asciidoc autoconf autoconf2.13 autogen automake-wrapper bison diffstat diffutils dos2unix file flex gawk gettext gettext-devel git gperf grep groff intltool libltdl libtool m4 make man-db pacman pactoys-git patch patchutils perl pkg-config python python-setuptools rsync sed texinfo texinfo-tex wget xmlto"
 
 $toolchain = "binutils cmake crt-git gcc gcc-libs gdb headers-git libmangle-git libtool libwinpthread-git make pkg-config swig tools-git winpthreads-git"
 
