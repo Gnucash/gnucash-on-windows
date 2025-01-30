@@ -11,6 +11,8 @@
 	      href="http://www.gnucash.org/pub/gnucash/sources/"/>
   <repository type="git" name="git.gnucash.org"
 	      href="http://git.gnucash.org/"/>
+  <repository type="tarball" name="xmlsec"
+              href="http://www.aleksey.com/xmlsec/download/"/>
   <repository type="git" name="aquamaniac"
               href="https://git.aquamaniac.de/git/"/>
   <repository type="tarball" name="aqbanking"
@@ -21,6 +23,8 @@
 	      href="https://github.com/"/>
   <repository type="tarball" name="github-tar"
 	      href="https://github.com/"/>
+  <repository type="tarball" name="postgres"
+              href="https://ftp.postgresql.org/pub/source/"/>
   <repository type="system" name="system"/>
 
   <systemmodule id="webkitgtk-3.0">
@@ -90,10 +94,6 @@
     <branch repo="system" />
   </systemmodule>
 
-  <systemmodule id="xmlsec">
-    <branch repo="system"/>
-  </systemmodule>
-
   <autotools id="libatomic-ops"
              autogen-template="/bin/bash -c 'pushd %(srcdir)s &amp;&amp; ./%(autogen-sh)s &amp;&amp; popd &amp;&amp; %(srcdir)s/configure --prefix=%(prefix)s> %(autogenargs)s'"
 	     autogenargs="--enable-shared --disable-static">
@@ -151,7 +151,17 @@
     </dependencies>
   </autotools>
 
-  <autotools id="aqbanking" autogen-sh="autoreconf" makeargs="-j1"
+  <autotools id="xmlsec" autogenargs="--enable-docs=no --with-gcrypt --with-gnutls">
+    <branch module="xmlsec1-1.3.6.tar.gz"
+            repo="xmlsec" version="1.3.6" >
+    </branch>
+    <dependencies>
+      <dep package="openssl"/>
+      <dep package="gnutls"/>
+    </dependencies>
+  </autotools>
+
+   <autotools id="aqbanking" autogen-sh="autoreconf" makeargs="-j1"
 	     autogenargs="--enable-local-install">
     <branch module="531/aqbanking-6.6.0.tar.gz" repo="aqbanking" version="6.6.0">
     </branch>
@@ -219,6 +229,17 @@
     </dependencies>
   </autotools>
 
+<autotools id="pgsql">
+    <branch repo="postgres" module="v16.3/postgresql-16.3.tar.bz2" 
+            version="16.3"
+            hash="sha256:331963d5d3dc4caf4216a049fa40b66d6bcb8c730615859411b9518764e60585">
+    </branch>
+    <dependencies>
+      <dep package="openssl"/>
+      <dep package="icu"/>
+    </dependencies>
+  </autotools>
+
   <autotools id="libdbi" autogen-sh="autoreconf" autogenargs="--disable-docs">
     <branch repo="sourceforge" module="libdbi/libdbi-0.8.4.tar.gz"
 	    version="0.8.4">
@@ -235,6 +256,7 @@
     </branch>
     <dependencies>
       <dep package="libdbi"/>
+      <dep package="pgsql"/>
     </dependencies>
   </autotools>
 
