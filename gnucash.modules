@@ -103,7 +103,7 @@
 
   <autotools id="bdw-gc" autogen-template="/bin/bash -c 'pushd %(srcdir)s &amp;&amp; ./autogen.sh &amp;&amp; automake -ac &amp;&amp; popd &amp;&amp; %(srcdir)s/configure --prefix %(prefix)s  %(autogenargs)s'"
 	     autogenargs="--enable-threads=no --disable-parallel-mark --enable-shared --disable-static">
-    <branch repo="github" module="ivmai/bdwgc"  revision="gc7_6_0" />
+    <branch repo="github" module="ivmai/bdwgc"  revision="v8.2.8" />
     <dependencies>
       <dep package="libatomic-ops"/>
     </dependencies>
