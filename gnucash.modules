@@ -15,6 +15,8 @@
               href="https://git.aquamaniac.de/git/"/>
   <repository type="tarball" name="aqbanking"
               href="https://www.aquamaniac.de/rdm/attachments/download/"/>
+  <repository type="tarball" name="github-tarball"
+	      href="https://github.com/"/>
   <repository type="git" name="github"
 	      href="https://github.com/"/>
   <repository type="tarball" name="github-tar"
@@ -240,7 +242,9 @@
 	 cmakeargs="-G 'MSYS Makefiles' -DBUILD_GMOCK=OFF"
 	 skip-install="True"
 	 use-ninja="False">
-    <branch module="google/googletest" repo="github" tag="release-1.8.0"/>
+    <branch module="google/googletest/releases/download/v1.16.0/googletest-1.16.0.tar.gz"
+            repo="github-tarball"
+            version="1.16.0" />
   </cmake>
 
  <cmake id="gnucash"
