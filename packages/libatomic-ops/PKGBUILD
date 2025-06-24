@@ -1,0 +1,44 @@
+_realname=libatomic_ops
+pkgbase=gnc-pkg-${_realname}
+pkgname=${pkgbase}
+pkgver=7.4.20
+pkgrel=1
+pkgdesc="Atomic Operations Library"
+arch=('i686' 'x86_64')
+mingw_arch=('mingw32' 'mingw64')
+url="https://github.com/ivmai/libatomic_ops"
+license=('GPL-2.0-only')
+options=('!libtool' 'debug' 'strip' 'buildflags')
+makedepends=("${MINGW_PACKAGE_PREFIX}-gcc")
+depends=()
+source=(git+${url}#tag=v${pkgver})
+prepare() {
+    cd ${srcdir}/${_realname}/
+
+    # Put patch commands here
+
+    autoreconf --install
+    
+    rm -rf ${srcdir}/build
+    mkdir ${srcdir}/build
+}
+
+build() {
+    cd "${srcdir}/build"
+    ${srcdir}/${_realname}/configure \
+    --prefix=${GNC_PREFIX} \
+    --build=${MINGW_CHOST} \
+    --host=${MINGW_CHOST} \
+    --disable-static \
+    --enable-shared \
+    "$@"
+
+    make
+}
+
+package() {
+    cd "${srcdir}/build"
+    make -j1 DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('SKIP')
