@@ -1,0 +1,12 @@
+--- tools/gcttool/main.c~	2022-08-10 11:09:33.000000000 -0700
++++ tools/gcttool/main.c	2025-01-23 16:23:50.528834700 -0800
+@@ -45,7 +45,8 @@
+ 
+ 
+ #ifdef HAVE_OPENSSL
+-int getKeyDataFromTextOpenSSL(GWEN_UNUSED GWEN_GUI *gui,
++int GWENHYWFAR_CB
++getKeyDataFromTextOpenSSL(GWEN_UNUSED GWEN_GUI *gui,
+                               const char *password,
+                               unsigned char *buffer,
+                               unsigned int bsize)

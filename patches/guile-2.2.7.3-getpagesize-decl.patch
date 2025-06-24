@@ -1,0 +1,13 @@
+--- libguile/loader.h~	2020-05-13 11:58:57.000000000 -0700
++++ libguile/loader.h	2025-01-25 13:53:54.753392800 -0800
+@@ -19,6 +19,10 @@
+ #ifndef _SCM_LOADER_H_
+ #define _SCM_LOADER_H_
+ 
++#ifdef __WIN32__
++extern int getpagesize (void);
++#endif
++
+ #include <libguile.h>
+ 
+ SCM_API SCM scm_load_thunk_from_file (SCM filename);
