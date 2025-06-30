@@ -4,15 +4,9 @@
 <moduleset>
 
   <repository type='tarball' name='sourceforge'
-	      href="http://downloads.sourceforge.net/"/>
-  <repository type="tarball" name="csail"
-	      href="http://groups.csail.mit.edu/mac/ftpdir/"/>
-  <repository type="tarball" name="gnucash.org"
-	      href="http://www.gnucash.org/pub/gnucash/sources/"/>
-  <repository type="git" name="git.gnucash.org"
-	      href="http://git.gnucash.org/"/>
+	      href="https://downloads.sourceforge.net/"/>
   <repository type="tarball" name="xmlsec"
-              href="http://www.aleksey.com/xmlsec/download/"/>
+              href="https://www.aleksey.com/xmlsec/download/"/>
   <repository type="git" name="aquamaniac"
               href="https://git.aquamaniac.de/git/"/>
   <repository type="tarball" name="aqbanking"
