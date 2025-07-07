@@ -130,7 +130,7 @@
              autogenargs="--with-guis='gtk3' --enable-local-install --disable-binreloc PKG_CONFIG='pkg-config --dont-define-prefix'">
     <branch module="529/gwenhywfar-5.12.0.tar.gz" version="5.12.0"
             repo="aqbanking">
-      <patch file="gwenhywfar-5.12.0-GWENHYWFAR-CB.patch" strip="0"/>
+      <patch file="gwenhywfar-5.12-GWENHYWFAR-CB.patch" strip="0"/>
     </branch>
     <dependencies>
       <dep package="gcrypt"/>
