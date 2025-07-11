@@ -226,9 +226,9 @@
   </autotools>
 
 <autotools id="pgsql">
-    <branch repo="postgres" module="v16.3/postgresql-16.3.tar.bz2" 
-            version="16.3"
-            hash="sha256:331963d5d3dc4caf4216a049fa40b66d6bcb8c730615859411b9518764e60585">
+    <branch repo="postgres" module="v17.5/postgresql-17.5.tar.bz2" 
+            version="17.5"
+            hash="sha256:fcb7ab38e23b264d1902cb25e6adafb4525a6ebcbd015434aeef9eda80f528d8">
     </branch>
     <dependencies>
       <dep package="openssl"/>
