@@ -313,17 +313,17 @@
     </dependencies>
  </cmake>
 
-  <cmake id="gnucash-docs-git">
+  <cmake id="gnucash-docs-git" supports-parallel-builds="no">
     <branch  repo="github" module="Gnucash/gnucash-docs.git" revision="stable"
 	   checkoutdir="gnucash-docs-git"/>
   </cmake>
 
-  <cmake id="gnucash-docs">
+  <cmake id="gnucash-docs" supports-parallel-builds="no">
     <branch  module="project/gnucash/gnucash%20%28stable%29/5.12/gnucash-docs-5.12.tar.gz"
 	     version="5.12" repo="sourceforge"/>
   </cmake>
 
-  <cmake id="gnucash-unstable-docs">
+  <cmake id="gnucash-unstable-docs" supports-parallel-builds="no">
     <branch  module="project/gnucash/gnucash%20%28unstable%29/4.903/gnucash-docs-4.903.tar.gz"
 	     version="4.903" repo="sourceforge"/>
   </cmake>
