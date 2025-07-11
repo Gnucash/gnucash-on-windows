@@ -256,7 +256,7 @@ $sourceforge_url = "https://downloads.sourceforge.net/gnucash/Dependencies/"
 $signing_keyfile = "jralls_public_signing_key.asc"
 $key_url = $sourceforge_url + $signing_keyfile
 $key_id = "C1F4DE993CF5835F"
-$webkit = "$arch_long-webkitgtk3-2.4.11-999.7-any.pkg.tar.zst"
+$webkit = "$arch_long-webkitgtk3-2.4.11-999.8-any.pkg.tar.zst"
 $webkit_url = $sourceforge_url + $webkit
 bash-command -command "wget $key_url -O $signing_keyfile"
 bash-command -command "pacman-key --add $signing_keyfile"
@@ -277,6 +277,13 @@ Now we'll install the dependencies. Accept the installation as usual. About half
 
 $mingw_deps = make-pkgnames -prefix $mingw_prefix -items $deps
 bash-command -command "pacman -S $mingw_deps --noconfirm --needed"
+
+# Mingw-w64 has dropped 32-bit support of harfbuzz-icu so we need to downgrade it:
+if (!($x86_64)) {
+    bash-command --command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-harfbuzz-11.0.1-1-any.pkg.tar.zst"
+    bash-command --command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-harfbuzz-icu-11.0.1-1-any.pkg.tar.zst"
+    bash-command --command "sed -i s/#IgnorePkg\s*=/IgnorePkg = mingw-w64-i686-harfbuzz/"
+}
 
 $target_unix = make-unixpath $target_dir
 $download_unix = make-unixpath $download_dir
