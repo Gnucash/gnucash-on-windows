@@ -90,3 +90,4 @@ module_extra_env["gnucash-git"]={'GUILE_LOAD_PATH':os.path.join(prefix, 'share',
 _cflags = os.environ['CFLAGS'] if 'CFLAGS' in os.environ else ""
 
 module_extra_env['bdw-gc']={'CFLAGS':_cflags + ' -fcommon'}
+module_extra_env['gwenhywfar'] = {'CFLAGS':_cflags + " -Wno-incompatible-pointer-types"}
