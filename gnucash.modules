@@ -103,7 +103,7 @@
     </dependencies>
   </autotools>
 
-  <autotools id="guile2" autogen-sh="autoreconf" autogenargs="--disable-rpath --enable-networking --enable-nls --enable-posix --enable-regex --with-threads=no --with-modules --disable-static">
+  <autotools id="guile2" autogen-sh="autoreconf" autogenargs="--disable-rpath --enable-networking --enable-nls --enable-posix --enable-regex --without-64-calls --with-threads=no --with-modules --disable-static">
     <branch repo="sourceforge" module="gnucash/Dependencies/guile-2.2.7.3-5ef31.tar.xz"
 	    version=" 2.2.7.3-5ef31">
       <patch file="guile-2.2.7.3-getpagesize-decl.patch" strip="0"/>

@@ -91,3 +91,5 @@ _cflags = os.environ['CFLAGS'] if 'CFLAGS' in os.environ else ""
 
 module_extra_env['bdw-gc']={'CFLAGS':_cflags + ' -fcommon'}
 module_extra_env['gwenhywfar'] = {'CFLAGS':_cflags + " -Wno-incompatible-pointer-types"}
+module_extra_env['pgsql'] = {'CFLAGS':_cflags + " -std=c11 -DWIN32 -D_cdecl=__cdecl"}
+module_extra_env['guile2'] = {'CFLAGS':_cflags + '-Wno-int-conversion -Wno-implicit-function-declaration -Wno-maybe-uninitialized'}
