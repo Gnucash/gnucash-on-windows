@@ -145,29 +145,10 @@ if (!(test-path -path $bash_path)) {
     $mingw64_installer = If ([IntPtr]::size -eq 4) {$mingw64_installer32} Else {$mingw64_installer64}
     $msys_install_dir = (join-path $target_dir "msys2") -replace "\\", '/'
     $msys_setup_args = @"
-function Controller() {}
-Controller.prototype.IntroductionPageCallback = function() {
-    gui.clickButton(buttons.NextButton);
-}
-Controller.prototype.TargetDirectoryPageCallback = function() {
-    var page = gui.pageWidgetByObjectName("TargetDirectoryPage");
-    page.TargetDirectoryLineEdit.setText("$msys_install_dir");
-    gui.clickButton(buttons.NextButton);
-}
-Controller.prototype.StartMenuDirectoryPageCallback = function() {
-    gui.clickButton(buttons.NextButton);
-}
-Controller.prototype.FinishedPageCallback = function() {
-    var page = gui.pageWidgetByObjectName("FinishedPage");
-    page.RunItCheckBox.checked = false;
-    gui.clickButton(buttons.FinishButton);
-}
 "@
 
-    $setup_script = "$target_dir\input.qs"
-    set-content -path $setup_script -value $msys_setup_args | out-null
-    install-package -url $mingw64_installer -install_dir "$msys2_root" -setup_args "--script $setup_script"
-#    remove-item $setup_script
+    install-package -url $mingw64_installer -install_dir "$msys2_root" -setup_args "in --root $msys_install_dir --al --am -c"
+
 }
 if (!(test-path -path $bash_path)) {
     write-host "Failed to install MSys2, aborting."
@@ -228,22 +209,23 @@ There will be a second update.
 #Update the system.
 Write-Host @"
 
-Updating the installation. Accept the proposed changes. If the window doesn't close on its own then close it and re-run the script when it finishes.
+Updating the installation..
 "@
 
-bash-command -command "pacman -Syyuu --noconfirm"
 bash-command -command "pacman -Syyuu --noconfirm"
 
 # Set up aliases for the parts of msys-devtools and mingw-w64-toolchain that
 # we need:
-$devel = "appstream-glib asciidoc autoconf autoconf2.13 autogen automake-wrapper bison diffstat diffutils dos2unix file flex gawk gettext gettext-devel git gperf grep groff intltool libltdl libtool m4 make man-db pacman pactoys-git patch patchutils perl pkg-config python python-setuptools rsync sed texinfo texinfo-tex wget xmlto"
+$devel = "asciidoc autoconf autoconf2.13 autogen automake-wrapper bison diffstat diffutils dos2unix file flex gawk gettext gettext-devel git gperf grep groff intltool libltdl libtool m4 make man-db pacman pactoys-git patch patchutils perl pkg-config python python-setuptools rsync sed texinfo texinfo-tex wget xmlto"
 
-$toolchain = "binutils cmake crt-git gcc gcc-libs gdb headers-git libmangle-git libtool libwinpthread-git make pkg-config swig tools-git winpthreads-git"
+$toolchain = "appstream-glib binutils cmake crt-git gcc gcc-libs gdb headers-git libmangle-git libtool libwinpthread-git make pkg-config swig tools-git winpthreads-git"
 
 
 # Install the system and toolchain:
+
 $msys_devel = make-pkgnames -prefix "msys/" -items $devel
 bash-command -command "pacman -S $msys_devel --noconfirm --needed"
+
 $mingw_toolchain = make-pkgnames -prefix $mingw_prefix -items $toolchain
 bash-command -command "pacman -S $mingw_toolchain --noconfirm --needed"
 
@@ -251,6 +233,8 @@ bash-command -command "pacman -S $mingw_toolchain --noconfirm --needed"
 # project so we have our own build on SourceForge.
 Write-Host @"
 Now we'll install a pre-built webkitgtk3 package we've created and placed in the GnuCash project on SourceForge. It will install several more dependencies from Mingw-w64's repository.
+
+First we need to import the signing key for it. That might hang, so if it takes more than a few seconds open task manager, find gpg-agent.exe in the Details tab, and end the task. You may have to to this twice.
 "@
 $sourceforge_url = "https://downloads.sourceforge.net/gnucash/Dependencies/"
 $signing_keyfile = "jralls_public_signing_key.asc"
@@ -258,35 +242,41 @@ $key_url = $sourceforge_url + $signing_keyfile
 $key_id = "C1F4DE993CF5835F"
 $webkit = "$arch_long-webkitgtk3-2.4.11-999.8-any.pkg.tar.zst"
 $webkit_url = $sourceforge_url + $webkit
-bash-command -command "wget $key_url -O $signing_keyfile"
+$webkit_sig = $webkit_url + ".sig"
+$download_unix = make-unixpath $download_dir
+bash-command -command "curl -L -s -S -o $signing_keyfile $key_url"
 bash-command -command "pacman-key --add $signing_keyfile"
-bash-command -command "pacman-key --lsign $key_id"
-bash-command -command "pacman -U $webkit_url --noconfirm --needed"
+bash-command -command "pacman-key --lsign-key  $key_id"
+bash-command -command "curl -L -s -S -O --output-dir $download_unix $webkit_url"
+bash-command -command "curl -L -s -S -O --output-dir $download_unix $webkit_sig"
 
 $ignorefile = ""
 [IO.File]::WriteAllLines( "$msys2_root\etc\pacman.d\gnucash-ignores.pacman", $ignorefile)
 bash-command -command "perl -ibak -pe 'BEGIN{undef $/;} s#[[]options[]]\R(Include = [^\R]*\R)?#[options]\nInclude = /etc/pacman.d/gnucash-ignores.pacman\n#smg' /etc/pacman.conf"
 
 # Install the remaining dependencies.
-$deps = "boost icu gtk3 libgcrypt gnutls iso-codes shared-mime-info libmariadbclient libsecret libsoup libunistring libwebp ninja pdcurses sqlite3 docbook-xsl"
+$deps = "boost libgcrypt iso-codes libsecret docbook-xsl"
+# Mingw-w64 has dropped 32-bit support of several packages that we need so we must install them from the archive.
+if (!($x86_64)) {
+    bash-command -command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-icu-76.1-1-any.pkg.tar.zst --noconfirm --needed"
+    bash-command -command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-libmariadbclient-3.3.8-2-any.pkg.tar.zst --noconfirm --needed"
+    bash-command -command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-libsoup-2.74.3-1-any.pkg.tar.zst --noconfirm --needed"
+    bash-command -command "pacman -Uhttps://repo.msys2.org/mingw/mingw32/mingw-w64-i686-pdcurses-4.4.0-1-any.pkg.tar.zst --noconfirm --needed"
+    bash-command -command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-harfbuzz-11.0.1-1-any.pkg.tar.zst --noconfirm --needed"
+    bash-command -command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-harfbuzz-icu-11.0.1-1-any.pkg.tar.zst --noconfirm --needed"
+    bash-command -command "sed -E -i 's/#IgnorePkg\s*=/IgnorePkg = mingw-w64-i686-harfbuzz/' /etc/pacman.conf"
+}
+else {
+    $deps += " icu libmariadbclient libsoup pdcurses"
+}
 
-Write-Host @"
-
-Now we'll install the dependencies. Accept the installation as usual. About half-way through it will stop with a message about fontconfig. Just type "Return" at it and it will resume after a minute or two (be patient!) and complete the installation.
-"@
+bash-command -command "pacman -U $download_unix/$webkit --noconfirm --needed"
 
 $mingw_deps = make-pkgnames -prefix $mingw_prefix -items $deps
 bash-command -command "pacman -S $mingw_deps --noconfirm --needed"
 
-# Mingw-w64 has dropped 32-bit support of harfbuzz-icu so we need to downgrade it:
-if (!($x86_64)) {
-    bash-command --command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-harfbuzz-11.0.1-1-any.pkg.tar.zst"
-    bash-command --command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-harfbuzz-icu-11.0.1-1-any.pkg.tar.zst"
-    bash-command --command "sed -i s/#IgnorePkg\s*=/IgnorePkg = mingw-w64-i686-harfbuzz/"
-}
 
 $target_unix = make-unixpath $target_dir
-$download_unix = make-unixpath $download_dir
 
 Write-Host @"
 
