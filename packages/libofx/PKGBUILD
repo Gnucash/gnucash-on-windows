@@ -1,0 +1,45 @@
+_realname=libofx
+pkgbase="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgname=${pkgbase}
+pkgver=0.10.9
+pkgrel=1
+pkgdesc="Parse OFX Files"
+arch=('any')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clangarm64')
+url="https://github.com/libofx/libofx/releases/download/${pkgver}"
+license=('GPL-2.0-only')
+options=('!libtool' 'debug' 'strip' 'buildflags')
+makedepends=("${MINGW_PACKAGE_PREFIX}-gcc")
+depends=(${MINGW_PACKAGE_PREFIX}-OpenSP)
+source=(${url}/${_realname}-${pkgver}.tar.gz)
+prepare() {
+    cd ${srcdir}/${_realname}-${pkgver}/
+
+    # Put patch commands here
+
+    autoreconf --install
+    rm -rf ${srcdir}/build
+    mkdir ${srcdir}/build
+}
+
+build() {
+    cd "${srcdir}/build"
+    ${srcdir}/${_realname}-${pkgver}/configure \
+    --prefix=${MINGW_PREFIX} \
+    --build=${MINGW_CHOST} \
+    --host=${MINGW_CHOST} \
+    --disable-static \
+    --enable-shared \
+    --with-opensp-includes=${MINGW_PREFIX}/include/OpenSP \
+    --with-opensp-libs=${MINGW_PREFIX}/bin/libosp-5.dll \
+    "$@"
+
+    make
+}
+
+package() {
+    cd "${srcdir}/build"
+    make -j1 DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('1ca89ff7d681c9edad312172ac464231a8de686e653213612f9417492cef0d37')

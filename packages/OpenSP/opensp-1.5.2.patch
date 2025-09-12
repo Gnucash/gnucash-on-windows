@@ -1,0 +1,75 @@
+--- a/lib/Makefile.am	Thu Dec 15 13:13:16 2005
++++ b/lib/Makefile.am	Tue Feb  6 10:57:58 2007
+@@ -76,7 +76,9 @@
+ 	splibpch.h token.h app_inst.cxx arc_inst.cxx entmgr_inst.cxx \
+ 	parser_inst.cxx xentmgr_inst.cxx SubstTable.cxx \
+ 	UTF16CodingSystem.cxx Fixed4CodingSystem.cxx \
+-	memcmp.c memmove.c strerror.c
++	memcmp.c memmove.c strerror.c WinInetStorage.cxx \
++	WinInetStorageMessages.h WinInetStorageMessages.msg \
++	WinInetStorageMessages.rc WinApp.cxx Win32CodingSystem.cxx
+ 
+ INCLUDES = -I$(top_srcdir)/include -I$(top_srcdir)/generic
+ 
+--- a/lib/MessageReporter.cxx    2005-07-21 07:05:17.000000000 -0700
++++ b/lib/MessageReporter.cxx     2017-05-06 11:51:04.348011200 -0700
+@@ -13,7 +13,8 @@
+ #include "macros.h"
+ 
+ #include <string.h>
+-
++#include <iostream>
++#include <sstream>
+ 
+ #ifdef SP_NAMESPACE
+ namespace SP_NAMESPACE {
+@@ -123,8 +124,12 @@
+     os() << ':';
+   }
+   if (options_ & messageNumbers)
+-    os() << (unsigned long)message.type->module() << "." 
++    {
++      std::ostringstream ss;
++      ss << (void*)message.type->module();
++       os() << ss.str().c_str() << "."
+       << (unsigned long)message.type->number() << ":";
++    }
+   switch (message.type->severity()) {
+   case MessageType::info:
+     formatFragment(MessageReporterMessages::infoTag, os());
+--- a/config.h.in        2022-01-09 10:42:27.485190800 -0800
++++ b/config.h.in 2022-01-09 10:53:02.416120000 -0800
+@@ -46,6 +46,9 @@
+ /* Define if the GNU gettext() function is already present or preinstalled. */
+ #undef HAVE_GETTEXT
+ 
++/* Define if you have the iconv() function and it works. */
++#undef HAVE_ICONV
++
+ /* define if the compiler supports explicit instantiations */
+ #undef HAVE_INSTANTIATIONS
+ 
+--- a/configure.in       2005-12-23 06:15:21.000000000 -0800
++++ b/configure.in        2022-01-09 10:51:18.494840900 -0800
+@@ -238,7 +238,7 @@
+ dnl Checks for libraries.
+ AC_CHECK_LIB(pthread,pthread_create,,AC_CHECK_LIB(threads,cthread_fork))
+ 
+-AM_GNU_GETTEXT
++AM_GNU_GETTEXT([external])
+ AM_GNU_GETTEXT_VERSION([0.14.5])
+ AC_CHECK_HEADERS(locale.h)
+ AC_DEFINE_DIR(SP_LOCALE_DIR, datadir/locale, [location of message catalogs])
+--- a/Makefile.am        2005-12-23 06:14:27.000000000 -0800
++++ b/Makefile.am 2022-01-09 10:52:48.907191300 -0800
+@@ -4,7 +4,7 @@
+ 
+ SUBDIRS = pubtext unicode doc \
+ 	include generic \
+-	intl po \
++	po \
+ 	lib nsgmls spent spam sgmlnorm sx spcat \
+ 	tests @DOCSRC@
+ 
+
+
