@@ -128,7 +128,8 @@
 
   <autotools id="gwenhywfar" autogen-sh="configure"
              autogenargs="--with-guis='gtk3' --enable-local-install --disable-binreloc PKG_CONFIG='pkg-config --dont-define-prefix'">
-    <branch module="533/gwenhywfar-5.12.1.tar.gz" version="5.12.1"
+    <branch module="539/gwenhywfar-5.12.2.tar.gz" version="5.12.2"
+            hash="sha256:4351ac71d22b6819238d62e71f1f40be835c0ac239c9e59174aed5db6a1e8b58"
             repo="aqbanking">
       <!--patch file="gwenhywfar-5.12-GWENHYWFAR-CB.patch" strip="0"/-->
     </branch>
