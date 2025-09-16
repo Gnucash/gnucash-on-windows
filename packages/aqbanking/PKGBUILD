@@ -1,0 +1,53 @@
+_realname=aqbanking
+pkgbase="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgname=${pkgbase}
+pkgver=6.8.4
+rdmdir=646
+pkgrel=1
+pkgdesc="Parse OFX Files"
+arch=('any')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clangarm64')
+url="https://aquamaniac.de/rdm/attachments/download"
+license=('GPL-2.0-only')
+options=('!libtool' 'debug' 'strip' 'buildflags')
+makedepends=("${MINGW_PACKAGE_PREFIX}-gcc")
+depends=(${MINGW_PACKAGE_PREFIX}-gwenhywfar
+         ${MINGW_PACKAGE_PREFIX}-gmp
+         ${MINGW_PACKAGE_PREFIX}-xmlsec1
+         ${MINGW_PACKAGE_PREFIX}-libxslt
+         ${MINGW_PACKAGE_PREFIX}-libchipcard)
+source=("${url}/${rdmdir}/${_realname}-${pkgver}.tar.gz")
+
+prepare() {
+    cd ${srcdir}/${_realname}-${pkgver}/
+
+    # Put patch commands here
+    # autoreconf -fis 
+
+    rm -rf ${srcdir}/build-${MSYSTEM}
+    mkdir ${srcdir}/build-${MSYSTEM}
+}
+
+build() {
+    cd "${srcdir}/build-${MSYSTEM}"
+    if test "x${MSYSTEM}" = "xCLANG64"; then
+        export lt_cv_deplibs_check_method=${lt_cv_deplibs_check_method='pass_all'}
+    fi
+    ${srcdir}/${_realname}-${pkgver}/configure \
+    --prefix=${MINGW_PREFIX} \
+    --build=${MINGW_CHOST} \
+    --host=${MINGW_CHOST} \
+    --disable-static \
+    --enable-shared \
+    --enable-local-install
+    "$@"
+
+    make
+}
+
+package() {
+    cd "${srcdir}/build-${MSYSTEM}"
+    make -j1 DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('53e297a202312dffae1091eaaa86e46a699febe0947857606bc2535adfdbf191')

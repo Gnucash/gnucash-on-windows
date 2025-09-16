@@ -1,0 +1,11 @@
+--- a/configure.ac	2025-07-06 10:50:57.000000000 -0700
++++ b/configure.ac	2025-09-13 12:20:00.747787000 -0700
+@@ -445,7 +445,7 @@
+ 
+         gwenhywfar_os_lib="os/windows/libos.la"
+         GWEN_OS="windows"
+-	all_libraries="${all_libraries} -lwsock32"
++	all_libraries="${all_libraries} -lwsock32 -lintl"
+         gwenbuild_tool=""
+     	;;
+     *)
