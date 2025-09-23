@@ -1,0 +1,81 @@
+--- a/Source/WTF/wtf/gobject/GRefPtr.h	2016-04-09 23:48:36.000000000 -0700
++++ b/Source/WTF/wtf/gobject/GRefPtr.h	2021-10-30 12:02:26.834187900 -0700
+@@ -28,8 +28,10 @@
+ #include <wtf/RefPtr.h>
+ #include <algorithm>
+ 
++#ifndef __G_OBJECT_H__
+ extern "C" void g_object_unref(gpointer);
+ extern "C" gpointer g_object_ref_sink(gpointer);
++#endif
+ 
+ namespace WTF {
+ 
+--- a/Source/WTF/wtf/gobject/GRefPtr.cpp 2016-04-09 23:48:36.000000000 -0700
++++ b/Source/WTF/wtf/gobject/GRefPtr.cpp  2021-10-31 14:57:51.977684200 -0700
+@@ -17,14 +17,19 @@
+  */
+ 
+ #include "config.h"
+-#include "GRefPtr.h"
+ 
+ #if USE(GLIB)
+ 
+ #include <glib-object.h>
+ #include <glib.h>
+ 
++#endif
++
++#include "GRefPtr.h"
++
++#if USE(GLIB)
++
+ namespace WTF {
+ 
+ template <> GHashTable* refGPtr(GHashTable* ptr)
+ 
+--- a/GNUmakefile.in	2021-10-30 17:18:33.782308300 -0700
++++ b/GNUmakefile.in	2021-10-31 08:54:19.181576200 -0700
+@@ -82645,5 +82645,6 @@
+ 	@true
+ 
+ stamp-webkitmarshal.cpp: $(WEBKIT_MARSHAL_LIST)
+-	$(AM_V_GEN) echo "extern \"C\" {" > $(GENSOURCES_WEBKIT)/webkitmarshal.cpp && \
++       echo '#include <glib-object.h>' > $(GENSOURCES_WEBKIT)/webkitmarshal.cpp && \
++       $(AM_V_GEN) echo "extern \"C\" {" >> $(GENSOURCES_WEBKIT)/webkitmarshal.cpp && \
+ 	$(GLIB_GENMARSHAL) --prefix=webkit_marshal $(WEBKIT_MARSHAL_LIST) --body >> $(GENSOURCES_WEBKIT)/webkitmarshal.cpp && \
+	echo '}' >> $(GENSOURCES_WEBKIT)/webkitmarshal.cpp && \
+ 	echo timestamp > $(@F)
+--- a/Source/WebKit/gtk/GNUmakefile.am	2016-04-09 23:48:37.000000000 -0700
++++ b/Source/WebKit/gtk/GNUmakefile.am	2021-10-31 08:54:36.259763200 -0700
+@@ -352,7 +352,8 @@
+ 	@true
+ 
+ stamp-webkitmarshal.cpp: $(WEBKIT_MARSHAL_LIST)
+-	$(AM_V_GEN) echo "extern \"C\" {" > $(GENSOURCES_WEBKIT)/webkitmarshal.cpp && \
++	$(AM_V_GEN) echo '#include <glib-object.h>' > $(GENSOURCES_WEBKIT)/webkitmarshal.cpp && \
++	$(AM_V_GEN) echo "extern \"C\" {" >> $(GENSOURCES_WEBKIT)/webkitmarshal.cpp && \
+ 	$(GLIB_GENMARSHAL) --prefix=webkit_marshal $(WEBKIT_MARSHAL_LIST) --body >> $(GENSOURCES_WEBKIT)/webkitmarshal.cpp && \
+ 	echo '}' >> $(GENSOURCES_WEBKIT)/webkitmarshal.cpp && \
+ 	echo timestamp > $(@F)
+--- a/Source/WebCore/platform/network/soup/SoupNetworkSession.cpp	2016-04-09 23:48:37.000000000 -0700
++++ b/Source/WebCore/platform/network/soup/SoupNetworkSession.cpp	2021-11-03 12:28:04.955582000 -0700
+@@ -25,13 +25,16 @@
+
+ #include "config.h"
+ #include "SoupNetworkSession.h"
++extern "C"
++{
++#include <libsoup/soup.h>
++}
+
+ #include "AuthenticationChallenge.h"
+ #include "CookieJarSoup.h"
+ #include "GUniquePtrSoup.h"
+ #include "Logging.h"
+ #include "ResourceHandle.h"
+-#include <libsoup/soup.h>
+ #include <wtf/text/CString.h>
+ #include <wtf/text/StringBuilder.h>
+
+

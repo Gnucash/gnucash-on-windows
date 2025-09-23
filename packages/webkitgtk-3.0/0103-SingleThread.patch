@@ -1,0 +1,13 @@
+--- webkitgtk-2.4.11/Source/WTF/wtf/ThreadingPthreads.cpp	2016-04-09 23:48:36.000000000 -0700
++++ webkitgtk-2.4.11/Source/WTF/wtf/ThreadingPthreads.cpp	2019-12-14 11:12:18.000000000 -0800
+@@ -128,5 +128,9 @@
+     wtfThreadData();
+     s_dtoaP5Mutex = new Mutex;
+     initializeDates();
++    auto webkit_procs = getenv("WEBKIT_PROCESSORS");
++    int num_processors = webkit_procs ? atoi(webkit_procs) : -1;
++    if (num_processors > 0 && num_processors < 16)
++      pthread_set_num_processors_np(num_processors);
+ }
+ 
+ static ThreadMap& threadMap()

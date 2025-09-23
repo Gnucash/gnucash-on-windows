@@ -1,0 +1,23 @@
+--- a/Source/WebCore/accessibility/atk/WebKitAccessibleHyperlink.cpp~	2016-04-09 23:48:37.000000000 -0700
++++ b/Source/WebCore/accessibility/atk/WebKitAccessibleHyperlink.cpp	2023-08-03 11:09:09.067030600 -0700
+@@ -390,7 +390,7 @@
+ 
+ GType webkitAccessibleHyperlinkGetType()
+ {
+-    static volatile gsize typeVolatile = 0;
++    static gsize typeVolatile = 0;
+ 
+     if (g_once_init_enter(&typeVolatile)) {
+         static const GTypeInfo tinfo = {
+--- a/Source/WebCore/accessibility/atk/WebKitAccessibleWrapperAtk.cpp       201-04-09 23:48:37.000000000 -0700
++++ b/Source/WebCore/accessibility/atk/WebKitAccessibleWrapperAtk.cpp        202-08-04 09:17:53.480738000 -0700
+@@ -1015,7 +1015,7 @@
+ GType
+ webkitAccessibleGetType(void)
+ {
+-    static volatile gsize typeVolatile = 0;
++    static gsize typeVolatile = 0;
+
+     if (g_once_init_enter(&typeVolatile)) {
+         static const GTypeInfo tinfo = {
+

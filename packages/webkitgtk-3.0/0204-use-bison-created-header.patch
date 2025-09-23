@@ -1,0 +1,46 @@
+--- a/Source/WebCore/css/makegrammar.pl	2016-04-09 23:48:37.000000000 -0700
++++ b/Source/WebCore/css/makegrammar.pl	2021-02-02 12:24:54.794170300 -0800
+@@ -75,21 +75,3 @@
+ my $fileBase = File::Spec->join($outputDir, $filename);
+ system("$bison -d -p $symbolsPrefix $grammarFilePath -o $fileBase.cpp");
+ 
+-open HEADER, ">$fileBase.h" or die;
+-print HEADER << "EOF";
+-#ifndef CSSGRAMMAR_H
+-#define CSSGRAMMAR_H
+-EOF
+-
+-open HPP, "<$fileBase.cpp.h" or open HPP, "<$fileBase.hpp" or die;
+-while (<HPP>) {
+-    print HEADER;
+-}
+-close HPP;
+-
+-print HEADER "#endif\n";
+-close HEADER;
+-
+-unlink("$fileBase.cpp.h");
+-unlink("$fileBase.hpp");
+-
+--- a/Source/WebCore/css/CSSParser.cpp	2016-04-09 23:48:37.000000000 -0700
++++ b/Source/WebCore/css/CSSParser.cpp	2021-02-02 13:05:01.872279600 -0800
+@@ -9797,7 +9797,7 @@
+ 
+ #define END_TOKEN 0
+ 
+-#include "CSSGrammar.h"
++#include "CSSGrammar.hpp"
+ 
+ enum CharacterType {
+     // Types for the main switch.
+--- a/Source/WebCore/xml/XPathParser.cpp 2016-04-09 23:48:37.000000000 -0700
++++ b/Source/WebCore/xml/XPathParser.cpp 2021-02-02 13:41:32.618745300 -0800
+@@ -42,7 +42,7 @@
+ 
+ extern int xpathyyparse(Parser&);
+ 
+-#include "XPathGrammar.h"
++#include "XPathGrammar.hpp"
+ 
+ namespace WebCore {
+ namespace XPath {
