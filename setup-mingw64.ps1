@@ -261,7 +261,7 @@ if (!($x86_64)) {
     bash-command -command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-icu-76.1-1-any.pkg.tar.zst --noconfirm --needed"
     bash-command -command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-libmariadbclient-3.3.8-2-any.pkg.tar.zst --noconfirm --needed"
     bash-command -command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-libsoup-2.74.3-1-any.pkg.tar.zst --noconfirm --needed"
-    bash-command -command "pacman -Uhttps://repo.msys2.org/mingw/mingw32/mingw-w64-i686-pdcurses-4.4.0-1-any.pkg.tar.zst --noconfirm --needed"
+    bash-command -command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-pdcurses-4.4.0-1-any.pkg.tar.zst --noconfirm --needed"
     bash-command -command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-harfbuzz-11.0.1-1-any.pkg.tar.zst --noconfirm --needed"
     bash-command -command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-harfbuzz-icu-11.0.1-1-any.pkg.tar.zst --noconfirm --needed"
     bash-command -command "sed -E -i 's/#IgnorePkg\s*=/IgnorePkg = mingw-w64-i686-harfbuzz/' /etc/pacman.conf"
