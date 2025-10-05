@@ -238,18 +238,19 @@
   </autotools>
 
   <autotools id="libdbi" autogen-sh="autoreconf" autogenargs="--disable-docs">
-    <branch repo="sourceforge" module="libdbi/libdbi-0.8.4.tar.gz"
-	    version="0.8.4">
-      <patch file="libdbi-0.8.3.patch" strip="1"/>
+    <branch repo="sourceforge" module="gnucash/Dependencies/libdbi-0.9.1.tar.gz"
+	    version="0.9.1">
+      <patch file="libdbi-0.9.1-timegm.patch" strip="1"/>
+      <patch file="libdbi-0.9.1-readdir.patch" strip="1"/>
     </branch>
   </autotools>
 
   <autotools id="libdbi-drivers" autogen-sh='autoreconf'
 	     autogenargs='--disable-docs --with-sqlite3 --with-sqlite3-dir="/mingw32" --with-pgsql --with-pgsql-dir="/mingw32" --with-mysql --with-mysql-dir="/mingw32" '>
-    <branch repo="sourceforge" version="0.8.3"
-	    module="libdbi-drivers/libdbi-drivers-0.8.3-1.tar.gz">
-      <patch file="libdbi-drivers-errno.patch" strip="1"/>
-      <patch file="libdbi-drivers-linkage.patch" strip="1"/>
+    <branch repo="sourceforge" version="0.9.1"
+	    module="gnucash/Dependencies/libdbi-drivers-0.9.1.tar.gz">
+      <patch file="libdbi-drivers-0.9.1-no-tests.patch" strip="1"/>
+      <patch file="libdbi-drivers-0.9.1-readdir.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="libdbi"/>

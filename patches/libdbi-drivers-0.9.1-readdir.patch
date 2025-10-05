@@ -1,0 +1,46 @@
+--- a/drivers/sqlite/dbd_sqlite.c	2021-10-25 11:31:28.000000000 -0700
++++ b/drivers/sqlite/dbd_sqlite.c	2025-10-05 12:21:59.400617700 -0700
+@@ -374,11 +374,12 @@
+   chdir(sq_datadir);
+ 
+   while (1) {
+-    result = NULL;
+-    retval = readdir_r(dp, entry, &result);
+-    if (retval != 0 || result == NULL) {
++    errno = 0;
++    struct dirent *tmp = readdir(dp);
++    if (!tmp || errno)
+       break;
+-    }
++
++    memcpy(entry, tmp, entry_size);
+ 
+     stat(entry->d_name, &statbuf);
+     if (S_ISREG(statbuf.st_mode)) {
+--- a/drivers/sqlite3/dbd_sqlite3.c	2021-10-25 11:31:28.000000000 -0700
++++ b/drivers/sqlite3/dbd_sqlite3.c	2025-10-05 12:20:45.085651200 -0700
+@@ -61,7 +61,6 @@
+ 	 * Do the same as in libdbi. MSDN says: readdir, strtok have
+ 	 * thread-local storage. Therefore, let's cheat.
+ 	 */
+-#	define readdir_r(a, b, c) readdir(a)
+ #	define strtok_r(a, b, c) strtok((a), (b))
+ #endif
+ 
+@@ -427,11 +426,12 @@
+   chdir(sq_datadir);
+ 
+   while (1) {
+-    result = NULL;
+-    retval = readdir_r(dp, entry, &result);
+-    if (retval != 0 || result == NULL) {
++    errno = 0;
++    struct dirent *tmp = readdir(dp);
++    if (!tmp || errno)
+       break;
+-    }
++
++    memcpy(entry, tmp, entry_size);
+ 
+     stat(entry->d_name, &statbuf);
+     if (S_ISREG(statbuf.st_mode)) {

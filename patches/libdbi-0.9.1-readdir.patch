@@ -1,0 +1,30 @@
+--- a/src/dbi_main.c	2021-10-25 10:39:45.000000000 -0700
++++ b/src/dbi_main.c	2025-10-05 12:17:28.313393400 -0700
+@@ -63,7 +63,6 @@
+ void *win_dlsym(void *, const char*);
+ int win_dlclose(void *);
+ char *win_dlerror();
+-#define readdir_r(s1,s2,s3) ({ *(s3) = readdir(s1); errno; })
+ /* just for compiling support,if anyone has used these masks in code. The MODE argument to `dlopen' contains one of the following: */
+ #define RTLD_LAZY       0x001   /* Lazy function call binding.  */
+ #define RTLD_NOW        0x002   /* Immediate function call binding.  */
+@@ -196,14 +195,13 @@
+ 
+ 		memset (buffer, 0, buffer_size);
+ 
+-		status = 0;
+ 		while (42) { /* yes, we all admire Douglas Adams */
+-			driver_dirent = NULL;
+-			status = readdir_r (dir, buffer, &driver_dirent);
+-			if (status != 0 || driver_dirent == NULL) {
+-			  break;
+-			}
++                        errno = 0;
++                        struct dirent *tmp = readdir(dir);
++                        if (!tmp || errno)
++                          break;
+ 
++                        memcpy(buffer, tmp, buffer_size);
+ 			driver = NULL;
+ 			snprintf(fullpath, FILENAME_MAX, "%s%s%s", effective_driverdir, DBI_PATH_SEPARATOR, driver_dirent->d_name);
+ 			if ((stat(fullpath, &statbuf) == 0) && S_ISREG(statbuf.st_mode) && strrchr(driver_dirent->d_name, '.') && (!strcmp(strrchr(driver_dirent->d_name, '.'), DRIVER_EXT))) {
