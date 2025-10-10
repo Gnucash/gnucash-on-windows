@@ -20,11 +20,11 @@
 -			  break;
 -			}
 +                        errno = 0;
-+                        struct dirent *tmp = readdir(dir);
-+                        if (!tmp || errno)
++                        driver_dirent = readdir(dir);
++                        if (!driver_dirent || errno)
 +                          break;
  
-+                        memcpy(buffer, tmp, buffer_size);
++                        memcpy(buffer, driver_dirent, buffer_size);
  			driver = NULL;
  			snprintf(fullpath, FILENAME_MAX, "%s%s%s", effective_driverdir, DBI_PATH_SEPARATOR, driver_dirent->d_name);
  			if ((stat(fullpath, &statbuf) == 0) && S_ISREG(statbuf.st_mode) && strrchr(driver_dirent->d_name, '.') && (!strcmp(strrchr(driver_dirent->d_name, '.'), DRIVER_EXT))) {
