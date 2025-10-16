@@ -193,7 +193,6 @@ Source: "@MINGW_DIR@\bin\libunistring-5.dll"; DestDir: "{app}\bin"; Components: 
 Source: "@MINGW_DIR@\bin\libwebp-7.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libwebkitgtk-3.0-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libwinpthread-1.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libxml2-2.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libxml2-16.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libxslt-1.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libzstd.dll"; DestDir: "{app}\bin"; Components: main

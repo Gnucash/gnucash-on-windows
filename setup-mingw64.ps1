@@ -240,16 +240,20 @@ $sourceforge_url = "https://downloads.sourceforge.net/gnucash/Dependencies/"
 $signing_keyfile = "jralls_public_signing_key.asc"
 $key_url = $sourceforge_url + $signing_keyfile
 $key_id = "C1F4DE993CF5835F"
-$webkit = "$arch_long-webkitgtk3-2.4.11-999.8-any.pkg.tar.zst"
+$webkit = "$arch_long-webkitgtk3-2.4.11-999.10-any.pkg.tar.zst"
+$libsoup = "$arch-long-libsoup-2.74.3-4-any.pkg.tar.zst"
 $webkit_url = $sourceforge_url + $webkit
 $webkit_sig = $webkit_url + ".sig"
+$libsoup_url = $sourceforge + $libsoup
+$libsoup_sig = $libsoup + ".sig"
 $download_unix = make-unixpath $download_dir
 bash-command -command "curl -L -s -S -o $signing_keyfile $key_url"
 bash-command -command "pacman-key --add $signing_keyfile"
 bash-command -command "pacman-key --lsign-key  $key_id"
 bash-command -command "curl -L -s -S -O --output-dir $download_unix $webkit_url"
 bash-command -command "curl -L -s -S -O --output-dir $download_unix $webkit_sig"
-
+bash-command -command "curl -L -s -S -O --output-dir $download_unix $libsoup_url"
+bash-command -command "curl -L -s -S -O --output-dir $download_unix $libsoup_sig"
 $ignorefile = ""
 [IO.File]::WriteAllLines( "$msys2_root\etc\pacman.d\gnucash-ignores.pacman", $ignorefile)
 bash-command -command "perl -ibak -pe 'BEGIN{undef $/;} s#[[]options[]]\R(Include = [^\R]*\R)?#[options]\nInclude = /etc/pacman.d/gnucash-ignores.pacman\n#smg' /etc/pacman.conf"
@@ -260,7 +264,6 @@ $deps = "boost libgcrypt iso-codes libsecret docbook-xsl"
 if (!($x86_64)) {
     bash-command -command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-icu-76.1-1-any.pkg.tar.zst --noconfirm --needed"
     bash-command -command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-libmariadbclient-3.3.8-2-any.pkg.tar.zst --noconfirm --needed"
-    bash-command -command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-libsoup-2.74.3-1-any.pkg.tar.zst --noconfirm --needed"
     bash-command -command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-pdcurses-4.4.0-1-any.pkg.tar.zst --noconfirm --needed"
     bash-command -command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-harfbuzz-11.0.1-1-any.pkg.tar.zst --noconfirm --needed"
     bash-command -command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-harfbuzz-icu-11.0.1-1-any.pkg.tar.zst --noconfirm --needed"
@@ -269,7 +272,10 @@ if (!($x86_64)) {
 else {
     $deps += " icu libmariadbclient libsoup pdcurses"
 }
-
+# Mingw-64 didn't update libsoup when they reconfigure libxml2 so we need our own version on 32-bit builds.
+if (!($x86_64)) {
+    bash-command -command "pacman -U $download_unix/$libsoup --noconfirm --needed"
+}
 bash-command -command "pacman -U $download_unix/$webkit --noconfirm --needed"
 
 $mingw_deps = make-pkgnames -prefix $mingw_prefix -items $deps
