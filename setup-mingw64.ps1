@@ -241,11 +241,11 @@ $signing_keyfile = "jralls_public_signing_key.asc"
 $key_url = $sourceforge_url + $signing_keyfile
 $key_id = "C1F4DE993CF5835F"
 $webkit = "$arch_long-webkitgtk3-2.4.11-999.10-any.pkg.tar.zst"
-$libsoup = "$arch-long-libsoup-2.74.3-4-any.pkg.tar.zst"
+$libsoup = "$arch_long-libsoup-2.74.3-4-any.pkg.tar.zst"
 $webkit_url = $sourceforge_url + $webkit
 $webkit_sig = $webkit_url + ".sig"
-$libsoup_url = $sourceforge + $libsoup
-$libsoup_sig = $libsoup + ".sig"
+$libsoup_url = $sourceforge_url + $libsoup
+$libsoup_sig = $libsoup_url + ".sig"
 $download_unix = make-unixpath $download_dir
 bash-command -command "curl -L -s -S -o $signing_keyfile $key_url"
 bash-command -command "pacman-key --add $signing_keyfile"
