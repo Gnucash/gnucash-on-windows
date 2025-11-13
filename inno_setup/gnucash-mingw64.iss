@@ -167,6 +167,9 @@ Source: "@MINGW_DIR@\bin\libltdl-7.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\liblzma-5.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libnettle-8.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libnghttp2-14.dll"; DestDir: "{app}\bin"; Components: main
+Source: "@MINGW_DIR@\bin\libnghttp3-9.dll"; DestDir: "{app}\bin"; Components: main
+Source: "@MINGW_DIR@\bin\libngtcp2-16.dll"; DestDir: "{app}\bin"; Components: main
+Source: "@MINGW_DIR@\bin\libngtcp2_crypto_ossl-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libp11-kit-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libpango-1.0-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libpangocairo-1.0-0.dll"; DestDir: "{app}\bin"; Components: main
