@@ -128,10 +128,9 @@
 
   <autotools id="gwenhywfar" autogen-sh="configure"
              autogenargs="--with-guis='gtk3' --enable-local-install --disable-binreloc PKG_CONFIG='pkg-config --dont-define-prefix'">
-    <branch module="550/gwenhywfar-5.13.0.tar.gz" version="5.13.0"
-            hash="sha256:26513d4b032eb8108ff2b6bf234b7d60c710fd16059fb80077acd79c250824b9"
+    <branch module="630/gwenhywfar-5.14.1.tar.gz" version="5.14.1"
+            hash="sha256:8916feaa99cb954f963f2cba8dd2dffe57cacf7f284daf00eab071aad6fe2ab3"
             repo="aqbanking">
-      <!--patch file="gwenhywfar-5.12-GWENHYWFAR-CB.patch" strip="0"/-->
     </branch>
     <dependencies>
       <dep package="gcrypt"/>
@@ -160,8 +159,8 @@
 
    <autotools id="aqbanking" autogen-sh="autoreconf" makeargs="-j1"
 	     autogenargs="--enable-local-install">
-     <branch module="548/aqbanking-6.6.4.tar.gz" version="6.6.4"
-             hash="sha256:a25c209538fa163f3749676a084493c9a43d9045a945aeee2db25dfd9a502b7f"
+     <branch module="634/aqbanking-6.8.2.tar.gz" version="6.8.2"
+             hash="sha256:10b14c92d76ff13652e00b5c496001601f0d9465c5acb1b1b682d451022406ec"
              repo="aqbanking" >
     </branch>
     <dependencies>
