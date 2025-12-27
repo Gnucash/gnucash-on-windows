@@ -1,0 +1,80 @@
+_realname=guile
+pkgbase=${_realname}3
+pkgname="${MINGW_PACKAGE_PREFIX}-${pkgbase}"
+pkgbranch="#branch=mingw2025"
+pkgver="3.0.11"
+pkgsuffix="mingw2025"
+pkgrel=1
+pkgdesc="Guile Scheme Implementation"
+arch=('any')
+mingw_arch=('mingw64' 'ucrt64' 'clang64' 'clangarm64')
+#For now we use a heavily-patched branch from the 3.0.11 release, but
+#some of the patches are already merged upstream and upstream seems
+#receptive to the rest so we should be able to use 3.0.12 without
+#modification.
+url="https://downloads.sourceforge.net/gnucash"
+#url="https://ftp.gnu.org/pub/gnu/guile/"
+#As of August 2025 guile's git repo is at codeberg
+#git_url="https://codeberg.org/guile/guile"
+#This has the mingw2025 branch from which our tarball is built:
+#git_url="https://codeberg.org/jralls/guile"
+license=('GPL-2.0-only')
+options=('!libtool' 'debug' 'strip' 'buildflags')
+makedepends=("${MINGW_PACKAGE_PREFIX}-gcc"
+             "${MINGW_PACKAGE_PREFIX}-libltdl")
+depends=("${MINGW_PACKAGE_PREFIX}-gmp"
+         "${MINGW_PACKAGE_PREFIX}-libffi"
+         "${MINGW_PACKAGE_PREFIX}-bdwgc")
+#Switch pkgfull and source to build the tarball or git.
+#pkgfull="${_realname}"
+#source=(git+${git_url}${pkgbranch})
+pkgfull=${_realname}-${pkgver}-${pkgsuffix}
+source=(${url}/${pkgfull}.tar.xz)
+CFLAGS="$CFLAGS -Wno-incompatible-pointer-types"
+DEBUG_CFLAGS="-ggdb3 -O0 -fno-omit-frame-pointer -Wno-incompatible-pointer-types"
+
+prepare() {
+    cd ${srcdir}/${pkgfull}
+    # Put patch commands here
+    # autoreconf for git builds or if there are patches.
+    # autoreconf -fis
+
+    rm -rf ${srcdir}/build-${MSYSTEM}
+    mkdir ${srcdir}/build-${MSYSTEM}
+}
+
+build() {
+    cd "${srcdir}/build-${MSYSTEM}"
+    export lt_cv_deplibs_check_method=${lt_cv_deplibs_check_method='pass_all'}
+
+    ${srcdir}/${pkgfull}/configure \
+    --prefix=${GNC_PREFIX} \
+    --build=${MINGW_CHOST} \
+    --host=${MINGW_CHOST} \
+    --disable-rpath \
+    --enable-guile-debug \
+    --enable-jit=no \
+    --enable-lto=no \
+    --enable-mini-gmp=yes \
+    --enable-year2038=yes \
+    --with-threads=no \
+    --with-64-calls=no \
+    --disable-static \
+    --enable-shared \
+    "$@"
+
+    make
+}
+
+check() {
+    cd "${srcdir}/build-${MSYSTEM}"
+    make -k check
+}
+
+package() {
+    cd "${srcdir}/build-${MSYSTEM}"
+    make -j1 DESTDIR="${pkgdir}" install
+}
+
+#sha256sums=('SKIP')
+sha256sums=('4ee93895cc53c07c61e441fb7359aa50d91a48ec1d964462d85d785a99571382')
