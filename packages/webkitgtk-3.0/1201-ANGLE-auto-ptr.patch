@@ -1,0 +1,11 @@
+--- a/Source/ThirdParty/ANGLE/src/compiler/preprocessor/MacroExpander.h	2016-04-09 23:48:36.000000000 -0700
++++ b/Source/ThirdParty/ANGLE/src/compiler/preprocessor/MacroExpander.h	2026-01-03 10:09:45.065837200 -0800
+@@ -66,7 +66,7 @@
+     MacroSet* mMacroSet;
+     Diagnostics* mDiagnostics;
+ 
+-    std::auto_ptr<Token> mReserveToken;
++    std::unique_ptr<Token> mReserveToken;
+     std::vector<MacroContext*> mContextStack;
+ };
+ 

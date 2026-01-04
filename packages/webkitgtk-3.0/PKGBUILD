@@ -21,14 +21,15 @@ pkgbase=mingw-w64-${_realname}
 #pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}2" "${MINGW_PACKAGE_PREFIX}-${_realname}3")
 pkgname=("${MINGW_PACKAGE_PREFIX}-${_realname}3")
 pkgver=2.4.11
-pkgrel=999.9
+pkgrel=999.13
 pkgdesc="GTK+ Web content engine library (mingw-w64)"
 arch=('any')
 mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clangarm64')
 url="https://webkitgtk.org/"
 license=("custom")
 options=('!libtool' 'strip' '!debug' '!staticlibs' 'buildflags')
-makedepends=("${MINGW_PACKAGE_PREFIX}-gcc"
+makedepends=("${MINGW_PACKAGE_PREFIX}-autotools"
+             "${MINGW_PACKAGE_PREFIX}-gcc"
              "${MINGW_PACKAGE_PREFIX}-gobject-introspection"
              "${MINGW_PACKAGE_PREFIX}-pkg-config"
              "${MINGW_PACKAGE_PREFIX}-ruby"
@@ -57,6 +58,7 @@ depends=("${MINGW_PACKAGE_PREFIX}-cairo"
          "${MINGW_PACKAGE_PREFIX}-pango"
          "${MINGW_PACKAGE_PREFIX}-sqlite3"
          "${MINGW_PACKAGE_PREFIX}-xz")
+depends_i686=("${MINGW_PACKAGE_PREFIX}-harfbuzz=11.0.1")
 source=(https://webkitgtk.org/releases/webkitgtk-${pkgver}.tar.xz
         0020-W32-Fixup-dummy-HeapStatistics-implementation.all.patch
         0021-W32-Change-printf-format-atribute-to-gnu_printf-.all.patch
@@ -80,6 +82,7 @@ source=(https://webkitgtk.org/releases/webkitgtk-${pkgver}.tar.xz
         0703-less-optimization.patch
         0801-soupnetworksession-dont-include-inside-extern-c.patch
         0901-c17-no-register.patch
+        1201-ANGLE-auto-ptr.patch
         webkitgtk-2.4.9-abs.patch
         enchant-2.x.patch)
 
@@ -107,19 +110,20 @@ prepare() {
   patch -p1 -i ${srcdir}/0703-less-optimization.patch
   patch -p1 -i ${srcdir}/0801-soupnetworksession-dont-include-inside-extern-c.patch
   patch -p1 -i ${srcdir}/0901-c17-no-register.patch
+  patch -p1 -i ${srcdir}/1201-ANGLE-auto-ptr.patch
   # borrowed from Arch Linux
   patch -p1 -i ${srcdir}/webkitgtk-2.4.9-abs.patch
   patch -p1 -i ${srcdir}/enchant-2.x.patch
 
   autoreconf --verbose --install -I Source/autotools
 
-  rm -rf ${srcdir}/build
-  mkdir -p ${srcdir}/build
+  rm -rf ${srcdir}/build-${MSYSTEM}
+  mkdir -p ${srcdir}/build-${MSYSTEM}
 }
 
 _build() {
   _ver="$1"; shift
-  cd ${srcdir}/build
+  cd ${srcdir}/build-${MSYSTEM}
 
   export RUBY=${MINGW_PREFIX}/bin/ruby
   export CPPFLAGS="${CPPFLAGS} -w"
@@ -171,7 +175,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/build"
+  cd "${srcdir}/build-${MSYSTEM}"
   make -j1 DESTDIR="${pkgdir}" install
   find "${pkgdir}${MINGW_PREFIX}" -name '*.def' -o -name '*.exp' | xargs -rtl1 rm
 }
@@ -199,6 +203,7 @@ sha256sums=('588aea051bfbacced27fdfe0335a957dca839ebe36aa548df39c7bbafdb65bf7'
             'a726cfde3eee7d6ea79ded666a699ec576a55a87faaa4939cb155904e18776ff'
             'a3f512dca0f76e5d98c860639f97f484ace0e68443dc8aff97ac3bb9ce28c808'
             '58203f7e5c694e6594e635e5a89cd0080fd97f4a57a0fa38420979e31dbdcdab'
+            '19ff38798d2b74081949f2002c31080181d2d4132f38792046da82c0294e0307'
             'ec294bbb5588a1802a68e3615c6718486b22f922645c5fef686d3d103014bf70'
             '3bdb4c57c5ff4a86706282905b0f1d4a44a25dd3d6185d94871994db6fdb9b79'
            )
