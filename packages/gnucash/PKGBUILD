@@ -1,0 +1,72 @@
+_realname=gnucash
+pkgbase="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgname=${pkgbase}
+pkgbranch="#branch=stable"
+pkgver=5.14+100_g1fda575 #Dummy, will be adjusted by the pkgver function.
+pkgrel=1
+pkgdesc="Basic Accounting Program"
+arch=('any')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clangarm64')
+url="https://github.com/gnucash/gnucash"
+license=('GPL-2.0-and-later')
+options=('!libtool' 'debug' 'strip' 'buildflags')
+makedepends=("${MINGW_PACKAGE_PREFIX}-cmake"
+             "${MINGW_PACKAGE_PREFIX}-gettext-tools"
+             "${MINGW_PACKAGE_PREFIX}-gtest"
+             "${MINGW_PACKAGE_PREFIX}-ninja"
+             "${MINGW_PACKAGE_PREFIX}-swig")
+depends=("${MINGW_PACKAGE_PREFIX}-appstream-glib"
+         "${MINGW_PACKAGE_PREFIX}-aqbanking"
+         "${MINGW_PACKAGE_PREFIX}-boost"
+         "${MINGW_PACKAGE_PREFIX}-guile3"
+         "${MINGW_PACKAGE_PREFIX}-icu"
+         "${MINGW_PACKAGE_PREFIX}-iso-codes"
+         "${MINGW_PACKAGE_PREFIX}-pdcurses"
+         "${MINGW_PACKAGE_PREFIX}-libdbi-drivers"
+         "${MINGW_PACKAGE_PREFIX}-libofx"
+         "${MINGW_PACKAGE_PREFIX}-webkitgtk3")
+source=("git+${url}${pkgbranch}")
+
+DEBUG_CFLAGS="-ggdb3 -Og -fno-omit-frame-pointer -Wno-incompatible-pointer-types"
+
+prepare() {
+    cd ${srcdir}/${_realname}/
+
+    # Put patch commands here
+
+    rm -rf ${srcdir}/build-${MSYSTEM}
+    mkdir ${srcdir}/build-${MSYSTEM}
+}
+
+pkgver() {
+    cd ${srcdir}/${_realname}/
+    git describe --long --abbrev=7 | sed 's/-\([^-]*-g\)/+\1/;s/-/_/g'
+}
+
+build() {
+    cd "${srcdir}/build-${MSYSTEM}"
+    export GUILE_LOAD_PATH="${MSYSTEM_PREFIX}/share/guile/3.0/"
+    export GUILE_LOAD_COMPILED_PATH="${MSYSTEM_PREFIX}/lib/guile/3.0/ccache)"
+    cmake -G Ninja \
+          -DCMAKE_INSTALL_PREFIX=${MSYSTEM_PREFIX} \
+          -DCMAKE_PREFIX_PATH=${MSYSTEM_PREFIX} \
+          -DSWIG_DIR="${MSYSTEM_PREFIX}/share/swig/4.2.1" \
+          "$@" \
+          ${srcdir}/gnucash
+    ninja
+}
+
+check() {
+    cd "${srcdir}/build-${MSYSTEM}"
+    ninja check
+}
+
+# Note no destdir. That's because DESTDIR won't work on Windows (see  gnucash/gschemas/cmake_install.cmake:72).
+# We can use the regular pkg directory with inno-installer.
+
+package() {
+    cd "${srcdir}/build-${MSYSTEM}"
+    ninja -j1 install
+}
+
+sha256sums=('SKIP')
