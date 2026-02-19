@@ -20,90 +20,83 @@
 <#
 .SYNOPSIS
 
-Prepares a MinGW-w64 development environment from scratch
-or enhances one already existing on the system.
+Automates installation of a single MSYS2 environment suitable for building GnuCash and the GnuCash documentation.
 
 .DESCRIPTION
 
-Prepares a development environment for building GnuCash with jhbuild
-in a MinGW-w64 (a.k.a. MSys2) environment. All required packages are
-installed and the gnucash-on-windows repository containing the other
-needed scripts is cloned into the target.
+Installs a single MSYS2 environment (one of mingw32, mingw64, clang64 or ucrt64; the last is the default and is recommended for development) including all dependencies.
 
 You may need to allow running scripts on your computer and depending
 on where the target_dir is you may need to run the script with
 Administrator privileges.
 
-.PARAMETER target_dir
+
+.PARAMETER install_dir
 
 Optional. The path at which you wish to create the environment. If
-none is provided the environment will be created at C:\gcdev64.
+none is provided the environment will be created at %UNSERPROFILE%\msys2.
 
-.PARAMETER download_dir
+.PARAMETER mingw_arch
+
+Optional. One of mingw32, mingw64, clang64, or ucrt64. If none is provided ucrt64 will be installed. Note that the MSYS2 project has deprecated mingw32 and is slowly removing support for it. While as of January 2026 we have some workarounds in place to build GnuCash for 32-bit Microsoft Windows we don't expect to be able to continue that for much longer.
+
+.PARAMETER repo_dir
 
 Optional. A path to which to download installers. Defaults to
-target_dir\downloads.
+target_dir\mingw_arch\repo..
 
 .PARAMETER msys2_root
 
 Optional. The root path of an already installed MSys2 environment.
 E.g. C:\msys64.
 
-.PARAMETER x86_64
-
-Optional. A switch value. If true the toolchain will build x86_64
-binaries; if false it will build i686 binaries. Defaults to false.
-
-.PARAMETER preferred_mirror
-
-Optional. A URI to a preferred repository mirror for both the
-development environment setup and for the MSys2 package manager.
-Defaults to http://repo.msys2.org
-
 #>
 
 [CmdletBinding()]
 Param(
-	[Parameter()] [string]$target_dir = "c:\\gcdev64",
-	[Parameter()] [string]$download_dir = "$target_dir\\downloads",
-	[Parameter()] [string]$msys2_root = "$target_dir\\msys2",
-	[Parameter()] [switch]$x86_64,
-	[Parameter()] [string]$preferred_mirror = "http://repo.msys2.org"
+    [Parameter()] [string]$target_dir = "C:\\gcdev64\",
+    [Parameter()] [string]$mingw_arch = "ucrt64",
+    [Parameter()] [string]$msys2_root = "$target_dir\\msys2",
+    [Parameter()] [string]$repo_dir = "$msys2_root\\$mingw_arch\\repo"
 )
 
+function make-unixpath([string]$path) {
+    $new_path = $path -replace  "^([A-Z]):", '/$1' -replace "\\", '/' -replace "//", '/'  -replace "\(", '\(' -replace "\)", '\)'
+    """$new_path"""
+}
+
 $bash_path = "$msys2_root\\usr\\bin\\bash.exe"
+switch ($mingw_arch) {
+    "mingw32" { $mingw_arch_code = "i686" }
+    "mingw64" { $mingw_arch_code = "x86_64" }
+    "clang64" { $mingw_arch_code = "clang-x86_64" }
+    "ucrt64"  { $mingw_arch_code = "ucrt-x86_64" }
+}
 
 $progressPreference = 'silentlyContinue'
-if ($x86_64) {
-    $arch = "mingw64"
-    $arch_code = "x86_64"
-}
-else {
-    $arch = "mingw32"
-    $arch_code = "i686"
-}
-
-$arch_long = "mingw-w64-$arch_code"
-$mingw_prefix = "$arch/$arch_long-"
-$mingw_path = "/$arch"
+$msys_uri = "http://repo.msys2.org"
+$sourceforge_uri = "https://downloads.sourceforge.net/project/gnucash/"
+$download_dir = "$Env:USERPROFILE\\Downloads"
+$mingw_arch_long = "mingw-w64-$mingw_arch_code"
+$mingw_prefix = "$mingw_arch/$mingw_arch_long-"
+$mingw_path = "/$mingw_arch"
 $mingw_bin = "$mingw_path/bin"
-$preferred_mirror = $preferred_mirror.TrimEnd('/')
-$mingw_url_prefix = "$preferred_mirror/mingw/$arch_code/$arch_long-"
-$env:MSYSTEM = $arch.ToUpper()
+$mingw_url_prefix = "$msys_uri/mingw/$mingw_arch_code/$mingw_arch_long-"
+$env:MSYSTEM = $mingw_arch.ToUpper()
 
 if (!(test-path -path $target_dir)) {
     new-item "$target_dir" -type directory
 }
 
-if (!(test-path -path $download_dir)) {
-    new-item "$download_dir" -type directory
+if (!(test-path -path $repo_dir)) {
+    new-item "$repo_dir" -type directory
 }
 
 function make-pkgnames ([string]$prefix, [string]$items) {
     $items.split(" ") | foreach-object {"$prefix$_"}
 }
 
-function Install-Package([string]$url, [string]$install_dir,
+function install-package([string]$url, [string]$install_dir,
 			 [string]$setup_args)
 {
     $filename = $url.Substring($url.LastIndexOf("/") + 1)
@@ -132,22 +125,16 @@ function bash-command() {
     Start-Process -FilePath "$bash_path" -ArgumentList "-c ""export PATH=/usr/bin; $command""" -NoNewWindow -Wait
 }
 
-function make-unixpath([string]$path) {
-    $path -replace  "^([A-Z]):", '/$1' -replace "\\", '/' -replace "//", '/'  -replace "\(", '\(' -replace "\)", '\)' -replace " ", '\ '
-}
-
-# Install MSYS2 for the current machine's architechture.
+# Install MSYS2
 
 if (!(test-path -path $bash_path)) {
-    $mingw64_installer32 = "$preferred_mirror/distrib/msys2-i686-latest.exe"
-    $mingw64_installer64 = "$preferred_mirror/distrib/msys2-x86_64-latest.exe"
+    $mingw64_installer = "$msys_uri/distrib/msys2-x86_64-latest.exe"
 
-    $mingw64_installer = If ([IntPtr]::size -eq 4) {$mingw64_installer32} Else {$mingw64_installer64}
     $msys_install_dir = (join-path $target_dir "msys2") -replace "\\", '/'
     $msys_setup_args = @"
 "@
 
-    install-package -url $mingw64_installer -install_dir "$msys2_root" -setup_args "in --root $msys_install_dir --al --am -c"
+    install-package -url $mingw64_installer -install_dir "$msys2_root" -setup_args "in --root ""$msys_install_dir"" --al --am -c"
 
 }
 if (!(test-path -path $bash_path)) {
@@ -155,21 +142,18 @@ if (!(test-path -path $bash_path)) {
     exit
 }
 
-# prepend preferred_mirror to pacman mirrorlists
-if ($PSBoundParameters.ContainsKey('preferred_mirror')) {
-    $mirror_beacon = '# This and the next line are managed by GnuCash bootstrap: setup-mingw64.ps1'
-    $mirrorconf_list = ( '[mingw32]', 'mingw/i686'),
-                       ( '[mingw64]', 'mingw/x86_64'),
-                       ( '[msys]',    'msys/$arch')
-    $pacmanconf_path = "$msys2_root\etc\pacman.conf"
-    $pacmanconf = (Get-Content -Path "$pacmanconf_path" -Raw) -creplace "(?m)^${mirror_beacon}\r?\nServer = .+\r?\n",''
-    foreach ($mirrorconf in $mirrorconf_list) {
-        $mirror_prepend = "$($mirrorconf[0])`n$mirror_beacon`nServer = $preferred_mirror/$($mirrorconf[1])`n"
-        $pacmanconf = $pacmanconf -creplace ([System.Text.RegularExpressions.Regex]::Escape($mirrorconf[0]) + '.*\r?\n'),$mirror_prepend
-    }
-    Set-Content -NoNewline -Value $pacmanconf -Path "$pacmanconf_path"
-}
+# Download, install, and configure pacman to use the GnuCash dependencies repo
+$repo_dir_unix = make-unixpath "$repo_dir"
+$gnucash_repo_filename = "gnc-$mingw_arch-repo.tar.zst"
+$gnucash_repo_dl_path_unix = make-unixpath "$download_dir/$gnucash_repo_filename"
+$gnucash_repo_url = "$sourceforge_uri/Dependencies/$gnucash_repo_filename"
 
+(New-Object System.Net.WebClient).DownloadFile($gnucash_repo_url, "$download_dir/gnc-$mingw_arch-repo.tar.zst")
+bash-command -command "tar -C ""$repo_dir_unix"" -xf ""$gnucash_repo_dl_path_unix"" --strip-components=2"
+$signing_keyfile = "jralls_public_signing_key.asc"
+$keyfile_path_unix = make-unixpath "$download_dir\\$signing_keyfile"
+$key_id = "C1F4DE993CF5835F"
+(New-Object System.Net.WebClient).DownloadFile("$sourceforge_uri/Dependencies/$signing_keyfile", "$download_dir/$signing_keyfile")
 # Install Html Help Workshop
 
 $html_help_workshop_url =  "http://web.archive.org/web/20160201063255/http://download.microsoft.com/download/0/A/9/0A939EF6-E31C-430F-A3DF-DFAE7960D564/htmlhelp.exe"
@@ -195,95 +179,17 @@ if (!(test-path -path ${env:ProgramFiles(x86)}\inno)) {
     $inno_setup_args = " /verysilent /suppressmsgboxes /nocancel /norestart /dir=""${env:ProgramFiles(x86)}\inno"""
    install-package -url $inno_setup_url -download_file "$download_dir\$inno_setup_installer" -install_dir ${env:ProgramFiles(x86)} -setup_cmd $inno_setup_installer -setup_args $inno_setup_args
 }
-
-#if MSys2 isn't already installed, install it.
-if (!(test-path -path $bash_path)) {
-   Write-Host @"
-Updating the new installation. A bash window will open. In that window accept the proposed installation and close the window when the update completes.
-
-There will be a second update.
-"@
-   bash-command -command "pacman -Syyuu --noconfirm"
-}
-
-#Update the system.
+# Update the core system.
 Write-Host @"
-
-Updating the installation..
+Install all base system updates. There will be two updates, one for the core files and a second one for utilities.
 "@
-
+bash-command -command "pacman -Syyuu --noconfirm"
 bash-command -command "pacman -Syyuu --noconfirm"
 
-# Set up aliases for the parts of msys-devtools and mingw-w64-toolchain that
-# we need:
-$devel = "asciidoc autoconf autoconf2.13 autogen automake-wrapper bison diffstat diffutils dos2unix file flex gawk gettext gettext-devel git gperf grep groff intltool libltdl libtool m4 make man-db pacman pactoys-git patch patchutils perl pkg-config python python-setuptools rsync sed texinfo texinfo-tex wget xmlto"
-
-$toolchain = "appstream-glib binutils cmake crt-git gcc gcc-libs gdb headers-git libmangle-git libtool libwinpthread-git make pkg-config swig tools-git winpthreads-git"
-
-
-# Install the system and toolchain:
-
-$msys_devel = make-pkgnames -prefix "msys/" -items $devel
-bash-command -command "pacman -S $msys_devel --noconfirm --needed"
-
-$mingw_toolchain = make-pkgnames -prefix $mingw_prefix -items $toolchain
-bash-command -command "pacman -S $mingw_toolchain --noconfirm --needed"
-
-# The mingw-w64-webkitgtk3 package is no longer supported by the msys2
-# project so we have our own build on SourceForge.
-Write-Host @"
-Now we'll install a pre-built webkitgtk3 package we've created and placed in the GnuCash project on SourceForge. It will install several more dependencies from Mingw-w64's repository.
-
-First we need to import the signing key for it. That might hang, so if it takes more than a few seconds open task manager, find gpg-agent.exe in the Details tab, and end the task. You may have to to this twice.
-"@
-$sourceforge_url = "https://downloads.sourceforge.net/gnucash/Dependencies/"
-$signing_keyfile = "jralls_public_signing_key.asc"
-$key_url = $sourceforge_url + $signing_keyfile
-$key_id = "C1F4DE993CF5835F"
-$webkit = "$arch_long-webkitgtk3-2.4.11-999.11-any.pkg.tar.zst"
-$libsoup = "$arch_long-libsoup-2.74.3-4-any.pkg.tar.zst"
-$webkit_url = $sourceforge_url + $webkit
-$webkit_sig = $webkit_url + ".sig"
-$libsoup_url = $sourceforge_url + $libsoup
-$libsoup_sig = $libsoup_url + ".sig"
-$download_unix = make-unixpath $download_dir
-bash-command -command "curl -L -s -S -o $signing_keyfile $key_url"
-bash-command -command "pacman-key --add $signing_keyfile"
-bash-command -command "pacman-key --lsign-key  $key_id"
-bash-command -command "curl -L -s -S -O --output-dir $download_unix $webkit_url"
-bash-command -command "curl -L -s -S -O --output-dir $download_unix $webkit_sig"
-bash-command -command "curl -L -s -S -O --output-dir $download_unix $libsoup_url"
-bash-command -command "curl -L -s -S -O --output-dir $download_unix $libsoup_sig"
-$ignorefile = ""
-[IO.File]::WriteAllLines( "$msys2_root\etc\pacman.d\gnucash-ignores.pacman", $ignorefile)
-bash-command -command "perl -ibak -pe 'BEGIN{undef $/;} s#[[]options[]]\R(Include = [^\R]*\R)?#[options]\nInclude = /etc/pacman.d/gnucash-ignores.pacman\n#smg' /etc/pacman.conf"
-
-# Install the remaining dependencies.
-$deps = "boost libgcrypt iso-codes libsecret docbook-xsl"
-# Mingw-w64 has dropped 32-bit support of several packages that we need so we must install them from the archive.
-if (!($x86_64)) {
-    bash-command -command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-icu-76.1-1-any.pkg.tar.zst --noconfirm --needed"
-    bash-command -command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-libmariadbclient-3.3.8-2-any.pkg.tar.zst --noconfirm --needed"
-    bash-command -command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-pdcurses-4.4.0-1-any.pkg.tar.zst --noconfirm --needed"
-    bash-command -command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-harfbuzz-11.0.1-1-any.pkg.tar.zst --noconfirm --needed"
-    bash-command -command "pacman -U https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-harfbuzz-icu-11.0.1-1-any.pkg.tar.zst --noconfirm --needed"
-    bash-command -command "sed -E -i 's/#IgnorePkg\s*=/IgnorePkg = mingw-w64-i686-harfbuzz/' /etc/pacman.conf"
-}
-else {
-    $deps += " icu libmariadbclient libsoup pdcurses"
-}
-# Mingw-64 didn't update libsoup when they reconfigure libxml2 so we need our own version on 32-bit builds.
-if (!($x86_64)) {
-    bash-command -command "pacman -U $download_unix/$libsoup --noconfirm --needed"
-}
-bash-command -command "pacman -U $download_unix/$webkit --noconfirm --needed"
-
-$mingw_deps = make-pkgnames -prefix $mingw_prefix -items $deps
-bash-command -command "pacman -S $mingw_deps --noconfirm --needed"
-
-
-$target_unix = make-unixpath $target_dir
-
+$Env:MINGW_ARCH = $mingw_arch
+$pwd = pwd
+$PWD = make-unixpath $pwd
+bash-command -command "$PWD/setup-mingw64.sh"
 Write-Host @"
 
 Next we'll install the HTML Help Workshop includes and libraries into our MinGW directory.
@@ -297,7 +203,7 @@ if (!(test-path -path $htmlhelp_h)) {
     $installed_hh = make-unixpath -path $installed_hh
     if (!$installed_hh) {
 	Write-Host @"
-****** ERROR ****
+****** ERROR ***
 There was an error installing HTML Help Workshop. This will prevent building the documentation. If you didn't before, run setup-mingw64.ps1 in a PowerShell instance with Administrative priviledge. If you did that already, you may need to install HTML Help Workshop by hand.
 ****************
 "@
@@ -312,45 +218,5 @@ There was an error installing HTML Help Workshop. This will prevent building the
     }
 }
 Write-Host @"
-
-Clone the gnucash-on-windows repository into the target source directory, patch jhbuild to disable its DESTDIR dance and set up jhbuildrc with our prefixes.
-"@
-
-if (!(test-path -path "$target_dir\\src")) {
-  New-Item $target_dir\\src -type directory
-}if (!(test-path -path "$target_dir\\src\\gnucash-on-windows.git")) {
-  bash-command -command "git clone https://github.com/gnucash/gnucash-on-windows.git $target_unix/src/gnucash-on-windows.git"
-}
-if (!(test-path -path "$target_dir\\src\\gnucash-on-windows.git")) {
-   write-host "Failed to clone the gnucash-on-windows repo, exiting."
-   exit
-}
-
-if (!(test-path -path "$target_dir\\src\\jhbuild.git")) {
-  bash-command -command "git clone https://gitlab.gnome.org/GNOME/jhbuild $target_unix/src/jhbuild.git"
-  bash-command -command "/usr/bin/patch -f -d $target_unix/src/jhbuild.git -p1 -i $target_unix/src/gnucash-on-windows.git/patches/jhbuild.patch"
-}
-if (!(test-path -path "$target_dir\\src\\jhbuild.git")) {
-   write-host "Failed to clone the jhbuild repo, exiting."
-   exit
-}
-if (!(test-path -path "$target_dir\\msys2\\usr\\bin\\jhbuild")) {
-    $jhbuild = get-content "$target_dir\\src\\gnucash-on-windows.git\\jhbuild.in" |
-    %{$_ -replace "@-BASE_DIR-@", "$target_unix"}
-    [IO.File]::WriteAllLines("$target_dir\\msys2\\usr\\bin\\jhbuild", $jhbuild)
-}
-
-$jhbuildrc = get-content "$target_dir\\src\\gnucash-on-windows.git\\jhbuildrc.in" |
- %{$_ -replace "@-BASE_DIR-@", "$target_unix"} |
- %{$_ -replace "@-DOWNLOAD_DIR-@", "$download_unix"} |
- %{$_ -replace "@-ARCH-@", "$arch"}
- [IO.File]::WriteAllLines("$target_dir\\src\\gnucash-on-windows.git\\jhbuildrc", $jhbuildrc)
-
-Write-Host @"
-
-
-Your build environment is now ready to use. Open an MSys2/$arch shell from the start menu, cd to $target_unix, and run
-jhbuild -f src/gnucash-on-windows.git/jhbuildrc build
-
-Note that the build will not work with the plain MSys2 shell!
+Your $mingw_arch build environment is set up with all build dependencies installed. Open a $Env:MSYSTEM shell from the MSYS2 folder in the Start Menu and clone https://github.com/gnucash/gnucash and https://gnucash/gnucash-docs somewhere convenient and build them as usual.
 "@
