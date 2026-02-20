@@ -84,12 +84,12 @@ debug tarballs too:
 Copy or move them to the repo and add them to the repo database:
 
     cp mingw-w64-ucrt-x86_64-foo.5.6.7-1-any.pkg.tar.zst* /ucrt64/repo/
-    repo-add -R --include-sigs /ucrt64/repo/gnc-mingw.db.tar.gz /ucrt64/repo/mingw-w64-ucrt-x86_64-foo.5.6.7-1-any.pkg.tar.zst
+    repo-add -R --include-sigs /ucrt64/repo/gnc-ucrt64.db.tar.gz /ucrt64/repo/mingw-w64-ucrt-x86_64-foo.5.6.7-1-any.pkg.tar.zst
 
 Re-sign the database files:
 
     pushd /ucrt64/repo
-    for i in gnc-mingw.db gnc-mingw.files gnc-mingw.db.tar.zst gnc-mingw.files.tar.zst; do rm $i.sig; gpg --detach-sign --no-armor $i; done
+    for i in gnc-ucrt64.db gnc-ucrt64.files gnc-ucrt64.db.tar.gz gnc-ucrt64.files.tar.gz; do rm $i.sig; gpg --detach-sign --no-armor $i; done
     popd
 
 Refresh pacman's indexes so that it will install the package for the
@@ -101,6 +101,16 @@ Finally make a tarball and upload it to SourceForge:
 
     cd /ucrt64/repo
     tar --zstd -cf ../gnc-ucrt64-repo.tar.zst *
+
+### Maintenance:
+* Periodically review the package versions and update `PKGCONFIG`
+  accordingly.
+* Some packages depend on MSYS2-provided packages that aren't ABI,
+  API, or even library-name stable (e.g. ICU for the last). These
+  packages need to be rebuilt after every major MSYS2 update, roughly
+  every 6 weeks.
+* After updating or rebuilding a package add it to the repositories,
+  tar up the repositories, and upload them to SourceForge.
 
 ### PKGBUILD notes:
   * If you need to customize a particular build there are a couple of
@@ -122,6 +132,23 @@ Finally make a tarball and upload it to SourceForge:
     the stored hash of the package file was wrong. It's dumb, so it
     might reject a valid package if one of that package's dependencies
     signature fails. Try running `pacman -Syyu` to update everything.
+
+### Guile3
+[Guile](https://codeberg.org/guile/guile) doesn't yet support
+64-bit Windows because guile relies on `long` and `void*` being the
+same type so the `PKGCONFIG` points to a
+[fork](https://codeberg.org/jralls/guile) that does support it. The
+Lilypond developers have taken a different approach and have proposed
+PRs to complete it so we hope to be able to drop the fork and use
+upstream at some point.
+
+### WebkitGtk
+The [WebKitGtk Project](https://webkitgtk.org/) dropped support for
+Microsoft Windows in 2015 with version 2.4.11. It's dependent on ICU
+so it's one of the packages that needs to be rebuilt after every major
+MSYS2 update, but it's also 10+ year old code and every new compiler
+release finds new things to complain about so it needs frequent
+patching as well.
 
 ### Further Reading:
 https://www.msys2.org/wiki/Creating-Packages/
