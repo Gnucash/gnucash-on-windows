@@ -1,8 +1,8 @@
 _realname=aqbanking
 pkgbase="${MINGW_PACKAGE_PREFIX}-${_realname}"
 pkgname=${pkgbase}
-pkgver=6.8.4
-rdmdir=646
+pkgver=6.9.1
+rdmdir=652
 pkgrel=1
 pkgdesc="Parse OFX Files"
 arch=('any')
@@ -50,4 +50,4 @@ package() {
     make -j1 DESTDIR="${pkgdir}" install
 }
 
-sha256sums=('53e297a202312dffae1091eaaa86e46a699febe0947857606bc2535adfdbf191')
+sha256sums=('fc94a2bebfbb4fc26b98dc93c8fa36a8026298cd7995f79821c480db35587f6b')
