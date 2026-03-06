@@ -5,6 +5,8 @@
 ; Inno Setup Compiler: See http://www.jrsoftware.org/isdl.php
 ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+#define Arch "@ARCHITECTURE@"
+
 [Setup]
 ; Using the name here directly because we want it capitalized
 AppName=GnuCash
@@ -14,19 +16,22 @@ AppPublisher=GnuCash Development Team
 AppPublisherURL=http://www.gnucash.org
 AppSupportURL=http://www.gnucash.org
 AppUpdatesURL=http://www.gnucash.org
-VersionInfoVersion=@PACKAGE_VERSION@
+ArchitecturesAllowed=@ARCHITECTURE@
+ArchitecturesInstallIn64BitMode=x64
+VersionInfoVersion=@GNUCASH_MAJOR_VERSION@.@GNUCASH_MINOR_VERSION@
 DefaultDirName={pf}\@PACKAGE@
 DefaultGroupName=GnuCash
-InfoBeforeFile=@INST_DIR@\share\doc\@PACKAGE@\LICENSE
+InfoBeforeFile=@MINGW_DIR@\share\doc\@PACKAGE@\LICENSE
 Compression=lzma
-MinVersion=5.0
+MinVersion=10.0
 PrivilegesRequired=poweruser
 OutputDir=.
 OutputBaseFilename=@PACKAGE@-@PACKAGE_VERSION@.setup
 UninstallFilesDir={app}\uninstall\@PACKAGE@
 InfoAfterFile=@GC_WIN_REPOS_DIR@\inno_setup\README.win32-bin.txt
-SetupIconFile=@INST_DIR@\share\@PACKAGE@\pixmaps\gnucash-icon.ico
-WizardSmallImageFile=@INST_DIR@\share\@PACKAGE@\pixmaps\gnucash-icon-48x48.bmp
+SetupIconFile=@MINGW_DIR@\share\@PACKAGE@\pixmaps\gnucash-icon.ico
+WizardSmallImageFile=@MINGW_DIR@\share\@PACKAGE@\pixmaps\gnucash-icon-48x48.bmp
+
 
 [Types]
 Name: "full"; Description: "{cm:FullInstall}"
@@ -61,40 +66,40 @@ Filename: "{app}\bin\@PACKAGE@.exe"; Description: "{cm:RunPrg}"; WorkingDir: "{c
 [Files]
 ;;;; The first section retrieves files built with jhbuild from the prefix directory.
 ; The main executables and DLLs
-Source: "@INST_DIR@\bin\*"; DestDir: "{app}\bin"; Flags: recursesubdirs ignoreversion; Components: main
-Source: "@INST_DIR@\etc\*"; DestDir: "{app}\etc"; Flags: recursesubdirs; Components: main
-Source: "@INST_DIR@\etc\@PACKAGE@\environment"; DestDir: "{app}\etc\@PACKAGE@"; Components: main; AfterInstall: MyAfterInstallEnvironment()
+Source: "@MINGW_DIR@\bin\*"; DestDir: "{app}\bin"; Flags: recursesubdirs ignoreversion; Components: main
+Source: "@MINGW_DIR@\etc\*"; DestDir: "{app}\etc"; Flags: recursesubdirs; Components: main
+Source: "@MINGW_DIR@\etc\@PACKAGE@\environment"; DestDir: "{app}\etc\@PACKAGE@"; Components: main; AfterInstall: MyAfterInstallEnvironment()
 ; Note: The above AfterInstall function will adapt the
 ; environment config file on-the-fly by the Pascal script below.
-Source: "@INST_DIR@\lib\*"; DestDir: "{app}\lib"; Flags: recursesubdirs; Components: main
+Source: "@MINGW_DIR@\lib\*"; DestDir: "{app}\lib"; Flags: recursesubdirs; Components: main
 ; Deprecated installation location for gnucash guile scripts. Can be removed after we're done with gnucash 3.x
-Source: "@INST_DIR@\lib\gnucash\scm\ccache\2.2\*"; DestDir: "{app}\lib\gnucash\scm\ccache\2.2"; Flags: recursesubdirs skipifsourcedoesntexist; Components: main
-Source: "@INST_DIR@\lib\guile\2.2\*"; DestDir: "{app}\lib\guile\2.2"; Flags: recursesubdirs; Components: main
-Source: "@INST_DIR@\lib\dbd\*.dll"; DestDir: "{app}\lib"; Components: main
-Source: "@INST_DIR@\lib\aqbanking\*"; DestDir: "{app}\lib\aqbanking"; Excludes: "*.dll.a"; Flags: recursesubdirs; Components: main
-Source: "@INST_DIR@\lib\gwenhywfar\*"; DestDir: "{app}\lib\gwenhywfar"; Excludes: "*.dll.a"; Flags: recursesubdirs; Components: main
+Source: "@MINGW_DIR@\lib\gnucash\scm\ccache\3.0\*"; DestDir: "{app}\lib\gnucash\scm\ccache\3.0"; Flags: recursesubdirs skipifsourcedoesntexist; Components: main
+Source: "@MINGW_DIR@\lib\guile\3.0\*"; DestDir: "{app}\lib\guile\3.0"; Flags: recursesubdirs; Components: main
+Source: "@MINGW_DIR@\lib\dbd\*.dll"; DestDir: "{app}\lib"; Components: main
+Source: "@MINGW_DIR@\lib\aqbanking\*"; DestDir: "{app}\lib\aqbanking"; Excludes: "*.dll.a"; Flags: recursesubdirs; Components: main
+Source: "@MINGW_DIR@\lib\gwenhywfar\*"; DestDir: "{app}\lib\gwenhywfar"; Excludes: "*.dll.a"; Flags: recursesubdirs; Components: main
 ;; We don't have anything in libexec anymore at the moment
-;Source: "@INST_DIR@\libexec\*"; DestDir: "{app}\libexec"; Flags: recursesubdirs; Components: main
+;Source: "@MINGW_DIR@\libexec\*"; DestDir: "{app}\libexec"; Flags: recursesubdirs; Components: main
 ;; Retrieve all of the share directories for the package and its dependencies
-Source: "@INST_DIR@\share\@PACKAGE@\*"; DestDir: "{app}\share\@PACKAGE@"; Flags: recursesubdirs; Components: main
-Source: "@INST_DIR@\share\aqbanking\*"; DestDir: "{app}\share\aqbanking"; Flags: recursesubdirs; Components: main
-Source: "@INST_DIR@\share\gwenhywfar\*"; DestDir: "{app}\share\gwenhywfar"; Flags: recursesubdirs; Components: main
-Source: "@INST_DIR@\share\chipcard\*"; DestDir: "{app}\share\chipcard"; Flags: recursesubdirs; Components: main
-Source: "@INST_DIR@\share\guile\*"; DestDir: "{app}\share\guile"; Flags: recursesubdirs; Components: main
-Source: "@INST_DIR@\share\glib-2.0\*"; DestDir: "{app}\share\glib-2.0"; Flags: recursesubdirs; Components: main
-Source: "@INST_DIR@\share\libofx\*"; DestDir: "{app}\share\libofx"; Flags: recursesubdirs; Components: main
-Source: "@INST_DIR@\share\OpenSP\*"; DestDir: "{app}\share\OpenSP"; Flags: recursesubdirs; Components: main
-Source: "@INST_DIR@\share\icons\hicolor\*"; DestDir: "{app}\share\icons\hicolor"; Flags: recursesubdirs; Components: main
-Source: "@INST_DIR@\share\glib-2.0\schemas\*"; DestDir: "{app}\share\glib-2.0\schemas"; Flags: recursesubdirs; Components: main
+Source: "@MINGW_DIR@\share\@PACKAGE@\*"; DestDir: "{app}\share\@PACKAGE@"; Flags: recursesubdirs; Components: main
+Source: "@MINGW_DIR@\share\aqbanking\*"; DestDir: "{app}\share\aqbanking"; Flags: recursesubdirs; Components: main
+Source: "@MINGW_DIR@\share\gwenhywfar\*"; DestDir: "{app}\share\gwenhywfar"; Flags: recursesubdirs; Components: main
+Source: "@MINGW_DIR@\share\chipcard\*"; DestDir: "{app}\share\chipcard"; Flags: recursesubdirs; Components: main
+Source: "@MINGW_DIR@\share\guile\*"; DestDir: "{app}\share\guile"; Flags: recursesubdirs; Components: main
+Source: "@MINGW_DIR@\share\glib-2.0\*"; DestDir: "{app}\share\glib-2.0"; Flags: recursesubdirs; Components: main
+Source: "@MINGW_DIR@\share\libofx\*"; DestDir: "{app}\share\libofx"; Flags: recursesubdirs; Components: main
+Source: "@MINGW_DIR@\share\OpenSP\*"; DestDir: "{app}\share\OpenSP"; Flags: recursesubdirs; Components: main
+Source: "@MINGW_DIR@\share\icons\hicolor\*"; DestDir: "{app}\share\icons\hicolor"; Flags: recursesubdirs; Components: main
+Source: "@MINGW_DIR@\share\glib-2.0\schemas\*"; DestDir: "{app}\share\glib-2.0\schemas"; Flags: recursesubdirs; Components: main
 
 ;; The translations
-Source: "@INST_DIR@\share\locale\*"; DestDir: "{app}\share\locale"; Flags: recursesubdirs; Components: translations
+Source: "@GC_WIN_REPOS_DIR@\locale\*"; DestDir: "{app}\share\locale"; Flags: recursesubdirs; Components: translations
 ;
 ;; The account templates
-Source: "@INST_DIR@\share\@PACKAGE@\accounts\*"; DestDir: "{app}\share\@PACKAGE@\accounts"; Flags: recursesubdirs; Components: templates
+Source: "@MINGW_DIR@\share\@PACKAGE@\accounts\*"; DestDir: "{app}\share\@PACKAGE@\accounts"; Flags: recursesubdirs; Components: templates
 
 ; And all the @PACKAGE@ documentation
-Source: "@INST_DIR@\share\doc\@PACKAGE@\README"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
+Source: "@MINGW_DIR@\share\doc\@PACKAGE@\README"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
 Source: "@GC_WIN_REPOS_DIR@\inno_setup\README.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
 Source: "@GC_WIN_REPOS_DIR@\inno_setup\README-ca.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
 Source: "@GC_WIN_REPOS_DIR@\inno_setup\README-de.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
@@ -102,11 +107,11 @@ Source: "@GC_WIN_REPOS_DIR@\inno_setup\README-fr.win32-bin.txt"; DestDir: "{app}
 Source: "@GC_WIN_REPOS_DIR@\inno_setup\README-it.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
 Source: "@GC_WIN_REPOS_DIR@\inno_setup\README-zh_CN.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
 Source: "@GC_WIN_REPOS_DIR@\inno_setup\README-zh_TW.win32-bin.txt"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
-Source: "@INST_DIR@\share\doc\@PACKAGE@\LICENSE"; DestDir: "{app}\doc\@PACKAGE@"; Flags: ignoreversion; Components: main
-Source: "@INST_DIR@\share\doc\@PACKAGE@\AUTHORS"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
-Source: "@INST_DIR@\share\doc\@PACKAGE@\ChangeLog"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
-Source: "@INST_DIR@\share\doc\@PACKAGE@-docs\*.chm"; DestDir: "{app}\share\@PACKAGE@\help"; Flags: recursesubdirs; Components: main
-Source: "@INST_DIR@\share\doc\@PACKAGE@-docs\*.hhmap"; DestDir: "{app}\share\@PACKAGE@\help"; Flags: recursesubdirs; Components: main
+Source: "@MINGW_DIR@\share\doc\@PACKAGE@\LICENSE"; DestDir: "{app}\doc\@PACKAGE@"; Flags: ignoreversion; Components: main
+Source: "@MINGW_DIR@\share\doc\@PACKAGE@\AUTHORS"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
+Source: "@MINGW_DIR@\share\doc\@PACKAGE@\ChangeLog"; DestDir: "{app}\doc\@PACKAGE@"; Components: main
+Source: "@MINGW_DIR@\share\doc\@PACKAGE@-docs\*.chm"; DestDir: "{app}\share\@PACKAGE@\help"; Flags: recursesubdirs; Components: main
+Source: "@MINGW_DIR@\share\doc\@PACKAGE@-docs\*.hhmap"; DestDir: "{app}\share\@PACKAGE@\help"; Flags: recursesubdirs; Components: main
 
 ;;;; The second section retrieves the dependencies that we need from MinGW.
 ;; Required DLLs
@@ -129,7 +134,11 @@ Source: "@MINGW_DIR@\bin\libbrotlienc.dll"; DestDir: "{app}\bin"; Components: ma
 Source: "@MINGW_DIR@\bin\libcairo-2.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libcairo-gobject-2.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libcurl-4.dll"; DestDir: "{app}\bin"; Components: main
+#if "x64" == Arch
+Source: "@MINGW_DIR@\bin\libcrypto-3-x64.dll"; DestDir: "{app}\bin"; Components: main
+#else
 Source: "@MINGW_DIR@\bin\libcrypto-3.dll"; DestDir: "{app}\bin"; Components: main
+#endif
 Source: "@MINGW_DIR@\bin\libdatrie-1.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libdeflate.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libepoxy-0.dll"; DestDir: "{app}\bin"; Components: main
@@ -184,9 +193,12 @@ Source: "@MINGW_DIR@\bin\libsharpyuv-0.dll"; DestDir: "{app}\bin"; Components: m
 Source: "@MINGW_DIR@\bin\libsoup-2.4-1.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libsqlite3-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libssh2-1.dll"; DestDir: "{app}\bin"; Components: main
+#if "x64" == Arch
+Source: "@MINGW_DIR@\bin\libssl-3-x64.dll"; DestDir: "{app}\bin"; Components: main
+#else
 Source: "@MINGW_DIR@\bin\libssl-3.dll"; DestDir: "{app}\bin"; Components: main
+#endif
 Source: "@MINGW_DIR@\bin\libstdc++-6.dll"; DestDir: "{app}\bin"; Components: main
-Source: "@MINGW_DIR@\bin\libsecret-1-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libsystre-0.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libtasn1-6.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libthai-0.dll"; DestDir: "{app}\bin"; Components: main
@@ -201,10 +213,13 @@ Source: "@MINGW_DIR@\bin\libxslt-1.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libzstd.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\libmariadb.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\zlib1.dll"; DestDir: "{app}\bin"; Components: main
-
+#if "x64" == Arch
+Source: "@MINGW_DIR@\bin\gspawn-win64-helper.exe"; DestDir: "{app}\bin"; Components: main
+Source: "@MINGW_DIR@\bin\gspawn-win64-helper-console.exe"; DestDir: "{app}\bin"; Components: main
+#else
 Source: "@MINGW_DIR@\bin\gspawn-win32-helper.exe"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\gspawn-win32-helper-console.exe"; DestDir: "{app}\bin"; Components: main
-
+#endif
 Source: "@MINGW_DIR@\lib\gdk-pixbuf-2.0\2.10.0\loaders\*.dll"; DestDir: "{app}\lib\gdk-pixbuf-2.0\2.10.0\loaders"; Components: main
 Source: "@MINGW_DIR@\lib\gdk-pixbuf-2.0\2.10.0\loaders.cache"; DestDir: "{app}\lib\gdk-pixbuf-2.0\2.10.0\"; Components: main
 
@@ -425,7 +440,7 @@ begin
       { Adapt GUILE_LOAD_PATH parameter and prevent cygwin interference in SCHEME_LIBRARY_PATH }
       if (Pos('GUILE_LOAD_PATH', EnvStrList[iLineCounter]) = 1) then
       begin
-        StringChangeEx(EnvStrList[iLineCounter], '{GUILE_LOAD_PATH}', '{GNC_HOME}/share/guile/2.2;{GUILE_LOAD_PATH}', True);
+        StringChangeEx(EnvStrList[iLineCounter], '{GUILE_LOAD_PATH}', '{GNC_HOME}/share/guile/3.0;{GUILE_LOAD_PATH}', True);
 
         EnvStrList[iLineCounter] := EnvStrList[iLineCounter] + #13#10 + '# Clear SCHEME_LIBRARY_PATH to prevent interference from other guile installations (like cygwin)' + #13#10;
         EnvStrList[iLineCounter] := EnvStrList[iLineCounter] + 'SCHEME_LIBRARY_PATH=' + #13#10;
