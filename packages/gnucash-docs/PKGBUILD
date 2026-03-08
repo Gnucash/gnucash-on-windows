@@ -3,21 +3,41 @@ pkgbase="${MINGW_PACKAGE_PREFIX}-${_realname}"
 pkgname=${pkgbase}
 pkgbranch="#branch=stable"
 pkgver=5.14+0_gac6fe72 #Dummy, will be adjusted by the pkgver function.
+_release_ver=5.14
+_unstable_ver=4.904
 pkgrel=1
 pkgdesc="Basic Accounting Program"
 arch=('any')
 mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clangarm64')
-url="https://github.com/gnucash/gnucash-docs"
+_git_url="https://github.com/gnucash/gnucash-docs"
+_tar_url="https://downloads.sourceforge.net"
 license=('GPL-2.0-and-later')
 options=('!libtool' '!debug' 'strip' 'buildflags')
 makedepends=("${MINGW_PACKAGE_PREFIX}-cmake"
              "${MINGW_PACKAGE_PREFIX}-gettext-tools"
              "${MINGW_PACKAGE_PREFIX}-ninja"
              "${MINGW_PACKAGE_PREFIX}-docbook-xsl")
-source=("git+${url}${pkgbranch}")
+case ${GNUCASH_BUILD} in
+     git)
+         source=("git+${_git_url}${pkgbranch}")
+         _srcdir=${_realname}
+         ;;
+     release)
+         source="${_tar_url}/gnucash/gnucash-${_release_ver}.tar.bz2"
+         _srcdir=${_realname}-${_release_ver}
+         ;;
+     unstable)
+         source="${_tar_url}/gnucash/gnucash-${_unstable_ver}.tar.bz2"
+         _srcdir=${_realname}-${_unstable_ver}
+         ;;
+     *)
+         echo "Error! Invalid GnuCash Build ${GNUCASH_BUILD}"
+         ;;
+esac
+
 
 prepare() {
-    cd ${srcdir}/${_realname}/
+    cd ${srcdir}/${_srcdir}/
 
     # Put patch commands here
 
@@ -26,8 +46,21 @@ prepare() {
 }
 
 pkgver() {
-    cd ${srcdir}/${_realname}
-    git describe --long --abbrev=7 | sed 's/-\([^-]*-g\)/+\1/;s/-/_/g'
+    case ${GNUCASH_BRANCH} in
+        git)
+            cd ${srcdir}/${_realname}/
+            pkgver=$(git describe --long --abbrev=7 | sed 's/-\([^-]*-g\)/+\1/;s/-/_/g')
+            ;;
+        release)
+            pkgver=${_release_version}
+            ;;
+        unstable)
+            pkgver=${_unstable_version}
+            ;;
+        *)
+            ;;
+    esac
+    echo $pkgver
 }
 
 build() {
@@ -36,7 +69,7 @@ build() {
           -DCMAKE_INSTALL_PREFIX=${MSYSTEM_PREFIX} \
           -DCMAKE_PREFIX_PATH=${MSYSTEM_PREFIX} \
           "$@" \
-          ${srcdir}/gnucash-docs
+          ${srcdir}/${_srcdir}
     ninja
 }
 # Note no destdir. That's because DESTDIR won't work on Windows (see  gnucash/gschemas/cmake_install.cmake:72).
