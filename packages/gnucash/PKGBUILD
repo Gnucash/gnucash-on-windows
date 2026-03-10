@@ -1,8 +1,8 @@
 _realname=gnucash
 pkgbase="${MINGW_PACKAGE_PREFIX}-${_realname}"
 pkgname=${pkgbase}
-pkgbranch="#branch=stable"
-pkgver=5.14+100_g1fda575 #Dummy, will be adjusted by the pkgver function.
+pkgbranch="#branch=${GNUCASH_BUILD}"
+pkgver=5.14+104_g8538dcf
 _release_ver=5.14
 _unstable_ver=4.904
 pkgrel=1
@@ -29,7 +29,7 @@ depends=("${MINGW_PACKAGE_PREFIX}-appstream-glib"
          "${MINGW_PACKAGE_PREFIX}-libofx"
          "${MINGW_PACKAGE_PREFIX}-webkitgtk3")
 case ${GNUCASH_BUILD} in
-     git)
+    stable|future)
          source=("git+${_git_url}${pkgbranch}")
          _srcdir=${_realname}
          ;;
@@ -58,8 +58,8 @@ prepare() {
 }
 
 pkgver() {
-    case ${GNUCASH_BRANCH} in
-        git)
+    case ${GNUCASH_BUILD} in
+        stable|future)
             cd ${srcdir}/${_realname}/
             pkgver=$(git describe --long --abbrev=7 | sed 's/-\([^-]*-g\)/+\1/;s/-/_/g')
             ;;
@@ -72,7 +72,7 @@ pkgver() {
         *)
             ;;
     esac
-    echo $pkgver
+    printf ${pkgver}
 }
 
 build() {

@@ -1,7 +1,7 @@
 _realname=gnucash-docs
 pkgbase="${MINGW_PACKAGE_PREFIX}-${_realname}"
 pkgname=${pkgbase}
-pkgbranch="#branch=stable"
+pkgbranch="#branch=${GNUCASH_BUILD}"
 pkgver=5.14+0_gac6fe72 #Dummy, will be adjusted by the pkgver function.
 _release_ver=5.14
 _unstable_ver=4.904
@@ -18,7 +18,7 @@ makedepends=("${MINGW_PACKAGE_PREFIX}-cmake"
              "${MINGW_PACKAGE_PREFIX}-ninja"
              "${MINGW_PACKAGE_PREFIX}-docbook-xsl")
 case ${GNUCASH_BUILD} in
-     git)
+     stable|future)
          source=("git+${_git_url}${pkgbranch}")
          _srcdir=${_realname}
          ;;
@@ -46,8 +46,8 @@ prepare() {
 }
 
 pkgver() {
-    case ${GNUCASH_BRANCH} in
-        git)
+    case ${GNUCASH_BUILD} in
+        stable|future)
             cd ${srcdir}/${_realname}/
             pkgver=$(git describe --long --abbrev=7 | sed 's/-\([^-]*-g\)/+\1/;s/-/_/g')
             ;;
