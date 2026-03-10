@@ -1,0 +1,54 @@
+_realname=libchipcard
+pkgbase="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgname=${pkgbase}
+pkgver=5.1.6
+rdmdir=382
+pkgrel=1
+pkgdesc="AQBanking support for German bank chipcard readers"
+arch=('any')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clangarm64')
+url="https://aquamaniac.de/rdm/attachments/download"
+license=('GPL-2.0-only')
+options=('!libtool' 'debug' 'strip' 'buildflags')
+makedepends=("${MINGW_PACKAGE_PREFIX}-gcc")
+depends=(${MINGW_PACKAGE_PREFIX}-gwenhywfar
+         ${MINGW_PACKAGE_PREFIX}-libgcrypt
+         ${MINGW_PACKAGE_PREFIX}-gnutls)
+source=(${url}/${rdmdir}/${_realname}-${pkgver}.tar.gz
+        libchipcard-5.1.6-cardcommander-chipcard-version.patch)
+prepare() {
+    cd ${srcdir}/${_realname}-${pkgver}/
+
+    # Put patch commands here
+    if test x${MSYSTEM} = "xCLANG64"; then
+        patch -p1 -i ${srcdir}/libchipcard-5.1.6-cardcommander-chipcard-version.patch
+    fi
+
+    # autoreconf --install
+    rm -rf ${srcdir}/build
+    mkdir ${srcdir}/build
+}
+
+build() {
+    cd "${srcdir}/build"
+    if test x${MSYSTEM} = "xCLANG64"; then
+        export lt_cv_deplibs_check_method=${lt_cv_deplibs_check_method='pass_all'}
+    fi
+    ${srcdir}/${_realname}-${pkgver}/configure \
+    --prefix=${MINGW_PREFIX} \
+    --build=${MINGW_CHOST} \
+    --host=${MINGW_CHOST} \
+    --disable-static \
+    --enable-shared \
+    "$@"
+
+    make
+}
+
+package() {
+    cd "${srcdir}/build"
+    make -j1 DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('6c07f527417f7562074f99012da4d11eb4dbafd33f49e66b442ccd6e3b8cfd20'
+           '913aee999c8994718fb27db2c3a23e83c4016ec91e7e3d7e91364a7011103f39')

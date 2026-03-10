@@ -1,0 +1,51 @@
+_realname=postgresql
+pkgbase="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgname=${pkgbase}
+pkgver=17.5
+pkgrel=1
+pkgdesc="Postgres SQL Database"
+arch=('any')
+# mingw-w64-postgresql is provided on all platforms except i686
+mingw_arch=('mingw32')
+url="https://ftp.postgresql.org/pub/source/"
+license=('GPL-2.0-only')
+options=('!libtool' 'debug' 'strip' 'buildflags')
+makedepends=("${MINGW_PACKAGE_PREFIX}-gcc")
+depends=(${MINGW_PACKAGE_PREFIX}-openssl
+         ${MINGW_PACKAGE_PREFIX}-icu
+         ${MINGW_PACKAGE_PREFIX}-gettext-runtime
+         ${MINGW_PACKAGE_PREFIX}-libxml2
+         ${MINGW_PACKAGE_PREFIX}-lz4
+         ${MINGW_PACKAGE_PREFIX}-readline
+         ${MINGW_PACKAGE_PREFIX}-zlib
+         ${MINGW_PACKAGE_PREFIX}-zstd)
+source=(${url}/v$pkgver/${_realname}-${pkgver}.tar.bz2)
+prepare() {
+    cd ${srcdir}/${_realname}-${pkgver}/
+
+    # Put patch commands here
+
+    # autoreconf --install
+    rm -rf ${srcdir}/build
+    mkdir ${srcdir}/build
+}
+
+build() {
+    cd "${srcdir}/build"
+    ${srcdir}/${_realname}-${pkgver}/configure \
+    --prefix=${MINGW_PREFIX} \
+    --build=${MINGW_CHOST} \
+    --host=${MINGW_CHOST} \
+    --disable-static \
+    --enable-shared \
+    "$@"
+
+    make
+}
+
+package() {
+    cd "${srcdir}/build"
+    make -j1 DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('fcb7ab38e23b264d1902cb25e6adafb4525a6ebcbd015434aeef9eda80f528d8')

@@ -1,0 +1,13 @@
+--- a/Source/autotools/SetupCompilerFlags.m4	2023-07-30 15:46:32.147117600 -0700
++++ b/Source/autotools/SetupCompilerFlags.m4	2023-08-01 14:48:45.986039800 -0700
+@@ -58,10 +58,6 @@
+     CFLAGS="$CFLAGS -O0"
+ fi
+ 
+-#This is probably the wrong place to put it, but need a library flag due to some change in mingw for the D_FORTIFY_SOURCE.
+-# https://github.com/msys2/MINGW-packages/issues/5868
+-LIBS="$LIBS -lssp"
+-
+ # Some architectures need to add libatomic explicitly
+ AC_LANG_PUSH([C++])
+ AC_LINK_IFELSE([AC_LANG_SOURCE([[

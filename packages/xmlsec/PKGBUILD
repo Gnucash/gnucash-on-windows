@@ -1,0 +1,48 @@
+_realname=xmlsec1
+pkgbase="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgname=${pkgbase}
+pkgver=1.3.9
+pkgrel=1
+pkgdesc="XML Security Library"
+arch=('any')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clangarm64')
+url="https://github.com/lsh123/xmlsec/releases/download/"
+license=('GPL-2.0-only')
+options=('!libtool' 'debug' 'strip' 'buildflags')
+makedepends=("${MINGW_PACKAGE_PREFIX}-gcc")
+depends=(${MINGW_PACKAGE_PREFIX}-libgcrypt
+         ${MINGW_PACKAGE_PREFIX}-gnutls
+         ${MINGW_PACKAGE_PREFIX}-libltdl)
+source=(${url}/${pkgver}/${_realname}-${pkgver}.tar.gz)
+prepare() {
+    cd ${srcdir}/${_realname}-${pkgver}/
+
+    # Put patch commands here
+
+    # autoreconf --install
+    rm -rf ${srcdir}/build-${MSYSTEM}
+    mkdir ${srcdir}/build-${MSYSTEM}
+}
+
+build() {
+    cd "${srcdir}/build-${MSYSTEM}"
+    ${srcdir}/${_realname}-${pkgver}/configure \
+    --prefix=${MINGW_PREFIX} \
+    --build=${MINGW_CHOST} \
+    --host=${MINGW_CHOST} \
+    --disable-static \
+    --enable-shared \
+    --enable-docs=no \
+    --with-gcrypt \
+    --with-gnutls \
+    "$@"
+
+    make
+}
+
+package() {
+    cd "${srcdir}/build-${MSYSTEM}"
+    make -j1 DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('a631c8cd7a6b86e6adb9f5b935d45a9cf9768b3cb090d461e8eb9d043cf9b62f')

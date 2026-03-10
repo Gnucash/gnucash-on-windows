@@ -1,0 +1,58 @@
+_realname=libdbi-drivers
+pkgbase="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgname=${pkgbase}
+pkgver=0.9.1
+pkgrel=1
+pkgdesc="LibDBI backend drivers"
+arch=('any')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clangarm64')
+url="http://downloads.sourceforge.net/gnucash"
+license=('GPL-2.0-only')
+options=('!libtool' 'debug' 'strip' 'buildflags')
+makedepends=("${MINGW_PACKAGE_PREFIX}-gcc")
+depends=(${MINGW_PACKAGE_PREFIX}-libdbi
+         ${MINGW_PACKAGE_PREFIX}-libmariadbclient
+         ${MINGW_PACKAGE_PREFIX}-postgresql
+         ${MINGW_PACKAGE_PREFIX}-sqlite3)
+source=(${url}/${_realname}-${pkgver}.tar.gz
+        libdbi-no-tests.patch)
+prepare() {
+    cd ${srcdir}/${_realname}-${pkgver}/
+
+    # Put patch commands here
+    patch -p1 -i ${srcdir}/libdbi-no-tests.patch
+
+    autoreconf --install
+
+    rm -rf ${srcdir}/build
+    mkdir ${srcdir}/build
+}
+
+build() {
+    cd "${srcdir}/build"
+    ${srcdir}/${_realname}-${pkgver}/configure \
+    --prefix=${MINGW_PREFIX} \
+    --build=${MINGW_CHOST} \
+    --host=${MINGW_CHOST} \
+    --disable-static \
+    --enable-shared \
+    --disable-docs \
+    --disable-dependency-tracking \
+    --with-dbi-incdir="${MINGW_PREFIX}/include" \
+    --with-dbi-libdir="${MINGW_PREFIX}/bin" \
+    --with-mysql \
+    --with-pgsql \
+    --with-sqlite3 \
+    CFLAGS="$CFLAGS -Wno-int-conversion" \
+    "$@"
+
+    make
+}
+
+package() {
+    cd "${srcdir}/build"
+    make -j1 DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('3346b3f09edb2c2464422560ff783f7a7fa1fcd287427f0a8f2db8a1d995acb9'
+           '1b6656fcbb19f48bc253fef52c4f883c7fc96a51ade04b71441bb5c658438910')

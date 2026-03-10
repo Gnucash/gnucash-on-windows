@@ -1,0 +1,57 @@
+_realname=OpenSP
+pkgbase="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgname=${pkgbase}
+pkgver=1.5.2
+pkgrel=1
+pkgdesc="Atomic Operations Library"
+arch=('any')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clangarm64')
+url="https://github.com/ivmai/libatomic_ops"
+license=('GPL-2.0-only')
+options=('!libtool' 'debug' 'strip' 'buildflags')
+makedepends=("${MINGW_PACKAGE_PREFIX}-gcc")
+depends=()
+url="https://downloads.sourceforge.net/openjade/"
+source=(${url}${_realname}-${pkgver}.tar.gz
+        opensp-1.5.2.patch
+        OpenSP-1.5.2-non-posix-functions.patch)
+prepare() {
+    cd ${srcdir}/${_realname}-${pkgver}/
+
+    # Put patch commands here
+    patch -p1 -i ${srcdir}/opensp-1.5.2.patch
+    patch -p1 -i ${srcdir}/OpenSP-1.5.2-non-posix-functions.patch
+    ./autoinit.sh
+    rm -rf ${srcdir}/build
+    mkdir ${srcdir}/build
+}
+
+build() {
+    cd "${srcdir}/build"
+    export CXXFLAGS="${CXXFLAGS} -std=c++03"
+    if [ x${MSYSTEM} = "xCLANG64" ]; then
+        export CXXFLAGS="${CXXFLAGS} -Wno-nontrivial-memcall"
+    fi
+    ${srcdir}/${_realname}-${pkgver}/configure \
+    --prefix=${GNC_PREFIX} \
+    --build=${MINGW_CHOST} \
+    --host=${MINGW_CHOST} \
+    --disable-static \
+    --enable-shared \
+    --disable-doc-build \
+    --disable-nls \
+    "$@"
+
+    make
+}
+
+package() {
+    cd "${srcdir}/build"
+    make -j1 DESTDIR="${pkgdir}" install
+}
+
+sha256sums=(
+    '57f4898498a368918b0d49c826aa434bb5b703d2c3b169beb348016ab25617ce'
+    '9693bc50dfb97fe172da5493bf0978a991be24a090ad0adbfe43e8dac5ffa4b2'
+    '04645166b94e4b90a58b91bdc562b518cafe60e701df972309905c52c614942f'
+)

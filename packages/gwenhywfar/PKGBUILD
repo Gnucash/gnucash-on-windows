@@ -1,0 +1,58 @@
+_realname=gwenhywfar
+pkgbase="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgname=${pkgbase}
+pkgver=5.14.1
+rdmdir=630
+pkgrel=1
+pkgdesc="AQBanking backends"
+arch=('any')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clangarm64')
+url="https://aquamaniac.de/rdm/attachments/download"
+license=('GPL-2.0-only')
+options=('!libtool' 'debug' 'strip' 'buildflags')
+makedepends=("${MINGW_PACKAGE_PREFIX}-gcc")
+depends=(${MINGW_PACKAGE_PREFIX}-libgcrypt
+         ${MINGW_PACKAGE_PREFIX}-gnutls
+         ${MINGW_PACKAGE_PREFIX}-gtk3)
+source=(${url}/${rdmdir}/${_realname}-${pkgver}.tar.gz
+        gwenhywfar-5.12-GWENHYWFAR-CB.patch
+        gwenhywfar-5.12-windows.patch)
+
+prepare() {
+    cd ${srcdir}/${_realname}-${pkgver}/
+
+    # Put patch commands here
+    patch -p1 -i ${srcdir}/gwenhywfar-5.12-GWENHYWFAR-CB.patch
+    patch -p1 -i ${srcdir}/gwenhywfar-5.12-windows.patch
+
+    autoreconf -fi
+
+    rm -rf ${srcdir}/build-${MSYSTEM}
+    mkdir ${srcdir}/build-${MSYSTEM}
+}
+
+build() {
+    cd "${srcdir}/build-${MSYSTEM}"
+    ${srcdir}/${_realname}-${pkgver}/configure \
+    --prefix=${MINGW_PREFIX} \
+    --build=${MINGW_CHOST} \
+    --host=${MINGW_CHOST} \
+    --disable-static \
+    --enable-shared \
+    --with-guis='gtk3' \
+    --enable-local-install \
+    --disable-binreloc \
+    PKGCONFIG="pkg-config --dont-define-prefix" \
+    "$@"
+
+    make
+}
+
+package() {
+    cd "${srcdir}/build-${MSYSTEM}"
+    make -j1 DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('8916feaa99cb954f963f2cba8dd2dffe57cacf7f284daf00eab071aad6fe2ab3'
+            'f01048d43f98e8f02d48ec694c1204f133a7fc064e3ca34f8fe13d178677c011'
+            '7f3177c086531e46782bbad3ca045c06fd407851d273ba3954eb3e1ca48e403f')

@@ -24,38 +24,28 @@ Runs Inno-Setup to create a gnucash installer program.
 
 .DESCRIPTION
 
-Creates a gnucash installer program from a GnuCash build environment created with setup-mingw64.ps1 in which GnuCash has been built with jhbuild using the jhbuildrc and gnucash.modules from gnucash-on-windows.git.
+Creates a gnucash installer program from a MSYS2 environment in which GnuCash, the GnuCash documentation, and all dependencies have been installed.
 
 This script must not be moved from the gnucash-on-windows.git working directory.
 
 You may need to allow running scripts on your computer and depending
-on where the target_dir is you may need to run the script with
-Administrator privileges.
+on where the mingw_prefix is you may need to run the script with
+Administrator privileges
 
-.PARAMETER root_dir
+PARAMETER mingw_prefix
 
-Mandatory. The root path to the build environment. Typically C:\gcdev64.
+Mandatory. The absolute path to the root MSYS2 directory, e.g. C:\gcdev64\msys2
 
-.PARAMETER target_dir
+.PARAMETER mingw_arch
 
-Mandatory. The base path to where the build to be packaged is located. This is typically $root_dir\gnucash\$branch, for example C:\gcdev64\gnucash\maint
-
-.PARAMETER package
-
-Mandatory. The name of the package to bundle. This is currently only used by the Inno installer builder for things like the registry group to add values to.
-
-.PARAMETER package
-
-Mandatory. Boolean to indicate whether or not this is a git build.
+Mandatory. The MSYS2 archicture to package. Allowed values are mingw32, mingw64, clang64, and ucrt64.
 
 #>
 
 [CmdletBinding()]
 Param(
-    [Parameter(Mandatory=$true)] [string]$root_dir,
-    [Parameter(Mandatory=$true)] [string]$target_dir,
-    [Parameter(Mandatory=$true)] [string]$package,
-    [Parameter(Mandatory=$true)] [bool]$git_build
+    [Parameter(Mandatory=$true)] [string]$mingw_prefix,
+    [Parameter(Mandatory=$true)] [string]$mingw_arch
 )
 
 $script_dir = Split-Path $script:MyInvocation.MyCommand.Path
@@ -71,104 +61,92 @@ try {
 }
 catch {} #type already loaded, ignore problem.
 
-function bitness([string]$path) {
-  $type = -1
-  $result = [Win32Utils.BinaryType]::GetBinaryType($path, [ref]$type)
-  if ($type -eq 6) { 64 } else { 32 }
-}
-
-function version_item([string]$tag, [string]$path) {
-   $splits = select-string -pattern $tag -path $path | %{$_ -split "\s+"}
-   $splits[2]
-}
-
 function bash-command() {
     param ([string]$command = "")
-    if (!(test-path -path $root_dir\msys2\usr\bin\bash.exe)) {
+    if (!(test-path -path $mingw_prefix\usr\bin\bash.exe)) {
 	write-host "Shell program not found, aborting."
 	exit
     }
     #write-host "Running bash command ""$command"""
-    Start-Process -FilePath "$root_dir\msys2\usr\bin\bash.exe" -ArgumentList "-c ""export PATH=/usr/bin; $command""" -NoNewWindow -Wait
+    Start-Process -FilePath "$mingw_prefix\usr\bin\bash.exe" -ArgumentList "-c ""export PATH=/usr/bin:/$mingw_arch/bin; $command""" -NoNewWindow -Wait
 }
 
 function make-unixpath([string]$path) {
     $path -replace  "^([A-Z]):", '/$1' -replace "\\", '/'
 }
 
-if ($git_build) {
-  $gnucash = "gnucash-git"
-}
-else {
-  $gnucash = get-childitem -path $target_dir\build | where-object {$_.Name -match "gnucash-[0-9.]+"} |sort-object -Property {$_.CreationTime} | select-object -last 1
-}
-
 if ($PSVersionTable.PSVersion.Major -ge 3) {
     $PSDefaultParameterValues['*:Encoding'] = 'utf8'
     }
 
-$gnc_config_h = "$target_dir\build\$gnucash\common\config.h"
+$git_build = $false
+$vline = & $mingw_prefix\$mingw_arch\bin\gnucash-cli.exe --version | Select-String "Build ID:" | %{$_ -split "\s+"}
+if ($vline[2] -eq "git") {
+    $package_version = $vline[3].split('+')[0]
+    $git_build = $true
+}
+else {
+    $package_version = $vline[2].split('+')[0]
+}
 
-$major_version = version_item -tag "PROJECT_VERSION_MAJOR" -path $gnc_config_h
-$minor_version = version_item -tag "PROJECT_VERSION_MINOR" -path $gnc_config_h
-$package_version = "$major_version.$minor_version"
-$inst_dir = "$target_dir\inst"
-$mingw_ver = bitness("$inst_dir\bin\gnucash.exe")
-$aqb_dir = version_item -tag "SO_EFFECTIVE "-path "$inst_dir\include\aqbanking6\aqbanking\version.h"
-$gwen_dir = version_item -tag "SO_EFFECTIVE " -path "$inst_dir\include\gwenhywfar5\gwenhywfar\version.h"
+$major_version = $package_version.split('.')[0]
+$minor_version = $package_version.split('.')[1].split('-')[0]
 
+$architecture = "x64"
+if ($mingw_arch -eq "mingw32") {
+    $architecture = "x86"
+}
 # We must use sed under bash in order to preserve the UTF-8 encoding
 # with Unix line endings; PowerShell wants to re-code the output as
 # UTF-16 and Inno Setup finds that indigestible. The ridiculous number
 # of backslashes is due to bash and sed eating them. It results in a
 # single backslash in the output file. Inno Setup doesn't understand
 # forward slashes as path delimiters.
-$root = %{$root_dir -replace "\\", "\\\\\\\\"}
-$target = %{$target_dir -replace "\\", "\\\\\\\\"}
+$root = %{$mingw_prefix -replace "\\", "\\\\\\\\"}
 $script = %{$script_dir -replace "\\", "\\\\\\\\"}
 $issue_in = make-unixpath -path  $script_dir\inno_setup\gnucash-mingw64.iss
-$issue_out = make-unixpath -path $target_dir\gnucash.iss
+$issue_out = make-unixpath -path $script_dir\gnucash.iss
+
 $proc = bash-command("sed  < $issue_in > $issue_out \
-  -e ""s#@MINGW_DIR@#$root\\\\\\\\msys2\\\\\\\\mingw$mingw_ver#g"" \
-  -e ""s#@INST_DIR@#$target\\\\\\\\inst#g"" \
-  -e ""s#@-gwenhywfar_so_effective-@#$gwen_dir#g"" \
-  -e ""s#@-aqbanking_so_effective-@#$aqb_dir#g"" \
+  -e ""s#@ARCHITECTURE@#$architecture#"" \
+  -e ""s#@MINGW_DIR@#$root\\\\\\\\$mingw_arch#g"" \
   -e ""s#@PACKAGE_VERSION@#$package_version#g"" \
-  -e ""s#@PACKAGE@#$package#g"" \
+  -e ""s#@PACKAGE@#gnucash#g"" \
   -e ""s#@GNUCASH_MAJOR_VERSION@#$major_version#g"" \
   -e ""s#@GNUCASH_MINOR_VERSION@#$minor_version#g"" \
   -e ""s#@GC_WIN_REPOS_DIR@#$script#g"" ")
 
 $date = get-date -format "yyyy-MM-dd"
-$setup_result =  "$target_dir\gnucash-$package_version.setup.exe"
+$setup_result =  "$script_dir\gnucash-$package_version.setup.exe"
 $final_file = ""
 if ($git_build) {
-  $gnc_vcsinfo_h = "$target_dir\build\gnucash-git\libgnucash\core-utils\gnc-vcs-info.h"
-  $vcs_rev = version_item -tag "GNC_VCS_REV" -path $gnc_vcsinfo_h | %{$_ -replace """", ""}
-  $final_file = "$target_dir\gnucash-$package_version-$date-git-$vcs_rev.setup.exe"
+  $final_file = "$script_dir\gnucash-$major_version.$minor_version-$mingw_arch-$date-git-$package_version.setup.exe"
   }
 else {
-  $final_file = "$target_dir\gnucash-$package_version.setup.exe"
+  $final_file = "$script_dir\gnucash-$package_version-$mingw_arch.setup.exe"
 }
 
-$mingw_dir = "$root_dir\msys2\mingw$mingw_ver"
+$mingw_dir = "$mingw_prefix\$mingw_arch"
 $schema_dir = "share\glib-2.0\schemas"
-$target_schema_dir = "$target_dir\inst\$schema_dir"
-copy-item $mingw_dir\$schema_dir\org.gtk.Settings.* $target_schema_dir
-$target_schema_unix = make-unixpath -path $target_schema_dir
+$mingw_schema_dir = "$mingw_dir\$schema_dir"
+$mingw_schema_unix = make-unixpath -path $mingw_schema_dir
 $schema_compiler = make-unixpath -path "$mingw_dir\bin\glib-compile-schemas"
-bash-command("$schema_compiler $target_schema_unix")
+bash-command("$schema_compiler $mingw_schema_unix")
 
 
 # Inno-setup isn't able to easily pick out particular message catalogs from $mingw_dir/share/locale, so copy the ones we want to $inst_dir\share\locale.
 
 $source_locale_dir = "$mingw_dir\share\locale\"
-$inst_locale_dir = "$inst_dir\share\locale"
-foreach ($msgcat in "gtk30.mo","iso_4217.mo") {
+$inst_locale_dir = "$script_dir\locale"
+foreach ($msgcat in "gtk30.mo", "gtk30-properties.mo", "iso_4217.mo", "gnucash.mo", "aqbanking.mo", "gwenhywfar.mo", "WebKitGTK-3.0.mo") {
     foreach ($dir in get-childitem -Directory $source_locale_dir) {
+        $dir = split-path -leafbase $dir
 	$source_path = "$source_locale_dir\$dir\LC_MESSAGES"
 	$inst_path = "$inst_locale_dir\$dir\LC_MESSAGES"
-	if ((test-path $source_path) -and (test-path "$source_path\$msgcat") -and (test-path $inst_path)) {
+	if ((test-path $source_path) -and (test-path "$source_path\$msgcat")) {
+            if (!(test-path $inst_path)) {
+                new-item -ItemType Directory -Force $inst_path
+            }
 	    copy-item "$source_path\$msgcat" -Destination $inst_path -recurse
 	}
     }
@@ -179,7 +157,12 @@ write-host "Running Inno Setup to create $final_file."
 if (test-path -path $setup_result) {
     remove-item -path $setup_result
 }
-& ${env:ProgramFiles(x86)}\inno\iscc /Q $target_dir\gnucash.iss
+
+& ${env:ProgramFiles(x86)}\inno\iscc /Q $script_dir\gnucash.iss
+
+if (test-path -path $inst_locale_dir) {
+    remove-item -path $inst_locale_dir -Recurse -Force
+}
 
 if ($git_build) {
   if ((test-path -path $setup_result) -and (test-path -path $final_file)) {

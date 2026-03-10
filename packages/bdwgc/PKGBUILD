@@ -1,0 +1,46 @@
+_realname=bdwgc
+pkgbase="${_realname}"
+pkgname="${MINGW_PACKAGE_PREFIX}-${pkgbase}"
+pkgver=8.2.8
+pkgrel=1
+pkgdesc="Boehm Garbage Collection Library"
+arch=('any')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clangarm64')
+url="https://github.com/ivmai/bdwgc"
+license=('GPL-2.0-only')
+options=('!libtool' 'debug' 'strip' 'buildflags')
+makedepends=("${MINGW_PACKAGE_PREFIX}-gcc")
+depends=("${MINGW_PACKAGE_PREFIX}-libatomic_ops")
+source=(git+${url}#tag=v${pkgver})
+prepare() {
+    cd ${srcdir}/${_realname}/
+
+    # Put patch commands here
+
+    #autoreconf --install
+    
+    rm -rf ${srcdir}/build
+    mkdir ${srcdir}/build
+}
+
+build() {
+    cd "${srcdir}/build"
+    ${srcdir}/${_realname}/configure \
+    --prefix=${MINGW_PREFIX} \
+    --build=${MINGW_CHOST} \
+    --host=${MINGW_CHOST} \
+    --enable-threads=no \
+    --disable-parallel-mark \
+    --disable-static \
+    --enable-shared \
+    "$@"
+
+    make
+}
+
+package() {
+    cd "${srcdir}/build"
+    make DESTDIR="${pkgdir}" install
+}
+
+sha256sums=('SKIP')

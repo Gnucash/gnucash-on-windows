@@ -1,0 +1,83 @@
+# Maintainer: Alexey Pavlov <alexpux@gmail.com>
+
+_realname=swig
+pkgbase=mingw-w64-${_realname}
+pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgver=4.2.1
+pkgrel=2
+pkgdesc="Generate scripting interfaces to C/C++ code (mingw-w64)"
+arch=('any')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clangarm64')
+url="https://www.swig.org/"
+msys2_repository_url="https://github.com/swig/swig"
+license=('custom')
+depends=("${MINGW_PACKAGE_PREFIX}-cc-libs"
+         "${MINGW_PACKAGE_PREFIX}-pcre2")
+makedepends=("${MINGW_PACKAGE_PREFIX}-cc"
+             "${MINGW_PACKAGE_PREFIX}-autotools")
+checkdepends=("${MINGW_PACKAGE_PREFIX}-boost"
+              "${MINGW_PACKAGE_PREFIX}-python"
+              "${MINGW_PACKAGE_PREFIX}-lua"
+              "${MINGW_PACKAGE_PREFIX}-ruby")
+source=(https://downloads.sourceforge.net/${_realname}/${_realname}-${pkgver}.tar.gz
+        pathtools.c
+        pathtools.h
+        001-relocate.patch
+        002-fix-python-find.patch
+        0001-Guile-Use-correct-int-conversions-for-ptrs-and-size_.patch)
+sha256sums=('fa045354e2d048b2cddc69579e4256245d4676894858fcf0bab2290ecf59b7d8'
+            'ebf471173f5ee9c4416c10a78760cea8afaf1a4a6e653977321e8547ce7bf3c0'
+            '1585ef1b61cf53a2ca27049c11d49e0834683dfda798f03547761375df482a90'
+            '085bfb477d18dcd001cadc5320842cbb6b15b29243e098544c09f6b54718dc9c'
+            '057f0a306aee0d28a5bb6538b569c650e47c05b9848c9477cdeb7bb8c792944d'
+            '618d20c206c201e45b4e552467f7c1581eeb83a66274007c8d9583e9b4a26a2a')
+
+prepare() {
+  test ! -d "${startdir}/../mingw-w64-pathtools" || {
+    cmp "${startdir}/../mingw-w64-pathtools/pathtools.c" "${srcdir}/pathtools.c" &&
+    cmp "${startdir}/../mingw-w64-pathtools/pathtools.h" "${srcdir}/pathtools.h"
+  } || exit 1
+
+  cd "${srcdir}/${_realname}-${pkgver}"
+  cp -fHv "${srcdir}"/pathtools.[ch] Source/Swig/
+
+  patch -p1 -i "${srcdir}"/001-relocate.patch
+  patch -p1 -i "${srcdir}"/002-fix-python-find.patch
+  patch -p1 -i "${srcdir}"/0001-Guile-Use-correct-int-conversions-for-ptrs-and-size_.patch
+
+  ./autogen.sh
+
+    rm -rf "${srcdir}/build-${MSYSTEM}"
+    mkdir -p "${srcdir}/build-${MSYSTEM}"
+
+}
+
+build() {
+    echo "\n\nMachine Type  ${MACHTYPE}\n\n"
+    cd "${srcdir}/build-${MSYSTEM}"
+
+  ../${_realname}-${pkgver}/configure\
+    --prefix=${MINGW_PREFIX} \
+    --without-perl5 \
+    --without-python \
+    --with-guile=${MINGW_PREFIX}/bin/guile \
+    --with-guile-cflags="-I${MINGW_PREFIX}/include/guile/3.0" \
+    --with-guile-libs="-lguile3.0 -lgc" \
+    --with-python3=${MINGW_PREFIX}/bin/python \
+    $@
+
+  make
+}
+
+# Many tests depend on the javascript shell that in turn depends on dlfcn.h. That's a POSIX header not available in Windows.
+#check() {
+#  cd "${srcdir}/build-${MSYSTEM}"
+#  make -k check
+#}
+
+package() {
+  cd "${srcdir}/build-${MSYSTEM}"
+  make DESTDIR="${pkgdir}" install
+  install -Dm644 "${srcdir}"/${_realname}-${pkgver}/LICENSE "${pkgdir}${MINGW_PREFIX}"/share/licenses/${_realname}/LICENSE
+  install -Dm644 "${srcdir}"/${_realname}-${pkgver}/LICENSE-UNIVERSITIES "${pkgdir}${MINGW_PREFIX}"/share/licenses/${_realname}/LICENSE-UNIVERSITIES
+}

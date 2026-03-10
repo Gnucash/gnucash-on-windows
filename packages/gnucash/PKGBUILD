@@ -1,0 +1,104 @@
+_realname=gnucash
+pkgbase="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgname=${pkgbase}
+pkgbranch="#branch=${GNUCASH_BUILD}"
+pkgver=5.14+104_g8538dcf
+_release_ver=5.14
+_unstable_ver=4.904
+pkgrel=1
+pkgdesc="Basic Accounting Program"
+arch=('any')
+mingw_arch=('mingw32' 'mingw64' 'ucrt64' 'clang64' 'clangarm64')
+_git_url="https://github.com/gnucash/gnucash"
+_tar_url="https://downloads.sourceforge.net"
+license=('GPL-2.0-and-later')
+options=('!libtool' 'debug' 'strip' 'buildflags')
+makedepends=("${MINGW_PACKAGE_PREFIX}-cmake"
+             "${MINGW_PACKAGE_PREFIX}-gettext-tools"
+             "${MINGW_PACKAGE_PREFIX}-gtest"
+             "${MINGW_PACKAGE_PREFIX}-ninja"
+             "${MINGW_PACKAGE_PREFIX}-swig")
+depends=("${MINGW_PACKAGE_PREFIX}-appstream-glib"
+         "${MINGW_PACKAGE_PREFIX}-aqbanking"
+         "${MINGW_PACKAGE_PREFIX}-boost"
+         "${MINGW_PACKAGE_PREFIX}-guile3"
+         "${MINGW_PACKAGE_PREFIX}-icu"
+         "${MINGW_PACKAGE_PREFIX}-iso-codes"
+         "${MINGW_PACKAGE_PREFIX}-pdcurses"
+         "${MINGW_PACKAGE_PREFIX}-libdbi-drivers"
+         "${MINGW_PACKAGE_PREFIX}-libofx"
+         "${MINGW_PACKAGE_PREFIX}-webkitgtk3")
+case ${GNUCASH_BUILD} in
+    stable|future)
+         source=("git+${_git_url}${pkgbranch}")
+         _srcdir=${_realname}
+         ;;
+     release)
+         source="${_tar_url}/gnucash/gnucash-${_release_ver}.tar.bz2"
+         _srcdir=${_realname}-${_release_ver}
+         ;;
+     unstable)
+         source="${_tar_url}/gnucash/gnucash-${_unstable_ver}.tar.bz2"
+         _srcdir=${_realname}-${_unstable_ver}
+         ;;
+     *)
+         echo "Error! Invalid GnuCash Build ${GNUCASH_BUILD}"
+         ;;
+esac
+
+DEBUG_CFLAGS="-ggdb3 -Og -fno-omit-frame-pointer -Wno-incompatible-pointer-types"
+
+prepare() {
+    cd ${srcdir}/${_srcdir}/
+
+    # Put patch commands here
+
+    rm -rf ${srcdir}/build-${MSYSTEM}
+    mkdir ${srcdir}/build-${MSYSTEM}
+}
+
+pkgver() {
+    case ${GNUCASH_BUILD} in
+        stable|future)
+            cd ${srcdir}/${_realname}/
+            pkgver=$(git describe --long --abbrev=7 | sed 's/-\([^-]*-g\)/+\1/;s/-/_/g')
+            ;;
+        release)
+            pkgver=${_release_version}
+            ;;
+        unstable)
+            pkgver=${_unstable_version}
+            ;;
+        *)
+            ;;
+    esac
+    printf ${pkgver}
+}
+
+build() {
+    cd "${srcdir}/build-${MSYSTEM}"
+    export GUILE_LOAD_PATH="${MSYSTEM_PREFIX}/share/guile/3.0/"
+    export GUILE_LOAD_COMPILED_PATH="${MSYSTEM_PREFIX}/lib/guile/3.0/ccache)"
+    cmake -G Ninja \
+          -DCMAKE_INSTALL_PREFIX=${MSYSTEM_PREFIX} \
+          -DCMAKE_PREFIX_PATH=${MSYSTEM_PREFIX} \
+          -DSWIG_DIR="${MSYSTEM_PREFIX}/share/swig/4.2.1" \
+          "$@" \
+          ${srcdir}/${_srcdir}
+    ninja
+}
+
+check() {
+    cd "${srcdir}/build-${MSYSTEM}"
+    ninja check
+}
+
+# Note no destdir. That's because DESTDIR won't work on Windows (see  gnucash/gschemas/cmake_install.cmake:72).
+# We can use the regular pkg directory with inno-installer.
+
+package() {
+    cd "${srcdir}/build-${MSYSTEM}"
+    ninja -j1 install
+}
+
+sha256sums=('SKIP')

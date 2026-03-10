@@ -1,0 +1,12 @@
+--- a/Source/WebKit/gtk/GNUmakefile.am	2016-04-09 23:48:37.000000000 -0700
++++ b/Source/WebKit/gtk/GNUmakefile.am	2021-10-31 08:54:36.259763200 -0700
+@@ -352,7 +352,8 @@
+ 	@true
+
+ stamp-webkitmarshal.cpp: $(WEBKIT_MARSHAL_LIST)
+-	$(AM_V_GEN) echo "extern \"C\" {" > $(GENSOURCES_WEBKIT)/webkitmarshal.cpp && \
++	$(AM_V_GEN) echo '#include <glib-object.h>' > $(GENSOURCES_WEBKIT)/webkitmarshal.cpp && \
++	$(AM_V_GEN) echo "extern \"C\" {" >> $(GENSOURCES_WEBKIT)/webkitmarshal.cpp && \
+ 	$(GLIB_GENMARSHAL) --prefix=webkit_marshal $(WEBKIT_MARSHAL_LIST) --body >> $(GENSOURCES_WEBKIT)/webkitmarshal.cpp && \
+ 	echo '}' >> $(GENSOURCES_WEBKIT)/webkitmarshal.cpp && \
+ 	echo timestamp > $(@F)

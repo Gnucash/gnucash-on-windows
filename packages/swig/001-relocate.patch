@@ -1,0 +1,64 @@
+diff -Naur swig-4.0.0.orig/configure.ac swig-4.0.0/configure.ac
+--- swig-4.0.0.orig/configure.ac	2019-05-01 18:28:41.445071500 -0400
++++ swig-4.0.0/configure.ac	2019-05-01 18:56:39.400174900 -0400
+@@ -852,7 +852,7 @@
+ 
+     if test -n "$GUILE" ; then
+       # Test if guile-config and guile versions match. They should.
+-      gc_version="`$GUILE_CONFIG --version 2>&1 | sed '1 s/.* //;q'`"
++      gc_version="`$PKG_CONFIG --modversion guile-3.0 2>&1 | sed '1 s/.* //;q'`"
+       g_version="`$GUILE --version | sed '1 s/.* //;q'`"
+       if test "$gc_version" != "$g_version"; then
+         AC_MSG_WARN([different versions reported by $GUILE_CONFIG ($gc_version) and $GUILE ($g_version). Disabling Guile])
+@@ -2797,7 +2797,7 @@
+ AC_SUBST(SWIG_LIB_INSTALL)
+ AC_DEFINE_DIR(SWIG_LIB, swig_lib, [Directory for SWIG system-independent libraries])
+ 
+-case $build in
++case $MACHTYPE in
+   # Windows does not understand unix directories. Convert into a windows directory with drive letter.
+   *-*-mingw*) SWIG_LIB_WIN_UNIX=`${srcdir}/Tools/convertpath -m $SWIG_LIB`;;
+   *-*-cygwin*) SWIG_LIB_WIN_UNIX=`cygpath --mixed "$SWIG_LIB"`;;
+@@ -2821,6 +2821,8 @@
+ fi
+ AC_SUBST(SWIG_LIB_SET)
+ 
++AC_DEFINE_DIR(SWIG_BINDIR, [bindir], [Swig binary instalation directory])
++
+ AC_CONFIG_FILES([
+     Makefile
+     swig.spec
+diff -Naur swig-4.0.0.orig/Source/Makefile.am swig-4.0.0/Source/Makefile.am
+--- swig-4.0.0.orig/Source/Makefile.am	2019-05-01 18:29:03.716208300 -0400
++++ swig-4.0.0/Source/Makefile.am	2019-05-01 18:56:39.400174900 -0400
+@@ -88,6 +88,7 @@
+ 		Swig/misc.c			\
+ 		Swig/naming.c			\
+ 		Swig/parms.c			\
++		Swig/pathtools.c		\
+ 		Swig/scanner.c			\
+ 		Swig/stype.c			\
+ 		Swig/symbol.c			\
+diff -Naur swig-4.0.0.orig/Source/Modules/main.cxx swig-4.0.0/Source/Modules/main.cxx
+--- swig-4.0.0.orig/Source/Modules/main.cxx	2019-05-01 18:29:03.606830700 -0400
++++ swig-4.0.0/Source/Modules/main.cxx	2019-05-01 18:56:39.415856300 -0400
+@@ -25,6 +25,10 @@
+ #include <ctype.h>
+ #include <limits.h>		// for INT_MAX
+ 
++extern "C" {
++#include "pathtools.h"
++}
++
+ // Global variables
+ 
+ static Language *lang = 0;	// Language method
+@@ -943,7 +964,7 @@
+       SwigLib = NewStringf("");	// Unexpected error
+     }
+     if (Len(SWIG_LIB_WIN_UNIX) > 0)
+-      SwigLibWinUnix = NewString(SWIG_LIB_WIN_UNIX); // Unix installation path using a drive letter (for msys/mingw)
++      SwigLibWinUnix = NewString(single_path_relocation(SWIG_BINDIR, SWIG_LIB)); // Unix installation path using a drive letter (for msys/mingw)
+ #else
+     SwigLib = NewString(SWIG_LIB);
+ #endif

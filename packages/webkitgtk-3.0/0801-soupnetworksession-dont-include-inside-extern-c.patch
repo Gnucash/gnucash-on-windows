@@ -1,0 +1,13 @@
+--- a/Source/WebCore/platform/network/soup/SoupNetworkSession.cpp	2025-06-26 12:48:32.756253200 -0700
++++ b/Source/WebCore/platform/network/soup/SoupNetworkSession.cpp	2025-06-26 12:58:55.539756600 -0700
+@@ -25,10 +25,7 @@
+ 
+ #include "config.h"
+ #include "SoupNetworkSession.h"
+-extern "C"
+-{
+ #include <libsoup/soup.h>
+-}
+ 
+ #include "AuthenticationChallenge.h"
+ #include "CookieJarSoup.h"

@@ -1,0 +1,24 @@
+--- a/Source/WebCore/xml/XSLTProcessor.h 2016-04-09 23:48:37.000000000 -0700
++++ /bSource/WebCore/xml/XSLTProcessor.h  2023-12-21 11:57:17.832569800 -0800
+@@ -64,7 +64,7 @@
+
+     void reset();
+
+-    static void parseErrorFunc(void* userData, xmlError*);
++    static void parseErrorFunc(void* userData, const xmlError*);
+     static void genericErrorFunc(void* userData, const char* msg, ...);
+
+     // Only for libXSLT callbacks
+--- a/Source/WebCore/xml/XSLTProcessorLibxslt.cpp        2016-04-09 23:48:37.000000000 -0700
++++ b/Source/WebCore/xml/XSLTProcessorLibxslt.cpp 2023-12-21 21:05:53.284663700 -0800
+@@ -77,7 +77,7 @@
+     // It would be nice to do something with this error message.
+ }
+
+-void XSLTProcessor::parseErrorFunc(void* userData, xmlError* error)
++void XSLTProcessor::parseErrorFunc(void* userData, const xmlError* error)
+ {
+     PageConsole* console = static_cast<PageConsole*>(userData);
+     if (!console)
+
+

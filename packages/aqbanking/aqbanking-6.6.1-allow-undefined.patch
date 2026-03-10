@@ -1,0 +1,33 @@
+--- a/configure.ac	2025-07-22 09:27:56.000000000 -0700
++++ b/configure.ac	2025-09-14 15:38:07.309894000 -0700
+@@ -1225,7 +1225,7 @@
+     windows)
+ 	# GnuCash compiles with this; maybe we need this, too?
+ 	#CFLAGS="${CFLAGS} -mms-bitfields"
+-	LDFLAGS="${LDFLAGS} -no-undefined -mwindows"
++	LDFLAGS="${LDFLAGS} -mwindows"
+     ;;
+ esac
+ 
+--- a/src/libs/Makefile.am	2021-05-02 13:56:04.000000000 -0700
++++ b/src/libs/Makefile.am	2025-09-14 15:38:30.270325800 -0700
+@@ -7,7 +7,7 @@
+ lib_LTLIBRARIES=libaqbanking.la
+ 
+ libaqbanking_la_SOURCES= dummy.c
+-libaqbanking_la_LDFLAGS = -no-undefined -version-info @AQBANKING_SO_CURRENT@:@AQBANKING_SO_REVISION@:@AQBANKING_SO_AGE@
++libaqbanking_la_LDFLAGS = -version-info @AQBANKING_SO_CURRENT@:@AQBANKING_SO_REVISION@:@AQBANKING_SO_AGE@
+ libaqbanking_la_LIBADD= $(gwenhywfar_libs) $(gmp_libs) $(i18n_libs) $(AQEBICS_LIBS) \
+   aqbanking/libaqbanking_base.la \
+   plugins/libabplugins.la
+--- a/src/libs/plugins/parsers/swift/Makefile.am	2022-07-30 16:16:09.000000000 -0700
++++ b/src/libs/plugins/parsers/swift/Makefile.am	2025-09-14 15:39:10.732505900 -0700
+@@ -37,7 +37,7 @@
+  swift535.c
+ 
+ swift_la_LIBADD = $(gwenhywfar_libs) 
+-swift_la_LDFLAGS = -no-undefined $(STRIPALL) -module -avoid-version
++swift_la_LDFLAGS = $(STRIPALL) -module -avoid-version
+ 
+ 
+ sources:

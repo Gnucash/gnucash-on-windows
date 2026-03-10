@@ -1,0 +1,860 @@
+--- a/Lib/guile/guile_scm_run.swg	2024-02-23 15:57:14.000000000 -0800
++++ b/Lib/guile/guile_scm_run.swg	2026-01-11 16:25:26.269182800 -0800
+@@ -148,7 +148,7 @@
+   }
+ }
+ 
+-SWIGINTERN unsigned long
++SWIGINTERN intptr_t
+ SWIG_Guile_PointerAddress(SCM object)
+ {
+   SCM smob = SWIG_Guile_GetSmob(object);
+@@ -156,7 +156,7 @@
+   else if (SCM_SMOB_PREDICATE(swig_tag, smob)
+ 	   || SCM_SMOB_PREDICATE(swig_collectable_tag, smob)
+ 	   || SCM_SMOB_PREDICATE(swig_destroyed_tag, smob)) {
+-    return (unsigned long) (void *) SCM_CELL_WORD_1(smob);
++    return (intptr_t) (void *) SCM_CELL_WORD_1(smob);
+   }
+   else scm_wrong_type_arg("SWIG-Guile-PointerAddress", 1, object);
+ }
+@@ -344,7 +344,7 @@
+     scm_puts("swig-pointer ", port);
+     scm_puts(SWIG_TypePrettyName(type), port);
+     scm_puts(" ", port);
+-    scm_intprint((long) SCM_CELL_WORD_1(swig_smob), 16, port);
++    scm_intprint((intptr_t) SCM_CELL_WORD_1(swig_smob), 16, port);
+     scm_puts(">", port);
+     /* non-zero means success */
+     return 1;
+@@ -427,11 +427,11 @@
+   if (scm_is_false(variable)) {
+     *tag_variable = scm_make_smob_type(scheme_variable_name, 0);
+     scm_c_module_define(swig_module, scheme_variable_name, 
+-                        scm_from_ulong(*tag_variable));
++                        scm_from_uintptr_t(*tag_variable));
+     return 1;
+   }
+   else {
+-    *tag_variable = scm_to_ulong(SCM_VARIABLE_REF(variable));
++    *tag_variable = scm_to_uintptr_t(SCM_VARIABLE_REF(variable));
+     return 0;
+   }
+ }
+@@ -487,7 +487,7 @@
+   if (scm_is_false(variable)) {
+     return NULL;
+   } else {
+-    return (swig_module_info *) scm_to_ulong(SCM_VARIABLE_REF(variable));
++    return (swig_module_info *) scm_to_uintptr_t(SCM_VARIABLE_REF(variable));
+   }
+ }
+ 
+@@ -497,7 +497,7 @@
+   SCM module = SWIG_Guile_Init();
+   scm_module_define(module,
+                     scm_from_locale_symbol("swig-type-list-address" SWIG_RUNTIME_VERSION SWIG_TYPE_TABLE_NAME),
+-                    scm_from_ulong((unsigned long) swig_module));
++                    scm_from_uintptr_t((uintptr_t) swig_module));
+ }
+ 
+ SWIGINTERN int
+diff --git a/Lib/guile/list-vector.i b/Lib/guile/list-vector.i
+index b6530d162..0f13852d3 100644
+--- a/Lib/guile/list-vector.i
++++ b/Lib/guile/list-vector.i
+@@ -66,7 +66,7 @@
+ 	 $1_ltype i;
+ 	 $2 = (C_TYPE *) SWIG_malloc(sizeof(C_TYPE) * $1);
+ 	 for (i = 0; i<$1; i++) {
+-	   SCM swig_scm_value = scm_vector_ref($input, scm_from_long(i));
++	   SCM swig_scm_value = scm_vector_ref($input, scm_from_intptr_t(i));
+ 	   $2[i] = SCM_TO_C_EXPR;
+ 	 }
+        }
+@@ -78,7 +78,7 @@
+        (size_t LISTLENINPUT, C_TYPE *LISTINPUT)
+      {
+        SCM_VALIDATE_LIST($argnum, $input);
+-       $1 = scm_to_ulong(scm_length($input));
++       $1 = scm_to_ssize_t(scm_length($input));
+        if ($1 > 0) {
+ 	 $1_ltype i;
+ 	 SCM rest;
+@@ -140,12 +140,12 @@
+ 	  (size_t *VECTORLENOUTPUT, C_TYPE **VECTOROUTPUT)
+      {
+        $*1_ltype i;
+-       SCM res = scm_make_vector(scm_from_long(*$1),
++       SCM res = scm_make_vector(scm_from_intptr_t(*$1),
+ 				SCM_BOOL_F);
+        for (i = 0; i<*$1; i++) {
+ 	 C_TYPE swig_c_value = (*$2)[i];
+ 	 SCM elt = C_TO_SCM_EXPR;
+-	 scm_vector_set_x(res, scm_from_long(i), elt);
++	 scm_vector_set_x(res, scm_from_intptr_t(i), elt);
+        }
+        SWIG_APPEND_VALUE(res);
+      }
+@@ -203,14 +203,14 @@
+ TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(bool, scm_is_true, scm_from_bool, boolean);
+ TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(char, SCM_CHAR, SCM_MAKE_CHAR, char);
+ TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(unsigned char, SCM_CHAR, SCM_MAKE_CHAR, char);
+-TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(int, scm_to_int, scm_from_long, integer);
+-TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(short, scm_to_int, scm_from_long, integer);
++TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(int, scm_to_intt, scm_from_int, integer);
++TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(short, scm_to_short, scm_from_short, integer);
+ TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(long, scm_to_long, scm_from_long, integer);
+-TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(ptrdiff_t, scm_to_long, scm_from_long, integer);
+-TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(unsigned int, scm_to_ulong, scm_from_ulong, integer);
+-TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(unsigned short, scm_to_ulong, scm_from_ulong, integer);
++TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(ptrdiff_t, scm_to_intptr_t, scm_from_intptr_t, integer);
++TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(unsigned int, scm_to_uint, scm_from_uint, integer);
++TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(unsigned short, scm_to_ushort, scm_from_ushort, integer);
+ TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(unsigned long, scm_to_ulong, scm_from_ulong, integer);
+-TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(size_t, scm_to_ulong, scm_from_ulong, integer);
++TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(size_t, scm_to_ssize_t, scm_from_ssize_t, integer);
+ TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(float, scm_to_double, scm_from_double, real);
+ TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(double, scm_to_double, scm_from_double, real);
+ TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(char *, SWIG_scm2str, SWIG_str02scm, string);
+@@ -317,7 +317,7 @@
+ 	 $1 = (C_TYPE *) SWIG_malloc(sizeof(C_TYPE)
+ 			       * (*_global_vector_length));
+ 	 for (i = 0; i<*_global_vector_length; i++) {
+-	   SCM swig_scm_value = scm_vector_ref($input, scm_from_long(i));
++	   SCM swig_scm_value = scm_vector_ref($input, scm_from_ssize_t(i));
+ 	   $1[i] = SCM_TO_C_EXPR;
+ 	 }
+        }
+@@ -329,7 +329,7 @@ TYPEMAP_LIST_VECTOR_INPUT_OUTPUT(const char *, SWIG_scm2str, SWIG_str02scm, stri
+ 		  const C_TYPE *PARALLEL_LISTINPUT
+      {
+        SCM_VALIDATE_LIST($argnum, $input);
+-       *_global_list_length = scm_to_ulong(scm_length($input));
++       *_global_list_length = scm_to_ssize_t(scm_length($input));
+        if (*_global_list_length > 0) {
+ 	 int i;
+ 	 SCM rest;
+@@ -390,12 +390,12 @@
+ 		      C_TYPE **PARALLEL_VECTOROUTPUT
+      {
+        int i;
+-       SCM res = scm_make_vector(scm_from_long(_global_arraylentemp),
++       SCM res = scm_make_vector(scm_from_ssize_t(_global_arraylentemp),
+ 				SCM_BOOL_F);
+        for (i = 0; i<_global_arraylentemp; i++) {
+          C_TYPE swig_c_value = (*$1)[i];
+ 	 SCM elt = C_TO_SCM_EXPR;
+-	 scm_vector_set_x(res, scm_from_long(i), elt);
++	 scm_vector_set_x(res, scm_from_ssize_t(i), elt);
+        }
+        SWIG_APPEND_VALUE(res);
+      }
+@@ -451,14 +451,14 @@
+ TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(bool, scm_is_true, scm_from_bool, boolean);
+ TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(char, SCM_CHAR, SCM_MAKE_CHAR, char);
+ TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(unsigned char, SCM_CHAR, SCM_MAKE_CHAR, char);
+-TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(int, scm_to_int, scm_from_long, integer);
+-TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(short, scm_to_int, scm_from_long, integer);
++TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(int, scm_to_int, scm_from_int, integer);
++TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(short, scm_to_short, scm_from_short, integer);
+ TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(long, scm_to_long, scm_from_long, integer);
+-TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(ptrdiff_t, scm_to_long, scm_from_long, integer);
+-TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(unsigned int, scm_to_ulong, scm_from_ulong, integer);
+-TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(unsigned short, scm_to_ulong, scm_from_ulong, integer);
++TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(ptrdiff_t, scm_to_intptr_t, scm_from_intptr_t, integer);
++TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(unsigned int, scm_to_uint, scm_from_uint, integer);
++TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(unsigned short, scm_to_ushort, scm_from_ushort, integer);
+ TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(unsigned long, scm_to_ulong, scm_from_ulong, integer);
+-TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(size_t, scm_to_ulong, scm_from_ulong, integer);
++TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(size_t, scm_to_ssize_t, scm_from_ssize_t, integer);
+ TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(float, scm_to_double, scm_from_double, real);
+ TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(double, scm_to_double, scm_from_double, real);
+ TYPEMAP_PARALLEL_LIST_VECTOR_INPUT_OUTPUT(char *, SWIG_scm2str, SWIG_str02scm, string);
+--- a/Lib/guile/std_pair.i	2024-02-23 15:57:14.000000000 -0800
++++ b/Lib/guile/std_pair.i	2026-01-12 10:09:45.564035900 -0800
+@@ -425,15 +425,15 @@
+     specialize_std_pair_on_first(bool,scm_is_bool,
+                               scm_is_true,SWIG_bool2scm);
+     specialize_std_pair_on_first(int,scm_is_number,
+-                              scm_to_long,scm_from_long);
++                              scm_to_int,scm_from_int);
+     specialize_std_pair_on_first(short,scm_is_number,
+-                              scm_to_long,scm_from_long);
++                              scm_to_short,scm_from_short);
+     specialize_std_pair_on_first(long,scm_is_number,
+                               scm_to_long,scm_from_long);
+     specialize_std_pair_on_first(unsigned int,scm_is_number,
+-                              scm_to_ulong,scm_from_ulong);
++                              scm_to_uint,scm_from_uint);
+     specialize_std_pair_on_first(unsigned short,scm_is_number,
+-                              scm_to_ulong,scm_from_ulong);
++                              scm_to_ushort,scm_from_ushort);
+     specialize_std_pair_on_first(unsigned long,scm_is_number,
+                               scm_to_ulong,scm_from_ulong);
+     specialize_std_pair_on_first(double,scm_is_number,
+@@ -446,15 +446,15 @@
+     specialize_std_pair_on_second(bool,scm_is_bool,
+                                 scm_is_true,SWIG_bool2scm);
+     specialize_std_pair_on_second(int,scm_is_number,
+-                                scm_to_long,scm_from_long);
++                                scm_to_int,scm_from_int);
+     specialize_std_pair_on_second(short,scm_is_number,
+-                                scm_to_long,scm_from_long);
++                                scm_to_short,scm_from_short);
+     specialize_std_pair_on_second(long,scm_is_number,
+                                 scm_to_long,scm_from_long);
+     specialize_std_pair_on_second(unsigned int,scm_is_number,
+-                                scm_to_ulong,scm_from_ulong);
++                                scm_to_uint,scm_from_uint);
+     specialize_std_pair_on_second(unsigned short,scm_is_number,
+-                                scm_to_ulong,scm_from_ulong);
++                                scm_to_ushort,scm_from_ushort);
+     specialize_std_pair_on_second(unsigned long,scm_is_number,
+                                 scm_to_ulong,scm_from_ulong);
+     specialize_std_pair_on_second(double,scm_is_number,
+@@ -471,11 +471,11 @@
+     specialize_std_pair_on_both(bool,scm_is_bool,
+                                scm_is_true,SWIG_bool2scm,
+                                int,scm_is_number,
+-                               scm_to_long,scm_from_long);
++                               scm_to_int,scm_from_int);
+     specialize_std_pair_on_both(bool,scm_is_bool,
+                                scm_is_true,SWIG_bool2scm,
+                                short,scm_is_number,
+-                               scm_to_long,scm_from_long);
++                               scm_to_short,scm_from_short);
+     specialize_std_pair_on_both(bool,scm_is_bool,
+                                scm_is_true,SWIG_bool2scm,
+                                long,scm_is_number,
+@@ -483,11 +483,11 @@
+     specialize_std_pair_on_both(bool,scm_is_bool,
+                                scm_is_true,SWIG_bool2scm,
+                                unsigned int,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong);
++                               scm_to_uint,scm_from_uint);
+     specialize_std_pair_on_both(bool,scm_is_bool,
+                                scm_is_true,SWIG_bool2scm,
+                                unsigned short,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong);
++                               scm_to_ushort,scm_from_ushort);
+     specialize_std_pair_on_both(bool,scm_is_bool,
+                                scm_is_true,SWIG_bool2scm,
+                                unsigned long,scm_is_number,
+@@ -505,35 +505,35 @@
+                                std::string,scm_is_string,
+                                SWIG_scm2string,SWIG_string2scm);
+     specialize_std_pair_on_both(int,scm_is_number,
+-                               scm_to_long,scm_from_long,
++                               scm_to_int,scm_from_int,
+                                bool,scm_is_bool,
+                                scm_is_true,SWIG_bool2scm);
+     specialize_std_pair_on_both(int,scm_is_number,
+-                               scm_to_long,scm_from_long,
++                               scm_to_int,scm_from_int,
+                                int,scm_is_number,
+-                               scm_to_long,scm_from_long);
++                               scm_to_int,scm_from_int);
+     specialize_std_pair_on_both(int,scm_is_number,
+-                               scm_to_long,scm_from_long,
++                               scm_to_int,scm_from_int,
+                                short,scm_is_number,
+-                               scm_to_long,scm_from_long);
++                               scm_to_short,scm_from_short);
+     specialize_std_pair_on_both(int,scm_is_number,
+-                               scm_to_long,scm_from_long,
++                               scm_to_int,scm_from_int,
+                                long,scm_is_number,
+                                scm_to_long,scm_from_long);
+     specialize_std_pair_on_both(int,scm_is_number,
+-                               scm_to_long,scm_from_long,
++                               scm_to_int,scm_from_int,
+                                unsigned int,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong);
++                               scm_to_uint,scm_from_uint);
+     specialize_std_pair_on_both(int,scm_is_number,
+-                               scm_to_long,scm_from_long,
++                               scm_to_int,scm_from_int,
+                                unsigned short,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong);
++                               scm_to_ushort,scm_from_ushort);
+     specialize_std_pair_on_both(int,scm_is_number,
+-                               scm_to_long,scm_from_long,
++                               scm_to_int,scm_from_int,
+                                unsigned long,scm_is_number,
+                                scm_to_ulong,scm_from_ulong);
+     specialize_std_pair_on_both(int,scm_is_number,
+-                               scm_to_long,scm_from_long,
++                               scm_to_int,scm_from_int,
+                                double,scm_is_number,
+                                scm_to_double,scm_from_double);
+     specialize_std_pair_on_both(int,scm_is_number,
+@@ -541,47 +541,47 @@
+                                float,scm_is_number,
+                                scm_to_double,scm_from_double);
+     specialize_std_pair_on_both(int,scm_is_number,
+-                               scm_to_long,scm_from_long,
++                               scm_to_int,scm_from_int,
+                                std::string,scm_is_string,
+                                SWIG_scm2string,SWIG_string2scm);
+     specialize_std_pair_on_both(short,scm_is_number,
+-                               scm_to_long,scm_from_long,
++                               scm_to_short,scm_from_short,
+                                bool,scm_is_bool,
+                                scm_is_true,SWIG_bool2scm);
+     specialize_std_pair_on_both(short,scm_is_number,
+-                               scm_to_long,scm_from_long,
++                               scm_to_short,scm_from_short,
+                                int,scm_is_number,
+-                               scm_to_long,scm_from_long);
++                               scm_to_int,scm_from_int);
+     specialize_std_pair_on_both(short,scm_is_number,
+-                               scm_to_long,scm_from_long,
++                               scm_to_short,scm_from_short,
+                                short,scm_is_number,
+-                               scm_to_long,scm_from_long);
++                               scm_to_short,scm_from_short);
+     specialize_std_pair_on_both(short,scm_is_number,
+-                               scm_to_long,scm_from_long,
++                               scm_to_short,scm_from_short,
+                                long,scm_is_number,
+                                scm_to_long,scm_from_long);
+     specialize_std_pair_on_both(short,scm_is_number,
+-                               scm_to_long,scm_from_long,
++                               scm_to_short,scm_from_short,
+                                unsigned int,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong);
++                               scm_to_uint,scm_from_uint);
+     specialize_std_pair_on_both(short,scm_is_number,
+-                               scm_to_long,scm_from_long,
++                               scm_to_short,scm_from_short,
+                                unsigned short,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong);
++                               scm_to_ushort,scm_from_ushort);
+     specialize_std_pair_on_both(short,scm_is_number,
+-                               scm_to_long,scm_from_long,
++                               scm_to_short,scm_from_short,
+                                unsigned long,scm_is_number,
+                                scm_to_ulong,scm_from_ulong);
+     specialize_std_pair_on_both(short,scm_is_number,
+-                               scm_to_long,scm_from_long,
++                               scm_to_short,scm_from_short,
+                                double,scm_is_number,
+                                scm_to_double,scm_from_double);
+     specialize_std_pair_on_both(short,scm_is_number,
+-                               scm_to_long,scm_from_long,
++                               scm_to_short,scm_from_short,
+                                float,scm_is_number,
+                                scm_to_double,scm_from_double);
+     specialize_std_pair_on_both(short,scm_is_number,
+-                               scm_to_long,scm_from_long,
++                               scm_to_short,scm_from_short,
+                                std::string,scm_is_string,
+                                SWIG_scm2string,SWIG_string2scm);
+     specialize_std_pair_on_both(long,scm_is_number,
+@@ -591,11 +591,11 @@
+     specialize_std_pair_on_both(long,scm_is_number,
+                                scm_to_long,scm_from_long,
+                                int,scm_is_number,
+-                               scm_to_long,scm_from_long);
++                               scm_to_int,scm_from_int);
+     specialize_std_pair_on_both(long,scm_is_number,
+                                scm_to_long,scm_from_long,
+                                short,scm_is_number,
+-                               scm_to_long,scm_from_long);
++                               scm_to_short,scm_from_short);
+     specialize_std_pair_on_both(long,scm_is_number,
+                                scm_to_long,scm_from_long,
+                                long,scm_is_number,
+@@ -603,11 +603,11 @@
+     specialize_std_pair_on_both(long,scm_is_number,
+                                scm_to_long,scm_from_long,
+                                unsigned int,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong);
++                                scm_to_uint,scm_from_uint);
+     specialize_std_pair_on_both(long,scm_is_number,
+                                scm_to_long,scm_from_long,
+                                unsigned short,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong);
++                               scm_to_ushort,scm_from_ushort);
+     specialize_std_pair_on_both(long,scm_is_number,
+                                scm_to_long,scm_from_long,
+                                unsigned long,scm_is_number,
+@@ -625,83 +625,83 @@
+                                std::string,scm_is_string,
+                                SWIG_scm2string,SWIG_string2scm);
+     specialize_std_pair_on_both(unsigned int,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong,
++                               scm_to_uint,scm_from_uint,
+                                bool,scm_is_bool,
+                                scm_is_true,SWIG_bool2scm);
+     specialize_std_pair_on_both(unsigned int,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong,
++                               scm_to_int,scm_from_uint,
+                                int,scm_is_number,
+-                               scm_to_long,scm_from_long);
++                               scm_to_int,scm_from_int);
+     specialize_std_pair_on_both(unsigned int,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong,
++                               scm_to_uint,scm_from_uint,
+                                short,scm_is_number,
+-                               scm_to_long,scm_from_long);
++                               scm_to_short,scm_from_short);
+     specialize_std_pair_on_both(unsigned int,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong,
++                               scm_to_uint,scm_from_uint,
+                                long,scm_is_number,
+                                scm_to_long,scm_from_long);
+     specialize_std_pair_on_both(unsigned int,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong,
++                               scm_to_uint,scm_from_uint,
+                                unsigned int,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong);
++                               scm_to_uint,scm_from_uint);
+     specialize_std_pair_on_both(unsigned int,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong,
++                               scm_to_uint,scm_from_uint,
+                                unsigned short,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong);
++                               scm_to_ushort,scm_from_ushort);
+     specialize_std_pair_on_both(unsigned int,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong,
++                               scm_to_uint,scm_from_uint,
+                                unsigned long,scm_is_number,
+                                scm_to_ulong,scm_from_ulong);
+     specialize_std_pair_on_both(unsigned int,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong,
++                               scm_to_uint,scm_from_uint,
+                                double,scm_is_number,
+                                scm_to_double,scm_from_double);
+     specialize_std_pair_on_both(unsigned int,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong,
++                               scm_to_uint,scm_from_uint,
+                                float,scm_is_number,
+                                scm_to_double,scm_from_double);
+     specialize_std_pair_on_both(unsigned int,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong,
++                               scm_to_uint,scm_from_uint,
+                                std::string,scm_is_string,
+                                SWIG_scm2string,SWIG_string2scm);
+     specialize_std_pair_on_both(unsigned short,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong,
++                               scm_to_ushort,scm_from_ushort,
+                                bool,scm_is_bool,
+                                scm_is_true,SWIG_bool2scm);
+     specialize_std_pair_on_both(unsigned short,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong,
++                               scm_to_ushort,scm_from_ushort,
+                                int,scm_is_number,
+-                               scm_to_long,scm_from_long);
++                               scm_to_int,scm_from_int);
+     specialize_std_pair_on_both(unsigned short,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong,
++                               scm_to_ushort,scm_from_ushort,
+                                short,scm_is_number,
+-                               scm_to_long,scm_from_long);
++                               scm_to_short,scm_from_short);
+     specialize_std_pair_on_both(unsigned short,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong,
++                               scm_to_ushort,scm_from_ushort,
+                                long,scm_is_number,
+                                scm_to_long,scm_from_long);
+     specialize_std_pair_on_both(unsigned short,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong,
++                               scm_to_ushort,scm_from_ushort,
+                                unsigned int,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong);
++                               scm_to_uint,scm_from_uint);
+     specialize_std_pair_on_both(unsigned short,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong,
++                               scm_to_ushort,scm_from_ushort,
+                                unsigned short,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong);
++                               scm_to_ushort,scm_from_ushort);
+     specialize_std_pair_on_both(unsigned short,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong,
++                               scm_to_ushort,scm_from_ushort,
+                                unsigned long,scm_is_number,
+                                scm_to_ulong,scm_from_ulong);
+     specialize_std_pair_on_both(unsigned short,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong,
++                               scm_to_ushort,scm_from_ushort,
+                                double,scm_is_number,
+                                scm_to_double,scm_from_double);
+     specialize_std_pair_on_both(unsigned short,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong,
++                               scm_to_ushort,scm_from_ushort,
+                                float,scm_is_number,
+                                scm_to_double,scm_from_double);
+     specialize_std_pair_on_both(unsigned short,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong,
++                               scm_to_ushort,scm_from_ushort,
+                                std::string,scm_is_string,
+                                SWIG_scm2string,SWIG_string2scm);
+     specialize_std_pair_on_both(unsigned long,scm_is_number,
+@@ -711,11 +711,11 @@
+     specialize_std_pair_on_both(unsigned long,scm_is_number,
+                                scm_to_ulong,scm_from_ulong,
+                                int,scm_is_number,
+-                               scm_to_long,scm_from_long);
++                               scm_to_int,scm_from_int);
+     specialize_std_pair_on_both(unsigned long,scm_is_number,
+                                scm_to_ulong,scm_from_ulong,
+                                short,scm_is_number,
+-                               scm_to_long,scm_from_long);
++                               scm_to_short,scm_from_short);
+     specialize_std_pair_on_both(unsigned long,scm_is_number,
+                                scm_to_ulong,scm_from_ulong,
+                                long,scm_is_number,
+@@ -723,11 +723,11 @@
+     specialize_std_pair_on_both(unsigned long,scm_is_number,
+                                scm_to_ulong,scm_from_ulong,
+                                unsigned int,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong);
++                               scm_to_uint,scm_from_uint);
+     specialize_std_pair_on_both(unsigned long,scm_is_number,
+                                scm_to_ulong,scm_from_ulong,
+                                unsigned short,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong);
++                               scm_to_ushort,scm_from_ushort);
+     specialize_std_pair_on_both(unsigned long,scm_is_number,
+                                scm_to_ulong,scm_from_ulong,
+                                unsigned long,scm_is_number,
+@@ -751,11 +751,11 @@
+     specialize_std_pair_on_both(double,scm_is_number,
+                                scm_to_double,scm_from_double,
+                                int,scm_is_number,
+-                               scm_to_long,scm_from_long);
++                               scm_to_int,scm_from_int);
+     specialize_std_pair_on_both(double,scm_is_number,
+                                scm_to_double,scm_from_double,
+                                short,scm_is_number,
+-                               scm_to_long,scm_from_long);
++                               scm_to_short,scm_from_short);
+     specialize_std_pair_on_both(double,scm_is_number,
+                                scm_to_double,scm_from_double,
+                                long,scm_is_number,
+@@ -763,11 +763,11 @@
+     specialize_std_pair_on_both(double,scm_is_number,
+                                scm_to_double,scm_from_double,
+                                unsigned int,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong);
++                               scm_to_uint,scm_from_uint);
+     specialize_std_pair_on_both(double,scm_is_number,
+                                scm_to_double,scm_from_double,
+                                unsigned short,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong);
++                               scm_to_ushort,scm_from_ushort);
+     specialize_std_pair_on_both(double,scm_is_number,
+                                scm_to_double,scm_from_double,
+                                unsigned long,scm_is_number,
+@@ -791,11 +791,11 @@
+     specialize_std_pair_on_both(float,scm_is_number,
+                                scm_to_double,scm_from_double,
+                                int,scm_is_number,
+-                               scm_to_long,scm_from_long);
++                               scm_to_int,scm_from_int);
+     specialize_std_pair_on_both(float,scm_is_number,
+                                scm_to_double,scm_from_double,
+                                short,scm_is_number,
+-                               scm_to_long,scm_from_long);
++                               scm_to_short,scm_from_short);
+     specialize_std_pair_on_both(float,scm_is_number,
+                                scm_to_double,scm_from_double,
+                                long,scm_is_number,
+@@ -803,11 +803,11 @@
+     specialize_std_pair_on_both(float,scm_is_number,
+                                scm_to_double,scm_from_double,
+                                unsigned int,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong);
++                               scm_to_uint,scm_from_uint);
+     specialize_std_pair_on_both(float,scm_is_number,
+                                scm_to_double,scm_from_double,
+                                unsigned short,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong);
++                               scm_to_ushort,scm_from_ushort);
+     specialize_std_pair_on_both(float,scm_is_number,
+                                scm_to_double,scm_from_double,
+                                unsigned long,scm_is_number,
+@@ -831,11 +831,11 @@
+     specialize_std_pair_on_both(std::string,scm_is_string,
+                                SWIG_scm2string,SWIG_string2scm,
+                                int,scm_is_number,
+-                               scm_to_long,scm_from_long);
++                               scm_to_int,scm_from_int);
+     specialize_std_pair_on_both(std::string,scm_is_string,
+                                SWIG_scm2string,SWIG_string2scm,
+                                short,scm_is_number,
+-                               scm_to_long,scm_from_long);
++                               scm_to_short,scm_from_short);
+     specialize_std_pair_on_both(std::string,scm_is_string,
+                                SWIG_scm2string,SWIG_string2scm,
+                                long,scm_is_number,
+@@ -843,11 +843,11 @@
+     specialize_std_pair_on_both(std::string,scm_is_string,
+                                SWIG_scm2string,SWIG_string2scm,
+                                unsigned int,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong);
++                               scm_to_uint,scm_from_uint);
+     specialize_std_pair_on_both(std::string,scm_is_string,
+                                SWIG_scm2string,SWIG_string2scm,
+                                unsigned short,scm_is_number,
+-                               scm_to_ulong,scm_from_ulong);
++                               scm_to_ushort,scm_from_ushort);
+     specialize_std_pair_on_both(std::string,scm_is_string,
+                                SWIG_scm2string,SWIG_string2scm,
+                                unsigned long,scm_is_number,
+--- a/Lib/guile/std_vector.i	2024-02-23 15:57:14.000000000 -0800
++++ b/Lib/guile/std_vector.i	2026-01-12 10:24:03.339429800 -0800
+@@ -43,10 +43,10 @@
+     template<class T> class vector {
+         %typemap(in) vector<T> {
+             if (scm_is_vector($input)) {
+-                unsigned long size = scm_c_vector_length($input);
++                size_t = scm_c_vector_length($input);
+                 $1 = std::vector< T >(size);
+-                for (unsigned long i=0; i<size; i++) {
+-                    SCM o = scm_vector_ref($input,scm_from_ulong(i));
++                for (size_t i=0; i<size; i++) {
++                    SCM o = scm_vector_ref($input,scm_from_size_t(i));
+                     (($1_type &)$1)[i] =
+                         *((T*) SWIG_MustGetPtr(o,$descriptor(T *),$argnum, 0));
+                 }
+@@ -71,11 +71,11 @@
+         %typemap(in) const vector<T>& (std::vector<T> temp),
+                      const vector<T>* (std::vector<T> temp) {
+             if (scm_is_vector($input)) {
+-                unsigned long size = scm_c_vector_length($input);
++                size_t size = scm_c_vector_length($input);
+                 temp = std::vector< T >(size);
+                 $1 = &temp;
+-                for (unsigned long i=0; i<size; i++) {
+-                    SCM o = scm_vector_ref($input,scm_from_ulong(i));
++                for (size_t i=0; i<size; i++) {
++                    SCM o = scm_vector_ref($input,scm_from_siae_t(i));
+                     temp[i] = *((T*) SWIG_MustGetPtr(o,
+                                                      $descriptor(T *),
+                                                      $argnum, 0));
+@@ -100,23 +100,23 @@
+             }
+         }
+         %typemap(out) vector<T> {
+-            $result = scm_make_vector(scm_from_long($1.size()),SCM_UNSPECIFIED);
+-            for (unsigned int i=0; i<$1.size(); i++) {
++            $result = scm_make_vector(scm_from_size_t($1.size()),SCM_UNSPECIFIED);
++            for (size_t i=0; i<$1.size(); i++) {
+                 T* x = new T((($1_type &)$1)[i]);
+-                scm_vector_set_x($result,scm_from_long(i),
++                scm_vector_set_x($result,scm_from_size_t(i),
+                                 SWIG_NewPointerObj(x, $descriptor(T *), 1));
+             }
+         }
+         %typecheck(SWIG_TYPECHECK_VECTOR) vector<T> {
+             /* native sequence? */
+             if (scm_is_vector($input)) {
+-                unsigned int size = scm_c_vector_length($input);
++                size_t size = scm_c_vector_length($input);
+                 if (size == 0) {
+                     /* an empty sequence can be of any type */
+                     $1 = 1;
+                 } else {
+                     /* check the first element only */
+-                    SCM o = scm_vector_ref($input,scm_from_ulong(0));
++                    SCM o = scm_vector_ref($input,scm_from_size_t(0));
+                     T* x;
+                     if (SWIG_ConvertPtr(o,(void**) &x,
+                                           $descriptor(T *), 0) != -1)
+@@ -150,14 +150,14 @@
+                                           const vector<T>* {
+             /* native sequence? */
+             if (scm_is_vector($input)) {
+-                unsigned int size = scm_c_vector_length($input);
++                size_t size = scm_c_vector_length($input);
+                 if (size == 0) {
+                     /* an empty sequence can be of any type */
+                     $1 = 1;
+                 } else {
+                     /* check the first element only */
+                     T* x;
+-                    SCM o = scm_vector_ref($input,scm_from_ulong(0));
++                    SCM o = scm_vector_ref($input,scm_from_size_t(0));
+                     if (SWIG_ConvertPtr(o,(void**) &x,
+                                           $descriptor(T *), 0) != -1)
+                         $1 = 1;
+@@ -240,10 +240,10 @@
+     template<> class vector<T> {
+         %typemap(in) vector<T> {
+             if (scm_is_vector($input)) {
+-                unsigned long size = scm_c_vector_length($input);
++                size_t size = scm_c_vector_length($input);
+                 $1 = std::vector< T >(size);
+-                for (unsigned long i=0; i<size; i++) {
+-                    SCM o = scm_vector_ref($input,scm_from_ulong(i));
++                for (size_t i=0; i<size; i++) {
++                    SCM o = scm_vector_ref($input,scm_from_size_t(i));
+                     if (CHECK(o))
+                         (($1_type &)$1)[i] = (T)(CONVERT_FROM(o));
+                     else
+@@ -253,10 +253,10 @@
+                 $1 = std::vector<T >();
+             } else if (scm_is_pair($input)) {
+                 SCM v = scm_vector($input);
+-                unsigned long size = scm_c_vector_length(v);
++                size_t size = scm_c_vector_length(v);
+                 $1 = std::vector< T >(size);
+-                for (unsigned long i=0; i<size; i++) {
+-                    SCM o = scm_vector_ref(v,scm_from_ulong(i));
++                for (size_t i=0; i<size; i++) {
++                    SCM o = scm_vector_ref(v,scm_from_size_t(i));
+                     if (CHECK(o))
+                         (($1_type &)$1)[i] = (T)(CONVERT_FROM(o));
+                     else
+@@ -270,11 +270,11 @@
+         %typemap(in) const vector<T>& (std::vector<T> temp),
+                      const vector<T>* (std::vector<T> temp) {
+             if (scm_is_vector($input)) {
+-                unsigned long size = scm_c_vector_length($input);
++                size_t size = scm_c_vector_length($input);
+                 temp = std::vector< T >(size);
+                 $1 = &temp;
+-                for (unsigned long i=0; i<size; i++) {
+-                    SCM o = scm_vector_ref($input,scm_from_ulong(i));
++                for (size_t i=0; i<size; i++) {
++                    SCM o = scm_vector_ref($input,scm_from_size_t(i));
+                     if (CHECK(o))
+                         temp[i] = (T)(CONVERT_FROM(o));
+                     else
+@@ -285,11 +285,11 @@
+                 $1 = &temp;
+             } else if (scm_is_pair($input)) {
+                 SCM v = scm_vector($input);
+-                unsigned long size = scm_c_vector_length(v);
++                size_t size = scm_c_vector_length(v);
+                 temp = std::vector< T >(size);
+                 $1 = &temp;
+-                for (unsigned long i=0; i<size; i++) {
+-                    SCM o = scm_vector_ref(v,scm_from_ulong(i));
++                for (size_t i=0; i<size; i++) {
++                    SCM o = scm_vector_ref(v,scm_from_size_t(i));
+                     if (CHECK(o))
+                         temp[i] = (T)(CONVERT_FROM(o));
+                     else
+@@ -300,22 +300,22 @@
+             }
+         }
+         %typemap(out) vector<T> {
+-            $result = scm_make_vector(scm_from_long($1.size()),SCM_UNSPECIFIED);
+-            for (unsigned int i=0; i<$1.size(); i++) {
++            $result = scm_make_vector(scm_from_size_t($1.size()),SCM_UNSPECIFIED);
++            for (size_t i=0; i<$1.size(); i++) {
+                 SCM x = CONVERT_TO((($1_type &)$1)[i]);
+-                scm_vector_set_x($result,scm_from_long(i),x);
++                scm_vector_set_x($result,scm_from_size_t(i),x);
+             }
+         }
+         %typecheck(SWIG_TYPECHECK_VECTOR) vector<T> {
+             /* native sequence? */
+             if (scm_is_vector($input)) {
+-                unsigned int size = scm_c_vector_length($input);
++                size_t size = scm_c_vector_length($input);
+                 if (size == 0) {
+                     /* an empty sequence can be of any type */
+                     $1 = 1;
+                 } else {
+                     /* check the first element only */
+-                    SCM o = scm_vector_ref($input,scm_from_ulong(0));
++                    SCM o = scm_vector_ref($input,scm_from_size_t(0));
+                     $1 = CHECK(o) ? 1 : 0;
+                 }
+             } else if (scm_is_null($input)) {
+@@ -336,13 +336,13 @@
+                                           const vector<T>* {
+             /* native sequence? */
+             if (scm_is_vector($input)) {
+-                unsigned int size = scm_c_vector_length($input);
++                size_t size = scm_c_vector_length($input);
+                 if (size == 0) {
+                     /* an empty sequence can be of any type */
+                     $1 = 1;
+                 } else {
+                     /* check the first element only */
+-                    SCM o = scm_vector_ref($input,scm_from_ulong(0));
++                    SCM o = scm_vector_ref($input,scm_from_size_t(0));
+                     $1 = CHECK(o) ? 1 : 0;
+                 }
+             } else if (scm_is_null($input)) {
+@@ -368,12 +368,12 @@
+         typedef value_type& reference;
+         typedef const value_type& const_reference;
+ 
+-        vector(unsigned int size = 0);
+-        vector(unsigned int size, const T& value);
++        vector(size_t size = 0);
++        vector(size_t size, const T& value);
+         vector(const vector& other);
+ 
+         %rename(length) size;
+-        unsigned int size() const;
++        size_tsize() const;
+         %rename("empty?") empty;
+         bool empty() const;
+         %rename("clear!") clear;
+@@ -409,14 +409,14 @@
+     %enddef
+ 
+     specialize_stl_vector(bool,scm_is_bool,scm_is_true,SWIG_bool2scm);
+-    specialize_stl_vector(char,scm_is_number,scm_to_long,scm_from_long);
+-    specialize_stl_vector(int,scm_is_number,scm_to_long,scm_from_long);
++    specialize_stl_vector(char,scm_is_number,scm_to_char,scm_from_char);
++    specialize_stl_vector(int,scm_is_number,scm_to_int,scm_from_int);
+     specialize_stl_vector(long,scm_is_number,scm_to_long,scm_from_long);
+-    specialize_stl_vector(short,scm_is_number,scm_to_long,scm_from_long);
+-    specialize_stl_vector(unsigned char,scm_is_number,scm_to_ulong,scm_from_ulong);
+-    specialize_stl_vector(unsigned int,scm_is_number,scm_to_ulong,scm_from_ulong);
++    specialize_stl_vector(short,scm_is_number,scm_to_short,scm_from_short);
++    specialize_stl_vector(unsigned char,scm_is_number,scm_to_uint8_t,scm_from_uint8_t);
++    specialize_stl_vector(unsigned int,scm_is_number,scm_to_uint,scm_from_uint);
+     specialize_stl_vector(unsigned long,scm_is_number,scm_to_ulong,scm_from_ulong);
+-    specialize_stl_vector(unsigned short,scm_is_number,scm_to_ulong,scm_from_ulong);
++    specialize_stl_vector(unsigned short,scm_is_number,scm_to_ushort,scm_from_ushort);
+     specialize_stl_vector(float,scm_is_number,scm_to_double,scm_from_double);
+     specialize_stl_vector(double,scm_is_number,scm_to_double,scm_from_double);
+     specialize_stl_vector(std::string,scm_is_string,SWIG_scm2string,SWIG_string2scm);
+--- a/Lib/guile/typemaps.i	2026-01-09 13:20:29.664278300 -0800
++++ b/Lib/guile/typemaps.i	2026-01-12 10:30:36.374240100 -0800
+@@ -198,11 +198,11 @@
+   }
+   * (int *) &($1) = scm_to_int($input);
+ }
+-%typemap(out)    enum SWIGTYPE  { $result = scm_from_long((int)$1); }
+-%typemap(varout) enum SWIGTYPE  { $result = scm_from_long((int)$1); }
++%typemap(out)    enum SWIGTYPE  { $result = scm_from_int((int)$1); }
++%typemap(varout) enum SWIGTYPE  { $result = scm_from_int((int)$1); }
+ %typemap(throws) enum SWIGTYPE {
+   scm_throw(scm_from_locale_symbol("swig-exception"),
+-     scm_list_n(scm_from_long((int)$1), SCM_UNDEFINED));
++     scm_list_n(scm_from_int((int)$1), SCM_UNDEFINED));
+ }
+ 
+ /* The SIMPLE_MAP_WITH_EXPR macro below defines the whole set of
+@@ -299,14 +299,14 @@
+  SIMPLE_MAP(char, SCM_CHAR, SCM_MAKE_CHAR, char);
+  SIMPLE_MAP(unsigned char, SCM_CHAR, SCM_MAKE_CHAR, char);
+  SIMPLE_MAP(signed char, SCM_CHAR, SCM_MAKE_CHAR, char);
+- SIMPLE_MAP(int, scm_to_int, scm_from_long, integer);
+- SIMPLE_MAP(short, scm_to_short, scm_from_long, integer);
++ SIMPLE_MAP(int, scm_to_int, scm_from_int, integer);
++ SIMPLE_MAP(short, scm_to_short, scm_from_short, integer);
+  SIMPLE_MAP(long, scm_to_long, scm_from_long, integer);
+- SIMPLE_MAP(ptrdiff_t, scm_to_long, scm_from_long, integer);
+- SIMPLE_MAP(unsigned int, scm_to_uint, scm_from_ulong, integer);
+- SIMPLE_MAP(unsigned short, scm_to_ushort, scm_from_ulong, integer);
++ SIMPLE_MAP(ptrdiff_t, scm_to_uintptr_t, scm_from_uintptr_t, integer);
++ SIMPLE_MAP(unsigned int, scm_to_uint, scm_from_uint, integer);
++ SIMPLE_MAP(unsigned short, scm_to_ushort, scm_from_ushort, integer);
+  SIMPLE_MAP(unsigned long, scm_to_ulong, scm_from_ulong, integer);
+- SIMPLE_MAP(size_t, scm_to_ulong, scm_from_ulong, integer);
++ SIMPLE_MAP(size_t, scm_to_ssize_t, scm_from_ssize_t, integer);
+  SIMPLE_MAP(float, scm_to_double, scm_from_double, real);
+  SIMPLE_MAP(double, scm_to_double, scm_from_double, real);
+ // SIMPLE_MAP(char *, SWIG_scm2str, SWIG_str02scm, string);

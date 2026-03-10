@@ -40,6 +40,10 @@ Administrator privileges.
 
 Optional. The root path to the build environment. Defaults to the root of the script's path, e.g. if the script's path is C:\gcdev64\src\gnucash-on-windows.git\bundle-mingw64.ps1 the default target_dir will be C:\gcdev64.
 
+.PARAMETER mingw_arch
+
+Optional. One of mingw32, mingw64, clang64, or ucrt64. Defaults to ucrt64.
+
 .PARAMETER hostname
 
 Optional. A ssh compatible server specification (which means [user@]hostname:basedirectory) to which the build artifacts will be uploaded. If omitted no upload will be attempted. Note for this to work you must be able to connect to the given hostname.
@@ -49,8 +53,10 @@ Optional. A ssh compatible server specification (which means [user@]hostname:bas
 [CmdletBinding()]
 Param(
     [Parameter(Mandatory=$true)]
-    [validatePattern("(stable|future|unstable|releases)")][string]$branch,
+    [validatePattern("(stable|future|unstable|release)")][string]$branch,
     [Parameter()] [string]$target_dir,
+    [Parameter()]
+    [validatePattern("(mingw32|mingw64|clang64|ucrt64)")][string]$mingw_arch,
     [Parameter()] [string]$hostname
 )
 
@@ -60,11 +66,14 @@ $package = "gnucash"
 if (!$target_dir) {
     $target_dir = $root_dir
 }
+if (!$mingw_arch) {
+    $mingw_arch = "ucrt64"
+}
 
 $progressPreference = 'silentlyContinue'
-$env:MSYSTEM = 'MINGW32'
+$env:MSYSTEM = $mingw_arch
 $env:TERM = 'dumb' #Prevent escape codes in the log.
-$env:TARGET = "$package-$branch"
+$env:GNUCASH_BUILD = $branch
 # This allows us to run Msys2 commands such as bash.exe directly
 $Env:Path = "$target_dir\msys2\usr\bin;$Env:Path"
 
@@ -81,6 +90,23 @@ function bash-command() {
     param ([string]$command = "")
     #Write-Output "Running bash command ""$command"""
     bash.exe -lc "$command 2>&1"
+}
+
+function check-version([string]$program) {
+    $program_path = "$target_dir\msys2\$mingw_arch\bin\$program"
+    if (test-path -path $program_path) {
+        $vline = & $program_path --version | Select-String "Build ID:" | %{$_ -split "\s+"}
+        if ($vline[2] -eq "git") {
+            $package_version = $vline[3].split('+')[0]
+        }
+        else {
+            $package_verion = $vline[2].split('+')[0]
+        }
+    }
+    else {
+        $package_version = "not-installed"
+    }
+    return $package_version
 }
 
 function make-unixpath([string]$path) {
@@ -109,47 +135,25 @@ if ($hostname) {
     bash.exe -lc "$script_unix/buildserver/upload_build_log.sh $log_unix $hostname $log_dir $branch"
 }
 
-# Update MinGW-w64
-pacman.exe -Su --noconfirm 2>&1 | Tee-Object -FilePath $log_file -Append
+# Update MinGW-w64 twice. If the first is a system update a second is
+# needed to update the dependencies.
+pacman.exe -Syu --noconfirm 2>&1 | Tee-Object -FilePath $log_file -Append
+pacman.exe -Syu --noconfirm 2>&1 | Tee-Object -FilePath $log_file -Append
 
-#GnuCash build still behaves badly if it finds its old build products. Clean them out.
-if ($branch -in "releases", "unstable") {
-    $module = get-childitem -path $target_dir\$package\$branch\build -filter gnucash-* -exclude gnucash-docs* -name -directory | sort-object -descending | select -f 1
-    $install_manifest = "$target_dir\$package\$branch\build\$module\install_manifest.txt"
-    # Force a release build even if nothing has changed.
-    $build_target = "gnucash"
-    $info_dir =  "$target_dir\$package\$branch\inst\_jhbuild\info"
-    $manifest_dir =  "$target_dir\$package\$branch\inst\_jhbuild\manifests"
-    if ($branch -eq "unstable") { $build_target = "gnucash-unstable" }
-    if (test-path -Path $info_dir\$build_target) {
-	remove-item $info_dir\$build_target
-    }
-    if (test-path -Path $manifest_dir\$build_target) {
-	remove-item $manifest_dir\$build_target
-    }
-}
-else {
-    $install_manifest = "$target_dir\$package\$branch\build\gnucash-git\install_manifest.txt"
-}
+$starting_gc_version = check-version -program "gnucash-cli.exe"
 
-if (test-path -path $install_manifest) {
-    get-content $install_manifest | remove-item
-    remove-item $install_manifest
-}
+$_unix_path = make-unixpath("$script_dir\packages\gnucash")
+bash-command("cd $_unix_path && makepkg-mingw -sCLi --noconfirm --needed" )
+$_unix_path = make-unixpath("$script_dir\packages\gnucash-docs")
+bash-command("cd $_unix_path && makepkg-mingw -sCLi --noconfirm --needed")
 
-# Update the gnucash-on-windows repository
-#git.exe -C $script_unix reset --hard 2>&1 | Tee-Object -FilePath $log_file -Append
-#git.exe -C $script_unix pull --rebase 2>&1 | Tee-Object -FilePath $log_file -Append
-# Build the latest GnuCash and all dependencies not installed via mingw64
-bash.exe -lc "jhbuild --no-interact -f /c/gcdev64/src/gnucash-on-windows.git/jhbuildrc build --clean 2>&1" | Tee-Object -FilePath $log_file -Append
+$new_gc_version = check-version -program "gnucash-cli.exe"
 
-$setup_file_valid = False
-$new_file = test-path -path $target_dir\$package\$branch\inst\bin\gnucash.exe -NewerThan $time_stamp
-if ($new_file) {
+if ($starting_gc_version -eq "not-installed" -or
+    $new_gc_version -ne $starting_gc_version) {
 #Build the installer
-    $is_git = ($branch -notin "releases", "unstable")
     Write-Output "Creating GnuCash installer." | Tee-Object -FilePath $log_file -Append
-    $setup_file = & $script_dir\bundle-mingw64.ps1 -root_dir $target_dir -target_dir $target_dir\$package\$branch -package $package -git_build $is_git 2>&1 | Tee-Object -FilePath $log_file -Append
+    $setup_file = & $script_dir\bundle-mingw64.ps1 -mingw_prefix $target_dir\msys2 -mingw_arch $mingw_arch 2>&1 | Tee-Object -FilePath $log_file -Append
     $setup_file_valid = Test-Path -Path "$setup_file"
     if ($setup_file_valid) {
         $destination_dir="$target_dir\win32\$branch"
@@ -164,8 +168,12 @@ if ($new_file) {
         Write-Output "$setup_file" | Tee-Object -FilePath $log_file -Append
     }
 
-}
+    }
+else
+{
+    Write-Output "The GnuCash version is unchanged." ! Tee-Object -FilePath $log_file -Append
 
+}
 $time_stamp = get-date -format "yyyy-MM-dd HH:mm:ss"
 Write-Output "Build Ended $time_stamp" | Tee-Object -FilePath $log_file -Append
 
