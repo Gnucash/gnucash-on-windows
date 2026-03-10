@@ -29,7 +29,7 @@ pacman-key --lsign-key  "$key_id"
 pacman -Syu --noconfirm
 
 toolchain="binutils cmake crt gcc gdb headers libmangle libtool libwinpthread ninja tools winpthreads winstorecompat"
-deps="appstream-glib boost docbook-xsl gettext-tools gtest icu pdcurses swig zlib"
+deps="appstream-glib boost docbook-xsl gettext-tools gtest icu iso-codes pdcurses swig zlib"
 our_repo_deps="aqbanking guile3 libdbi-drivers libofx webkitgtk3"
 
 make-pkgnames  "msys/" base-devel git
