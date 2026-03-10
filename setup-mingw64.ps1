@@ -149,7 +149,7 @@ $gnucash_repo_dl_path_unix = make-unixpath "$download_dir/$gnucash_repo_filename
 $gnucash_repo_url = "$sourceforge_uri/Dependencies/$gnucash_repo_filename"
 
 (New-Object System.Net.WebClient).DownloadFile($gnucash_repo_url, "$download_dir/gnc-$mingw_arch-repo.tar.zst")
-bash-command -command "tar -C ""$repo_dir_unix"" -xf ""$gnucash_repo_dl_path_unix"" --strip-components=2"
+bash-command -command "tar -C ""$repo_dir_unix"" -xf ""$gnucash_repo_dl_path_unix"" --strip-components=1"
 $signing_keyfile = "jralls_public_signing_key.asc"
 $keyfile_path_unix = make-unixpath "$download_dir\\$signing_keyfile"
 $key_id = "C1F4DE993CF5835F"
