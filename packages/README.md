@@ -107,10 +107,32 @@ Finally make a tarball and upload it to SourceForge:
   accordingly.
 * Some packages depend on MSYS2-provided packages that aren't ABI,
   API, or even library-name stable (e.g. ICU for the last). These
-  packages need to be rebuilt after every major MSYS2 update, roughly
-  every 6 weeks.
+  packages and everything that depends on them need to be rebuilt
+  after every major MSYS2 update, roughly every 6 weeks.
 * After updating or rebuilding a package add it to the repositories,
   tar up the repositories, and upload them to SourceForge.
+
+#### Dependency Tree:
+* gnucash-docs
+* gnucash
+  * aqbanking
+    * gwnhywfar
+    * libchipcard
+      * gwenhywfar
+        * libgcrypt
+    * xmlsec
+  * guile3
+    * bdwgc
+      * libatomic_ops
+  * libdbi-drivers
+    * libdbi
+    * postgresql (mingw32-only)
+  * libofx
+    * OpenSP
+      * libatomic_ops (mingw32, mingw64 only)
+  * webkitgtk3(icu)
+    * libsoup (mingw32-only)
+  * swig
 
 ### PKGBUILD notes:
   * If you need to customize a particular build there are a couple of
