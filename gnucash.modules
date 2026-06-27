@@ -159,8 +159,8 @@
 
    <autotools id="aqbanking" autogen-sh="autoreconf" makeargs="-j1"
 	     autogenargs="--enable-local-install">
-     <branch module="652/aqbanking-6.9.1.tar.gz" version="6.0.1"
-             hash="sha256:fc94a2bebfbb4fc26b98dc93c8fa36a8026298cd7995f79821c480db35587f6b"
+     <branch module="654/aqbanking-6.9.2.tar.gz" version="6.9.2"
+             hash="sha256:244b5f7a139f829928f5cdc3f5f7488517b3e8aa63625a92741c3efc1892bb3f"
              repo="aqbanking" >
     </branch>
     <dependencies>
@@ -270,8 +270,8 @@
 
  <cmake id="gnucash"
         cmakeargs="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DGTEST_ROOT=$SRCROOT/googletest">
-   <branch module="project/gnucash/gnucash%20%28stable%29/5.15/gnucash-5.15.tar.bz2"
-	   repo="sourceforge" version="5.15"/>
+   <branch module="project/gnucash/gnucash%20%28stable%29/5.16/gnucash-5.16.tar.bz2"
+	   repo="sourceforge" version="5.16"/>
     <dependencies>
       <dep package="libofx"/>
       <dep package="aqbanking"/>
@@ -322,8 +322,8 @@
   </cmake>
 
   <cmake id="gnucash-docs" supports-parallel-builds="no">
-    <branch  module="project/gnucash/gnucash%20%28stable%29/5.15/gnucash-docs-5.15.tar.gz"
-	     version="5.15" repo="sourceforge"/>
+    <branch  module="project/gnucash/gnucash%20%28stable%29/5.16/gnucash-docs-5.16.tar.gz"
+	     version="5.16" repo="sourceforge"/>
   </cmake>
 
   <cmake id="gnucash-unstable-docs" supports-parallel-builds="no">
