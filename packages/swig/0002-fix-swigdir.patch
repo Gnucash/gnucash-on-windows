@@ -1,0 +1,22 @@
+--- a/Tools/convertpath	2025-12-05 10:45:04.000000000 -0800
++++ b/Tools/convertpath	2026-06-30 12:46:27.948952400 -0700
+@@ -22,7 +22,7 @@
+   -m) shift
+       case $MACHTYPE in
+         # This echo converts unix to mixed paths. Then zap unexpected trailing space on old versions of MinGW.
+-        *-msys) echo `cmd //c echo "$@" | sed -e "s/[ ]*$//"`;;
++        *-msys | *-cygwin) echo `cmd //c echo "$@" | sed -e "s/[ ]*$//"`;;
+         *) echo "The -m option is only supported on MinGW MSYS" 1>&2; exit 1 ;;
+       esac ;;
+   -u) shift; echo $@ | sed -e 's,\\,/,g' ;;
+--- a/Source/Swig/swigfile.h	2025-12-05 10:45:04.000000000 -0800
++++ b/Source/Swig/swigfile.h	2026-06-30 13:14:01.873034000 -0700
+@@ -34,7 +34,7 @@
+ 
+ /* Delimiter used in accessing files and directories */
+ 
+-#if defined(_WIN32)
++#if defined(_WIN32) && !defined(__MINGW32__)
+ #  define SWIG_FILE_DELIMITER "\\"
+ #else
+ #  define SWIG_FILE_DELIMITER "/"
