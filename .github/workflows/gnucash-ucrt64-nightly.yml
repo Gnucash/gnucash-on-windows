@@ -1,0 +1,148 @@
+name: gnucash-ucrt64-nightly
+on: [workflow_dispatch]
+permissions: {}
+jobs:
+    gnucash_future_ucrt64_bundle:
+        runs-on: windows-latest
+        name: Build GnuCash future branch Bundle
+        env:
+          TZ: America/Los_Angeles
+        defaults:
+          run:
+            shell: msys2 {0}
+        steps:
+        - name: Setup
+          uses: msys2/setup-msys2@v2
+          with:
+            msystem: UCRT64
+            update: true
+            install: git
+            pacboy: toolchain:p cmake:p ninja:p
+
+        - name: Add our repo
+          shell: msys2 {0}
+          run: |
+            sed -i "/^# SigLevel = Never/a [gnc-ucrt64]\nSigLevel = Optional TrustAll\nServer = https://github.com/jralls/gnucash-on-windows/releases/download/gnc-ucrt64-repo/" /etc/pacman.conf
+            sed -i "s/^# ParallelDownloads/ParallelDownloads/" /etc/pacman.conf
+
+            pacman -Syv
+            pacboy --noconfirm -S swig:p appstream-glib:p aqbanking:p boost:p gsettings-desktop-schemas:p docbook-xsl:p gettext-tools:p gtest:p guile3:p harfbuzz-icu:p icu:p iso-codes:p pdcurses:p libdbi-drivers:p libofx:p libsecret:p webview2-loader:p zlib:p
+
+        - name: Checkout our inno_setup and extra_dist directories
+          uses: actions/checkout@v7
+          with:
+            sparse-checkout: |
+                extra_dist
+                inno_setup
+
+        - name: Checkout GnuCash
+          uses: actions/checkout@v7
+          with:
+            repository: jralls/gnucash
+            ref: win32-webview2
+            path: gnucash-git
+
+        - name: Checkout GnuCash Docs
+          uses: actions/checkout@v7
+          with:
+            repository: gnucash/gnucash-docs
+            path: gnucash-docs-git
+
+        - name: Configure GnuCash
+          shell: msys2 {0}
+          env:
+            GUILE_LOAD_PATH: "${{ env.MSYSTEM_PREFIX }}/share/guile/3.0/"
+            GUILE_LOAD_COMPILED_PATH: "${{ env.MSYSTEM_PREFIX }}/lib/guile/3.0/ccache"
+          run: |
+            mkdir $RUNNER_TEMP/inst
+            mkdir $RUNNER_TEMP/gnucash-build && cd $RUNNER_TEMP/gnucash-build
+            cmake -G Ninja -DCMAKE_INSTALL_PREFIX="$RUNNER_TEMP/inst" -DCMAKE_PREFIX_PATH=$MSYSTEM_PREFIX -DSWIG_DIR=$MSYSTEM_PREFIX/share/swig/4.4.1 -DGNC_DBD_DIR=$MSYSTEM_PREFIX/lib/dbd $GITHUB_WORKSPACE/gnucash-git
+
+        - name: Build GnuCash
+          env:
+            GUILE_LOAD_PATH: "${{ env.MSYSTEM_PREFIX }}/share/guile/3.0/"
+            GUILE_LOAD_COMPILED_PATH: "${{ env.MSYSTEM_PREFIX }}/lib/guile/3.0/ccache"
+            GNC_DBD_DIR: "${{ env.MSYSTEM_PREFIX }}/lib/dbd"
+          run: |
+            cd $RUNNER_TEMP/gnucash-build
+            ninja
+            ninja install
+
+        - name: Configure GnuCash Docs
+          shell: msys2 {0}
+          run: |
+            mkdir $RUNNER_TEMP/gnucash-docs-build && cd $RUNNER_TEMP/gnucash-docs-build
+            cmake -G Ninja -DCMAKE_INSTALL_PREFIX="$RUNNER_TEMP/inst" $GITHUB_WORKSPACE/gnucash-docs-git
+
+        - name: Build GnuCash Docs
+          run: |
+            cd $RUNNER_TEMP/gnucash-docs-build
+            ninja
+            ninja install
+
+        - name: Copy message catalogs
+          shell: msys2 {0}
+          run: |
+            for dir in "$MSYSTEM_PREFIX"/share/locale/* ; do
+              [ -d "$dir" ] || continue
+              export lang=$(basename "$dir")
+              for msgcat in gtk30.mo gtk30-properties.mo iso_4217.mo aqbanking.mo gwenhywfar.mo ; do
+                if [ -f "$dir/LC_MESSAGES/$msgcat" ]; then
+                  [ -d "$RUNNER_TEMP/inst/share/locale/$lang/LC_MESSAGES"] || mkdir -p "$RUNNER_TEMP/inst/share/locale/$lang/LC_MESSAGES"
+                  cp "$dir/LC_MESSAGES/$msgcat" "$RUNNER_TEMP/inst/share/locale/$lang/LC_MESSAGES"
+                fi
+              done
+            done
+
+        - name: Configure gnucash.iss
+          shell: pwsh
+          run: |
+            $gnc_config_h = "$Env:RUNNER_TEMP\gnucash-build\common\config.h"
+
+            function version_item([string]$tag, [string]$path) {
+               $splits = select-string -pattern $tag -path $path | %{$_ -split "\s+"}
+                  $splits[2]
+            }
+            $major_version = version_item -tag "PROJECT_VERSION_MAJOR" -path $gnc_config_h
+            $minor_version = version_item -tag "PROJECT_VERSION_MINOR" -path $gnc_config_h
+            $package_version = "$major_version.$minor_version"
+            "PACKAGE_VERSION=$package_version" | Add-Content $Env:GITHUB_ENV
+            $msys_prefix = (msys2 -c 'cygpath -w $MSYSTEM_PREFIX').trim()
+
+            $content = Get-Content -Raw -Path inno_setup\gnucash-mingw64.iss
+            $content = $content.replace("@MINGW_DIR@", "$msys_prefix")
+            $content = $content.replace("@INST_DIR@", "$Env:RUNNER_TEMP\inst")
+            $content = $content.replace("@PACKAGE_VERSION@", "$package_version")
+            $content = $content.replace("@PACKAGE@", "gnucash")
+            $content = $content.replace("@GNUCASH_MAJOR_VERSION@", "$major_version")
+            $content = $content.replace("@GNUCASH_MINOR_VERSION@", "$minor_version")
+            $content = $content.replace("@GC_WIN_REPOS_DIR@", ".")
+            set-content -Path gnucash.iss -Value $content -Encoding utf8BOM
+
+        - name: Package GnuCash
+          uses: Minionguyjpro/Inno-setup-Action@v1.2.9
+          with:
+            path: gnucash.iss
+            options: /Q
+
+        - name: Rename the setup file
+          shell: pwsh
+          run: |
+            function version_item([string]$tag, [string]$path) {
+               $splits = select-string -pattern $tag -path $path | %{$_ -split "\s+"}
+                  $splits[2]
+            }
+            $gnc_vcsinfo_h = "$Env:RUNNER_TEMP\gnucash-build\libgnucash\core-utils\gnc-vcs-info.h"
+            $vcs_rev = version_item -tag "GNC_VCS_REV" -path $gnc_vcsinfo_h | %{$_ -replace """", ""}
+            $date = version_item -tag "GNC_VCS_REV_DATE" -path $gnc_vcsinfo_h | %{$_ -replace """", ""}
+            $final_name = "gnucash-$date-$vcs_rev.setup.exe"
+            rename-item -path "gnucash-$Env:PACKAGE_VERSION.setup.exe" "$final_name"
+            "FINAL_NAME=$final_name" | Add-Content $Env:GITHUB_ENV
+
+        - name: Upload nightly build
+          uses: actions/upload-artifact@v7
+          with:
+            archive: false
+            overwrite: true
+            name: ${{ env.FINAL_NAME }}
+            path: ${{ env.FINAL_NAME }}
