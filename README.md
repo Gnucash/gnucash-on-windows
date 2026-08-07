@@ -1,6 +1,7 @@
 # Building GnuCash on Windows
 
-This repository provides a simple, repeatable means to build and bundleGnuCash
+This repository provides a simple, repeatable means to build and
+bundle GnuCash
 on Microsoft Windows using
 [MSYS2](https://www.msys2.org/)/[MinGW-W64](https://mingw-w64.org) and
 [JRSoftware's Inno Setup](http://www.jrsoftware.org/isinfo.php). It is
@@ -8,10 +9,33 @@ what drives building the official All-in-One installers and what the
 GnuCash core development team uses to create Microsoft Windows
 development environments.
 
+## MSYS2 Project
+GnuCash is written as a Unix project and depends on a IEEE 1003
+("POSIX") C runtime. Microsoft Windows's C runtimes are not IEEE 1003
+compliant so we need a shim layer to manage
+that. [MSYS2](https://msys2.org/)based on
+[cygwin](https://cygwin.com) and the original [Mingw
+project](https://sourceforge.net/projects/mingw/) (Minimalist GNU for
+Windows) is  a widely-used runtime shim that we use for this
+purpose. The original Mingw and the two Mingw-w64 MSYS2 architectures
+`mingw32` and `mingw64` were based on the Microsoft msvcrt C runtime
+dating back to the early 1990s. Microsoft released a new Universl C
+Runtime, or UCRT, in 2015 for Windows 10. MSYS2's `ucrt64`, `clang64`,
+and `clang64-arm` depend on this newer runtime and MSYS2 has
+deprecated the older msvcrt-based architectures and is rapidly
+dropping supported packages from them. Consequently this version of
+GnuCash-on-Windows supports only the newer UCRT architectures.
+
+Note that at present we're building only ucrt64 on github so if you
+want to use one of the clang architectures you'll need to build and
+install all of the packages in the package directory locally.
+
 ## Requirements
 
-* Windows 11 or later. You must have an account with Administrator privileges.
-* Powershell 3.0 or later.
+* Windows 11 or later is supported though we're not doign anything
+  that directly precludes using Windows 10. You will need  an account
+  with Administrator privileges to use the default working directory.
+* Powershell 5.1 (included with Windows 10 and 11) or later.
 
 ## Installation
 
@@ -20,10 +44,8 @@ Download
 and [setup-mingw.sh](https://github.com/Gnucash/gnucash-on-windows/raw/refs/heads/master/setup-mingw64.sh)
 
 Start a Powershell session:
-* Click the Start icon and start typing "powershell" until Windows recognizes it and presents a menu item. Click that.
-
-If you need Administrative Privileges:
-* Right-click on the Start icon and select ```Terminsl (Admin)```
+* Right-click on the Start icon and select ```Terminal``` or ```Terminsl
+(Admin)``` depending on whether you need admin privilege for the session.
 
 If you don't routinely run PowerShell scripts on your computer you
 will need to first set the [Execution
@@ -44,18 +66,12 @@ In a PowerShell session run ```path\to\setup-mingw64.ps1```; the path will depen
   well so they're best avoided. **Default**: ```C:\gcdev64```. The
   default requires Administrative privileges to create. If you use a
   directory in your home directory instead then you will not require
-  Admin privileges but Windows often creates home directory paths with
-  spaces.
+  Admin privileges but beware that Windows often creates home
+  directory paths with spaces.
 
-* **-mingw_arch**: One of the supported MSYS2 Intel architectures. We
-  don't support Arm processors at this time. **Default**:ucrt64
+* **-mingw_arch**: One of the supported MSYS2 Intel architectures,
+  `ucrt64`  and `clang64`. **Default**:ucrt64
 * **-msys2_root**: The base directory of the MSYS2/MinGW-W64 environment. You can reuse an existing environment, but we don't recommend changing this. **Default**:**target_dir**```\msys2```.
-* **-repo_dir**: Setup-mingw64 will download and install a private
-  pacman repository for GnuCash dependencies that aren't supported in
-  Mingw64. This option specifies the location of that repository. It
-  should be an MSYS2 style path; Absolute paths that don't begin with
-  a drive letter (e.g. /c/ for C:) are homed under
-  **target_dir**/msys2. **Default**:**/mingw_arch**/repo.
 
 ```setup-mingw64.ps1``` will set up a full toolchain with all of
 GnuCash's dependencies installed via MSYS2's
@@ -75,18 +91,25 @@ These create terminal emulation sessions running the Bash shell with
 the environment configured for the specified MinGW architecture.
 
 If you want to install toolchains and GnuCash dependencies for more
-architectures open an MSYS2 terminal, define MINGW_ARCH with the
-architectures you want, and run `setup-mingw64.sh``` (note
+architectures open an MSYS2 (**NOT a shell for the architecture
+type!**) terminal, define MINGW_ARCH with the
+architectures you want, and run ```setup-mingw64.sh``` (note
 **sh**). For example
 ```
-MINGW_ARCH="mingw32 mingw64" bash setup-mingw64.sh
+MINGW_ARCH="ucrt64 clang64" bash setup-mingw64.sh
 ```
-will set up build environments for the msvcrt runtime in 32- and 64-bit.
+will set up build environments for the UCRT runtime with the gcc and
+clang toolchains.
+
+If HTML Help Workshop isn't installed, setup-mingw64.ps1 will install
+it for you. The installer will raise several approval dialogs, it's OK
+to accept the defaults on all of them. HTML Help Workshop is required
+to compile the documentation on Windows.
 
 ## Building GnuCash
 Either of these methods will produce a GnuCash executable that you can
 run inside the respective Mingw terminal.
-#### Git repository
+#### Git repository or source tarball
 1. Start an MSYS MinGW shell for the architecture you want to build.
 2. Clone gnucash and optionally gnucash-docs:
    ```
@@ -105,7 +128,9 @@ run inside the respective Mingw terminal.
 5. You can then run GnuCash in your terminal session with
    `bin/gnucash`. `ninja install` will install GnuCash to a unix-like
    tree in the directory specified to cmake's
-   `CMAKE_INSTALL_PREFIX`.
+   `CMAKE_INSTALL_PREFIX`. You will need to do this if you intend to
+   bundle GnuCash (see Bundling Gnucash below),
+
 #### PKGBUILD
 Pkgbuild is the package build system for creating ```pacman```
 packages. MSYS2 has made a variant for building MinGW packages called
@@ -118,10 +143,14 @@ architecture with a single invocation of `makepkg-mingw`.
    ```
    cd gnucash-on-windows.git/packages/gnucash
    ```
-4. Set the architectures you want in `MINGW_ARCH` and call
-   `makepkg-mingw`. You can do so all on one line:
+4. Set the architectures you want in `MINGW_ARCH`, the build type you
+   want in `GNUCASH_BUILD` (see packages/gnucash/PKGBUILD for possible
+   values; note that only `future` will work until GnuCash 6.0 is
+   released) and call `makepkg-mingw -sCLf --nodeps`. You can do so
+   all on one line:
+
    ```
-   MINGW_ARCH="mingw32 mingw64 clang64 ucrt64" makepkg-mingw
+   MINGW_ARCH="ucrt64" GNUCASH_BUILD=future makepkg-mingw -sCLf --nodeps
    ```
 5. This creates packages for each specified architechture that you
    must install to be able to run:
@@ -143,40 +172,53 @@ and `ucrt64` respectively.
 
 ## Bundling GnuCash
 
-This hasn't been worked out yet.
+Just run `bundle-mingw64.ps1` with the following options.
+
 ### bundle-mingw64.ps1 Parameters
 
 All Parameters are required and have no defaults.
-* **-root_dir** The root directory of the installation, corresponds to **target_dir** for ```setup-mingw64.ps1```.
-* **-target_dir** The directory where the source, build, and installation directories are. This is normally **target_dir**```\gnucash\branch``` with branch being either ```master```, ```maint```, or ```release```.
-* **-package**: The thing we're bundling. Always ```gnucash```.
-* **-git_build**: ```$true``` if GnuCash was built from git, ```$false``` otherwise. Only use ```$false``` for release builds.
+* **-mingw_prefix** The path to the mingw arch root, default c:\gcdev64\msys2\ucrt64.
+* **-gnc_build_dir** The path to the GnuCash build directory, used to
+  retrieve version information. Default is c:\gcdev64\gnucash-build
+* **-prefix**: The path provided to CMAKE_INSTALL_PREFIX when
+  configuring GnuCash and GnuCash-Docs. The installer program will be
+  written here.
+* **-git_build**: ```$true``` if GnuCash was built from git,
+  ```$false``` otherwise. Only use ```$false``` for release
+  builds. Default ```$true```.
 
-## Buildserver
-
-This repository includes a script, ```buildserver\build_package.ps1``` that combines building and bundling GnuCash and uploading the result to a distribution webserver into a single command. It's intended for automated nightly build scripts.
-
-### build_package.ps1 options
-* **-branch**: ```maint```, ```master```, or ```release```. The last builds the release configured in gnucash.modules from the release tarball.
-* **-target_dir**: The **target_dir** configured into ```setup-mingw64.ps1```.
-* **-hostname**: The upload URI. Optional. If set the script will
-  attempt to rsync the gnucash-xxx-setup.exe and the build log to
-  hard-coded subdirectories under this URI. The user running the
-  script must have correctly configured ssh to connect to the URI with
-  a key; there's no provision for password authentication.
+Note that we need to copy the message catalogs we need out of
+`$mingw_prefix\share\locale` to the corresponding directories in
+`$prefix\share\locale` to prevent installing a bunch of extraneous
+catalogs so using the same directory for both prefixes won't work well
+and that precludes building GnuCash with its `PKGBUILD` because that
+would install into `$mingw_prefix`.
 
 ## Buildsystem Maintenance
 
-The `packages` directory contains project files for populating the
-GnuCash pacman repositories, with a subdirectory for each dependency
-library. Each of those directories contains at least a `PKGBUILD`
-file; some include patches needed to build the library or for it to
-run under MinGW.
+The `packages` directory contains project files for building the
+GnuCash dependencies that MSYS2 doesn't package, with a subdirectory
+for each dependency library. Each of those directories contains at
+least a `PKGBUILD` file; some include patches needed to build the
+library or for it to run under MinGW.
 
-These packages need to be updated periodically to remain up to date
-and some need to be rebuilt frequently because their dependencies
-aren't ABI or API stable. See the README in that directory for details.
-
+These packages need to be updated periodically to remain up to
+date. There are GitHub workflows on this project that maintains a
+pacman repository of the dependencies at
+https://github.com/gnucash/gnucash-on-windows/releases/download/gnc-ucrt64-repo/.
+You can use this repository instead of building and installing the
+packages yourself by making the following changes to
+`/etc/pacman.conf` in your MSYS2 installation:
+* Find the line
+```
+# SigLevel = Never
+```
+and replace it with
+```
+[gnc-ucrt64]
+SigLevel = Optional TrustAll
+Server = "https://github.com/gmucash/gnucash-on-windows/releases/download/gnc-ucrt64-repo/"
+```
 ## Other files:
 * `inno_setup/`: Configuration and localization files for building ```gnucash-xxx-setup.exe` with Inno Setup.
 * `extra_dist/`: The Online Quote Installation tool.

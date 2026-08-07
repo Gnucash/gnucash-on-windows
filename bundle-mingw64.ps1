@@ -24,7 +24,7 @@ Runs Inno-Setup to create a gnucash installer program.
 
 .DESCRIPTION
 
-Creates a gnucash installer program from a GnuCash build environment created with setup-mingw64.ps1 in which GnuCash has been built with jhbuild using the jhbuildrc and gnucash.modules from gnucash-on-windows.git.
+Creates a GnuCash installer program from a GnuCash build. Note that we need to extract the Gtk, AqBanking, and Gwenhywfar message catalogs from the mingw_prefix hierarchy so using the same values for that and prefix will cause extraneous message catalogs to be included in the installer.
 
 This script must not be moved from the gnucash-on-windows.git working directory.
 
@@ -32,30 +32,30 @@ You may need to allow running scripts on your computer and depending
 on where the target_dir is you may need to run the script with
 Administrator privileges.
 
-.PARAMETER root_dir
+.PARAMETER mingw_prefix
 
-Mandatory. The root path to the build environment. Typically C:\gcdev64.
+Optional. The path to the mingw_arch directory, default c:\gcdev64\msys2\ucrt64
 
-.PARAMETER target_dir
+.PARAMETER gnc_build_dir
 
-Mandatory. The base path to where the build to be packaged is located. This is typically $root_dir\gnucash\$branch, for example C:\gcdev64\gnucash\maint
+Optional. The path to the GnuCash build directory, default: c:\gcdev64\gnuncash-build
 
-.PARAMETER package
+.PARAMETER prefix
 
-Mandatory. The name of the package to bundle. This is currently only used by the Inno installer builder for things like the registry group to add values to.
+Optional. The value of CMAKE_INSTALL_PREFIX used when configuring the GnuCash and GnuCash Documentation builds. It's where this script expects to find the installed GnuCash and GnuCash-Docs files and is where it will write the installer program. Default: c:\gcdev64\gnucash-inst
 
-.PARAMETER package
+.PARAMETER git_build
 
-Mandatory. Boolean to indicate whether or not this is a git build.
+Optional. Boolean to indicate whether or not this is a git build. Default $true
 
 #>
 
 [CmdletBinding()]
-Param(
-    [Parameter(Mandatory=$true)] [string]$root_dir,
-    [Parameter(Mandatory=$true)] [string]$target_dir,
-    [Parameter(Mandatory=$true)] [string]$package,
-    [Parameter(Mandatory=$true)] [bool]$git_build
+Param(4
+    [Parameter(Mandatory=$true)] [string]$mingw_prefix=c:\gcdev64\msys2\ucrt64,
+    [Parameter(Mandatory=$true)] [string]$gnc_build_dir=c:\gcdev64\gnucash-build
+    [Parameter(Mandatory=$true)] [string],$prefix=c:\gcdev64\inst
+    [Parameter(Mandatory=$true)] [bool]$git_build=$true
 )
 
 $script_dir = Split-Path $script:MyInvocation.MyCommand.Path
@@ -71,11 +71,6 @@ try {
 }
 catch {} #type already loaded, ignore problem.
 
-function bitness([string]$path) {
-  $type = -1
-  $result = [Win32Utils.BinaryType]::GetBinaryType($path, [ref]$type)
-  if ($type -eq 6) { 64 } else { 32 }
-}
 
 function version_item([string]$tag, [string]$path) {
    $splits = select-string -pattern $tag -path $path | %{$_ -split "\s+"}
@@ -107,40 +102,14 @@ if ($PSVersionTable.PSVersion.Major -ge 3) {
     $PSDefaultParameterValues['*:Encoding'] = 'utf8'
     }
 
-$gnc_config_h = "$target_dir\build\$gnucash\common\config.h"
+$gnc_config_h = "$gnc_build_dir\common\config.h"
 
 $major_version = version_item -tag "PROJECT_VERSION_MAJOR" -path $gnc_config_h
 $minor_version = version_item -tag "PROJECT_VERSION_MINOR" -path $gnc_config_h
 $package_version = "$major_version.$minor_version"
-$inst_dir = "$target_dir\inst"
-$mingw_ver = bitness("$inst_dir\bin\gnucash.exe")
-$aqb_dir = version_item -tag "SO_EFFECTIVE "-path "$inst_dir\include\aqbanking6\aqbanking\version.h"
-$gwen_dir = version_item -tag "SO_EFFECTIVE " -path "$inst_dir\include\gwenhywfar5\gwenhywfar\version.h"
-
-# We must use sed under bash in order to preserve the UTF-8 encoding
-# with Unix line endings; PowerShell wants to re-code the output as
-# UTF-16 and Inno Setup finds that indigestible. The ridiculous number
-# of backslashes is due to bash and sed eating them. It results in a
-# single backslash in the output file. Inno Setup doesn't understand
-# forward slashes as path delimiters.
-$root = %{$root_dir -replace "\\", "\\\\\\\\"}
-$target = %{$target_dir -replace "\\", "\\\\\\\\"}
-$script = %{$script_dir -replace "\\", "\\\\\\\\"}
-$issue_in = make-unixpath -path  $script_dir\inno_setup\gnucash-mingw64.iss
-$issue_out = make-unixpath -path $target_dir\gnucash.iss
-$proc = bash-command("sed  < $issue_in > $issue_out \
-  -e ""s#@MINGW_DIR@#$root\\\\\\\\msys2\\\\\\\\mingw$mingw_ver#g"" \
-  -e ""s#@INST_DIR@#$target\\\\\\\\inst#g"" \
-  -e ""s#@-gwenhywfar_so_effective-@#$gwen_dir#g"" \
-  -e ""s#@-aqbanking_so_effective-@#$aqb_dir#g"" \
-  -e ""s#@PACKAGE_VERSION@#$package_version#g"" \
-  -e ""s#@PACKAGE@#$package#g"" \
-  -e ""s#@GNUCASH_MAJOR_VERSION@#$major_version#g"" \
-  -e ""s#@GNUCASH_MINOR_VERSION@#$minor_version#g"" \
-  -e ""s#@GC_WIN_REPOS_DIR@#$script#g"" ")
 
 $date = get-date -format "yyyy-MM-dd"
-$setup_result =  "$target_dir\gnucash-$package_version.setup.exe"
+$setup_result =  "$prefix\gnucash-$package_version.setup.exe"
 $final_file = ""
 if ($git_build) {
   $gnc_vcsinfo_h = "$target_dir\build\gnucash-git\libgnucash\core-utils\gnc-vcs-info.h"
@@ -151,20 +120,19 @@ else {
   $final_file = "$target_dir\gnucash-$package_version.setup.exe"
 }
 
-$mingw_dir = "$root_dir\msys2\mingw$mingw_ver"
 $schema_dir = "share\glib-2.0\schemas"
-$target_schema_dir = "$target_dir\inst\$schema_dir"
-copy-item $mingw_dir\$schema_dir\org.gtk.Settings.* $target_schema_dir
+$target_schema_dir = "$prefix\$schema_dir"
+copy-item $mingw_prefix\$schema_dir\org.gtk.Settings.* $target_schema_dir
 $target_schema_unix = make-unixpath -path $target_schema_dir
-$schema_compiler = make-unixpath -path "$mingw_dir\bin\glib-compile-schemas"
+$schema_compiler = make-unixpath -path "$mingw_prefix\bin\glib-compile-schemas"
 bash-command("$schema_compiler $target_schema_unix")
 
 
-# Inno-setup isn't able to easily pick out particular message catalogs from $mingw_dir/share/locale, so copy the ones we want to $inst_dir\share\locale.
+# Inno-setup isn't able to easily pick out particular message catalogs from $mingw_prefix/share/locale, so copy the ones we want to $prefix\share\locale.
 
-$source_locale_dir = "$mingw_dir\share\locale\"
-$inst_locale_dir = "$inst_dir\share\locale"
-foreach ($msgcat in "gtk30.mo","iso_4217.mo") {
+$source_locale_dir = "$mingw_prefix\share\locale"
+$inst_locale_dir = "$prefix\share\locale"
+foreach ($msgcat in "gtk30.mo", "gtk32-properties.mo", "iso_4217.mo ", "aqbanking.mo", "gwenhywfar.mo") {
     foreach ($dir in get-childitem -Directory $source_locale_dir) {
 	$source_path = "$source_locale_dir\$dir\LC_MESSAGES"
 	$inst_path = "$inst_locale_dir\$dir\LC_MESSAGES"
@@ -173,6 +141,20 @@ foreach ($msgcat in "gtk30.mo","iso_4217.mo") {
 	}
     }
 }
+
+# configure gnucash.iss
+
+$msys_prefix = (msys2 -c 'cygpath -w $MSYSTEM_PREFIX').trim()
+
+$content = Get-Content -Raw -Path inno_setup\gnucash-mingw64.iss
+$content = $content.replace("@MINGW_DIR@", "$msys_prefix")
+$content = $content.replace("@INST_DIR@", "$Env:RUNNER_TEMP\inst")
+$content = $content.replace("@PACKAGE_VERSION@", "$package_version")
+$content = $content.replace("@PACKAGE@", "gnucash")
+$content = $content.replace("@GNUCASH_MAJOR_VERSION@", "$major_version")
+$content = $content.replace("@GNUCASH_MINOR_VERSION@", "$minor_version")
+$content = $content.replace("@GC_WIN_REPOS_DIR@", ".")
+set-content -Path gnucash.iss -Value $content -Encoding utf8BOM
 
 write-host "Running Inno Setup to create $final_file."
 

@@ -3,56 +3,49 @@ This is a collection of MSYS2 packages needed to build GnuCash that
 aren't supported by the MSYS2 project. Each directory contains a
 PKGBUILD for the current version of the package included in the
 GnuCash setup program for windows along with any patches needed to
-build it. These packages are used to build a private pacman repository
-for each of the 4 Intel architectures supported by MSYS2,
-i.e. mingw32, mingw64, clang64, and ucrt64.
+build it. There are also packages to build GnuCash itself and its
+documentation.
 
-Sourceforge's file service is too slow to support hosting the
-repositories directly there so instead we make a tarball of each
-repository and store that [there](https://download.sourceforge.net/project/gnucash/Dependencies/). Unless you want to build all of the
-packages from scratch you'll need to download one or more of those
-tarballs and unpack it somewhere. Where doesn't really matter; for the
-rest of this document we'll assume that you picked
-/$MSYSTEM_PREFIX/repo and that MSYS2 is installed in c:/gcdev64/msys2.
+Since the MSYS2 project has deprecated the very old msvcrt-based
+architectures mingw32 and mingw34 and has stopped building several
+packages that GnuCash requires, the packages in this directory support
+only the ucrt-based architectures ucrt64 and clang64. Building for
+clang64-arm might work but hasn't yet been tested.
 
-The repositories and their contents are signed and the current
-maintainer's gpg public key is stored with the tarballs. The current
-maintainer's key is jralls_public_signing_key.asc. Download it and in
-an MSYS2 shell run
-
-    pacman-key --add jralls_public_signing_key.asc
-    pacman-key --lsign-key C1F4DE993CF5835F
-
-
-After installing one of the repositories you need to tell pacman to
-use it so add the following to c:/gcdev64/msys2/etc/pacman.conf:
+Once each package is built you must install it. To install it directly
+run
+```
+pacman -U mingw-w64-ucrt-x86-64-foo-1.2-1.pkg.zst
+```
+substituting the actual package name and version for
+`foo-1.2-1`. Alternatively you can make a local pacman repository and
+add the packages to that with
+[repo-add](https://man.archlinux.org/man/repo-add.8). Assuming that
+you put the repo in `C:\gcdev64\repo\ucrt64` and named it `gnc-ucrt64`
+then adding the following to the end of `/etc/pacman.conf` will make
+the package available to pacman; building or installing other
+packages that depend on it will install it.
 
     [gnc-ucrt64]
     SigLevel = Optional TrustAll
     Server = file:///c:/gcdev64/repo/ucrt64/
-
-Replacing `ucrt64` with the architecture you want to build and
-adjusting the URL to match where you installed it. You'll
-need a separate entry for each architecture. Put them before the MSYS2
-repository entries so that our packages will take precedence over
-MSYS2's as there are a couple of cases where we are building otherwise
-supported packages with different options or patches. Once the
-repositories and signing key are set up tell pacman about them by
-running
+You must run
 
     pacman -Syu
 
-You'll also need to have installed some basic packages:
+to update pacman's in-memory database after each repository change.
+
+### Building a package
+Before you start you'll need to have installed some basic packages:
 
     pacman -S basic-devel git mingw-w64-ucrt-x86_64-toolchain
 
 Repeating toolchain for each architecture you plan to build.
 
-### Building a package
 To build a package start an MSYS2 shell (NOT one of the architecture
 shells!), enter its directory and issue
 
-    MINGW_ARCH="ucrt64" makepkg-mingw -scLf
+    MINGW_ARCH="ucrt64" makepkg-mingw -scLf --noconfirm
 
 Substituting the architecture(s) you want to build for "ucrt64". You
 of course must have set up the corresponding repository to supply the
@@ -63,54 +56,23 @@ You can install the package immediately after the build completes with e.g.
 
     pacman -U mingw-w64-ucrt-x86_64-foo.5.6.7-1-any.pkg.tar.zst
 
-### Repository Maintenance
-
-In order to maintain the repository you need to be able to sign
-packages and the repository indexes, and for that you need a GPG
-signing key. [Instructions](https://www.msys2.org/wiki/Signing-packages/).
-
 #### Adding the package to the repository
 
-Sign the package tarball:
+Copy or move the tarballs to the repo and add them to the repo database:
 
-    gpg --detach-sign --no-armor mingw-w64-ucrt-x86_64-foo.5.6.7-1-any.pkg.tar.zst
-
-Or if you want to sign several, perhaps because you built more than
-one architecture and had debug and strip enabled so that you have
-debug tarballs too:
-
-    for i in *.zst; do gpg --detach-sign --no-armor $i; done
-
-Copy or move them to the repo and add them to the repo database:
-
-    cp mingw-w64-ucrt-x86_64-foo.5.6.7-1-any.pkg.tar.zst* /ucrt64/repo/
+    cp mingw-w64-ucrt-x86_64-foo.5.6.7-1-any.pkg.tar.zst* /path/to/repo/
     repo-add -R --include-sigs /ucrt64/repo/gnc-ucrt64.db.tar.gz /ucrt64/repo/mingw-w64-ucrt-x86_64-foo.5.6.7-1-any.pkg.tar.zst
-
-Re-sign the database files:
-
-    pushd /ucrt64/repo
-    for i in gnc-ucrt64.db gnc-ucrt64.files gnc-ucrt64.db.tar.gz gnc-ucrt64.files.tar.gz; do rm $i.sig; gpg --detach-sign --no-armor $i; done
-    popd
 
 Refresh pacman's indexes so that it will install the package for the
 packages that depend on it:
 
     pacman -Syu
 
-Finally make a tarball and upload it to SourceForge:
-
-    cd /ucrt64/repo
-    tar --zstd -cf ../gnc-ucrt64-repo.tar.zst *
-
 ### Maintenance:
 * Periodically review the package versions and update `PKGCONFIG`
   accordingly.
-* Some packages depend on MSYS2-provided packages that aren't ABI,
-  API, or even library-name stable (e.g. ICU for the last). These
-  packages and everything that depends on them need to be rebuilt
-  after every major MSYS2 update, roughly every 6 weeks.
-* After updating or rebuilding a package add it to the repositories,
-  tar up the repositories, and upload them to SourceForge.
+* If you encounter build or runtime failures write a patch, add it to
+  `PKGBUILD`, and commit both the patch and the updated `PKGBUILD`.
 
 #### Dependency Tree:
 * gnucash-docs
@@ -119,20 +81,17 @@ Finally make a tarball and upload it to SourceForge:
     * gwnhywfar
     * libchipcard
       * gwenhywfar
-        * libgcrypt
-    * xmlsec
   * guile3
-    * bdwgc
-      * libatomic_ops
   * libdbi-drivers
     * libdbi
-    * postgresql (mingw32-only)
   * libofx
     * OpenSP
-      * libatomic_ops (mingw32, mingw64 only)
-  * webkitgtk3(icu)
-    * libsoup (mingw32-only)
-  * swig
+  * swig (We can't use the MSYS2 package because we need to patch the
+    Guile module for Guile3)
+
+Each `PKGBUILD` contains all of the dependemcies for its target, so
+building each package in the list from the bottom up and adding it to
+a repo should result in a ready to use or bundle GnuCash.
 
 ### PKGBUILD notes:
   * If you need to customize a particular build there are a couple of
@@ -163,14 +122,6 @@ same type so the `PKGCONFIG` points to a
 Lilypond developers have taken a different approach and have proposed
 PRs to complete it so we hope to be able to drop the fork and use
 upstream at some point.
-
-### WebkitGtk
-The [WebKitGtk Project](https://webkitgtk.org/) dropped support for
-Microsoft Windows in 2015 with version 2.4.11. It's dependent on ICU
-so it's one of the packages that needs to be rebuilt after every major
-MSYS2 update, but it's also 10+ year old code and every new compiler
-release finds new things to complain about so it needs frequent
-patching as well.
 
 ### Further Reading:
 https://www.msys2.org/wiki/Creating-Packages/

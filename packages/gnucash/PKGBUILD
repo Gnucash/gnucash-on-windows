@@ -45,6 +45,11 @@ depends=("${MINGW_PACKAGE_PREFIX}-appstream-glib"
          "${MINGW_PACKAGE_PREFIX}-webview2-loader"
          "${MINGW_PACKAGE_PREFIX}-xz"
          )
+
+if [ -z $GNUCASH_BUILD ]; then
+    GNUCASH_BUILD=future
+fi
+
 case ${GNUCASH_BUILD} in
     stable|future)
          source=("git+${_git_url}${pkgbranch}")
