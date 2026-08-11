@@ -141,6 +141,9 @@ foreach ($msgcat in "gtk30.mo", "gtk32-properties.mo", "iso_4217.mo ", "aqbankin
 	}
     }
 }
+# We also need to consolidate the GSettings schemas and compile them.
+copy-item "$mingw_prefix\share\glib-2.0\schemas\*.gschema.xml" "$prefix\share\glib-2.0\schemas"
+bash-command("$mingw_prefix/bin/glib-compile-schemas" "$prefix/share/glib-2.0/schemas")
 
 # configure gnucash.iss
 

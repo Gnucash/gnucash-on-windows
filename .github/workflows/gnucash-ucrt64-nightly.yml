@@ -80,7 +80,7 @@ jobs:
             ninja
             ninja install
 
-        - name: Copy message catalogs
+        - name: Copy message catalogs and gschemas
           shell: msys2 {0}
           run: |
             for dir in "$MSYSTEM_PREFIX"/share/locale/* ; do
@@ -88,11 +88,13 @@ jobs:
               export lang=$(basename "$dir")
               for msgcat in gtk30.mo gtk30-properties.mo iso_4217.mo aqbanking.mo gwenhywfar.mo ; do
                 if [ -f "$dir/LC_MESSAGES/$msgcat" ]; then
-                  [ -d "$RUNNER_TEMP/inst/share/locale/$lang/LC_MESSAGES"] || mkdir -p "$RUNNER_TEMP/inst/share/locale/$lang/LC_MESSAGES"
+                  [ -d "$RUNNER_TEMP/inst/share/locale/$lang/LC_MESSAGES" ] || mkdir -p "$RUNNER_TEMP/inst/share/locale/$lang/LC_MESSAGES"
                   cp "$dir/LC_MESSAGES/$msgcat" "$RUNNER_TEMP/inst/share/locale/$lang/LC_MESSAGES"
                 fi
               done
             done
+            cp "$MSYSTEM_PREFIX"/share/glib-2.0/schemas/*.gschema.xml "$RUNNER_TEMP/inst/share/glib-2.0/schemas"
+            $MSYSTEM_PREFIX/bin/glib-compile-schemas "$RUNNER_TEMP/inst/share/glib-2.0/schemas"
 
         - name: Configure gnucash.iss
           shell: pwsh

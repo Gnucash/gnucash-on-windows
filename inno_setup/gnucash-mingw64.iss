@@ -221,7 +221,6 @@ Source: "@MINGW_DIR@\share\chipcard\*"; DestDir: "{app}\share\chipcard"; Flags: 
 Source: "@MINGW_DIR@\share\guile\*"; DestDir: "{app}\share\guile"; Flags: recursesubdirs; Components: main
 Source: "@MINGW_DIR@\share\libofx\*"; DestDir: "{app}\share\libofx"; Flags: recursesubdirs; Components: main
 Source: "@MINGW_DIR@\share\OpenSP\*"; DestDir: "{app}\share\OpenSP"; Flags: recursesubdirs; Components: main
-Source: "@MINGW_DIR@\share\glib-2.0\schemas\*.gschema.xml"; DestDir: "{app}\share\glib-2.0\schemas"; Flags: recursesubdirs; Components: main
 Source: "@MINGW_DIR@\share\icons\*"; DestDir: "{app}\share\icons"; Flags: recursesubdirs; Components: main
 Source: "@MINGW_DIR@\share\themes\*"; DestDir: "{app}\share\themes"; Flags: recursesubdirs; Components: main
 Source: "@MINGW_DIR@\share\xml\iso-codes\*"; DestDir: "{app}\share\xml\iso-codes"; Flags: recursesubdirs; Components: main
