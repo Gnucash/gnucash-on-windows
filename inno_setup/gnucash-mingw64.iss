@@ -208,7 +208,7 @@ Source: "@MINGW_DIR@\bin\zlib1.dll"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\gspawn-win64-helper.exe"; DestDir: "{app}\bin"; Components: main
 Source: "@MINGW_DIR@\bin\gspawn-win64-helper-console.exe"; DestDir: "{app}\bin"; Components: main
 
-Source: "@MINGW_DIR@\lib\dbd\*.dll"; DestDir: "{app}\lib"; Components: main
+Source: "@MINGW_DIR@\lib\dbd\*.dll"; DestDir: "{app}\lib\dbd"; Components: main
 Source: "@MINGW_DIR@\lib\aqbanking\*"; DestDir: "{app}\lib\aqbanking"; Excludes: "*.dll.a"; Flags: recursesubdirs; Components: main
 Source: "@MINGW_DIR@\lib\gwenhywfar\*"; DestDir: "{app}\lib\gwenhywfar"; Excludes: "*.dll.a"; Flags: recursesubdirs; Components: main
 Source: "@MINGW_DIR@\lib\gdk-pixbuf-2.0\2.10.0\loaders\*.dll"; DestDir: "{app}\lib\gdk-pixbuf-2.0\2.10.0\loaders"; Components: main
