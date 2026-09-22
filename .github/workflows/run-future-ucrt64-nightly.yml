@@ -59,3 +59,25 @@ jobs:
           else
             echo "No nightly build artifact was produced this run."
           fi
+      - name: Send encrypted artifact path to listener
+        if: needs.call-workflow.outputs.artifact-url != ''
+        env:
+          URL: ${{ needs.call-workflow.outputs.artifact-url }}
+          GPG_PUBLIC_KEY: ${{ secrets.NIGHTLY_GPG_PUBLIC_KEY }}
+          LISTENER_HOST: ${{ secrets.NIGHTLY_LISTENER_HOST }}
+          LISTENER_PORT: ${{ secrets.NIGHTLY_LISTENER_PORT }}
+        run: |
+          set -o pipefail
+          if [ -z "$GPG_PUBLIC_KEY" ] || [ -z "$LISTENER_HOST" ] || \
+             [ -z "$LISTENER_PORT" ]; then
+            echo "Listener secrets not configured; skipping notification."
+            exit 0
+          fi
+          ARTIFACT_PATH="${URL#https://github.com/Gnucash/gnucash-on-windows/actions/runs/}"
+          export GNUPGHOME=$(mktemp -d)
+          printf '%s\n' "$GPG_PUBLIC_KEY" > "$GNUPGHOME/recipient.asc"
+          printf '%s' "$ARTIFACT_PATH" | \
+            gpg --batch --quiet --armor --encrypt \
+                --recipient-file "$GNUPGHOME/recipient.asc" | \
+            nc -N -w 30 "$LISTENER_HOST" "$LISTENER_PORT"
+          rm -rf "$GNUPGHOME"

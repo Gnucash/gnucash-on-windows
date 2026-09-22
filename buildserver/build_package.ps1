@@ -109,8 +109,8 @@ if ($hostname) {
     bash.exe -lc "$script_unix/buildserver/upload_build_log.sh $log_unix $hostname $log_dir $branch"
 }
 
-# Update MinGW-w64
-pacman.exe -Su --noconfirm 2>&1 | Tee-Object -FilePath $log_file -Append
+# Don't Update MinGW-w64, we need an obsolete environement.
+# pacman.exe -Su --noconfirm 2>&1 | Tee-Object -FilePath $log_file -Append
 
 #GnuCash build still behaves badly if it finds its old build products. Clean them out.
 if ($branch -in "releases", "unstable") {
