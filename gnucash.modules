@@ -270,8 +270,8 @@
 
  <cmake id="gnucash"
         cmakeargs="-DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=$MSYS2ROOT -DPERL_EXECUTABLE=/usr/bin/perl -DGNC_DBD_DIR=$PREFIX/lib/dbd -DGTEST_ROOT=$SRCROOT/googletest">
-   <branch module="project/gnucash/gnucash%20%28stable%29/5.16/gnucash-5.16.tar.bz2"
-	   repo="sourceforge" version="5.16"/>
+   <branch module="project/gnucash/gnucash%20%28stable%29/5.17/gnucash-5.17.tar.bz2"
+	   repo="sourceforge" version="5.17"/>
     <dependencies>
       <dep package="libofx"/>
       <dep package="aqbanking"/>
@@ -322,7 +322,7 @@
   </cmake>
 
   <cmake id="gnucash-docs" supports-parallel-builds="no">
-    <branch  module="project/gnucash/gnucash%20%28stable%29/5.16/gnucash-docs-5.16.tar.gz"
+    <branch  module="project/gnucash/gnucash%20%28stable%29/5.17/gnucash-docs-5.17.tar.gz"
 	     version="5.16" repo="sourceforge"/>
   </cmake>
 
