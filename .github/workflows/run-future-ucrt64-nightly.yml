@@ -74,9 +74,14 @@ jobs:
             exit 0
           fi
           ARTIFACT_PATH="${URL#https://github.com/Gnucash/gnucash-on-windows/actions/runs/}"
+          RUN_ID="${ARTIFACT_PATH%%/*}"
+          if ! [[ "$RUN_ID" =~ ^[0-9]+$ ]]; then
+            echo "::error::Could not extract run id from artifact URL: $URL"
+            exit 1
+          fi
           export GNUPGHOME=$(mktemp -d)
           printf '%s\n' "$GPG_PUBLIC_KEY" > "$GNUPGHOME/recipient.asc"
-          printf '%s' "$ARTIFACT_PATH" | \
+          printf '%s' "$RUN_ID" | \
             gpg --batch --quiet --armor --encrypt \
                 --recipient-file "$GNUPGHOME/recipient.asc" | \
             nc -N -w 30 "$LISTENER_HOST" "$LISTENER_PORT"
