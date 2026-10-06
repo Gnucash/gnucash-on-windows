@@ -6,17 +6,21 @@
 ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 [Setup]
+; A separate AppId keeps this preview from finding and replacing a
+; released (32-bit) GnuCash installation. Restore the default (AppName)
+; when this becomes the release.
+AppId=GnuCash-Preview
 ; Using the name here directly because we want it capitalized
 AppName=GnuCash
 AppVersion=@PACKAGE_VERSION@
-AppVerName=GnuCash @PACKAGE_VERSION@
+AppVerName=GnuCash Preview @PACKAGE_VERSION@
 AppPublisher=GnuCash Development Team
 AppPublisherURL=http://www.gnucash.org
 AppSupportURL=http://www.gnucash.org
 AppUpdatesURL=http://www.gnucash.org
 VersionInfoVersion=@PACKAGE_VERSION@
 DefaultDirName={autopf}\@PACKAGE@
-DefaultGroupName=GnuCash
+DefaultGroupName=GnuCash Preview
 InfoBeforeFile=@INST_DIR@\share\doc\@PACKAGE@\LICENSE
 Compression=lzma
 MinVersion=10.0
@@ -26,6 +30,8 @@ OutputBaseFilename=@PACKAGE@-@PACKAGE_VERSION@.setup
 UninstallFilesDir={app}\uninstall\@PACKAGE@
 InfoAfterFile=@GC_WIN_REPOS_DIR@\inno_setup\README.win32-bin.txt
 ; SetupArchitecture=x64 ;; Inno-setup 7.0 and later. Github gets 6.7.
+ArchitecturesAllowed=x64compatible
+ArchitecturesInstallIn64BitMode=x64compatible
 SetupIconFile=@INST_DIR@\share\@PACKAGE@\pixmaps\gnucash-icon.ico
 WizardSmallImageFile=@INST_DIR@\share\@PACKAGE@\pixmaps\gnucash-icon-48x48.bmp
 
@@ -43,14 +49,14 @@ Name: desktopicon; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm
 Name: menuicon; Description: "{cm:CreateMenuLink}"; GroupDescription: "{cm:AdditionalIcons}"
 
 [Icons]
-Name: "{group}\GnuCash"; Filename: "{app}\bin\@PACKAGE@.exe"; WorkingDir: "{code:GetDocPath}"; Comment: "{cm:IconComment_GnuCash}"; IconFilename: "{app}\share\@PACKAGE@\pixmaps\gnucash-icon.ico"; Tasks: menuicon
+Name: "{group}\GnuCash Preview"; Filename: "{app}\bin\@PACKAGE@.exe"; WorkingDir: "{code:GetDocPath}"; Comment: "{cm:IconComment_GnuCash}"; IconFilename: "{app}\share\@PACKAGE@\pixmaps\gnucash-icon.ico"; Tasks: menuicon
 Name: "{group}\{cm:IconName_README}"; Filename: "{app}\doc\@PACKAGE@\{cm:IconFilename_README}"; Comment: "{cm:IconComment_README}"; Tasks: menuicon
 Name: "{group}\{cm:IconName_FAQ}"; Filename: "http://wiki.gnucash.org/wiki/FAQ"; Tasks: menuicon
 Name: "{group}\{cm:IconName_Bugzilla}"; Filename: "https://bugs.gnucash.org/enter_bug.cgi?product=GnuCash"; Tasks: menuicon
 Name: "{group}\{cm:IconName_InstallFQ}"; Filename: "{sys}/WindowsPowershell/v1.0/powershell.exe"; Parameters: "-ExecutionPolicy Bypass -File ""{app}\bin\install-fq-mods.ps1"""; WorkingDir: "{app}\bin"; Comment: "{cm:IconComment_InstallFQ}"; Tasks: menuicon
 Name: "{group}\{cm:IconName_Uninstall}"; Filename: "{uninstallexe}"; Comment: "{cm:IconComment_Uninstall}"; Tasks: menuicon
 
-Name: "{commondesktop}\GnuCash"; Filename: "{app}\bin\@PACKAGE@.exe"; WorkingDir: "{code:GetDocPath}"; Comment: "{cm:IconComment_GnuCash}"; IconFilename: "{app}\share\@PACKAGE@\pixmaps\gnucash-icon.ico"; Tasks: desktopicon
+Name: "{commondesktop}\GnuCash Preview"; Filename: "{app}\bin\@PACKAGE@.exe"; WorkingDir: "{code:GetDocPath}"; Comment: "{cm:IconComment_GnuCash}"; IconFilename: "{app}\share\@PACKAGE@\pixmaps\gnucash-icon.ico"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\bin\@PACKAGE@.exe"; Description: "{cm:RunPrg}"; WorkingDir: "{code:GetDocPath}"; OnlyBelowVersion: 0,6; Flags: postinstall skipifsilent
@@ -236,11 +242,14 @@ Source: "@GC_WIN_REPOS_DIR@\extra_dist\install-fq-mods.ps1"; DestDir: "{app}\bin
 ; Define the registry keys Setup should create (HKLM = HKEY_LOCAL_MACHINE)
 ; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 [Registry]
-Root: HKCR; Subkey: ".gnucash"; ValueType: string; ValueName: ""; ValueData: "GnuCash.Financial.Data"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: ".gnucash"; ValueType: string; ValueName: "Content Type"; ValueData: "application/x-gnucash"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "GnuCash.Financial.Data"; ValueType: string; ValueName: ""; ValueData: "GnuCash Financial Data"; Flags: uninsdeletevalue
-Root: HKCR; Subkey: "GnuCash.Financial.Data\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\share\@PACKAGE@\pixmaps\gnucash-icon.ico,0"
-Root: HKCR; Subkey: "GnuCash.Financial.Data\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\@PACKAGE@.exe"" ""%1"""
+; Register the file association only if no other GnuCash has, so that a
+; released GnuCash keeps it. Removal on uninstall is done in
+; CurUninstallStepChanged, only if the association still points here.
+Root: HKCR; Subkey: ".gnucash"; ValueType: string; ValueName: ""; ValueData: "GnuCash.Financial.Data"; Check: ShouldRegisterFileAssoc
+Root: HKCR; Subkey: ".gnucash"; ValueType: string; ValueName: "Content Type"; ValueData: "application/x-gnucash"; Check: ShouldRegisterFileAssoc
+Root: HKCR; Subkey: "GnuCash.Financial.Data"; ValueType: string; ValueName: ""; ValueData: "GnuCash Financial Data"; Check: ShouldRegisterFileAssoc
+Root: HKCR; Subkey: "GnuCash.Financial.Data\DefaultIcon"; ValueType: string; ValueName: ""; ValueData: "{app}\share\@PACKAGE@\pixmaps\gnucash-icon.ico,0"; Check: ShouldRegisterFileAssoc
+Root: HKCR; Subkey: "GnuCash.Financial.Data\shell\open\command"; ValueType: string; ValueName: ""; ValueData: """{app}\bin\@PACKAGE@.exe"" ""%1"""; Check: ShouldRegisterFileAssoc
 
 Root: HKLM; Subkey: "Software\GnuCash"; ValueType: none; Flags: uninsdeletekeyifempty
 Root: HKLM; Subkey: "Software\GnuCash\Paths"; ValueType: none; Flags: uninsdeletekeyifempty
@@ -296,7 +305,7 @@ var
   rootKey : Integer;
 begin
   sAppVersionPath := 'Software\GnuCash\Version';
-  sUnInstPath := 'Software\Microsoft\Windows\CurrentVersion\Uninstall\GnuCash_is1';
+  sUnInstPath := 'Software\Microsoft\Windows\CurrentVersion\Uninstall\GnuCash-Preview_is1';
 
   PrevAppName := '';
   PrevUninstallString := '';
@@ -386,6 +395,43 @@ procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if (CurStep=ssInstall) and (UninstallRequired) then
     UnInstallOldVersion();
+end;
+
+// ------------------------------------------------------------
+// The .gnucash file association is shared with any released
+// GnuCash installation. Only take it if nobody else has it, and
+// only remove it on uninstall if it still points at this one.
+// ------------------------------------------------------------
+var
+  FileAssocChecked, FileAssocRegister : Boolean;
+
+function FileAssocIsOurs(): Boolean;
+var
+  Command: String;
+begin
+  Result := False;
+  if RegQueryStringValue(HKCR, 'GnuCash.Financial.Data\shell\open\command', '', Command) then
+    Result := Pos(Lowercase(ExpandConstant('{app}\bin\')), Lowercase(Command)) > 0;
+end;
+
+function ShouldRegisterFileAssoc(): Boolean;
+begin
+  { Decide once, before the first entry is written }
+  if not FileAssocChecked then begin
+    FileAssocRegister := (not RegKeyExists(HKCR, '.gnucash')) or FileAssocIsOurs;
+    FileAssocChecked := True;
+  end;
+  Result := FileAssocRegister;
+end;
+
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+begin
+  if (CurUninstallStep = usUninstall) and FileAssocIsOurs then begin
+    RegDeleteKeyIncludingSubkeys(HKCR, 'GnuCash.Financial.Data');
+    RegDeleteValue(HKCR, '.gnucash', '');
+    RegDeleteValue(HKCR, '.gnucash', 'Content Type');
+    RegDeleteKeyIfEmpty(HKCR, '.gnucash');
+  end;
 end;
 
 // ------------------------------------------------------------
