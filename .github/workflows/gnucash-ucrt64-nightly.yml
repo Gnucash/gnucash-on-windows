@@ -157,7 +157,7 @@ jobs:
           id: upload
           uses: actions/upload-artifact@v7
           with:
-            archive: false
+            archive: true
             overwrite: true
             name: ${{ env.FINAL_NAME }}
             path: ${{ env.FINAL_NAME }}
