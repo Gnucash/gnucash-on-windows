@@ -1,0 +1,86 @@
+--- a/libguile/regex-posix.c	2026-10-27 16:12:00.000536600 -0700
++++ b/libguile/regex-posix.c	2026-10-27 16:12:28.840410800 -0700
+@@ -33,6 +33,7 @@
+ #endif
+ 
+ #include <sys/types.h>
++#include <localcharset.h>
+ 
+ #include "libguile/_scm.h"
+ 
+@@ -185,42 +186,40 @@
+ }
+ #undef FUNC_NAME
+ 
+-#ifdef HAVE_WCHAR_H
+ /*
+  * While regexec does respect the current locale, it returns byte
+  * offsets instead of character offsets. This routine fixes up the
+- * regmatch_t structures to refer to characters instead. See "Converting
+- * a Character" in the libc manual, for more details.
++ * regmatch_t structures to refer to characters instead.
++ *
++ * The character count is obtained by decoding the prefix of STR with
++ * the same charset that scm_to_locale_string used to encode it.
++ * Counting with mbrlen instead goes wrong when the C runtime's notion
++ * of the LC_CTYPE encoding differs from locale_charset's: on Windows,
++ * in the "C" locale, locale_charset reports the process code page
++ * (UTF-8 when set by the application manifest) while msvcrt's mbrlen
++ * treats every byte as a character.
+  */
++static size_t
++byte_to_char_offset (const char *str, size_t byte_offset)
++{
++  return scm_c_string_length
++    (scm_from_stringn (str, byte_offset, locale_charset (),
++                       SCM_FAILED_CONVERSION_QUESTION_MARK));
++}
++
+ static void
+ fixup_multibyte_match (regmatch_t *matches, int nmatches, char *str)
+ {
+-  mbstate_t state;
+   int i;
+-  size_t char_idx, byte_idx;
+-  size_t nbytes = 1; /* just to kick off the for loop */
+ 
+-  memset (&state, '\0', sizeof (state));
+-
+-  for (char_idx = byte_idx = 0; nbytes > 0; char_idx++, byte_idx += nbytes)
++  for (i = 0; i < nmatches; ++i)
+     {
+-      for (i = 0; i < nmatches; ++i)
+-        {
+-          if (matches[i].rm_so == byte_idx)
+-            matches[i].rm_so = char_idx;
+-          if (matches[i].rm_eo == byte_idx)
+-            matches[i].rm_eo = char_idx;
+-        }
+-
+-      nbytes = mbrlen (str + byte_idx, MB_LEN_MAX, &state);
+-      if (nbytes == (size_t) -2 || nbytes == (size_t) -1)
+-        /* Something is wrong. Shouldn't be possible, as the regex match
+-           succeeded.  */
+-        abort ();
++      if (matches[i].rm_so == -1)
++        continue;
++      matches[i].rm_so = byte_to_char_offset (str, matches[i].rm_so);
++      matches[i].rm_eo = byte_to_char_offset (str, matches[i].rm_eo);
+     }
+-
+ }
+-#endif
+ 
+ SCM_DEFINE (scm_regexp_exec, "regexp-exec", 2, 2, 0,
+             (SCM rx, SCM str, SCM start, SCM flags),
+@@ -278,10 +277,8 @@
+   status = regexec (SCM_RGX (rx), c_str, nmatches, matches,
+ 		    scm_to_int (flags));
+ 
+-#ifdef HAVE_WCHAR_H
+   if (!status)
+     fixup_multibyte_match (matches, nmatches, c_str);
+-#endif
+ 
+   free (c_str);
+ 

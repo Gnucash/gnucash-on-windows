@@ -107,6 +107,7 @@
     <branch repo="sourceforge" module="gnucash/Dependencies/guile-2.2.7.3-5ef31.tar.xz"
 	    version=" 2.2.7.3-5ef31">
       <patch file="guile-2.2.7.3-getpagesize-decl.patch" strip="0"/>
+      <patch file="guile-2.2.7.3-regex-char-offsets.patch" strip="1"/>
     </branch>
     <dependencies>
       <dep package="gmp"/>
