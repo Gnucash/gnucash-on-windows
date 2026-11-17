@@ -1,8 +1,8 @@
 _realname=gwenhywfar
 pkgbase="${MINGW_PACKAGE_PREFIX}-${_realname}"
 pkgname=${pkgbase}
-pkgver=5.14.1
-rdmdir=630
+pkgver=5.14.3
+rdmdir=662
 pkgrel=1
 pkgdesc="AQBanking backends"
 arch=('any')
@@ -55,6 +55,6 @@ package() {
     make -j1 DESTDIR="${pkgdir}" install
 }
 
-sha256sums=('8916feaa99cb954f963f2cba8dd2dffe57cacf7f284daf00eab071aad6fe2ab3'
+sha256sums=('be1371a668d4d42f113f9dbebd850a66c63437037a027d3c1148afff5503998b'
             'f01048d43f98e8f02d48ec694c1204f133a7fc064e3ca34f8fe13d178677c011'
             '7f3177c086531e46782bbad3ca045c06fd407851d273ba3954eb3e1ca48e403f')
